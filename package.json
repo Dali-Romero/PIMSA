@@ -4,7 +4,7 @@
   "description": "Software para PIMSA Publicidad, proyecto de practicas profesionales.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon src/index.js"
   },
   "keywords": [],
   "author": "",
@@ -22,5 +22,8 @@
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
     "timeagojs": "^1.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
   }
 }
