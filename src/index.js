@@ -10,6 +10,7 @@ const passport = require('passport');
 
 // Initializations
 const app = express();
+require('./lib/passport.js');
 
 // Settings
 app.set('port', process.env.PORT || 4000);
@@ -36,15 +37,21 @@ app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(flash());
 
 // Global variables
 app.use((req, res, next)=>{
+    res.locals.success_msg = req.flash('success_msg');
+    res.locals.error_msg = req.flash('error_msg');
+    res.locals.error = req.flash('error');
+    res.locals.user = req.user;
     next();
 });
 
+
 // Routes
-app.use(require('./routes/index.js'));
-app.use('/machines', require('./routes/machines.js'));
+app.use(require('./routes/index'));
+app.use(require('./routes/login'));
 
 // Public
 app.use(express.static(path.join(__dirname, 'public')));
