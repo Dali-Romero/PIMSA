@@ -1,13 +1,17 @@
 const express = require('express');
 const pool = require('../database.js');
 
+const { isLoggedIn } = require('../lib/auth');
+
 const router = express.Router()
 
-router.get('/add', async (req, res)=>{
+
+
+router.get('/add', isLoggedIn, async (req, res)=>{
     res.render('machines/add');
 });
 
-router.post('/add', async (req, res)=>{
+router.post('/add', isLoggedIn, async (req, res)=>{
     const machine = req.body;
     const newMachine = {
         numSerie: machine.serialnumber,
@@ -26,18 +30,18 @@ router.post('/add', async (req, res)=>{
     res.redirect('/machines');
 });
 
-router.get('/', async (req, res)=>{
+router.get('/', isLoggedIn, async (req, res)=>{
     const machines = await pool.query('SELECT * FROM Maquinas');
     res.render('machines/list.hbs', {machines});
 });
 
-router.get('/edit/:id', async (req, res)=>{
+router.get('/edit/:id', isLoggedIn, async (req, res)=>{
     const {id} = req.params;
     const machine = await pool.query('SELECT * FROM Maquinas WHERE maquinaId = ?', [id]);
     res.render('machines/edit', {machine: machine[0]});
 });
 
-router.post('/edit/:id', async (req, res)=>{
+router.post('/edit/:id', isLoggedIn, async (req, res)=>{
     const {id} = req.params;
     const machine = req.body;
     const newMachine = {
