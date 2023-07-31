@@ -12,10 +12,10 @@ USE pimsa_db_prueba;
 -- creacion de tablas
 CREATE TABLE Usuarios(
     usuarioId INT NOT NULL AUTO_INCREMENT,
-    nombre CHAR(25) NOT NULL,
-    apellido CHAR(25) NOT NULL,
-    correoElec CHAR(40) NOT NULL,
-    contrasena BINARY(60) NOT NULL,
+    nombre VARCHAR(25) NOT NULL,
+    apellido VARCHAR(25) NOT NULL,
+    correoElec VARCHAR(40) NOT NULL,
+    contrasena VARCHAR(60) NOT NULL,
     empleado_id INT, -- llave foranea
     rol_id INT, -- llave foranea
     PRIMARY KEY(usuarioId)
@@ -23,29 +23,29 @@ CREATE TABLE Usuarios(
 
 CREATE TABLE Empleados(
     empleadoId INT NOT NULL AUTO_INCREMENT,
-    nombreComp CHAR(50) NOT NULL,
-    correoElec CHAR(40) NOT NULL,
+    nombreComp VARCHAR(50) NOT NULL,
+    correoElec VARCHAR(40) NOT NULL,
     rol_id INT, -- llave foranea
     numeroNomina INT NOT NULL,
     salarioQuin INT NOT NULL,
-    compleNomina CHAR(20) NOT NULL,
+    compleNomina VARCHAR(20) NOT NULL,
     fechaIngreso DATE NOT NULL,
     anosCumplir INT NOT NULL,
     area_id INT, -- llave foranea
     numeroCelu CHAR(10) NOT NULL,
-    emerNombre CHAR(50) NOT NULL,
+    emerNombre VARCHAR(50) NOT NULL,
     emerCelu CHAR(10) NOT NULL,
-    estadoCivil CHAR(12) NOT NULL,
+    estadoCivil VARCHAR(12) NOT NULL,
     curp CHAR(18) NOT NULL,
     rfc CHAR(13) NOT NULL,
     sexo CHAR(1) NOT NULL,
-    nacLugar CHAR(30) NOT NULL,
+    nacLugar VARCHAR(30) NOT NULL,
     nacFecha DATE NOT NULL,
     edadCumplir INT NOT NULL,
-    domicilio CHAR(60) NOT NULL,
+    domicilio VARCHAR(60) NOT NULL,
     nss CHAR(11) NOT NULL,
-    registroPatro CHAR(60) NOT NULL,
-    estatus CHAR(20) NOT NULL,
+    registroPatro VARCHAR(60) NOT NULL,
+    estatus VARCHAR(20) NOT NULL,
     inicioContrato DATE NOT NULL,
     finContrato DATE NOT NULL,
     PRIMARY KEY(empleadoId)
@@ -55,32 +55,32 @@ CREATE TABLE HistorialEmpleados(
     cambioId INT NOT NULL AUTO_INCREMENT,
     modificado_usuario_id INT, -- llave foranea
     empleado_id INT, -- llave foranea
-    cambioRealizado CHAR(100) NOT NULL,
+    cambioRealizado VARCHAR(100) NOT NULL,
     fechaCambio TIMESTAMP NOT NULL DEFAULT current_timestamp,
     --
-    nombreComp CHAR(50) NOT NULL,
-    correoElec CHAR(40) NOT NULL,
+    nombreComp VARCHAR(50) NOT NULL,
+    correoElec VARCHAR(40) NOT NULL,
     rol_id INT, -- llave foranea
     numeroNomina INT NOT NULL,
     salarioQuin INT NOT NULL,
-    compleNomina CHAR(20) NOT NULL,
+    compleNomina VARCHAR(20) NOT NULL,
     fechaIngreso DATE NOT NULL,
     anosCumplir INT NOT NULL,
     area_id INT, -- llave foranea
     numeroCelu CHAR(10) NOT NULL,
-    emerNombre CHAR(50) NOT NULL,
+    emerNombre VARCHAR(50) NOT NULL,
     emerCelu CHAR(10) NOT NULL,
-    estadoCivil CHAR(12) NOT NULL,
+    estadoCivil VARCHAR(12) NOT NULL,
     curp CHAR(18) NOT NULL,
     rfc CHAR(13) NOT NULL,
     sexo CHAR(1) NOT NULL,
-    nacLugar CHAR(30) NOT NULL,
+    nacLugar VARCHAR(30) NOT NULL,
     nacFecha DATE NOT NULL,
     edadCumplir INT NOT NULL,
-    domicilio CHAR(60) NOT NULL,
+    domicilio VARCHAR(60) NOT NULL,
     nss CHAR(11) NOT NULL,
-    registroPatro CHAR(60) NOT NULL,
-    estatus CHAR(20) NOT NULL,
+    registroPatro VARCHAR(60) NOT NULL,
+    estatus VARCHAR(20) NOT NULL,
     inicioContrato DATE NOT NULL,
     finContrato DATE NOT NULL,
     PRIMARY KEY(cambioId)
@@ -88,7 +88,7 @@ CREATE TABLE HistorialEmpleados(
 
 CREATE TABLE Permisos(
     permisoId INT NOT NULL AUTO_INCREMENT,
-    descripcion CHAR(20) NOT NULL,
+    descripcion VARCHAR(20) NOT NULL,
     PRIMARY KEY(permisoId)
 );
 
@@ -100,7 +100,7 @@ CREATE TABLE PermisosRoles(
 
 CREATE TABLE Roles(
     rolId INT NOT NULL AUTO_INCREMENT,
-    nombre CHAR(20) NOT NULL,
+    nombre VARCHAR(20) NOT NULL,
     activo BOOLEAN NOT NULL,
     PRIMARY KEY(rolId)
 );
@@ -113,16 +113,22 @@ CREATE TABLE AreasRoles(
 
 CREATE TABLE Areas(
     areaId INT NOT NULL AUTO_INCREMENT,
-    nombre CHAR(30) NOT NULL,
+    nombre VARCHAR(30) NOT NULL,
     activo BOOLEAN NOT NULL,
     PRIMARY KEY(areaId)
 );
 
 CREATE TABLE Maquinas(
     maquinaId INT NOT NULL AUTO_INCREMENT,
-    nombre CHAR(20) NOT NULL,
-    descripcion CHAR(40) NOT NULL,
-    tipoTinta CHAR(40) NOT NULL,
+    numSerie VARCHAR(20) NOT NULL,
+    marca VARCHAR(20) NOT NULL,
+    nombre VARCHAR(25) NOT NULL,
+    tipoCabezal VARCHAR(20) NOT NULL,
+    numCabezales INT NOT NULL,
+    velocidad INT NOT NULL,
+    tipoTinta VARCHAR(30) NOT NULL,
+    conTecnico CHAR(10) NOT NULL,
+    conTecnicoExt VARCHAR(10) DEFAULT 'NULO',
     activo BOOLEAN NOT NULL,
     PRIMARY KEY(maquinaId)
 );
@@ -136,9 +142,9 @@ CREATE TABLE MaquinasUsuarios(
 CREATE TABLE FueraCatalogoCotizados(
     cot_id INT, -- llave foranea
     cantidad INT NOT NULL,
-    concepto CHAR(50) NOT NULL,
-    acabados CHAR(20) DEFAULT 'NULO',
-    archivo CHAR(20) DEFAULT 'NULO',
+    concepto VARCHAR(50) NOT NULL,
+    acabados VARCHAR(20) DEFAULT 'NULO',
+    archivo VARCHAR(20) DEFAULT 'NULO',
     precio INT NOT NULL,
     medidaAlto INT NOT NULL,
     medidaAncho INT NOT NULL
@@ -158,8 +164,8 @@ CREATE TABLE Ordenes(
 CREATE TABLE Cobranza(
     cobranzaId INT NOT NULL AUTO_INCREMENT,
     orden_id INT, -- llave foranea
-    tipoPago CHAR(10) NOT NULL,
-    estatus CHAR(11) NOT NULL,
+    tipoPago VARCHAR(10) NOT NULL,
+    estatus VARCHAR(11) NOT NULL,
     fechaPago DATE NOT NULL,
     PRIMARY KEY(cobranzaId)
 );
@@ -176,7 +182,7 @@ CREATE TABLE Tareas(
 
 CREATE TABLE Grupos(
     grupoId INT NOT NULL AUTO_INCREMENT,
-    nombre CHAR(20) NOT NULL,
+    nombre VARCHAR(20) NOT NULL,
     PRIMARY KEY(grupoId)
 );
 
@@ -185,8 +191,8 @@ CREATE TABLE Cotizaciones(
     fecha TIMESTAMP NOT NULL DEFAULT current_timestamp,
     cliente_id INT, -- llave foranea
     descuento INT NOT NULL,
-    proyecto CHAR(30) NOT NULL,
-    observaciones CHAR(100) NOT NULL,
+    proyecto VARCHAR(30) NOT NULL,
+    observaciones VARCHAR(100) NOT NULL,
     PRIMARY KEY (cotId)
 );
 
@@ -195,8 +201,8 @@ CREATE TABLE ProductosCotizados(
     cot_id INT, -- llave foranea
     cantidad INT NOT NULL,
     producto_id INT, -- llave foranea
-    acabados CHAR(20) DEFAULT 'NULO',
-    archivo CHAR(20) DEFAULT 'NULO',
+    acabados VARCHAR(20) DEFAULT 'NULO',
+    archivo VARCHAR(20) DEFAULT 'NULO',
     precioMtCuad INT NOT NULL,
     precioPieza INT NOT NULL,
     medidaAlto INT NOT NULL,
@@ -213,43 +219,43 @@ CREATE TABLE ProcesosOrdenes(
 
 CREATE TABLE Procesos(
     procesoId INT NOT NULL AUTO_INCREMENT,
-    nombre CHAR(30) NOT NULL,
+    nombre VARCHAR(30) NOT NULL,
     PRIMARY KEY(procesoId)
 );
 
 CREATE TABLE Clientes(
     clienteId INT NOT NULL AUTO_INCREMENT,
-    nombre CHAR(50) NOT NULL,
+    nombre VARCHAR(50) NOT NULL,
     usuario_id INT, -- llave foranea
     grupo_id INT, -- llave foranea
-    contacto CHAR(40) NOT NULL,
-    razonSocial CHAR(50) NOT NULL,
+    contacto VARCHAR(40) NOT NULL,
+    razonSocial VARCHAR(50) NOT NULL,
     rfc CHAR(13) NOT NULL,
-    domCalle CHAR(30) NOT NULL,
-    domNumEx CHAR(5) NOT NULL,
-    domNumIn CHAR(5) DEFAULT 'NULO',
-    domColonia CHAR(30) NOT NULL,
+    domCalle VARCHAR(30) NOT NULL,
+    domNumEx VARCHAR(5) NOT NULL,
+    domNumIn VARCHAR(5) DEFAULT 'NULO',
+    domColonia VARCHAR(30) NOT NULL,
     domCp INT NOT NULL,
-    domEstado CHAR(20) NOT NULL,
-    domCiudad CHAR(30) NOT NULL,
+    domEstado VARCHAR(20) NOT NULL,
+    domCiudad VARCHAR(30) NOT NULL,
     telefono CHAR(10) NOT NULL,
-    telefonoExt CHAR(10) DEFAULT 'NULO',
+    telefonoExt VARCHAR(10) DEFAULT 'NULO',
     celular CHAR(10) NOT NULL,
-    correoElec CHAR(40) NOT NULL,
-    correoElecAlt CHAR(40) DEFAULT 'NULO',
+    correoElec VARCHAR(40) NOT NULL,
+    correoElecAlt VARCHAR(40) DEFAULT 'NULO',
     limiteCredito INT NOT NULL,
     diasCredito INT NOT NULL,
     descuento INT NOT NULL,
-    observaciones CHAR(200) NOT NULL,
+    observaciones VARCHAR(200) NOT NULL,
     activo BOOLEAN NOT NULL,
     PRIMARY KEY(clienteId)
 );
 
 CREATE TABLE Productos(
     productoId INT NOT NULL AUTO_INCREMENT,
-    nombre CHAR(30) NOT NULL,
-    descripcion CHAR(100) NOT NULL,
-    unidad CHAR(10) NOT NULL,
+    nombre VARCHAR(30) NOT NULL,
+    descripcion VARCHAR(100) NOT NULL,
+    unidad VARCHAR(10) NOT NULL,
     precio INT NOT NULL,
     aplicarDescuento BOOLEAN NOT NULL,
     proceso_id INT, -- llave foranea
