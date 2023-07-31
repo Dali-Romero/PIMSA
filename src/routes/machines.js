@@ -1,5 +1,6 @@
 const express = require('express');
 const pool = require('../database.js');
+const {isLoggedIn} = require('../lib/auth.js');
 
 const router = express.Router()
 
