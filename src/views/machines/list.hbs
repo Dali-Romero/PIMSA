@@ -1,0 +1,85 @@
+<div class="container-fluid">
+    <div class="row align-items-center p-3" id="machine-title">
+        <h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-gear-wide-connected"></i> máquinas</h1>
+    </div>
+    <div class="row align-items-center py-4 gy-2 px-2">
+        <div class="col-md-4">
+            <form action="" role="search">
+                <div class="input-group">
+                    <button class="btn btn-danger border border-danger border-end-0" type="button" id="machine-search-btn"><i class="bi bi-search"></i></button>
+                    <input type="text" class="form-control border-danger border-2 w-50" placeholder="Buscar por..." aria-describedby="button-addon1">
+                    <select name="machine-search-field" id="machine-search-field" class="form-select border-danger border-2 border-start-0">
+                        <option value="numSerie">No. Serie</option>
+                        <option value="marca">Marca</option>
+                        <option value="nombre" selected>Nombre</option>
+                        <option value="tipoCabezal">Cabezal</option>
+                        <option value="tipoTinta">Tinta</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-8">
+            <div class="btn-toolbar justify-content-between" role="toolbar">
+                <div class="btn-group me-3">
+                    <button type="button" class="btn btn-info dropdown-toggle border-dark border-2" data-bs-toggle="dropdown" aria-expanded="false">
+                        Ordenar por
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-start">
+                        <li><button class="dropdown-item" type="button">Activa</button></li>
+                        <li><button class="dropdown-item" type="button">Inactiva</button></li>
+                    </ul>
+                </div>
+                <div class="btn-group">
+                    <a href="/machines/add" class="btn btn-outline-success border-success border-2" role="button"><i class="bi bi-patch-plus-fill"></i> Añadir máquina</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row align-items-center p-4 pt-0">
+        <p class="fs-5 p-2 m-0" id="machine-add-title">Máquinas registradas</p>
+    </div>
+    <div class="row p-4 pt-0">
+        <div class="table-responsive-xxl p-0">
+            <table class="table table-striped align-middle text-center">
+                <thead>
+                    <tr>
+                        <th scope="col">No. Serie</th>
+                        <th scope="col">Marca</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Tipo cabezal</th>
+                        <th scope="col">No. Cabezales</th>
+                        <th scope="col">Velocidad (MT^2/h)</th>
+                        <th scope="col">Tipo tinta</th>
+                        <th scope="col">Con. Técnico</th>
+                        <th scope="col">Estatus</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                    {{#each machines}}
+                        <tr>
+                            <th scope="row">{{numSerie}}</th>
+                            <td>{{marca}}</th>
+                            <td>{{nombre}}</th>
+                            <th>{{tipoCabezal}}</th>
+                            <th>{{numCabezales}}</th>
+                            <th>{{velocidad}}</th>
+                            <th>{{tipoTinta}}</th>
+                            <th>{{conTecnicoExt}}-{{conTecnico}}</th>
+                            {{#if activo}}
+                                <th class="text-success">Activa</th>
+                            {{else}}
+                                <th class="text-danger">Inactiva</th>
+                            {{/if}}
+                            <th><a href="/machines/edit/{{maquinaId}}" class="btn btn-sm btn-secondary"><i class="bi bi-pencil-square"></i> Editar</a></th>
+                        </tr>
+                    {{else}}
+                        <tr>
+                            <th colspan="10">No existen máquinas registradas</th>
+                        </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
