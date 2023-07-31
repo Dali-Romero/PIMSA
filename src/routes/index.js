@@ -1,8 +1,11 @@
 const express = require('express');
+const { isLoggedIn } = require('../lib/auth');
 const router = express.Router();
 
-router.get('/', (req, res)=>{
-    res.send('Hola mundo');
+//const { isLoggedIn } = require('../lib/auth');
+
+router.get('/', isLoggedIn,  (req, res)=>{
+    res.render('index');
 });
 
 module.exports = router;
