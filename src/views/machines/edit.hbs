@@ -1,0 +1,120 @@
+<div class="container-fluid">
+    <div class="row align-items-center p-3" id="machine-title">
+        <h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-gear-wide-connected"></i> máquinas</h1>
+    </div>
+    <div class="row align-items-center p-4">
+        <p class="fs-5 p-2 m-0" id="machine-add-title">Editar máquina</p>
+    </div>
+    <div class="row px-3">
+        <form action="/machines/edit/{{machine.maquinaId}}" method="post">
+            <div class="row mb-4 gy-4 justify-content-md-between">
+                <div class="col-md-4">
+                    <label for="serialnumber" class="form-label">Número de serie:</label>
+                    <div class="input-group">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-upc"></i></span>
+                        <input type="text" name="serialnumber" value="{{machine.numSerie}}" id="serialnumber" class="form-control border-dark border-2" aria-describedby="basic-addon1">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label for="speed" class="form-label">Velocidad (M^2/h):</label>
+                    <div class="input-group">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-speedometer2"></i></span>
+                        <input type="text" name="speed" value="{{machine.velocidad}}" id="speed" class="form-control border-dark border-2" aria-describedby="basic-addon1">
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-4 gy-4 justify-content-md-between">
+                <div class="col-md-4">
+                    <label for="brand" class="form-label">Marca:</label>
+                    <div class="input-group">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-gear"></i></span>
+                        <input type="text" name="brand" value="{{machine.marca}}" id="brand" class="form-control border-dark border-2" aria-describedby="basic-addon1">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label for="inktype" class="form-label">Tipo de tinta:</label>
+                    <select name="inktype" id="inktype" class="form-select border-dark border-2">
+                        <option value="Acuosa">Acuosa</option>
+                        <option value="Sublimación">Sublimación</option>
+                        <option value="Solvente">Solvente</option>
+                        <option value="Ecosolvente">Ecosolvente</option>
+                        <option value="Latex o resina">Latex o resina</option>
+                        <option value="Curado UV">Curado UV</option>
+                        <option value="Híbrida solvente-UV">Híbrida solvente-UV</option>
+                        <option value="Sólida">Sólida</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-4 gy-4 justify-content-md-between">
+                <div class="col-md-4">
+                    <label for="name" class="form-label">Nombre:</label>
+                    <div class="input-group">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-card-text"></i></span>
+                        <input type="text" name="name" value="{{machine.nombre}}" id="name" class="form-control border-dark border-2" aria-describedby="basic-addon1">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label for="techcontact" class="form-label">Contacto del técnico:</label>
+                    <div class="row row-cols-2 justify-content-md-between">
+                        <div class="col-4">
+                            <input type="text" name="extension" value="{{machine.conTecnicoExt}}" id="extension" class="form-control border-dark border-2" aria-describedby="basic-addon1" placeholder="Extensión">
+                        </div>
+                        <div class="col-8">
+                            <div class="input-group">
+                                <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-telephone"></i></span>
+                                <input type="text" name="techcontact" value="{{machine.conTecnico}}" id="techcontact" class="form-control border-dark border-2" aria-describedby="basic-addon1">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-4 gy-4 justify-content-md-between">
+                <div class="col-md-4">
+                    <label for="headtype" class="form-label">Tipo de cabezal:</label>
+                    <select name="headtype" id="headtype" class="form-select border-dark border-2">
+                        <option value="Térmico" selected>Térmico</option>
+                        <option value="Piezoeléctrico">Piezoeléctrico</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="status" class="form-label">Estatus:</label>
+                    <div class="row row-cols-2 justify-content-md-start">
+                        {{#if machine.activo}}
+                            <div class="col-md-4 d-grid">
+                                <input type="radio" name="status" id="statusop1" class="btn-check" value="1" autocomplete="off" checked>
+                                <label for="statusop1" class="btn btn-outline-success border-success border-2">Activa</label>
+                            </div>
+                            <div class="col-md-4 d-grid">
+                                <input type="radio" name="status" id="statusop2" class="btn-check" value="0" autocomplete="off">
+                                <label for="statusop2" class="btn btn-outline-danger border-danger border-2">Inactiva</label>
+                            </div>
+                        {{else}}
+                            <div class="col-md-4 d-grid">
+                                <input type="radio" name="status" id="statusop1" class="btn-check" value="1" autocomplete="off">
+                                <label for="statusop1" class="btn btn-outline-success border-success border-2">Activa</label>
+                            </div>
+                            <div class="col-md-4 d-grid">
+                                <input type="radio" name="status" id="statusop2" class="btn-check" value="0" autocomplete="off" checked>
+                                <label for="statusop2" class="btn btn-outline-danger border-danger border-2">Inactiva</label>
+                            </div>
+                        {{/if}}
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-4 gy-4 justify-content-md-start">
+                <div class="col-md-4">
+                    <label for="headnum" class="form-label">Número de cabezales:</label>
+                    <div class="input-group">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-123"></i></span>
+                        <input type="number" min="0" max="10" name="headnum" value="{{machine.numCabezales}}" id="headnum" class="form-control border-dark border-2" aria-describedby="basic-addon1">
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-2 gy-2 justify-content-md-start">
+                <div class="col-mb-4">
+                    <button class="btn btn-success me-4" type="submit">Guardar cambios</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
