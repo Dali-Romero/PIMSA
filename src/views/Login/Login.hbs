@@ -9,10 +9,16 @@
             </div>
             <form action="/login" method="POST">
                 <div class="mb-3">
-                    <input type="text" class="form-control" name="correo" placeholder="Correo" autofocus {{#if correo}} value={{correo}} {{/if}}>
+                    <div class="input-group">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-at"></i></span>
+                        <input type="text" class="form-control border-dark border-2" name="correo" placeholder="Correo" autofocus {{#if correo}} value={{correo}} {{/if}}>
+                    </div>
                 </div>
                 <div class="mb-3">
-                    <input type="password" class="form-control" name="password" placeholder="Contraseña" {{#if password}} value={{password}} {{/if}}>
+                    <div class="input-group">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-key"></i></span>
+                        <input type="password" class="form-control border-dark border-2" name="password" placeholder="Contraseña" {{#if password}} value={{password}} {{/if}}>
+                    </div>
                 </div>
                 <div class="d-grid gap-2 col-6 mx-auto">
                     <button class="btn btn-primary" type="submit">
