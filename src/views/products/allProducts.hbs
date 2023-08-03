@@ -3,31 +3,21 @@
         <h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-clipboard2"></i> productos</h1>
     </div>
     <div class="row align-items-center py-4 gy-2 px-2">
-        <div class="col-md-4">
-            <form action="" role="search">
+        <div class="col-md-6">
+            <form action="/products/" method="post" role="search">
                 <div class="input-group">
-                    <button class="btn btn-danger border border-danger border-end-0" type="button" id="products-search-btn"><i class="bi bi-search"></i></button>
-                    <input type="text" class="form-control border-danger border-2 w-50" placeholder="Buscar por..." aria-describedby="button-addon1">
-                    <select name="machine-search-field" id="machine-search-field" class="form-select border-danger border-2 border-start-0">
-                        <option value="numSerie">No. Serie</option>
-                        <option value="marca">Marca</option>
-                        <option value="nombre" selected>Nombre</option>
-                        <option value="tipoCabezal">Cabezal</option>
-                        <option value="tipoTinta">Tinta</option>
+                    <button class="btn btn-danger border border-danger border-end-0" type="submit" id="products-search-btn"><i class="bi bi-search"></i></button>
+                    <input type="text" class="form-control border-danger border-2 w-50" placeholder="Buscar por..." aria-describedby="button-addon1" name="buscar" id="buscar">
+                    <select name="productSearchField" id="productSearchField" class="form-select border-danger border-2 border-start-0">
+                        <option value="nombre">Nombre</option>
+                        <option value="unidad">Unidad Medida</option>
                     </select>
                 </div>
             </form>
         </div>
-        <div class="col-md-8">
+        <div class="col-md-6">
             <div class="btn-toolbar justify-content-between" role="toolbar">
                 <div class="btn-group me-3">
-                    <button type="button" class="btn btn-info dropdown-toggle border-dark border-2" data-bs-toggle="dropdown" aria-expanded="false">
-                        Ordenar por
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-start">
-                        <li><button class="dropdown-item" type="button">Activa</button></li>
-                        <li><button class="dropdown-item" type="button">Inactiva</button></li>
-                    </ul>
                 </div>
                 <div class="btn-group">
                     <a href="/products/add" class="btn btn-outline-success border-success border-2" role="button"><i class="bi bi-clipboard2-plus"></i> Añadir producto</a>
@@ -48,26 +38,22 @@
                         <th scope="col">Detalles</th>
                         <th scope="col">Unidad de Medida</th>
                         <th scope="col">Precio</th>
+                        <th scope="col">Descuento</th>
                         <th scope="col">Proceso</th>
-                        <th scope="col">Activa</th>
                         <th scope="col"></th>
                     </tr>
                 </thead>
                 <tbody class="table-group-divider">
-                    {{#each machines}}
+                    {{#each products}}
                         <tr>
-                            <th scope="row">P-{{codigo}}</th>
+                            <th scope="row">P-{{productoId}}</th>
                             <th>{{nombre}}</th>
-                            <td>{{descripcion}}</th>
-                            <td>{{unidadMedida}}</th>
-                            <th>{{Precio}}</th>
-                            <th>{{Proceso}}</th>
-                            {{#if activo}}
-                                <th class="text-success">Activa</th>
-                            {{else}}
-                                <th class="text-danger">Inactiva</th>
-                            {{/if}}
-                            <th><a href="/machines/edit/{{maquinaId}}" class="btn btn-sm btn-secondary"><i class="bi bi-pencil-square"></i> Editar</a></th>
+                            <th>{{descripcion}}</th>
+                            <th>{{unidad}}</th>
+                            <th>{{precio}}</th>
+                            <th>{{porcentaje}}</th>
+                            <th>{{proceso_id}}</th>
+                            <th><a href="/products/edit/{{productoId}}" class="btn btn-sm btn-secondary"><i class="bi bi-pencil-square"></i> Editar</a></th>
                         </tr>
                     {{else}}
                         <tr>
