@@ -1,13 +1,13 @@
-<div class="row align-items-center p-3" id="machine-title">
+<div class="row p-3" id="machine-title">
     <h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-gear-wide-connected"></i> máquinas</h1>
 </div>
-<div class="row align-items-center py-4 gy-2 px-2">
-    <div class="col-md-4">
+<div class="row justify-content-md-between p-4 gy-3" id="machines-filters">
+    <div class="col-md-4 px-0">
         <form action="" role="search">
             <div class="input-group">
-                <button class="btn btn-danger border border-danger border-end-0" type="button" id="machine-search-btn"><i class="bi bi-search"></i></button>
-                <input type="text" class="form-control border-danger border-2 w-50" placeholder="Buscar por..." aria-describedby="button-addon1">
-                <select name="machine-search-field" id="machine-search-field" class="form-select border-danger border-2 border-start-0">
+                <button class="btn btn-danger border border-danger border-end-0" id="machine-search-btn" type="button"><i class="bi bi-search"></i></button>
+                <input type="text" class="form-control border-danger border-2 border-end-0 w-50" id="machine-search-bar" name="machine-search-bar" placeholder="Buscar por..." aria-describedby="button-addon1">
+                <select name="machine-search-field" id="machine-search-field" class="form-select border-danger border-2">
                     <option value="numSerie">No. Serie</option>
                     <option value="marca">Marca</option>
                     <option value="nombre" selected>Nombre</option>
@@ -17,16 +17,75 @@
             </div>
         </form>
     </div>
-    <div class="col-md-8">
+    <div class="col-md-8 ps-md-4 px-0">
         <div class="btn-toolbar justify-content-between" role="toolbar">
-            <div class="btn-group me-3">
-                <button type="button" class="btn btn-info dropdown-toggle border-dark border-2" data-bs-toggle="dropdown" aria-expanded="false">
-                    Ordenar por
-                </button>
-                <ul class="dropdown-menu dropdown-menu-start">
-                    <li><button class="dropdown-item" type="button">Activa</button></li>
-                    <li><button class="dropdown-item" type="button">Inactiva</button></li>
-                </ul>
+            <div class="btn-group">
+                <div class="dropdown dropdown-machines">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-sort-down p-0"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-machines">
+                        <li>
+                            <button class="dropdown-item" id="machine-order-all" type="button">Todas</button>
+                        </li>
+                        <li>
+                            <button class="dropdown-item" type="button">No. Serie<i class="bi bi-chevron-right float-end"></i></button>
+                            <ul class="dropdown-menu dropdown-menu-machines dropdown-submenu">
+                                <button class="dropdown-item" id="machine-order-serialNumber-asc" type="button">De la A a la Z</button>
+                                <button class="dropdown-item" id="machine-order-serialNumber-desc" type="button">De la Z a la A</button>
+                            </ul>
+                        </li>
+                        <li>
+                            <button class="dropdown-item" type="button">Marca<i class="bi bi-chevron-right float-end"></i></button>
+                            <ul class="dropdown-menu dropdown-menu-machines dropdown-submenu">
+                                <button class="dropdown-item" id="machine-order-brand-asc" type="button">De la A a la Z</button>
+                                <button class="dropdown-item" id="machine-order-brand-desc" type="button">De la Z a la A</button>
+                            </ul>
+                        </li>
+                        <li>
+                            <button class="dropdown-item" type="button">Nombre<i class="bi bi-chevron-right float-end"></i></button>
+                            <ul class="dropdown-menu dropdown-menu-machines dropdown-submenu">
+                                <button class="dropdown-item" id="machine-order-name-asc" type="button">De la A a la Z</button>
+                                <button class="dropdown-item" id="machine-order-name-desc" type="button">De la Z a la A</button>
+                            </ul>
+                        </li>
+                        <li>
+                            <button class="dropdown-item" type="button">Tipo cabezal<i class="bi bi-chevron-right float-end"></i></button>
+                            <ul class="dropdown-menu dropdown-menu-machines dropdown-submenu">
+                                <button class="dropdown-item" id="machine-order-headType-asc" type="button">De la A a la Z</button>
+                                <button class="dropdown-item" id="machine-order-headType-desc" type="button">De la Z a la A</button>
+                            </ul>
+                        </li>
+                        <li>
+                            <button class="dropdown-item" type="button">No. Cabezales<i class="bi bi-chevron-right float-end"></i></button>
+                            <ul class="dropdown-menu dropdown-menu-machines dropdown-submenu">
+                                <button class="dropdown-item" id="machine-order-headNum-asc" type="button">De menor a mayor</button>
+                                <button class="dropdown-item" id="machine-order-headNum-desc" type="button">De mayor a menor</button>
+                            </ul>
+                        </li>
+                        <li>
+                            <button class="dropdown-item" type="button">Velocidad<i class="bi bi-chevron-right float-end"></i></button>
+                            <ul class="dropdown-menu dropdown-menu-machines dropdown-submenu">
+                                <button class="dropdown-item" id="machine-order-speed-asc" type="button">Del más lento al más rápido</button>
+                                <button class="dropdown-item" id="machine-order-speed-desc" type="button">Del más rápido al más lento</button>
+                            </ul>
+                        </li>
+                        <li>
+                            <button class="dropdown-item" type="button">Tipo tinta<i class="bi bi-chevron-right float-end"></i></button>
+                            <ul class="dropdown-menu dropdown-menu-machines dropdown-submenu">
+                                <button class="dropdown-item" id="machine-order-inkType-asc" type="button">De la A a la Z</button>
+                                <button class="dropdown-item" id="machine-order-inkType-desc"  type="button">De la Z a la A</button>
+                            </ul>
+                        </li>
+                        <li>
+                            <button class="dropdown-item" type="button">Estatus<i class="bi bi-chevron-right float-end"></i></button>
+                            <ul class="dropdown-menu dropdown-menu-machines dropdown-submenu">
+                                <button class="dropdown-item" id="machine-order-status-asc" type="button">Solo activas</button>
+                                <button class="dropdown-item" id="machine-order-status-desc" type="button">Solo inactivas</button>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
             </div>
             <div class="btn-group">
                 <a href="/machines/add" class="btn btn-outline-success border-success border-2" role="button"><i class="bi bi-patch-plus-fill"></i> Añadir máquina</a>
@@ -34,12 +93,27 @@
         </div>
     </div>
 </div>
-<div class="row align-items-center p-4 pt-0">
-    <p class="fs-5 p-2 m-0" id="machine-add-title">Máquinas registradas</p>
+<div class="row p-4 py-0">
+    <div class="row justify-content-between p-0 m-0" id="machine-add-title">
+        <div class="col-md-8 p-2">
+            <p class="fs-5 m-0">Máquinas registradas</p>
+        </div>
+        <div class="col-md-4 p-2">
+            <div class="row justify-content-md-end" id="machines-total">
+                <div class="col-4">
+                    <p class="fs-5 m-0 text-success">Activas: {{activas}}</p>
+                </div>
+                <div class="col-4">
+                    <p class="fs-5 m-0 text-danger">Inactivas: {{inactivas}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<div class="row p-4 pt-0">
+<div class="row px-4 pt-0">
     <div class="table-responsive-xxl p-0">
-        <table class="table table-striped align-middle text-center">
+        <table class="table caption-top table-striped align-middle text-center">
+            <caption class="px-2">Ordenado por: <span id="table-orderby">Todas</span></caption>
             <thead>
                 <tr>
                     <th scope="col">No. Serie</th>
@@ -47,14 +121,14 @@
                     <th scope="col">Nombre</th>
                     <th scope="col">Tipo cabezal</th>
                     <th scope="col">No. Cabezales</th>
-                    <th scope="col">Velocidad (MT^2/h)</th>
+                    <th scope="col">Velocidad (<var>Mt²/h</var>)</th>
                     <th scope="col">Tipo tinta</th>
                     <th scope="col">Con. Técnico</th>
                     <th scope="col">Estatus</th>
                     <th scope="col"></th>
                 </tr>
             </thead>
-            <tbody class="table-group-divider">
+            <tbody class="table-group-divider" id="table-machines">
                 {{#each machines}}
                     <tr>
                         <th scope="row">{{numSerie}}</th>
@@ -81,3 +155,36 @@
         </table>
     </div>
 </div>
+<script type="text/x-handlebars-template" id="machines-total-template">
+    <div class="col-4">
+        <p class="fs-5 m-0 text-success">Activas: \{{activas}}</p>
+    </div>
+    <div class="col-4">
+        <p class="fs-5 m-0 text-danger">Inactivas: \{{inactivas}}</p>
+    </div>
+</script>
+
+<script type="text/x-handlebars-template" id="machines-template">
+    \{{#each machines}}
+        <tr>
+            <th scope="row">\{{numSerie}}</th>
+            <td>\{{marca}}</th>
+            <td>\{{nombre}}</th>
+            <th>\{{tipoCabezal}}</th>
+            <th>\{{numCabezales}}</th>
+            <th>\{{velocidad}}</th>
+            <th>\{{tipoTinta}}</th>
+            <th>\{{conTecnicoExt}}-\{{conTecnico}}</th>
+            \{{#if activo}}
+                <th class="text-success">Activa</th>
+            \{{else}}
+                <th class="text-danger">Inactiva</th>
+            \{{/if}}
+            <th><a href="/machines/edit/\{{maquinaId}}" class="btn btn-sm btn-secondary"><i class="bi bi-pencil-square"></i> Editar</a></th>
+        </tr>
+    \{{else}}
+        <tr>
+            <th colspan="10">No existen máquinas registradas</th>
+        </tr>
+    \{{/each}}
+</script>

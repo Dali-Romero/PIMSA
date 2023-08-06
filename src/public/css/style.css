@@ -6,3 +6,19 @@
 #machine-add-title{
     background-color: #C3CDE6;
 }
+
+.dropdown-machines li{
+    position: relative;
+}
+
+.dropdown-menu-machines .dropdown-submenu{
+    display: none;
+    position: absolute;
+    left: 100%;
+    top: 0px;
+}
+
+.dropdown-menu-machines > li:hover > .dropdown-submenu{
+    display: block;
+    margin-top: 0.125rem;
+}

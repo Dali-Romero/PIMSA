@@ -29,7 +29,46 @@ router.post('/add', async (req, res)=>{
 
 router.get('/', async (req, res)=>{
     const machines = await pool.query('SELECT * FROM Maquinas');
-    res.render('machines/list.hbs', {machines});
+    //const totalActivas = await pool.query('SELECT count(maquinaId) AS countActivas FROM Maquinas WHERE activo = 1');
+    //const totalInactivas = await pool.query('SELECT count(maquinaId) AS countInactivas FROM Maquinas WHERE activo = 0');
+    let activas = 0
+    let inactivas = 0
+    for(let i in machines){
+        if (machines[i].activo){
+            activas++;
+        }else{
+            inactivas++;
+        }
+    }
+    res.render('machines/list.hbs', {machines:machines, activas:activas, inactivas:inactivas});
+    //res.render('machines/list.hbs', {machines:machines, activas:totalActivas[0], inactivas:totalInactivas[0]});
+});
+
+router.post('/search', async (req, res)=>{
+    const keys = req.body.keys;
+    const field = req.body.fieldSearch;
+    const searchResult = await pool.query('SELECT * FROM Maquinas WHERE '+field+' LIKE "'+keys+'%"');
+    res.send({machines: searchResult});
+})
+
+router.post('/orderby', async (req, res)=>{
+    const field = req.body.field;
+    const order = req.body.order;
+    let sortResult = '';
+    switch (field) {
+        case 'todas':
+            sortResult = await pool.query('SELECT * FROM Maquinas');
+            break;
+        case 'activa':
+            sortResult = await pool.query('SELECT * FROM Maquinas WHERE activo = 1');
+            break;
+        case 'inactiva':
+            sortResult = await pool.query('SELECT * FROM Maquinas WHERE activo = 0');
+            break;
+        default:
+            sortResult = await pool.query('SELECT * FROM Maquinas ORDER BY '+field+' '+order);
+    }
+    res.send({machines: sortResult});
 });
 
 router.get('/edit/:id', async (req, res)=>{

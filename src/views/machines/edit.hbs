@@ -1,7 +1,7 @@
-<div class="row align-items-center p-3" id="machine-title">
+<div class="row p-3" id="machine-title">
     <h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-gear-wide-connected"></i> máquinas</h1>
 </div>
-<div class="row align-items-center p-4">
+<div class="row p-4">
     <p class="fs-5 p-2 m-0" id="machine-add-title">Editar máquina</p>
 </div>
 <div class="row px-3">
@@ -15,7 +15,7 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <label for="speed" class="form-label">Velocidad (M^2/h):</label>
+                <label for="speed" class="form-label">Velocidad (<var>Mt²/h</var>):</label>
                 <div class="input-group">
                     <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-speedometer2"></i></span>
                     <input type="text" name="speed" value="{{machine.velocidad}}" id="speed" class="form-control border-dark border-2" aria-describedby="basic-addon1">
@@ -33,14 +33,14 @@
             <div class="col-md-4">
                 <label for="inktype" class="form-label">Tipo de tinta:</label>
                 <select name="inktype" id="inktype" class="form-select border-dark border-2">
-                    <option value="Acuosa">Acuosa</option>
-                    <option value="Sublimación">Sublimación</option>
-                    <option value="Solvente">Solvente</option>
-                    <option value="Ecosolvente">Ecosolvente</option>
-                    <option value="Latex o resina">Latex o resina</option>
-                    <option value="Curado UV">Curado UV</option>
-                    <option value="Híbrida solvente-UV">Híbrida solvente-UV</option>
-                    <option value="Sólida">Sólida</option>
+                    <option value="Acuosa" {{#equal machine.tipoTinta "Acuosa"}}selected{{/equal}}>Acuosa</option>
+                    <option value="Sublimación" {{#equal machine.tipoTinta "Sublimación"}}selected{{/equal}}>Sublimación</option>
+                    <option value="Solvente" {{#equal machine.tipoTinta "Solvente"}}selected{{/equal}}>Solvente</option>
+                    <option value="Ecosolvente" {{#equal machine.tipoTinta "Ecosolvente"}}selected{{/equal}}>Ecosolvente</option>
+                    <option value="Latex o resina" {{#equal machine.tipoTinta "Latex o resina"}}selected{{/equal}}>Latex o resina</option>
+                    <option value="Curado UV" {{#equal machine.tipoTinta "Curado UV"}}selected{{/equal}}>Curado UV</option>
+                    <option value="Híbrida solvente-UV" {{#equal machine.tipoTinta "Híbrida solvente-UV"}}selected{{/equal}} >Híbrida solvente-UV</option>
+                    <option value="Sólida" {{#equal machine.tipoTinta "Sólida"}}selected{{/equal}}>Sólida</option>
                 </select>
             </div>
         </div>
@@ -71,32 +71,22 @@
             <div class="col-md-4">
                 <label for="headtype" class="form-label">Tipo de cabezal:</label>
                 <select name="headtype" id="headtype" class="form-select border-dark border-2">
-                    <option value="Térmico" selected>Térmico</option>
-                    <option value="Piezoeléctrico">Piezoeléctrico</option>
+                    <option value="Térmico" {{#equal machine.tipoCabezal "Térmico"}}selected{{/equal}}>Térmico</option>
+                    <option value="Piezoeléctrico" {{#equal machine.tipoCabezal "Piezoeléctrico"}}selected{{/equal}}>Piezoeléctrico</option>
                 </select>
             </div>
             <div class="col-md-4">
                 <label for="status" class="form-label">Estatus:</label>
                 <div class="row row-cols-2 justify-content-md-start">
-                    {{#if machine.activo}}
                         <div class="col-md-4 d-grid">
-                            <input type="radio" name="status" id="statusop1" class="btn-check" value="1" autocomplete="off" checked>
+                            <input type="radio" name="status" id="statusop1" class="btn-check" value="1" autocomplete="off" {{#if machine.activo}}checked{{/if}}>
                             <label for="statusop1" class="btn btn-outline-success border-success border-2">Activa</label>
                         </div>
                         <div class="col-md-4 d-grid">
-                            <input type="radio" name="status" id="statusop2" class="btn-check" value="0" autocomplete="off">
+                            <input type="radio" name="status" id="statusop2" class="btn-check" value="0" autocomplete="off" {{#unless machine.activo}}checked{{/unless}}>
                             <label for="statusop2" class="btn btn-outline-danger border-danger border-2">Inactiva</label>
                         </div>
-                    {{else}}
-                        <div class="col-md-4 d-grid">
-                            <input type="radio" name="status" id="statusop1" class="btn-check" value="1" autocomplete="off">
-                            <label for="statusop1" class="btn btn-outline-success border-success border-2">Activa</label>
-                        </div>
-                        <div class="col-md-4 d-grid">
-                            <input type="radio" name="status" id="statusop2" class="btn-check" value="0" autocomplete="off" checked>
-                            <label for="statusop2" class="btn btn-outline-danger border-danger border-2">Inactiva</label>
-                        </div>
-                    {{/if}}
+                    
                 </div>
             </div>
         </div>
