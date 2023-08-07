@@ -4,16 +4,6 @@
     </div>
     <div class="row align-items-center py-4 gy-2 px-2">
         <div class="col-md-6">
-            <form action="/products/" method="post" role="search">
-                <div class="input-group">
-                    <button class="btn btn-danger border border-danger border-end-0" type="submit" id="products-search-btn"><i class="bi bi-search"></i></button>
-                    <input type="text" class="form-control border-danger border-2 w-50" placeholder="Buscar por..." aria-describedby="button-addon1" name="buscar" id="buscar">
-                    <select name="productSearchField" id="productSearchField" class="form-select border-danger border-2 border-start-0">
-                        <option value="nombre">Nombre</option>
-                        <option value="unidad">Unidad Medida</option>
-                    </select>
-                </div>
-            </form>
         </div>
         <div class="col-md-6">
             <div class="btn-toolbar justify-content-between" role="toolbar">
@@ -30,7 +20,7 @@
     </div>
     <div class="row p-4 pt-0">
         <div class="table-responsive-xxl p-0">
-            <table class="table table-striped align-middle text-center">
+            <table class="table table-striped align-middle text-center" id="example">
                 <thead>
                     <tr>
                         <th scope="col">Codigo</th>
@@ -65,3 +55,12 @@
         </div>
     </div>
 </div>
+
+
+<script>
+    var table = new DataTable('#example', {
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-MX.json',
+        },
+    });
+</script>
