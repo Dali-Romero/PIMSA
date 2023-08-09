@@ -93,7 +93,13 @@ router.post('/edit/:id', async (req, res)=>{
         activo: machine.status
     };
     await pool.query('UPDATE Maquinas SET ? WHERE maquinaId = ?', [newMachine, id]);
-    req.flash('success', 'Máquina editada correctamente');
+    //req.flash('success', 'Máquina editada correctamente');
+    //req.flash('modal', 'Máquina editada correctamente');
+    //req.flash('modal_id', id);
+
+    req.flash('toast', 'Máquina editada correctamente');
+    req.flash('toast_id', id);
+
     res.redirect('/machines');
 });
 

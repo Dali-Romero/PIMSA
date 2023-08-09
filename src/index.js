@@ -41,6 +41,10 @@ app.use(flash());
 
 // Global variables
 app.use((req, res, next)=>{
+    res.locals.modal = req.flash('modal');
+    res.locals.modal_id = req.flash('modal_id');
+    res.locals.toast = req.flash('toast');
+    res.locals.toast_id = req.flash('toast_id');
 
     res.locals.success_msg = req.flash('success_msg');
     res.locals.error_msg = req.flash('error_msg');

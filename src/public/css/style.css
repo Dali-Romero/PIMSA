@@ -1,24 +1,15 @@
+:root{
+    --x: linear-gradient(270deg, rgba(132,131,146,1) 0%, rgba(156,37,66,1) 100%, rgba(254,254,250,1) 100%, rgba(255,255,255,1) 100%, rgba(2,0,36,1) 100%, rgba(0,212,255,1) 100%);
+    --y: linear-gradient(270deg, rgba(132,131,146,1) 0%, rgba(253,14,53,1) 100%);
+    --z: linear-gradient(270deg, rgba(132,131,146,1) 0%, rgba(237,10,63,1) 100%);
+    --a: linear-gradient(270deg, rgba(132,131,146,1) 0%, rgba(195,205,230,1) 100%);
+}
+
 #machine-title{
     color: white;
-    background-color: #9C2542;
+    background: var(--z);
 }
 
 #machine-add-title{
     background-color: #C3CDE6;
-}
-
-.dropdown-machines li{
-    position: relative;
-}
-
-.dropdown-menu-machines .dropdown-submenu{
-    display: none;
-    position: absolute;
-    left: 100%;
-    top: 0px;
-}
-
-.dropdown-menu-machines > li:hover > .dropdown-submenu{
-    display: block;
-    margin-top: 0.125rem;
 }
