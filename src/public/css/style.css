@@ -6,3 +6,12 @@
 #machine-add-title{
     background-color: #C3CDE6;
 }
+
+#group-title{
+    color: white;
+    background: var(--z);
+}
+
+#group-add-title{
+    background-color: #C3CDE6;
+}

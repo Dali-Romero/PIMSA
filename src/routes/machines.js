@@ -9,7 +9,7 @@ router.get('/add', async (req, res)=>{
 
 router.post('/add', async (req, res)=>{
     const machine = req.body;
-    const newMachine = {
+    const newMachine = {    
         numSerie: machine.serialnumber,
         marca: machine.brand,
         nombre: machine.name,

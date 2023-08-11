@@ -1,0 +1,37 @@
+<div class="row p-3" id="group-title">
+    <h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi-bi-people"></i>grupos</h1>
+</div>
+<div class="row p-4">
+    <p class="fs-5 p-2 m-0" id="group-add-title">Añadir grupo</p>
+</div>
+<div class="row px-3 mx-2">
+    <form action="/grupos/addgrupo" method="post">
+        <div class="row mb-4 gy-4 justify-content-md-between">
+            <div class="col-md-4">
+                <label for="namegroup" class="form-label">Nombre del grupo:</label>
+                <div class="input-group">
+                    <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-people-fill"></i></span>
+                    <input type="text" name="namegroup" id="namegroup" class="form-control border-dark border-2" aria-describedby="basic-addon1" autofocus>
+                </div>
+            </div>
+            <div class="row mb-4 gy-4 justify-content-md-between">
+                <div class="col-md-4">
+                    <label for="description" class="form-label">Descripción:</label>
+                    <div class="input-group">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-text-left"></i></span>
+                        <input type="text" name="description" id="description" class="form-control-lg border-dark border-2" aria-describedby="basic-addon1" >
+                    </div>
+                </div>
+            </div>
+            {{!-- <div class="form-group">
+                <textarea name="description" id="description" cols="" rows="2" class="form-control" placeholder="Descripción"></textarea>
+            </div> --}}
+        </div>
+        <div class="row mb-2 gy-2 justify-content-md-start">
+            <div class="col-mb-4">
+                <button class="btn btn-success me-4" type="submit">Agregar grupo</button>
+                <button class="btn btn-danger" type="reset">Limpiar campos</button>
+            </div>
+        </div>
+    </form>
+</div>
