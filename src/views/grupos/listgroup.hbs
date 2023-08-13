@@ -12,7 +12,7 @@
 
 <div class="row p-4 pt-0">
     <div class="table-responsive-xxl p-0">
-        <table class="table table-striped" id="groups-table">
+        <table class="table table-striped" id="groups_table">
             <thead>
                 <tr>
                     <th scope="col">Nombre</th>
@@ -22,12 +22,12 @@
                 </tr>
             </thead>
             <tbody class="table-group-divider">
-                {{#each grupos}}
+                {{#each groups}}
                     <tr>
                         <th scope="row">{{nombre}}</th>
                         <td>{{descripcion}}</td>
                         <td></td>
-                        <td><a href="/grupos/editgroup{{grupoId}}" class="btn btn-sm btn-secondary"><i class="bi bi-pencil-square"></i> Editar</a></td>
+                        <td><a href="/grupos/editgroup/{{grupoId}}" class="btn btn-sm btn-secondary"><i class="bi bi-pencil-square"></i> Editar</a></td>
                     </tr>
                 {{else}}
                     <tr>
@@ -40,7 +40,7 @@
 </div>
 
 <script>
-    var table = new DataTable('#groups-table', {
+    var table = new DataTable('#groups_table', {
         paging: false,
         info: false,
         padding: false,

@@ -1,6 +1,6 @@
 const express = require('express');
 const pool = require('../database.js')
-const { isLoggedIn } = require('../lib/auth');
+const { isLoggedIn } = require('../lib/auth.js');
 
 const router = express.Router();
 
@@ -26,7 +26,7 @@ router.post('/addgroup', async (req, res)=>{
 
 router.get('/', async (req, res)=>{
     const groups = await pool.query('SELECT * FROM Grupos');
-    res.render('grupos/listgroup.hbs', {groups});
+    res.render('grupos/listgroup', {groups});
 });
 
 router.get('/editgroup/:id', async (req, res)=>{
