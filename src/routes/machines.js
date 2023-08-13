@@ -5,32 +5,40 @@ const {isLoggedIn} = require('../lib/auth.js');
 const router = express.Router()
 
 router.get('/add', async (req, res)=>{
-    res.render('machines/add');
+    const users = await pool.query('SELECT Usuarios.usuarioId, Empleados.empleadoId, Empleados.nombreComp AS Empleado, Areas.areaId, Areas.nombre AS Area, Roles.rolId, Roles.nombre AS Rol FROM (((Empleados INNER JOIN Areas ON Empleados.area_id = Areas.areaId) INNER JOIN Roles ON Empleados.rol_id = Roles.rolId) INNER JOIN Usuarios ON Empleados.empleadoId = Usuarios.empleado_id);')
+    res.render('machines/add', {users:users});
 });
 
 router.post('/add', async (req, res)=>{
-    const machine = req.body;
+    const resBody = req.body;
+    const selects = req.body.allowedUser;
+    console
     const newMachine = {
-        numSerie: machine.serialnumber,
-        marca: machine.brand,
-        nombre: machine.name,
-        tipoCabezal: machine.headtype,
-        numCabezales: machine.headnum,
-        velocidad: machine.speed,
-        tipoTinta: machine.inktype,
-        conTecnico: machine.techcontact,
-        conTecnicoExt: machine.extension,
-        activo: machine.status
+        numSerie: resBody.serialnumber,
+        marca: resBody.brand,
+        nombre: resBody.name,
+        tipoCabezal: resBody.headtype,
+        numCabezales: resBody.headnum,
+        velocidad: resBody.speed,
+        tipoTinta: resBody.inktype,
+        conTecnico: resBody.techcontact,
+        conTecnicoExt: resBody.extension,
+        activo: resBody.status
     };
-    await pool.query('INSERT INTO Maquinas SET ?', [newMachine]);
+    const {insertId} = await pool.query('INSERT INTO Maquinas SET ?', [newMachine]);
+    let machineUsers = [];
+    if (selects !== undefined){
+        for(let i in selects){
+            machineUsers.push([Number(selects[i]), insertId]);
+        };
+        await pool.query('INSERT INTO MaquinasUsuarios (usuario_id, maquina_id) VALUES ?', [machineUsers]);
+    };
     req.flash('success', 'Máquina agregada correctamente');
     res.redirect('/machines');
 });
 
 router.get('/', async (req, res)=>{
     const machines = await pool.query('SELECT * FROM Maquinas');
-    //const totalActivas = await pool.query('SELECT count(maquinaId) AS countActivas FROM Maquinas WHERE activo = 1');
-    //const totalInactivas = await pool.query('SELECT count(maquinaId) AS countInactivas FROM Maquinas WHERE activo = 0');
     let activas = 0
     let inactivas = 0
     for(let i in machines){
@@ -41,65 +49,48 @@ router.get('/', async (req, res)=>{
         }
     }
     res.render('machines/list.hbs', {machines:machines, activas:activas, inactivas:inactivas});
-    //res.render('machines/list.hbs', {machines:machines, activas:totalActivas[0], inactivas:totalInactivas[0]});
 });
 
-router.post('/search', async (req, res)=>{
-    const keys = req.body.keys;
-    const field = req.body.fieldSearch;
-    const searchResult = await pool.query('SELECT * FROM Maquinas WHERE '+field+' LIKE "'+keys+'%"');
-    res.send({machines: searchResult});
-})
-
-router.post('/orderby', async (req, res)=>{
-    const field = req.body.field;
-    const order = req.body.order;
-    let sortResult = '';
-    switch (field) {
-        case 'todas':
-            sortResult = await pool.query('SELECT * FROM Maquinas');
-            break;
-        case 'activa':
-            sortResult = await pool.query('SELECT * FROM Maquinas WHERE activo = 1');
-            break;
-        case 'inactiva':
-            sortResult = await pool.query('SELECT * FROM Maquinas WHERE activo = 0');
-            break;
-        default:
-            sortResult = await pool.query('SELECT * FROM Maquinas ORDER BY '+field+' '+order);
-    }
-    res.send({machines: sortResult});
+router.post('/listUsers', async (req, res)=>{
+    const id = req.body.idMachine;
+    const users = await pool.query('SELECT Maquinas.maquinaId, MaquinasUsuarios.usuario_id, Usuarios.usuarioId, Empleados.empleadoId, Empleados.nombreComp AS Empleado, Areas.areaId, Areas.nombre AS Area, Roles.rolId, Roles.nombre AS Rol FROM (((((Empleados INNER JOIN Areas ON Empleados.area_id = Areas.areaId) INNER JOIN Roles ON Empleados.rol_id = Roles.rolId) INNER JOIN Usuarios ON Empleados.empleadoId = Usuarios.empleado_id) INNER JOIN MaquinasUsuarios ON Usuarios.usuarioId = MaquinasUsuarios.usuario_id) INNER JOIN Maquinas ON MaquinasUsuarios.maquina_id = Maquinas.maquinaId) WHERE Maquinas.maquinaId = ?;', [id]);
+    res.send({users: users});
 });
 
 router.get('/edit/:id', async (req, res)=>{
     const {id} = req.params;
     const machine = await pool.query('SELECT * FROM Maquinas WHERE maquinaId = ?', [id]);
-    res.render('machines/edit', {machine: machine[0]});
+    const users = await pool.query('SELECT Usuarios.usuarioId, Empleados.empleadoId, Empleados.nombreComp AS Empleado, Areas.areaId, Areas.nombre AS Area, Roles.rolId, Roles.nombre AS Rol FROM (((Empleados INNER JOIN Areas ON Empleados.area_id = Areas.areaId) INNER JOIN Roles ON Empleados.rol_id = Roles.rolId) INNER JOIN Usuarios ON Empleados.empleadoId = Usuarios.empleado_id);')
+    const selectedUsers = await pool.query('SELECT Maquinas.maquinaId, MaquinasUsuarios.usuario_id, Usuarios.usuarioId, Empleados.empleadoId, Empleados.nombreComp AS Empleado, Areas.areaId, Areas.nombre AS Area, Roles.rolId, Roles.nombre AS Rol FROM (((((Empleados INNER JOIN Areas ON Empleados.area_id = Areas.areaId) INNER JOIN Roles ON Empleados.rol_id = Roles.rolId) INNER JOIN Usuarios ON Empleados.empleadoId = Usuarios.empleado_id) INNER JOIN MaquinasUsuarios ON Usuarios.usuarioId = MaquinasUsuarios.usuario_id) INNER JOIN Maquinas ON MaquinasUsuarios.maquina_id = Maquinas.maquinaId) WHERE Maquinas.maquinaId = ?;', [id]);
+    res.render('machines/edit', {machine: machine[0], users:users, selectedUsers:selectedUsers});
 });
 
 router.post('/edit/:id', async (req, res)=>{
     const {id} = req.params;
-    const machine = req.body;
+    const resBody = req.body;
+    const selects = req.body.allowedUser; 
     const newMachine = {
-        numSerie: machine.serialnumber,
-        marca: machine.brand,
-        nombre: machine.name,
-        tipoCabezal: machine.headtype,
-        numCabezales: machine.headnum,
-        velocidad: machine.speed,
-        tipoTinta: machine.inktype,
-        conTecnico: machine.techcontact,
-        conTecnicoExt: machine.extension,
-        activo: machine.status
+        numSerie: resBody.serialnumber,
+        marca: resBody.brand,
+        nombre: resBody.name,
+        tipoCabezal: resBody.headtype,
+        numCabezales: resBody.headnum,
+        velocidad: resBody.speed,
+        tipoTinta: resBody.inktype,
+        conTecnico: resBody.techcontact,
+        conTecnicoExt: resBody.extension,
+        activo: resBody.status
     };
     await pool.query('UPDATE Maquinas SET ? WHERE maquinaId = ?', [newMachine, id]);
-    //req.flash('success', 'Máquina editada correctamente');
-    //req.flash('modal', 'Máquina editada correctamente');
-    //req.flash('modal_id', id);
-
-    req.flash('toast', 'Máquina editada correctamente');
-    req.flash('toast_id', id);
-
+    await pool.query('DELETE FROM MaquinasUsuarios WHERE maquina_id = ?', [id]);
+    let machineUsers = [];
+    if (selects !== undefined){
+        for(let i in selects){
+            machineUsers.push([Number(selects[i]), id]);
+        };
+        await pool.query('INSERT INTO MaquinasUsuarios (usuario_id, maquina_id) VALUES ?', [machineUsers]);
+    }
+    req.flash('success', 'La máquina <b>'+newMachine.nombre+'</b> ha sido editada correctamente');
     res.redirect('/machines');
 });
 

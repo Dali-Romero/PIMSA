@@ -18,9 +18,9 @@
         </div>
     </div>
 </div>
-<div class="row px-4 pt-0">
+<div class="row px-4 pt-0 pb-4">
     <div class="table-responsive-xxl p-0">
-        <table class="table table-striped" id="machines-table">
+        <table class="table table-striped align-middle" id="machines-table">
             <thead>
                 <tr>
                     <th scope="col">No. Serie</th>
@@ -39,45 +39,82 @@
                 {{#each machines}}
                     <tr>
                         <th scope="row">{{numSerie}}</th>
-                        <td>{{marca}}</th>
-                        <td>{{nombre}}</th>
-                        <th>{{tipoCabezal}}</th>
-                        <th>{{numCabezales}}</th>
-                        <th>{{velocidad}}</th>
-                        <th>{{tipoTinta}}</th>
-                        <th>{{conTecnicoExt}}-{{conTecnico}}</th>
+                        <td>{{marca}}</td>
+                        <td>{{nombre}}</td>
+                        <td>{{tipoCabezal}}</td>
+                        <td>{{numCabezales}}</td>
+                        <td>{{velocidad}}</td>
+                        <td>{{tipoTinta}}</td>
+                        <td>{{conTecnicoExt}}-{{conTecnico}}</td>
                         {{#if activo}}
-                            <th class="text-success">Activa</th>
+                            <td class="text-success">Activa</td>
                         {{else}}
-                            <th class="text-danger">Inactiva</th>
+                            <td class="text-danger">Inactiva</td>
                         {{/if}}
-                        <th><a href="/machines/edit/{{maquinaId}}" class="btn btn-sm btn-secondary"><i class="bi bi-pencil-square"></i> Editar</a></th>
+                        <td>
+                            <div class="row g-0">
+                                <div class="col-md-6">
+                                    <button class="btn btn-sm btn-outline-primary" id="btnExpandUsers" value="{{maquinaId}}" type="button" aria-expanded="false"><i class="bi bi-person-fill-gear"></i></button>
+                                </div>
+                                <div class="col-md-6">
+                                    <a href="/machines/edit/{{maquinaId}}" class="btn btn-sm btn-secondary"><i class="bi bi-pencil-square"></i></a>
+                                </div>
+                            </div>
+                        </td>
                     </tr>
                 {{else}}
                     <tr>
-                        <th colspan="10">No existen máquinas registradas</th>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td colspan="10">No existen máquinas registradas</td>
                     </tr>
                 {{/each}}
             </tbody>
         </table>
     </div>
 </div>
-
-<script>
-    var table = new DataTable('#machines-table', {
-        paging: false,
-        info: false,
-        padding: false,
-        order: [],
-        dom: '<"float-start pb-2"f><"button-add-machines pb-2"B>', 
-        columnDefs: [
-            {className: "dt-center", targets: "_all"}
-        ],
-        fnInitComplete: function(){
-            $('div.button-add-machines').html('<a href="/machines/add" class="btn btn-outline-success border-success border-2 float-end" role="button"><i class="bi bi-patch-plus-fill"></i> Añadir máquina</a>');
-        },
-        language:{
-            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-MX.json',
-        },
-    })
+<script type="text/x-handlebars-template" id="machines-users-expand">
+    <div class="row p-2">
+        \{{#each users}}
+            <div class="col-md-3 col-4 gy-2">
+                <div class="card">
+                    <div class="row g-0">
+                        <div class="col-3 position-relative">
+                            <i class="bi bi-person-fill-gear position-absolute top-50 start-50 translate-middle" style="font-size: 4em;"></i>
+                        </div>
+                        <div class="col-9">
+                            <div class="card-body px-3">
+                                <p class="card-text fw-bold">\{{Empleado}}</p>
+                                <div class="row justify-content-start">
+                                    <div class="col-md-6">
+                                        <p class="card-text"><small class="text-body-secondary">\{{Area}}</small></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="card-text"><small class="text-body-secondary">\{{Rol}}</small></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        \{{else}}
+            <div class="col-md-12 col-12 gy-2">
+                <div class="card">
+                    <div class="card-body px-3 text-center">
+                        <div class="card-text">
+                            <p class="card-text">No hay usuarios autorizados para utilizar esta máquina</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        \{{/each}}
+    </div>
 </script>

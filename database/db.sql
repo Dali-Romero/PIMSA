@@ -17,9 +17,13 @@ CREATE TABLE Usuarios(
     correoElec VARCHAR(40) NOT NULL,
     contrasena VARCHAR(60) NOT NULL,
     empleado_id INT, -- llave foranea
-    rol_id INT, -- llave foranea
+    rol_id INT, -- llave foranea (posiblemente eliminar)
     PRIMARY KEY(usuarioId)
 );
+
+-- posible eliminacion del rol_id
+ALTER TABLE Usuarios
+DROP COLUMN rol_id;
 
 CREATE TABLE Empleados(
     empleadoId INT NOT NULL AUTO_INCREMENT,
@@ -183,8 +187,13 @@ CREATE TABLE Tareas(
 CREATE TABLE Grupos(
     grupoId INT NOT NULL AUTO_INCREMENT,
     nombre VARCHAR(20) NOT NULL,
+    -- descripcion VARCHAR(25) NOT NULL, (pendiente de revisar)
     PRIMARY KEY(grupoId)
 );
+
+-- posible agregacion de la columna descripcion
+ALTER TABLE Grupos
+ADD descripcion VARCHAR(25) NOT NULL;
 
 CREATE TABLE Cotizaciones(
     cotId INT NOT NULL AUTO_INCREMENT,

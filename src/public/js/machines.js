@@ -1,87 +1,179 @@
-function search(){
-    const sourceMachinesList = document.getElementById('machines-template').innerHTML;
-    const sourceMachinesTotal = document.getElementById('machines-total-template').innerHTML;
-    const templateMachinesList = Handlebars.compile(sourceMachinesList);
-    const templateMachinesTotal = Handlebars.compile(sourceMachinesTotal);
-    document.getElementById('machine-search-bar').addEventListener('keyup', async function(){
-        const selectMachineSearch = document.getElementById('machine-search-field').value;
-        document.getElementById('table-orderby').innerHTML = 'Todas';
-        const key = this.value;
-        const response = await fetch('/machines/search', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({keys: key, fieldSearch: selectMachineSearch})
-        });
-        if (!response.ok){
-            throw new Error('HTTP error. Status: ', response.status)
-        }
-        const searchResult = await response.json();
-        let activas = 0
-        let inactivas = 0
-        for(let i in searchResult){
-            for(let j in searchResult[i]){
-                if (searchResult[i][j].activo){
-                    activas++;
-                }else{
-                    inactivas++;
-                }
-            }
-        }
-        const contextMachinesList = {
-            machines: searchResult
+function validarForm(form){
+    let validated = false;
+    form.on('submit', (event)=>{
+        // Validacion del numero de serie
+        const serialNumberInput = $('#serialnumber');
+        serialNumberInput.removeClass('border-dark');
+        if (serialNumberInput.val().length == 0) {
+            serialNumberInput.removeClass('is-valid');
+            serialNumberInput.addClass('is-invalid');
+            $('#invalid-feedback-serialnumber').text('Por favor, agregue un número de serie');
+        }else{
+            serialNumberInput.removeClass('is-invalid');
+            serialNumberInput.addClass('is-valid');
         };
-        const contextMachinesTotal = {
-            activas: activas,
-            inactivas: inactivas
+        
+        // Validacion de la marca
+        const brandInput = $('#brand');
+        brandInput.removeClass('border-dark');
+        if (brandInput.val().length == 0) {
+            brandInput.removeClass('is-valid');
+            brandInput.addClass('is-invalid');
+            $('#invalid-feedback-brand').text('Por favor, agregue una marca');
+        }else{
+            brandInput.removeClass('is-invalid');
+            brandInput.addClass('is-valid');
+        };
+
+        // Validacion del nombre
+        const nameInput = $('#name');
+        nameInput.removeClass('border-dark');
+        if (nameInput.val().length == 0) {
+            nameInput.removeClass('is-valid');
+            nameInput.addClass('is-invalid');
+            $('#invalid-feedback-name').text('Por favor, agregue un nombre');
+        }else{
+            nameInput.removeClass('is-invalid');
+            nameInput.addClass('is-valid');
+        };
+
+        // Validacion del tipo de cabezal
+        const headTypeInput = $('#headtype');
+        headTypeInput.removeClass('border-dark');
+        headTypeInput.addClass('is-valid');
+
+        // Validacion del numero de cabezales
+        const headNumInput = $('#headnum');
+        headNumInput.removeClass('border-dark');
+        if (headNumInput.val().length == 0) {
+            headNumInput.removeClass('is-valid');
+            headNumInput.addClass('is-invalid');
+            $('#invalid-feedback-headnum').text('Por favor, agregue un número de cabezales.');
+        }else{
+            if (headNumInput.val() >0 && headNumInput.val()<11){
+                headNumInput.removeClass('is-invalid');
+                headNumInput.addClass('is-valid');
+            }else{
+                headNumInput.removeClass('is-valid');
+                headNumInput.addClass('is-invalid');
+                $('#invalid-feedback-headnum').text('El número de cabezales debe ser mayor a 0 y menor a 11.');
+            }
+        };
+
+        // Validacion de la velocidad
+        const speedInput = $('#speed');
+        speedInput.removeClass('border-dark');
+        if (speedInput.val().length == 0) {
+            speedInput.removeClass('is-valid');
+            speedInput.addClass('is-invalid');
+            $('#invalid-feedback-speed').text('Por favor, agregue una velocidad.');
+        }else{
+            if (speedInput.val() >0){
+                speedInput.removeClass('is-invalid');
+                speedInput.addClass('is-valid');
+            }else{
+                speedInput.removeClass('is-valid');
+                speedInput.addClass('is-invalid');
+                $('#invalid-feedback-speed').text('La velocidad debe ser mayor a 0.');
+            }
+        };
+
+        // Velocidad del tipo de tinta
+        const inkTypeInput = $('#inktype');
+        inkTypeInput.removeClass('border-dark');
+        inkTypeInput.addClass('is-valid');
+
+        // Validacion de la extension del contacto del tecnico
+        const extensionInput = $('#extension');
+        extensionInput.removeClass('border-dark');
+        extensionInput.addClass('is-valid');
+
+        // Validacion del numero telefonico del tecnico
+        const techContactInput = $('#techcontact')
+        techContactInput.removeClass('border-dark');
+        if (techContactInput.val().length === 0) {
+            techContactInput.removeClass('is-valid');
+            techContactInput.addClass('is-invalid');
+            $('#invalid-feedback-techcontact').text('Por favor, agregue un número de contacto para el técnico');
+        }else{
+            if(techContactInput.val().length !== 10){
+                techContactInput.removeClass('is-valid');
+                techContactInput.addClass('is-invalid');
+                $('#invalid-feedback-techcontact').text('El número de contacto debe tener 10 dígitos');
+            }else{
+                techContactInput.removeClass('is-invalid');
+                techContactInput.addClass('is-valid');
+            }
+        };
+
+        // Comprobacion de las validaciones
+        const nonvalidatedFields = $('.is-invalid');
+        if (nonvalidatedFields.length === 0){
+            validated = true;
         }
-        const htmlMachinesList = templateMachinesList(contextMachinesList.machines);
-        const htmlMachinesTotal = templateMachinesTotal(contextMachinesTotal);
-        document.getElementById('table-machines').innerHTML = htmlMachinesList;
-        document.getElementById('machines-total').innerHTML = htmlMachinesTotal;
+
+        // En caso de no estar validado no se envia
+        if (!validated){
+            event.preventDefault()
+            event.stopPropagation()
+        }
     });
 }
 
-async function ordering(order, field, spanOrder){
-    const source = document.getElementById('machines-template').innerHTML;
-    const template = Handlebars.compile(source);
-    const response = await fetch('/machines/orderby', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({field: field, order: order})
+$(document).ready(function(){
+    var table = new DataTable('#machines-table', {
+        paging: false,
+        info: false,
+        padding: false,
+        order: [],
+        dom: '<"float-start pb-2"f><"button-add-machines pb-2"B>', 
+        columnDefs: [
+            {className: "dt-center", targets: "_all"},
+        ],
+        fnInitComplete: function(){
+            $('div.button-add-machines').html('<a href="/machines/add" class="btn btn-outline-success border-success border-2 float-end" role="button"><i class="bi bi-patch-plus-fill"></i> Añadir máquina</a>');
+        },
+        language:{
+            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-MX.json',
+        },
     });
-    if (!response.ok){
-        throw new Error('HTTP error. Status: ', response.status)
-    }
-    const sortResult = await response.json();
-    const context = {
-        machines: sortResult
-    };
-    const html = template(context.machines);
-    document.getElementById('table-orderby').innerHTML = spanOrder;
-    document.getElementById('table-machines').innerHTML = html;
-}
+    
+    $('#machines-table tbody').on('click', '#btnExpandUsers', function () {
+        const tr = $(this).closest('tr');
+        const row = table.row(tr);
+        const idMachine = $(this).val();
+        if (row.child.isShown()) {
+            row.child.hide();
+        }else {
+            $.ajax({
+                type: 'POST',
+                url: '/machines/listUsers',
+                headers: {'Content-Type': 'application/json'},
+                data: JSON.stringify({idMachine: idMachine}),
+                success: function(data){
+                    const sourceUsers = $('#machines-users-expand').html();
+                    const templateUsers = Handlebars.compile(sourceUsers);
+                    const contextUsers = {
+                        users: data
+                    };
+                    const htmlUsers = templateUsers(contextUsers.users);
+                    row.child(htmlUsers).show();
+                    const table_users = new DataTable('#users-table', {
+                        retrieve: true,
+                        paging: false,
+                        info: false,
+                        searching: false,
+                        padding: false,
+                        order: [], 
+                        language:{
+                            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-MX.json',
+                        },
+                    });
+                }
+            });
+        }
+    });
 
-function filters(){
-    document.getElementById('machine-order-all').addEventListener('click', function(){ordering('todas', 'todas', 'Todas')});
-    document.getElementById('machine-order-serialNumber-asc').addEventListener('click', function(){ordering('ASC', 'numSerie', 'No. Serie (A a la Z)')});
-    document.getElementById('machine-order-serialNumber-desc').addEventListener('click', function(){ordering('DESC', 'numSerie', 'No. Serie (Z a la A)')});
-    document.getElementById('machine-order-brand-asc').addEventListener('click', function(){ordering('ASC', 'marca', 'Marca (A a la Z)')});
-    document.getElementById('machine-order-brand-desc').addEventListener('click', function(){ordering('DESC', 'marca', 'Marca (Z a la A)')});
-    document.getElementById('machine-order-name-asc').addEventListener('click', function(){ordering('ASC', 'nombre', 'Nombre (A a la Z)')});
-    document.getElementById('machine-order-name-desc').addEventListener('click', function(){ordering('DESC', 'nombre', 'Nombre (Z a la A)')});
-    document.getElementById('machine-order-headType-asc').addEventListener('click', function(){ordering('ASC', 'tipoCabezal', 'Tipo cabezal (A a la Z)')});
-    document.getElementById('machine-order-headType-desc').addEventListener('click', function(){ordering('DESC', 'tipoCabezal', 'Tipo cabezal (Z a la A)')});
-    document.getElementById('machine-order-headNum-asc').addEventListener('click', function(){ordering('ASC', 'numCabezales', 'No. Cabezales (Menor a mayor)')});
-    document.getElementById('machine-order-headNum-desc').addEventListener('click', function(){ordering('DESC', 'numCabezales', 'No. Cabezales (Mayor a menor)')});
-    document.getElementById('machine-order-speed-asc').addEventListener('click', function(){ordering('ASC', 'velocidad', 'Velocidad (Lento a rápido)')});
-    document.getElementById('machine-order-speed-desc').addEventListener('click', function(){ordering('DESC', 'velocidad', 'Velocidad (Rápido a lento)')});
-    document.getElementById('machine-order-inkType-asc').addEventListener('click', function(){ordering('ASC', 'tipoTinta', 'Tipo tinta (A a la Z)')});
-    document.getElementById('machine-order-inkType-desc').addEventListener('click', function(){ordering('DESC', 'tipoTinta', 'Tipo tinta (Z a la A)')});
-    document.getElementById('machine-order-status-asc').addEventListener('click', function(){ordering('activa', 'activa', 'Estatus (Solo activas)')});
-    document.getElementById('machine-order-status-desc').addEventListener('click', function(){ordering('inactiva', 'inactiva', 'Estatus (Solo inactivas)')});
-}
-
-document.addEventListener('DOMContentLoaded', function(){
-    search();
-    filters();
+    validarForm($('#form-add-machine'));
+    validarForm($('#form-edit-machine'));
 });
