@@ -11,16 +11,10 @@ router.get('/', isLoggedIn, async (req, res) =>{
 
 router.post('/', isLoggedIn, async (req, res) =>{
     const {buscar, productSearchField} = req.body;
-    var products = [];
-    if (buscar == '' || buscar == null){
-        products = await pool.query('SELECT * FROM productos');
-    } else if (productSearchField == 'nombre'){
-        products = await pool.query('SELECT * FROM productos WHERE nombre = ?',[buscar]);
-    } else if (productSearchField == 'unidad'){
-        products = await pool.query('SELECT * FROM productos WHERE unidad = ?',[buscar]);
-    }
+    const products = await pool.query('SELECT * FROM productos');
+    const procesos = await pool.query('SELECT * FROM procesos');
     
-    res.render('../views/products/allProducts', {products}); 
+    res.render('../views/products/allProducts', {products, procesos}); 
 });
 
 router.get('/add', isLoggedIn, async (req, res) =>{
@@ -30,7 +24,10 @@ router.get('/add', isLoggedIn, async (req, res) =>{
 });
 
 router.post('/add', isLoggedIn, async (req, res) =>{
-    const product = req.body;
+    var product = req.body;
+    if (product.descuento == 0){
+        product.porcentaje = 0;
+    }
     const newProduct = {
         nombre: product.nombre,
         descripcion: product.descripcion,
@@ -60,7 +57,10 @@ router.get('/edit/:id', isLoggedIn, async (req, res) =>{
 
 router.post('/edit/:id', isLoggedIn, async (req, res) =>{
     const {id} = req.params;
-    const product = req.body;
+    var product = req.body;
+    if (product.descuento == 0){
+        product.porcentaje = 0;
+    }
     const editProduct = {
         nombre: product.nombre,
         descripcion: product.descripcion,

@@ -1,26 +1,17 @@
 <div class="container-fluid">
-    <div class="row align-items-center p-3" id="machine-title">
+    <div class="row p-3" id="machine-title">
         <h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-clipboard2"></i> productos</h1>
     </div>
-    <div class="row align-items-center py-4 gy-2 px-2">
-        <div class="col-md-6">
-        </div>
-        <div class="col-md-6">
-            <div class="btn-toolbar justify-content-between" role="toolbar">
-                <div class="btn-group me-3">
-                </div>
-                <div class="btn-group">
-                    <a href="/products/add" class="btn btn-outline-success border-success border-2" role="button"><i class="bi bi-clipboard2-plus"></i> Añadir producto</a>
-                </div>
+    <div class="row p-4">
+        <div class="row justify-content-between p-0 m-0" id="machine-add-title">
+            <div class="col-md-8 p-2">
+                <p class="fs-5 m-0">Productos registrados.</p>
             </div>
         </div>
     </div>
-    <div class="row align-items-center p-4 pt-0">
-        <p class="fs-5 p-2 m-0" id="machine-add-title">Productos registrados</p>
-    </div>
     <div class="row p-4 pt-0">
         <div class="table-responsive-xxl p-0">
-            <table class="table table-striped align-middle text-center" id="example">
+            <table class="table table-striped align-middle text-center" id="tabla_productos">
                 <thead>
                     <tr>
                         <th scope="col">Codigo</th>
@@ -42,7 +33,9 @@
                             <th>{{unidad}}</th>
                             <th>{{precio}}</th>
                             <th>{{porcentaje}}</th>
-                            <th>{{proceso_id}}</th>
+                            {{#each ../procesos}}
+                                {{#equal ../proceso_id procesoId}}<th>{{nombre}}</th>{{/equal}}
+                            {{/each}}
                             <th><a href="/products/edit/{{productoId}}" class="btn btn-sm btn-secondary"><i class="bi bi-pencil-square"></i> Editar</a></th>
                         </tr>
                     {{else}}
@@ -58,9 +51,20 @@
 
 
 <script>
-    var table = new DataTable('#example', {
-        language: {
+    var table = new DataTable('#tabla_productos', {
+        paging: false,
+        info: false,
+        padding: false,
+        order: [],
+        dom: '<"float-start pb-2"f><"button-add-machines pb-2"B>', 
+        columnDefs: [
+            {className: "dt-center", targets: "_all"}
+        ],
+        fnInitComplete: function(){
+            $('div.button-add-machines').html('<a href="/products/add" class="btn btn-outline-success border-success border-2 float-end" role="button"><i class="bi bi-clipboard2-plus"></i> Añadir producto</a>');
+        },
+        language:{
             url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-MX.json',
         },
-    });
+    })
 </script>
