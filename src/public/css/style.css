@@ -12,4 +12,21 @@
 
 #machine-add-title{
     background-color: #C3CDE6;
+
 }
+
+#table-users-add{
+    height: 175px; /*10.9375 rem*/
+}
+
+/*
+table.dataTable.stripe tbody tr.odd,
+table.dataTable.display tbody tr.odd {
+    background: #B0DAD7;
+}
+
+table.dataTable.stripe tbody tr.even,
+table.dataTable.display tbody tr.even {
+    background: red;
+}
+*/
