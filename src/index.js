@@ -41,12 +41,11 @@ app.use(flash());
 
 // Global variables
 app.use((req, res, next)=>{
-
+    res.locals.user = req.user;
+    res.locals.success = req.flash('success');
     res.locals.success_msg = req.flash('success_msg');
     res.locals.error_msg = req.flash('error_msg');
     res.locals.error = req.flash('error');
-    res.locals.user = req.user;
-    res.locals.success = req.flash('success');
     next();
 });
 
@@ -55,6 +54,8 @@ app.use((req, res, next)=>{
 app.use(require('./routes/index'));
 app.use(require('./routes/login'));
 app.use('/grupos/', require('./routes/grupos'));
+app.use('/machines', require('./routes/machines'));
+app.use('/products', require('./routes/products'));
 
 // Public
 app.use(express.static(path.join(__dirname, 'public')));

@@ -1,10 +1,33 @@
+:root{
+    --x: linear-gradient(270deg, rgba(132,131,146,1) 0%, rgba(156,37,66,1) 100%, rgba(254,254,250,1) 100%, rgba(255,255,255,1) 100%, rgba(2,0,36,1) 100%, rgba(0,212,255,1) 100%);
+    --y: linear-gradient(270deg, rgba(132,131,146,1) 0%, rgba(253,14,53,1) 100%);
+    --z: linear-gradient(270deg, rgba(132,131,146,1) 0%, rgba(237,10,63,1) 100%);
+    --a: linear-gradient(270deg, rgba(132,131,146,1) 0%, rgba(195,205,230,1) 100%);
+}
+
 #machine-title{
     color: white;
-    background-color: #9C2542;
+    background: var(--z);
 }
 
 #machine-add-title{
     background-color: #C3CDE6;
+
+}
+
+#table-users-add{
+    height: 175px; /*10.9375 rem*/
+}
+
+/*
+table.dataTable.stripe tbody tr.odd,
+table.dataTable.display tbody tr.odd {
+    background: #B0DAD7;
+}
+
+table.dataTable.stripe tbody tr.even,
+table.dataTable.display tbody tr.even {
+    background: red;
 }
 
 #group-title{
@@ -15,3 +38,4 @@
 #group-add-title{
     background-color: #C3CDE6;
 }
+
