@@ -29,4 +29,13 @@ table.dataTable.stripe tbody tr.even,
 table.dataTable.display tbody tr.even {
     background: red;
 }
-*/
+
+#group-title{
+    color: white;
+    background: var(--z);
+}
+
+#group-add-title{
+    background-color: #C3CDE6;
+}
+

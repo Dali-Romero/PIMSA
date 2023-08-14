@@ -53,6 +53,7 @@ app.use((req, res, next)=>{
 // Routes
 app.use(require('./routes/index'));
 app.use(require('./routes/login'));
+app.use('/grupos/', require('./routes/grupos'));
 app.use('/machines', require('./routes/machines'));
 app.use('/products', require('./routes/products'));
 
