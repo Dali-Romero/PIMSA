@@ -1,6 +1,5 @@
 const express = require('express');
 const pool = require('../database.js');
-const {isLoggedIn} = require('../lib/auth.js');
 
 const { isLoggedIn } = require('../lib/auth');
 
@@ -96,4 +95,4 @@ router.post('/edit/:id', isLoggedIn, async (req, res)=>{
     res.redirect('/machines');
 });
 
-module.exports = router;
+module.exports = router; 

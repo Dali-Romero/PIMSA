@@ -29,15 +29,12 @@
                         <td></td>
                         <td><a href="/grupos/editgroup/{{grupoId}}" class="btn btn-sm btn-secondary"><i class="bi bi-pencil-square"></i> Editar</a></td>
                     </tr>
-                {{else}}
-                    <tr>
-                        <th colspan="10">No existen gruupos registrados</th>
-                    </tr>
                 {{/each}}
             </tbody>
         </table>
     </div>
 </div>
+
 
 <script>
     var table = new DataTable('#groups_table', {

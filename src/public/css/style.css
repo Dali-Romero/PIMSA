@@ -19,7 +19,16 @@
     height: 175px; /*10.9375 rem*/
 }
 
-/*
+#group-title{
+    color: white;
+    background: var(--z);
+}
+
+#group-add-title{
+    background-color: #C3CDE6;
+}
+
+
 table.dataTable.stripe tbody tr.odd,
 table.dataTable.display tbody tr.odd {
     background: #B0DAD7;
@@ -30,12 +39,4 @@ table.dataTable.display tbody tr.even {
     background: red;
 }
 
-#group-title{
-    color: white;
-    background: var(--z);
-}
-
-#group-add-title{
-    background-color: #C3CDE6;
-}
 
