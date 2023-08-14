@@ -38,6 +38,17 @@
                             {{/each}}
                             <th><a href="/products/edit/{{productoId}}" class="btn btn-sm btn-secondary"><i class="bi bi-pencil-square"></i> Editar</a></th>
                         </tr>
+                    {{else}}
+                    <tr>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td colspan="10">No existen productos registrados.</td>
+                    </tr>
                     {{/each}}
                 </tbody>
             </table>

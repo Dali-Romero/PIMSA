@@ -187,7 +187,7 @@ CREATE TABLE Tareas(
 CREATE TABLE Grupos(
     grupoId INT NOT NULL AUTO_INCREMENT,
     nombre VARCHAR(20) NOT NULL,
-    -- descripcion VARCHAR(25) NOT NULL, (pendiente de revisar)
+    descripcion VARCHAR(30) NOT NULL,
     PRIMARY KEY(grupoId)
 );
 
@@ -267,6 +267,7 @@ CREATE TABLE Productos(
     unidad VARCHAR(10) NOT NULL,
     precio INT NOT NULL,
     aplicarDescuento BOOLEAN NOT NULL,
+    porcentaje VARCHAR(3) NOT NULL, 
     proceso_id INT, -- llave foranea
     PRIMARY KEY(productoId)
 );

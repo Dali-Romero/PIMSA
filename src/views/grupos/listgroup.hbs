@@ -29,6 +29,13 @@
                         <td></td>
                         <td><a href="/grupos/editgroup/{{grupoId}}" class="btn btn-sm btn-secondary"><i class="bi bi-pencil-square"></i> Editar</a></td>
                     </tr>
+                {{else}}
+                    <tr>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td colspan="10">No existen grupos registrados.</td>
+                    </tr>
                 {{/each}}
             </tbody>
         </table>
