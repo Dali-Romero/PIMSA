@@ -1,0 +1,103 @@
+<body style="background-color:gray;">
+    <nav class="navbar navbar-dark fixed-top" style="background-color: #000000;">
+        <div class="container-fluid mx-4">
+            <a class="navbar-start" href="#">
+                <button class="navbar-toggler"  style="background-color: #626363;" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" >
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <!--img src="Images/logo_pimsa.png" class="mx-2" alt="logo pimsa" width="275" height="50" -->
+            </a>
+            <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel" data-bs-backdrop="false">
+                <div class="offcanvas-header" style="background-color: #000000;">
+                    <img src="/img/PIMSAlogo.png" alt="logo pimsa" width="275" height="50">
+                    <!--h5 class="offcanvas-title" id="offcanvasNavbarLabel">Logo PIMSA</!--h5>-->
+                    <button type="button" class="btn-close bg-light"  data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <script>
+            </script>
+            <div class="offcanvas-body" style="background-color: #626363;">
+                <ul class="navbar-nav justify-content-end flex-grow-1 pe-10">
+                    <li class="nav-item">
+                        <a class="nav-link active text-light" aria-current="page" href="/panel"><i class="fa fa-bank"></i> Panel</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active text-light" aria-current="page" href="/tareas"><i class="fa fa-book"></i> Tareas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active text-light" aria-current="page" href="/monitor"><i class="fa fa-desktop"></i> Monitor</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active text-light" aria-current="page" href="/cotizaciones"><i class="fa fa-edit"></i> Cotizador</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active text-light" aria-current="page" href="/ordycot"><i class="fa fa-server"></i> Órdenes y Cotizaciones</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active text-light" aria-current="page" href="/cobranza"><i class="fa fa-dollar"></i> Cobranza</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active text-light" aria-current="page" href="/productos"><i class="fa fa-cart-plus"></i> Productos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active text-light" aria-current="page" href="/machines"><i class="fa fa-print"></i> Máquinas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active text-light" aria-current="page" href="/procesos"><i class="fa fa-cogs"></i> Procesos</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-light" href="#" id="offcanvasNavbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-user"></i>
+                        Clientes
+                        </a>
+                    <ul class="dropdown-menu bg-light"  aria-labelledby="offcanvasNavbarDropdown">
+                    <li><a class="dropdown-item text-dark" href="/clientes/cli">Clientes</a></li>
+                    <li><a class="dropdown-item text-dark" href="/clientes/grupos">Grupos</a></li>
+                    </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active text-light" aria-current="page" href="/empleados"><i class="fa fa-users"></i> Empleados</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active text-light" aria-current="page" href="/reportes"><i class="fa fa-line-chart"></i> Reportes</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-light" href="#" id="offcanvasNavbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-street-view"></i>
+                        Usuarios
+                        </a>
+                    <ul class="dropdown-menu" aria-labelledby="offcanvasNavbarDropdown">
+                    <li><a class="dropdown-item text-dark" href="/usuarios/usrs">Usuarios</a></li>
+                    <li><a class="dropdown-item text-dark" href="/usuarios/rol">Rol</a></li>
+                    <li><a class="dropdown-item text-dark" href="/usuarios">Área</a></li>
+                    </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active text-light" aria-current="page" href="/logout"><i class="fa fa-power-off"></i> Cerrar sesión</a>
+                    </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="class conteiner-mt-5">
+
+    </div>
+    <footer class="footer" style="background-color:ghostwhite; position: absolute; bottom: 0; width: 100%;">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="datewidget">
+                <script>
+                    const dateWidget = document.querySelector('.datewidget');
+                    const fechaActual = new Date();
+                    const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+                    const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+                    const diaSemana = diasSemana[fechaActual.getDay()];
+                    const dia = fechaActual.getDate();
+                    const mes = meses[fechaActual.getMonth()];
+                    const año = fechaActual.getFullYear();
+                    const fechaCompleta = `${diaSemana} ${dia} de ${mes} del ${año}`;
+                    dateWidget.textContent = fechaCompleta;
+                </script>
+            </div>
+            <img style="display: block; margin: 0 auto;" class="centered-image" src="/img/PIMSAlogo.png" alt="logo pimsa" width="120" height="30">
+            <h9 style="margin: 0;">Proyecto desarrollado por DKM</h9>
+        </div>
+    </footer>
+</body>

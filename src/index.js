@@ -53,7 +53,7 @@ app.use((req, res, next)=>{
 // Routes
 app.use(require('./routes/index'));
 app.use(require('./routes/login'));
-app.use('/machines', require('./routes/machines.js'));
+app.use('/machines', require('./routes/machines'));
 
 // Public
 app.use(express.static(path.join(__dirname, 'public')));
