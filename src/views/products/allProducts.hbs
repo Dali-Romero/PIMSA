@@ -1,0 +1,70 @@
+<div class="container-fluid">
+    <div class="row p-3" id="machine-title">
+        <h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-clipboard2"></i> productos</h1>
+    </div>
+    <div class="row p-4">
+        <div class="row justify-content-between p-0 m-0" id="machine-add-title">
+            <div class="col-md-8 p-2">
+                <p class="fs-5 m-0">Productos registrados.</p>
+            </div>
+        </div>
+    </div>
+    <div class="row p-4 pt-0">
+        <div class="table-responsive-xxl p-0">
+            <table class="table table-striped align-middle text-center" id="tabla_productos">
+                <thead>
+                    <tr>
+                        <th scope="col">Codigo</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Detalles</th>
+                        <th scope="col">Unidad de Medida</th>
+                        <th scope="col">Precio</th>
+                        <th scope="col">Descuento</th>
+                        <th scope="col">Proceso</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                    {{#each products}}
+                        <tr>
+                            <th scope="row">P-{{productoId}}</th>
+                            <th>{{nombre}}</th>
+                            <th>{{descripcion}}</th>
+                            <th>{{unidad}}</th>
+                            <th>{{precio}}</th>
+                            <th>{{porcentaje}}</th>
+                            {{#each ../procesos}}
+                                {{#equal ../proceso_id procesoId}}<th>{{nombre}}</th>{{/equal}}
+                            {{/each}}
+                            <th><a href="/products/edit/{{productoId}}" class="btn btn-sm btn-secondary"><i class="bi bi-pencil-square"></i> Editar</a></th>
+                        </tr>
+                    {{else}}
+                        <tr>
+                            <th colspan="10">No existen productos registrados...</th>
+                        </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    var table = new DataTable('#tabla_productos', {
+        paging: false,
+        info: false,
+        padding: false,
+        order: [],
+        dom: '<"float-start pb-2"f><"button-add-machines pb-2"B>', 
+        columnDefs: [
+            {className: "dt-center", targets: "_all"}
+        ],
+        fnInitComplete: function(){
+            $('div.button-add-machines').html('<a href="/products/add" class="btn btn-outline-success border-success border-2 float-end" role="button"><i class="bi bi-clipboard2-plus"></i> Añadir producto</a>');
+        },
+        language:{
+            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-MX.json',
+        },
+    })
+</script>

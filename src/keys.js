@@ -1,8 +1,8 @@
 module.exports = {
     database: {
         host: 'localhost',
-        user: 'root',
-        password: 'hagantyr',
+        user: 'XDB',
+        password: '1029384756xdb',
         database: 'pimsa_db_prueba'
     }
 }
