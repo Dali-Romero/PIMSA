@@ -5,6 +5,10 @@
     --a: linear-gradient(270deg, rgba(132,131,146,1) 0%, rgba(195,205,230,1) 100%);
 }
 
+body{
+    font-family: 'Open Sans', sans-serif;
+}
+
 #machine-title{
     color: white;
     background: var(--z);
