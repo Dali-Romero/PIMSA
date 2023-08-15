@@ -11,13 +11,14 @@
                 <div class="mb-3">
                     <div class="input-group">
                         <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-at"></i></span>
-                        <input type="text" class="form-control border-dark border-2" name="correo" placeholder="Correo" autofocus {{#if correo}} value={{correo}} {{/if}}>
+                        <input type="text" class="form-control border-dark border-2" name="correo" placeholder="Correo" autofocus>
                     </div>
                 </div>
                 <div class="mb-3">
                     <div class="input-group">
                         <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-key"></i></span>
-                        <input type="password" class="form-control border-dark border-2" name="password" placeholder="Contraseña" {{#if password}} value={{password}} {{/if}}>
+                        <input type="password" class="form-control border-dark border-2" name="password" placeholder="Contraseña" id="password">
+                        <button class="btn btn-class-primary border-dark border-2" type="button" onclick="mostrarContrasena()"><i class="bi bi-eye-slash-fill" id="showPass"></i></button>
                     </div>
                 </div>
                 <div class="d-grid gap-2 col-6 mx-auto">
@@ -29,3 +30,17 @@
         </div>
     </div>
 </div>
+
+<script>
+    function mostrarContrasena(){
+        var tipo = document.getElementById("password");
+        var im = document.getElementById("showPass");
+        im.classList.toggle("bi-eye-fill");
+        im.classList.toggle("bi-eye-slash-fill");
+        if(tipo.type == "password"){
+            tipo.type = "text";
+        }else{
+            tipo.type = "password";
+        }
+    }
+</script>

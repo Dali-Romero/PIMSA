@@ -1,0 +1,114 @@
+<div class="row align-items-center p-3" id="machine-title">
+    <a href="/users" style="color: white; text-decoration: none;"><h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-person-fill-add"></i> Usuarios</h1></a>
+</div>
+<div class="row align-items-center p-4">
+    <p class="fs-5 p-2 m-0" id="machine-add-title">Registrar usuario.</p>
+</div>
+<div class="row px-3">
+    <form action="/users/add" method="post">
+        <div class="row mb-4 gy-4 justify-content-md-between">
+            <div class="col-md-4">
+                <label for="nombreUsuario" class="form-label">Nombre:</label>
+                <div class="input-group">
+                    <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-person-fill"></i></span>
+                    <input type="text" name="nombre" id="nombre" class="form-control border-dark border-2" aria-describedby="basic-addon1" autofocus>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label for="correoElectronico" class="form-label">Correo electronico:</label>
+                <div class="input-group">
+                    <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-at"></i></span>
+                    <input type="text" name="correo" id="correo" class="form-control border-dark border-2" aria-describedby="basic-addon1">
+                </div>
+            </div>
+        </div>
+        <div class="row mb-4 gy-4 justify-content-md-between">
+            <div class="col-md-4">
+                <label for="apellido" class="form-label">Apellido:</label>
+                <div class="input-group">
+                    <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-person-fill"></i></span>
+                    <input type="text" name="apellido" id="apellido" class="form-control border-dark border-2" aria-describedby="basic-addon1">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label for="pass" class="form-label">Contraseña:</label>
+                <div class="input-group">
+                    <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-key-fill"></i></span>
+                    <input type="password" name="pass" id="pass" class="form-control border-dark border-2" aria-describedby="basic-addon1">
+                    <button class="btn btn-class-primary border-dark border-2" type="button" onclick="mostrarContrasena()"><i class="bi bi-eye-slash-fill" id="showPass"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-4 gy-4 justify-content-md-between"> 
+            <div class="col-md-4">
+                <label for="rol" class="form-label">Rol:</label><br>
+                <!--
+                Aqui va la tabla de rol
+                -->
+            </div>
+            <div class="col-md-4">
+                <label for="confirmPass" class="form-label">Confirmar contraseña:</label>
+                <div class="input-group">
+                    <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-key-fill"></i></span>
+                    <input type="password" name="confirmPass" id="confirmPass" class="form-control border-dark border-2" aria-describedby="basic-addon1">
+                    <button class="btn btn-class-primary border-dark border-2" type="button" onclick="mostrarConfirmarContrasena()"><i class="bi bi-eye-slash-fill" id="showConfirmPass"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-4 gy-4 justify-content-md-between">
+            <div class="col-md-4">
+                <label for="status" class="form-label">Estatus:</label>
+                <div class="row row-cols-2 justify-content-md-start">
+                    <div class="col-md-4 d-grid">
+                        <input type="radio" name="status" id="statusop1" class="btn-check" value="1" autocomplete="off" checked>
+                        <label for="statusop1" class="btn btn-outline-success border-success border-2">Activo</label>
+                    </div>
+                    <div class="col-md-4 d-grid">
+                        <input type="radio" name="status" id="statusop2" class="btn-check" value="0" autocomplete="off">
+                        <label for="statusop2" class="btn btn-outline-danger border-danger border-2">Inactivo</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label for="empleado" class="form-label">Usuario conectado al Empleado:</label>
+                <!--
+                    Aqui van los usuarios
+                    -->
+            </div>
+        </div>
+        <div class="row mb-4 gy-4 justify-content-md-between">
+            <div class="col-md-4">
+                <br>
+                <button class="btn btn-success me-4" type="submit">Registrar usuario</button>
+                <button class="btn btn-danger" type="reset">Limpiar campos</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    function mostrarContrasena(){
+        var tipo = document.getElementById("pass");
+        var im = document.getElementById("showPass");
+        im.classList.toggle("bi-eye-fill");
+        im.classList.toggle("bi-eye-slash-fill");
+        if(tipo.type == "password"){
+            tipo.type = "text";
+        }else{
+            tipo.type = "password";
+        }
+    }
+
+    function mostrarConfirmarContrasena(){
+        var tipo = document.getElementById("confirmPass");
+        var im = document.getElementById("showConfirmPass");
+        im.classList.toggle("bi-eye-fill");
+        im.classList.toggle("bi-eye-slash-fill");
+        if(tipo.type == "password"){
+            tipo.type = "text";
+        }else{
+            tipo.type = "password";
+        }
+    }
+
+</script>

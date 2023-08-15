@@ -9,7 +9,7 @@ passport.use('local.login', new localStrategy({
     passwordField: 'password',
     passReqToCallback: true
 }, async (req, correo, password, done) => {
-    const rows = await pool.query('SELECT * FROM usuarios WHERE correoElec = ?', [correo]);
+    const rows = await pool.query('SELECT * FROM usuarios WHERE correoElec = ? AND activo == 1', [correo]);
     if (rows.length > 0){
         const user = rows[0];
         const validPass = await helpers.matchPassword(password, user.contrasena);
@@ -19,7 +19,7 @@ passport.use('local.login', new localStrategy({
             done(null, false, req.flash('error_msg', 'Contraseña incorrecta...'));
         }
     } else{
-        done(null, null, req.flash('error_msg', 'El usuario no existe...'));
+        done(null, null, req.flash('error', 'El usuario no existe o no esta activo'));
     }
 }));
 
