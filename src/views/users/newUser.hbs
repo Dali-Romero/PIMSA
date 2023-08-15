@@ -42,9 +42,14 @@
         <div class="row mb-4 gy-4 justify-content-md-between"> 
             <div class="col-md-4">
                 <label for="rol" class="form-label">Rol:</label><br>
-                <!--
-                Aqui va la tabla de rol
-                -->
+                <div class="input-group">
+                    <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-person-rolodex"></i></span>
+                    <select name="rol" id="rol" class="form-select border-dark border-2">   
+                        {{#each roles}}
+                            <option value={{rolId}}>{{nombre}}</option>
+                        {{/each}}
+                    </select>
+                </div>
             </div>
             <div class="col-md-4">
                 <label for="confirmPass" class="form-label">Confirmar contraseña:</label>
@@ -71,9 +76,14 @@
             </div>
             <div class="col-md-4">
                 <label for="empleado" class="form-label">Usuario conectado al Empleado:</label>
-                <!--
-                    Aqui van los usuarios
-                    -->
+                <div class="input-group">
+                    <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-file-person-fill"></i></span>
+                    <select name="empleado" id="empleado" class="form-select border-dark border-2">   
+                        {{#each empleados}}
+                            <option value={{empleadoId}}>{{nombreComp}}</option>
+                        {{/each}}
+                    </select>
+                </div>
             </div>
         </div>
         <div class="row mb-4 gy-4 justify-content-md-between">
