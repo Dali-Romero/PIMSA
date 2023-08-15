@@ -9,7 +9,16 @@ router.get('/', isLoggedIn, async (req, res) =>{
     const users = await pool.query('SELECT * FROM usuarios');
     const roles = await pool.query('SELECT * FROM roles');
     const empleados = await pool.query('SELECT * FROM empleados');
-    res.render('../views/users/allUsers', {users, roles, empleados});
+    let activos = 0
+    let inactivos = 0
+    for(let i in users){
+        if (users[i].activo){
+            activos++;
+        }else{
+            inactivos++;
+        }
+    }
+    res.render('../views/users/allUsers', {users, roles, empleados, activos, inactivos});
 });
 
 router.get('/add', isLoggedIn, async (req, res) =>{

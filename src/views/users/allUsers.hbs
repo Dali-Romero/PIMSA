@@ -7,6 +7,16 @@
             <div class="col-md-8 p-2">
                 <p class="fs-5 m-0">Usuarios registrados.</p>
             </div>
+            <div class="col-md-4 p-2">
+                <div class="row justify-content-md-end" id="machines-total">
+                    <div class="col-4">
+                        <p class="fs-5 m-0 text-success">Activos: {{activos}}</p>
+                    </div>
+                    <div class="col-4">
+                        <p class="fs-5 m-0 text-danger">Inactivos: {{inactivos}}</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div class="row p-4 pt-0">
@@ -14,19 +24,20 @@
             <table class="table table-striped align-middle text-center" id="tabla_usuarios">
                 <thead>
                     <tr>
-                        <th scope="col">Id</th>
                         <th scope="col">Nombre</th>
+                        <th scope="col">Apellido</th>
                         <th scope="col">Correo</th>
                         <th scope="col">Rol</th>
                         <th scope="col">Empleado</th>
+                        <th scope="col">Estatus</th>
                         <th scope="col"></th>
                     </tr>
                 </thead>
                 <tbody class="table-group-divider">
                     {{#each users}}
                         <tr>
-                            <th scope="row">U-{{usuarioId}}</th>
-                            <th>{{nombre}} {{apellido}}</th>
+                            <th>{{nombre}}</th>
+                            <th>{{apellido}}</th>
                             <th>{{correoElec}}</th>
                             {{#each ../roles}}
                                 {{#equal ../rol_id rolId}}<th>{{nombre}}</th>{{/equal}}
@@ -34,10 +45,16 @@
                             {{#each ../empleados}}
                                 {{#equal ../empleado_id empleadoId}}<th>{{nombreComp}}</th>{{/equal}}
                             {{/each}}
+                            {{#if activo}}
+                                <td class="text-success">Activo</td>
+                            {{else}}
+                                <td class="text-danger">Inactivo</td>
+                            {{/if}}
                             <th><a href="/users/edit/{{usuarioId}}" class="btn btn-sm btn-secondary"><i class="bi bi-pencil-square"></i> Editar</a></th>
                         </tr>
                     {{else}}
                     <tr>
+                        <td class="d-none"></td>
                         <td class="d-none"></td>
                         <td class="d-none"></td>
                         <td class="d-none"></td>
