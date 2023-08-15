@@ -9,14 +9,14 @@ passport.use('local.login', new localStrategy({
     passwordField: 'password',
     passReqToCallback: true
 }, async (req, correo, password, done) => {
-    const rows = await pool.query('SELECT * FROM usuarios WHERE correoElec = ? AND activo == 1', [correo]);
+    const rows = await pool.query('SELECT * FROM usuarios WHERE correoElec = ? AND activo = 1', [correo]);
     if (rows.length > 0){
         const user = rows[0];
         const validPass = await helpers.matchPassword(password, user.contrasena);
         if (validPass){
-            done(null, user, req.flash('success_msg', 'Bienvenido(a) ' + user.nombre + " " + user.apellido));
+            done(null, user, req.flash('success', 'Bienvenido(a) ' + user.nombre + " " + user.apellido));
         } else{
-            done(null, false, req.flash('error_msg', 'Contraseña incorrecta...'));
+            done(null, false, req.flash('error', 'Contraseña incorrecta...'));
         }
     } else{
         done(null, null, req.flash('error', 'El usuario no existe o no esta activo'));

@@ -7,18 +7,24 @@
             <div class="mb-3">
                 <img src="/img/PIMSAlogo.png" class="img-fluid">
             </div>
-            <form action="/login" method="POST">
+            <form action="/login" class="needs-validation" id="form-login" method="POST" novalidate>
                 <div class="mb-3">
-                    <div class="input-group">
+                    <div class="input-group has-validation">
                         <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-at"></i></span>
-                        <input type="text" class="form-control border-dark border-2" name="correo" placeholder="Correo" autofocus>
+                        <input type="email" class="form-control border-dark border-2" name="correo" id="correo" placeholder="Correo" autofocus>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-correo"></span>
+                        </div>
                     </div>
                 </div>
                 <div class="mb-3">
-                    <div class="input-group">
+                    <div class="input-group has-validation">
                         <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-key"></i></span>
                         <input type="password" class="form-control border-dark border-2" name="password" placeholder="Contraseña" id="password">
                         <button class="btn btn-class-primary border-dark border-2" type="button" onclick="mostrarContrasena()"><i class="bi bi-eye-slash-fill" id="showPass"></i></button>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-password"></span>
+                        </div>
                     </div>
                 </div>
                 <div class="d-grid gap-2 col-6 mx-auto">
