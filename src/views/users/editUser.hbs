@@ -2,10 +2,10 @@
     <a href="/users" style="color: white; text-decoration: none;"><h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-person-fill-add"></i> Usuarios</h1></a>
 </div>
 <div class="row align-items-center p-4">
-    <p class="fs-5 p-2 m-0" id="machine-add-title">Registrar usuario.</p>
+    <p class="fs-5 p-2 m-0" id="machine-add-title">Editar usuario.</p>
 </div>
 <div class="row px-3">
-    <form action="/users/add" method="post">
+    <form action="/users/edit/{{user.usuarioId}}" method="post">
         <div class="row mb-4 gy-4 justify-content-md-between">
             <div class="col-md-4">
                 <label for="nombreUsuario" class="form-label">Nombre:</label>
@@ -42,9 +42,11 @@
         <div class="row mb-4 gy-4 justify-content-md-between"> 
             <div class="col-md-4">
                 <label for="rol" class="form-label">Rol:</label><br>
-                <!--
-                Aqui va la tabla de rol
-                -->
+                <select name="rol" id="rol" class="form-select border-dark border-2">   
+                    {{#each roles}}
+                        <option value={{rolId}}  {{#equal rolId ../user.rol_id}} selected {{/equal}} >{{nombre}}</option>
+                    {{/each}}
+                </select>
             </div>
             <div class="col-md-4">
                 <label for="confirmPass" class="form-label">Confirmar contraseña:</label>
@@ -71,15 +73,17 @@
             </div>
             <div class="col-md-4">
                 <label for="empleado" class="form-label">Usuario conectado al Empleado:</label>
-                <!--
-                    Aqui van los usuarios
-                    -->
+                <select name="empleado" id="empleado" class="form-select border-dark border-2">   
+                    {{#each empleados}}
+                        <option value={{empleadoId}} {{#equal empleadoId ../user.empleado_id}} selected {{/equal}}>{{nombreComp}}</option>
+                    {{/each}}
+                </select>
             </div>
         </div>
         <div class="row mb-4 gy-4 justify-content-md-between">
             <div class="col-md-4">
                 <br>
-                <button class="btn btn-success me-4" type="submit">Registrar usuario</button>
+                <button class="btn btn-success me-4" type="submit">Editar usuario</button>
                 <button class="btn btn-danger" type="reset">Limpiar campos</button>
             </div>
         </div>

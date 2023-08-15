@@ -17,8 +17,8 @@
                         <th scope="col">Id</th>
                         <th scope="col">Nombre</th>
                         <th scope="col">Correo</th>
-                        <th scope="col">Empleado</th>
                         <th scope="col">Rol</th>
+                        <th scope="col">Empleado</th>
                         <th scope="col"></th>
                     </tr>
                 </thead>
@@ -28,10 +28,11 @@
                             <th scope="row">U-{{usuarioId}}</th>
                             <th>{{nombre}} {{apellido}}</th>
                             <th>{{correoElec}}</th>
-                            <th>{{empleado_id}}--</th>
-                            <th>{{rol_id}}--</th>
-                            {{#each ../procesos}}
-                                {{#equal ../proceso_id procesoId}}<th>{{nombre}}</th>{{/equal}}
+                            {{#each ../roles}}
+                                {{#equal ../rol_id rolId}}<th>{{nombre}}</th>{{/equal}}
+                            {{/each}}
+                            {{#each ../empleados}}
+                                {{#equal ../empleado_id empleadoId}}<th>{{nombreComp}}</th>{{/equal}}
                             {{/each}}
                             <th><a href="/users/edit/{{usuarioId}}" class="btn btn-sm btn-secondary"><i class="bi bi-pencil-square"></i> Editar</a></th>
                         </tr>
