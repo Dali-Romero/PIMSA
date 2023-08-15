@@ -5,18 +5,21 @@
     <p class="fs-5 p-2 m-0" id="machine-add-title">Agregar producto.</p>
 </div>
 <div class="row px-3">
-    <form action="/products/add" method="post">
+    <form action="/products/add" method="post" class="needs-validation" id="form-add-product" novalidate>
         <div class="row mb-4 gy-4 justify-content-md-between">
             <div class="col-md-4">
                 <label for="nombreProducto" class="form-label">Nombre:</label>
-                <div class="input-group">
+                <div class="input-group has-validation">
                     <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-card-text"></i></span>
                     <input type="text" name="nombre" id="nombre" class="form-control border-dark border-2" aria-describedby="basic-addon1" autofocus>
+                    <div class="invalid-feedback">
+                        <span id="invalid-feedback-nombre"></span>
+                    </div>
                 </div>
             </div>
             <div class="col-md-4">
                 <label for="unidadMedida" class="form-label">Unidad de medida:</label>
-                <div class="input-group">
+                <div class="input-group has-validation">
                     <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-rulers"></i></span>
                     <select name="unidadMedida" id="unidadMedida" class="form-select border-dark border-2">
                         <option value="Metro" selected>Metros (mt)</option>
@@ -29,14 +32,17 @@
         <div class="row mb-4 gy-4 justify-content-md-between">
             <div class="col-md-4">
                 <label for="precio" class="form-label">Precio:</label>
-                <div class="input-group">
+                <div class="input-group has-validation">
                     <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-coin"></i></span>
-                    <input type="text" name="precio" id="precio" class="form-control border-dark border-2" aria-describedby="basic-addon1">
+                    <input type="number" name="precio" id="precio" class="form-control border-dark border-2" aria-describedby="basic-addon1">
+                    <div class="invalid-feedback">
+                        <span id="invalid-feedback-precio"></span>
+                    </div>
                 </div>
             </div>
             <div class="col-md-4">
                 <label for="proceso" class="form-label">Proceso asociado:</label>
-                <div class="input-group">
+                <div class="input-group has-validation">
                     <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-arrow-down-up"></i></span>
                     <select name="proceso" id="proceso" class="form-select border-dark border-2">   
                         {{#each procesos}}
@@ -60,14 +66,20 @@
                     </div>
                 </div>
                 <label for="porcentaje" class="form-label">Descuento:</label>
-                <div class="input-group">
+                <div class="input-group has-validation">
                     <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-percent"></i></span>
-                    <input type="text" name="porcentaje" id="porcentaje" class="form-control border-dark border-2" aria-describedby="basic-addon1" value="0" disabled="true"> 
+                    <input type="number" name="porcentaje" id="porcentaje" class="form-control border-dark border-2" aria-describedby="basic-addon1" value="0" disabled="true">
+                    <div class="invalid-feedback">
+                        <span id="invalid-feedback-porcentaje"></span>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-4 has-validation">
                 <label for="descripcion" class="form-label">Descripcion:</label>
                 <textarea id="descripcion" name="descripcion" class="form-control border-dark border-2"></textarea>
+                <div class="invalid-feedback">
+                        <span id="invalid-feedback-descripcion"></span>
+                </div>
             </div>
         </div>
         <div class="row mb-4 gy-4 justify-content-md-between">
