@@ -22,27 +22,38 @@ router.get('/', isLoggedIn, async (req, res) =>{
 });
 
 router.get('/add', isLoggedIn, async (req, res) =>{
+    const user = req.body;
+    console.log(user);
     const roles = await pool.query('SELECT * FROM roles WHERE activo = 1');
     const empleados = await pool.query('SELECT * FROM empleados');
-    res.render('../views/users/newUser', {roles, empleados});
+    res.render('../views/users/newUser', {user, roles, empleados});
 });
 
 router.post('/add', isLoggedIn, async (req, res)=>{
     const user = req.body;
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(user.pass, salt);
-    const newUser = {
-        nombre: user.nombre,
-        apellido: user.apellido,
-        correoElec: user.correo,
-        activo: user.status,
-        Empleado_id: user.empleado,
-        Rol_id: user.rol,
-        Contrasena: hash
-    };
-    pool.query('INSERT INTO usuarios SET ?', [newUser]);
-    req.flash('success', 'Usuario registrado con exito.');
-    res.redirect('/users');
+    const correo = await pool.query('SELECT * FROM usuarios WHERE correoElec = ?', [user.correo]);
+    console.log(correo);
+    if (correo.length >= 1){
+        const roles = await pool.query('SELECT * FROM roles WHERE activo = 1');
+        const empleados = await pool.query('SELECT * FROM empleados');
+        req.flash('error', 'El correo ya ha sido utilizado en otro usuario.');
+        res.render('../views/users/newUser', {user, roles, empleados});
+    } else {
+        const newUser = {
+            nombre: user.nombre,
+            apellido: user.apellido,
+            correoElec: user.correo,
+            activo: user.status,
+            Empleado_id: user.empleado,
+            Rol_id: user.rol,
+            Contrasena: hash
+        };
+        pool.query('INSERT INTO usuarios SET ?', [newUser]);
+        req.flash('success', 'Usuario registrado con exito.');
+        res.redirect('/users');
+    }
 });
 
 router.get('/edit/:id', isLoggedIn, async(req, res) =>{

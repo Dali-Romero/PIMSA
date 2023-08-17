@@ -13,8 +13,12 @@ function validarForm(form){
             nombreInput.addClass('is-valid');
         };
 
-        //Validacion del correo, Falta agregar revision con base de datos
+        //Validacion del correo
         const correoInput = $('#correo');
+        if (document.getElementById('mailUsed') !== null){
+            const warningMessage = $('#mailUsed');
+            warningMessage.addClass('d-none');
+        }
         correoInput.removeClass('border-dark');
         var validEmail =  /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/;
         if (correoInput.val().length <= 2){

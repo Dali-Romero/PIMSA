@@ -7,11 +7,11 @@
 <div class="row px-3">
     <form action="/users/add" method="post" class="needs-validation" id="form-add-user" novalidate>
         <div class="row mb-4 gy-4 justify-content-md-between">
-            <div class="col-md-4">
+            <div class="col-md-4"> 
                 <label for="nombreUsuario" class="form-label">Nombre:</label>
                 <div class="input-group has-validation">
                     <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-person-fill"></i></span>
-                    <input type="text" name="nombre" id="nombre" class="form-control border-dark border-2" aria-describedby="basic-addon1" autofocus>
+                    <input type="text" name="nombre" id="nombre" class="form-control border-dark border-2" aria-describedby="basic-addon1" autofocus value={{user.nombre}}>
                     <div class="invalid-feedback">
                         <span id="invalid-feedback-nombre"></span>
                     </div>
@@ -21,11 +21,14 @@
                 <label for="correoElectronico" class="form-label">Correo electronico:</label>
                 <div class="input-group has-validation">
                     <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-at"></i></span>
-                    <input type="text" name="correo" id="correo" class="form-control border-dark border-2" aria-describedby="basic-addon1">
+                    <input type="text" name="correo" id="correo" class="form-control border-dark border-2" aria-describedby="basic-addon1" value={{user.correo}}>
                     <div class="invalid-feedback">
                         <span id="invalid-feedback-correo"></span>
                     </div>
                 </div>
+                {{#if user.correo}}
+                    <span style="font-size: small; color: red;" id="mailUsed">El correo ya ha sido utilizado en otro usuario.</span>
+                {{/if}}
             </div>
         </div>
         <div class="row mb-4 gy-4 justify-content-md-between">
@@ -33,7 +36,7 @@
                 <label for="apellido" class="form-label">Apellido:</label>
                 <div class="input-group has-validation">
                     <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-person-fill"></i></span>
-                    <input type="text" name="apellido" id="apellido" class="form-control border-dark border-2" aria-describedby="basic-addon1">
+                    <input type="text" name="apellido" id="apellido" class="form-control border-dark border-2" aria-describedby="basic-addon1" value={{user.apellido}}>
                     <div class="invalid-feedback">
                         <span id="invalid-feedback-apellido"></span>
                     </div>
@@ -43,7 +46,7 @@
                 <label for="pass" class="form-label">Contraseña:</label>
                 <div class="input-group has-validation">
                     <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-key-fill"></i></span>
-                    <input type="password" name="pass" id="pass" class="form-control border-dark border-2" aria-describedby="basic-addon1">
+                    <input type="password" name="pass" id="pass" class="form-control border-dark border-2" aria-describedby="basic-addon1" value={{user.pass}}>
                     <button class="btn btn-class-primary border-dark border-2" type="button" onclick="mostrarContrasena()"><i class="bi bi-eye-slash-fill" id="showPass"></i></button>
                     <div class="invalid-feedback">
                         <span id="invalid-feedback-pass"></span>
@@ -58,7 +61,7 @@
                     <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-person-rolodex"></i></span>
                     <select name="rol" id="rol" class="form-select border-dark border-2">   
                         {{#each roles}}
-                            <option value={{rolId}}>{{nombre}}</option>
+                            <option value={{rolId}} {{#equal rolId ../user.rol}} selected {{/equal}}>{{nombre}}</option>
                         {{/each}}
                     </select>
                 </div>
@@ -67,7 +70,7 @@
                 <label for="confirmPass" class="form-label">Confirmar contraseña:</label>
                 <div class="input-group has-validation">
                     <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-key-fill"></i></span>
-                    <input type="password" name="confirmPass" id="confirmPass" class="form-control border-dark border-2" aria-describedby="basic-addon1">
+                    <input type="password" name="confirmPass" id="confirmPass" class="form-control border-dark border-2" aria-describedby="basic-addon1" value={{user.confirmPass}}>
                     <button class="btn btn-class-primary border-dark border-2" type="button" onclick="mostrarConfirmarContrasena()"><i class="bi bi-eye-slash-fill" id="showConfirmPass"></i></button>
                     <div class="invalid-feedback">
                         <span id="invalid-feedback-confirmPass"></span>
@@ -95,7 +98,7 @@
                     <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-file-person-fill"></i></span>
                     <select name="empleado" id="empleado" class="form-select border-dark border-2">   
                         {{#each empleados}}
-                            <option value={{empleadoId}}>{{nombreComp}}</option>
+                            <option value={{empleadoId}} {{#equal empleadoId ../user.empleado}} selected {{/equal}}>{{nombreComp}}</option>
                         {{/each}}
                     </select>
                 </div>
