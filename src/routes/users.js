@@ -22,11 +22,9 @@ router.get('/', isLoggedIn, async (req, res) =>{
 });
 
 router.get('/add', isLoggedIn, async (req, res) =>{
-    const user = req.body;
-    console.log(user);
     const roles = await pool.query('SELECT * FROM roles WHERE activo = 1');
     const empleados = await pool.query('SELECT * FROM empleados');
-    res.render('../views/users/newUser', {user, roles, empleados});
+    res.render('../views/users/newUser', {roles, empleados});
 });
 
 router.post('/add', isLoggedIn, async (req, res)=>{
@@ -34,12 +32,12 @@ router.post('/add', isLoggedIn, async (req, res)=>{
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(user.pass, salt);
     const correo = await pool.query('SELECT * FROM usuarios WHERE correoElec = ?', [user.correo]);
-    console.log(correo);
     if (correo.length >= 1){
+        const errorUser = user;
         const roles = await pool.query('SELECT * FROM roles WHERE activo = 1');
         const empleados = await pool.query('SELECT * FROM empleados');
         req.flash('error', 'El correo ya ha sido utilizado en otro usuario.');
-        res.render('../views/users/newUser', {user, roles, empleados});
+        res.render('../views/users/newUser', {errorUser, roles, empleados});
     } else {
         const newUser = {
             nombre: user.nombre,
