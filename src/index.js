@@ -57,6 +57,7 @@ app.use('/grupos/', require('./routes/grupos'));
 app.use('/machines', require('./routes/machines'));
 app.use('/products', require('./routes/products'));
 app.use('/users', require('./routes/users'));
+app.use('/employees', require('./routes/employees'));
 
 // Public
 app.use(express.static(path.join(__dirname, 'public')));

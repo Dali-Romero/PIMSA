@@ -48,6 +48,7 @@ CREATE TABLE Empleados(
     estatus VARCHAR(20) NOT NULL,
     inicioContrato DATE NOT NULL,
     finContrato DATE NOT NULL,
+    activo BOOLEAN NOT NULL,
     PRIMARY KEY(empleadoId)
 );
 
@@ -83,6 +84,7 @@ CREATE TABLE HistorialEmpleados(
     estatus VARCHAR(20) NOT NULL,
     inicioContrato DATE NOT NULL,
     finContrato DATE NOT NULL,
+    activo BOOLEAN NOT NULL,
     PRIMARY KEY(cambioId)
 );
 
