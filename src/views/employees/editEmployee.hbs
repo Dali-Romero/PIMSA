@@ -157,6 +157,13 @@
                         </div>
                     </div>
                 </div>
+                <div class="row mb-4">
+                    <div class="col-mb-4">
+                        <p><br></p>
+                        <button class="btn btn-success me-4" type="submit">Agregar máquina</button>
+                        <a href="/employees/info/{{id}}" type="button" class="btn btn-danger me-4">Cancelar</a>
+                    </div>
+                </div>
             </div>
             <div class="col-md-4">
                 <div class="row mb-4">
@@ -213,7 +220,7 @@
                     <label for="rol" class="form-label">Departamento (area):</label><br>
                     <div class="input-group has-validation">
                         <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-person-rolodex"></i></span>
-                        <select name="rol" id="rol" class="form-select border-dark border-2">   
+                        <select name="area" id="area" class="form-select border-dark border-2">   
                             {{#each area}}
                                 <option value={{areaId}} {{#equal areaId ../employee.area_id}} selected {{/equal}}>{{nombre}}</option>
                             {{/each}}
@@ -295,10 +302,10 @@
                     </div>
                 </div>
                 <div class="row mb-4">
-                    <div class="col-mb-4">
-                        <p><br></p>
-                        <button class="btn btn-success me-4" type="submit">Agregar máquina</button>
-                        <a href="/employees/info/{{id}}" type="button" class="btn btn-danger me-4">Cancelar</a>
+                    <label for="descripcion" class="form-label">Descripcion de cambios:</label>
+                    <textarea id="descripcion" name="descripcion" class="form-control border-dark border-2"></textarea>
+                    <div class="invalid-feedback">
+                        <span id="invalid-feedback-descripcion"></span>
                     </div>
                 </div>
             </div>

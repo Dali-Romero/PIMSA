@@ -98,6 +98,31 @@
                     <table class="table align-middle table-bordered border-dark">
                         <thead class="table-danger border-dark">
                             <tr>
+                                <th colspan="2" style="color: red; text-align: center;">Informacion de version.</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>Modificado por</th>
+                                {{#each users}}
+                                    {{#equal usuarioId ../employee.modificado_usuario_id}} <td>{{nombre}} {{apellido}}</td> {{/equal}}
+                                {{/each}}
+                            </tr>
+                            <tr>
+                                <th>Fecha del cambio</th>
+                                <td>{{employee.fechaCambio}}</td>
+                            </tr>
+                            <tr>
+                                <th>Descripcion del cambio</th>
+                                <td>{{employee.cambioRealizado}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row mb-4">
+                    <table class="table align-middle table-bordered border-dark">
+                        <thead class="table-danger border-dark">
+                            <tr>
                                 <th colspan="4" style="color: red; text-align: center;">Informacion general</th>
                             </tr>
                         </thead>

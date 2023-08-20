@@ -23,8 +23,8 @@
                     <div class="input-group">
                         <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-gender-ambiguous"></i></span>
                         <select name="sexo" id="sexo" class="form-select border-dark border-2">
-                            <option value="Masculino" selected>Masculino</option>
-                            <option value="Femenino">Femenino</option>
+                            <option value="H" selected>Masculino</option>
+                            <option value="M">Femenino</option>
                         </select>
                     </div>
                 </div>
@@ -267,7 +267,7 @@
                     <label for="rol" class="form-label">Departamento (area):</label><br>
                     <div class="input-group has-validation">
                         <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-person-rolodex"></i></span>
-                        <select name="rol" id="rol" class="form-select border-dark border-2">   
+                        <select name="area" id="area" class="form-select border-dark border-2">   
                             {{#each area}}
                                 <option value={{areaId}}>{{nombre}}</option>
                             {{/each}}
