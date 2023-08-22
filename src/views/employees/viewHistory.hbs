@@ -55,7 +55,7 @@
                             </tr>
                             <tr>
                                 <th>Fecha de ingreso</td>
-                                <td>{{employee.fechaIngreso}}</td>
+                                <td>{{fechas.fechaIngreso}}</td>
                                 <th>Años laborales</td>
                                 <td>{{employee.anosCumplir}}</td>
                             </tr>
@@ -83,11 +83,11 @@
                             </tr>
                             <tr>
                                 <th colspan="2">Fecha de inicio de contrato</td>
-                                <td colspan="2">{{employee.inicioContrato}}</td>
+                                <td colspan="2">{{fechas.inicioContrato}}</td>
                             </tr>
                             <tr>
                                 <th colspan="2">Fecha de termino de contrato</td>
-                                <td colspan="2">{{employee.finContrato}}</td>
+                                <td colspan="2">{{fechas.finContrato}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -98,23 +98,25 @@
                     <table class="table align-middle table-bordered border-dark">
                         <thead class="table-danger border-dark">
                             <tr>
-                                <th colspan="2" style="color: red; text-align: center;">Informacion de version.</th>
+                                <th colspan="4" style="color: red; text-align: center;">Informacion de version.</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <th>Modificado por</th>
+                                <th colspan="2">Modificado por</th>
                                 {{#each users}}
-                                    {{#equal usuarioId ../employee.modificado_usuario_id}} <td>{{nombre}} {{apellido}}</td> {{/equal}}
+                                    {{#equal usuarioId ../employee.modificado_usuario_id}} <td colspan="2">{{nombre}} {{apellido}}</td> {{/equal}}
                                 {{/each}}
                             </tr>
                             <tr>
                                 <th>Fecha del cambio</th>
-                                <td>{{employee.fechaCambio}}</td>
+                                <td>{{fechas.fechaCambio}}</td>
+                                <th>Hora del cambio</th>
+                                <td>{{fechas.hora}}</td>
                             </tr>
                             <tr>
-                                <th>Descripcion del cambio</th>
-                                <td>{{employee.cambioRealizado}}</td>
+                                <th colspan="2">Descripcion del cambio</th>
+                                <td colspan="2">{{employee.cambioRealizado}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -142,7 +144,7 @@
                             </tr>
                             <tr>
                                 <th>Fecha de nacimiento</th>
-                                <td>{{employee.nacFecha}}</th>
+                                <td>{{fechas.fecNac}}</th>
                                 <th>Edad por cumplir</th>
                                 <td>{{employee.edadCumplir}}</th>
                             </tr>

@@ -78,7 +78,7 @@ router.post('/add', isLoggedIn, async (req, res)=>{
         correoElec: employee.correo,
         emerNombre: employee.emerNombre,
         emerCelu: employee.emerTel,
-        domicilio: employee.calle + employee.numExt + employee.numInt + employee.colonia + employee.codPost,
+        domicilio: employee.calle + " " + employee.numExt + " " + employee.numInt + " " + employee.colonia + " " + employee.codPost,
         estatus: employee.estatus,
         curp: employee.curp,
         rfc: employee.rfc,
@@ -107,6 +107,10 @@ router.get('/edit/:id', isLoggedIn, async (req, res) =>{
     const area = await pool.query('SELECT * FROM areas');
     var employees = await pool.query('SELECT * FROM empleados WHERE empleadoId = ?', [id]);
     console.log(employees)
+    employees[0].nacFecha = employees[0].nacFecha.toLocaleDateString("en-CA"),
+    employees[0].fechaIngreso = employees[0].fechaIngreso.toLocaleDateString("en-CA"),
+    employees[0].inicioContrato = employees[0].inicioContrato.toLocaleDateString("en-CA"),
+    employees[0].finContrato = employees[0].finContrato.toLocaleDateString("en-CA")
     res.render('../views/employees/editEmployee', {employee: employees[0], rol, area});
 });
 
@@ -192,17 +196,27 @@ router.get('/info/:id', isLoggedIn, async (req, res)=>{
     const rol = await pool.query('SELECT * FROM roles');
     const area = await pool.query('SELECT * FROM areas');
     const employees = await pool.query('SELECT * FROM empleados WHERE empleadoId = ?', [id]);
-    res.render('../views/employees/completeInfoEmployee', {employee: employees[0], rol, area});
-});
+    const fechas = {
+        fecNac: employees[0].nacFecha.toLocaleDateString("es-MX", {weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'}),
+        fechaIngreso: employees[0].fechaIngreso.toLocaleDateString("es-MX", {weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'}),
+        inicioContrato: employees[0].inicioContrato.toLocaleDateString("es-MX", {weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'}),
+        finContrato: employees[0].finContrato.toLocaleDateString("es-MX", {weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'})
+    }
+    res.render('../views/employees/completeInfoEmployee', {employee: employees[0], rol, area, fechas});
+}); 
 
 router.get('/history/:id', isLoggedIn, async (req, res)=>{
     const {id} = req.params;
     const rol = await pool.query('SELECT * FROM roles');
     const area = await pool.query('SELECT * FROM areas');
-    const employees = await pool.query('SELECT * FROM historialempleados WHERE empleado_id = ? ORDER BY cambioId DESC', [id]);
+    var employees = await pool.query('SELECT * FROM historialempleados WHERE empleado_id = ? ORDER BY cambioId DESC', [id]);
     console.log(employees);
     const nombreComp = await pool.query('SELECT nombreComp FROM empleados WHERE empleadoId = ?', [id]);
     const total = employees.length;
+    for (i=0; i < employees.length; i++){
+        employees[i].hora = employees[i].fechaCambio.toLocaleTimeString('en-US');
+        employees[i].fechaCambio = employees[i].fechaCambio.toLocaleDateString("es-MX", {weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'});
+    };
     res.render('../views/employees/history', {total, nombreComp: nombreComp[0].nombreComp, employees, rol, area});
 });
 
@@ -212,7 +226,15 @@ router.get('/history/:id/view/:idHistory', isLoggedIn, async (req, res)=>{
     const area = await pool.query('SELECT * FROM areas');
     const users = await pool.query('SELECT * FROM usuarios');
     const employees = await pool.query('SELECT * FROM historialempleados WHERE empleado_id = ? AND cambioId = ?', [id, idHistory]);
-    res.render('../views/employees/viewHistory', {employee: employees[0], rol, area, users});
+    const fechas = {
+        fecNac: employees[0].nacFecha.toLocaleDateString("es-MX", {weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'}),
+        fechaIngreso: employees[0].fechaIngreso.toLocaleDateString("es-MX", {weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'}),
+        inicioContrato: employees[0].inicioContrato.toLocaleDateString("es-MX", {weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'}),
+        finContrato: employees[0].finContrato.toLocaleDateString("es-MX", {weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'}),
+        hora: employees[0].fechaCambio.toLocaleTimeString('en-US'),
+        fechaCambio: employees[0].fechaCambio.toLocaleDateString("es-MX", {weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'})
+    };
+    res.render('../views/employees/viewHistory', {employee: employees[0], fechas, rol, area, users});
 });
 
 router.get('/history/:id/view/:idHistory/restore', isLoggedIn, async (req, res)=>{

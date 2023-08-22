@@ -1,4 +1,4 @@
-function validarFormAdd(form){
+function validarForm(form){
     let validated = false;
     form.on('submit', (event)=>{
         //Empezamos las validaciones, son un putero asi que sientate y disfruta el viaje
@@ -253,9 +253,17 @@ function validarFormAdd(form){
             ingresoInput.removeClass('is-valid');
             ingresoInput.addClass('is-invalid');
             $('#invalid-feedback-fecIngreso').text('Por favor, agregue la fecha en la que el empleado entro a la empresa.');
-        } else{
-            ingresoInput.removeClass('is-invalid');
-            ingresoInput.addClass('is-valid');
+        } else {
+            var fecNac = new Date(fecNacInput.val());
+            var ingresoFec = new Date(ingresoInput.val());
+            if ((ingresoFec - fecNac) > 0){
+                ingresoInput.removeClass('is-invalid');
+                ingresoInput.addClass('is-valid');
+            } else{
+            ingresoInput.removeClass('is-valid');
+            ingresoInput.addClass('is-invalid');
+            $('#invalid-feedback-fecIngreso').text('Revise las fechas, la fecha de nacimiento no puede ser mayor o igual a la fecha de ingreso.');
+            };
         };
 
         // Años laborales
@@ -314,8 +322,16 @@ function validarFormAdd(form){
             inContratoInput.addClass('is-invalid');
             $('#invalid-feedback-fecInContrato').text('Por favor, agregue la fecha de inicio de contrato.');
         } else{
-            inContratoInput.removeClass('is-invalid');
-            inContratoInput.addClass('is-valid');
+            var ingresoFec = new Date(ingresoInput.val());
+            var inContrato = new Date(inContratoInput.val());
+            if ((inContrato - ingresoFec) >= 0){
+                inContratoInput.removeClass('is-invalid');
+                inContratoInput.addClass('is-valid');
+            } else{
+                inContratoInput.removeClass('is-valid');
+                inContratoInput.addClass('is-invalid');
+                $('#invalid-feedback-fecInContrato').text('Revise las fechas, la fecha de ingreso no puede ser posterior a la fecha de inicio de contrato.');
+            }
         };
 
         // Final de contrato
@@ -326,8 +342,16 @@ function validarFormAdd(form){
             finContratoInput.addClass('is-invalid');
             $('#invalid-feedback-fecFinContrato').text('Por favor, agregue la fecha de fin de contrato.');
         } else{
-            finContratoInput.removeClass('is-invalid');
-            finContratoInput.addClass('is-valid');
+            var inContrato = new Date(inContratoInput.val());
+            var finContrato = new Date(finContratoInput.val());
+            if ((finContrato - inContrato) > 0){
+                finContratoInput.removeClass('is-invalid');
+                finContratoInput.addClass('is-valid');
+            } else{
+                finContratoInput.removeClass('is-valid');
+                finContratoInput.addClass('is-invalid');
+                $('#invalid-feedback-fecFinContrato').text('Revise las fechas, la fecha de inicio de contrato no puede ser posterior a la de fin de contrato.');
+            }
         };
  
         // Rol
@@ -375,6 +399,6 @@ function validarFormAdd(form){
 }
 
 $(document).ready(function(){
-    validarFormAdd($('#form-add-employee'));
-    validarFormAdd($('#form-edit-employee'));
+    validarForm($('#form-add-employee'));
+    validarForm($('#form-edit-employee'));
 });
