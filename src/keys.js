@@ -2,7 +2,7 @@ module.exports = {
     database: {
         host: 'localhost',
         user: 'root',
-        password: '',
+        password: 'hagantyr',
         database: 'pimsa_db_prueba'
     }
 }

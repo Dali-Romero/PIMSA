@@ -1,16 +1,15 @@
 const express = require('express');
 const pool = require('../database.js');
-
 const { isLoggedIn } = require('../lib/auth');
 
 const router = express.Router()
 
-router.get('/add', async (req, res)=>{
+router.get('/add', isLoggedIn ,async (req, res)=>{
     const users = await pool.query('SELECT Usuarios.usuarioId, Empleados.empleadoId, Empleados.nombreComp AS Empleado, Areas.areaId, Areas.nombre AS Area, Roles.rolId, Roles.nombre AS Rol FROM (((Empleados INNER JOIN Areas ON Empleados.area_id = Areas.areaId) INNER JOIN Roles ON Empleados.rol_id = Roles.rolId) INNER JOIN Usuarios ON Empleados.empleadoId = Usuarios.empleado_id);')
     res.render('machines/add', {users:users});
 });
 
-router.post('/add', async (req, res)=>{
+router.post('/add', isLoggedIn, async (req, res)=>{
     const resBody = req.body;
     const selects = req.body.allowedUser;
     console
@@ -49,10 +48,10 @@ router.get('/', isLoggedIn, async (req, res)=>{
             inactivas++;
         }
     }
-    res.render('machines/list.hbs', {machines:machines, activas:activas, inactivas:inactivas});
+    res.render('machines/list', {machines:machines, activas:activas, inactivas:inactivas});
 });
 
-router.post('/listUsers', async (req, res)=>{
+router.post('/listUsers', isLoggedIn, async (req, res)=>{
     const id = req.body.idMachine;
     const users = await pool.query('SELECT Maquinas.maquinaId, MaquinasUsuarios.usuario_id, Usuarios.usuarioId, Empleados.empleadoId, Empleados.nombreComp AS Empleado, Areas.areaId, Areas.nombre AS Area, Roles.rolId, Roles.nombre AS Rol FROM (((((Empleados INNER JOIN Areas ON Empleados.area_id = Areas.areaId) INNER JOIN Roles ON Empleados.rol_id = Roles.rolId) INNER JOIN Usuarios ON Empleados.empleadoId = Usuarios.empleado_id) INNER JOIN MaquinasUsuarios ON Usuarios.usuarioId = MaquinasUsuarios.usuario_id) INNER JOIN Maquinas ON MaquinasUsuarios.maquina_id = Maquinas.maquinaId) WHERE Maquinas.maquinaId = ?;', [id]);
     res.send({users: users});
