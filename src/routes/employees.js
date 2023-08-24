@@ -27,78 +27,86 @@ router.get('/add', isLoggedIn, async (req, res) =>{
 
 router.post('/add', isLoggedIn, async (req, res)=>{
     const employee = req.body;
-    var newEmployee = {
-        nombreComp: employee.nombre,
-        sexo: employee.sexo,
-        estadoCivil: employee.estadoCivil,
-        nacLugar: employee.lugNacimiento,
-        nacFecha: employee.fecNacimiento,
-        edadCumplir: employee.edad,
-        extension: employee.extension,
-        numeroCelu: employee.numeroTelefono,
-        correoElec: employee.correo,
-        emerNombre: employee.emerNombre,
-        emerCelu: employee.emerTel,
-        domicilio: employee.calle + employee.numExt + employee.numInt + employee.colonia + employee.codPost,
-        estatus: employee.estatus,
-        curp: employee.curp,
-        rfc: employee.rfc,
-        nss: employee.nss,
-        numeroNomina: employee.nomina,
-        salarioQuin: employee.salario,
-        compleNomina: employee.complementoNomina,
-        fechaIngreso: employee.fecIngreso,
-        anosCumplir: employee.anosLaborales,
-        area_id: employee.area,
-        rol_id: employee.rol,
-        registroPatro: employee.patronal,
-        tipoContrato: employee.tipoContrato,
-        inicioContrato: employee.fecInContrato,
-        finContrato: employee.fecFinContrato,
-        activo: employee.activo 
-    };
-    await pool.query('INSERT INTO empleados SET ?', [newEmployee]);
-    const empleado = await pool.query('SELECT * FROM empleados WHERE numeroNomina = ?', [employee.nomina]);
-    const today = new Date();
-    console.log(today);
-    newEmployee = {
-        modificado_usuario_id: 1,
-        empleado_id: empleado[0].empleadoId,
-        cambioRealizado: "Se ha creado el empleado",
-        fechaCambio: today,
-
-        nombreComp: employee.nombre,
-        sexo: employee.sexo,
-        estadoCivil: employee.estadoCivil,
-        nacLugar: employee.lugNacimiento,
-        nacFecha: employee.fecNacimiento,
-        edadCumplir: employee.edad,
-        extension: employee.extension,
-        numeroCelu: employee.numeroTelefono,
-        correoElec: employee.correo,
-        emerNombre: employee.emerNombre,
-        emerCelu: employee.emerTel,
-        domicilio: employee.calle + " " + employee.numExt + " " + employee.numInt + " " + employee.colonia + " " + employee.codPost,
-        estatus: employee.estatus,
-        curp: employee.curp,
-        rfc: employee.rfc,
-        nss: employee.nss,
-        numeroNomina: employee.nomina,
-        salarioQuin: employee.salario,
-        compleNomina: employee.complementoNomina,
-        fechaIngreso: employee.fecIngreso,
-        anosCumplir: employee.anosLaborales,
-        area_id: employee.area,
-        rol_id: employee.rol,
-        registroPatro: employee.patronal,
-        tipoContrato: employee.tipoContrato,
-        inicioContrato: employee.fecInContrato,
-        finContrato: employee.fecFinContrato,
-        activo: employee.activo
+    const datos = await pool.query('SELECT * FROM empleados WHERE curp = ? OR rfc = ? OR nss = ? OR numeroNomina = ?', [employee.curp, employee.rfc, employee.nss, employee.nomina]);
+    if (datos.length >= 1){
+        const errorUser = employee;
+        const rol = await pool.query('SELECT * FROM roles');
+        const area = await pool.query('SELECT * FROM areas');
+        res.render('../views/employees/newEmployee', {errorUser, rol, area});
+    } else{ 
+        var newEmployee = {
+            nombreComp: employee.nombre,
+            sexo: employee.sexo,
+            estadoCivil: employee.estadoCivil,
+            nacLugar: employee.lugNacimiento,
+            nacFecha: employee.fecNacimiento,
+            edadCumplir: employee.edad,
+            extension: employee.extension,
+            numeroCelu: employee.numeroTelefono,
+            correoElec: employee.correo,
+            emerNombre: employee.emerNombre,
+            emerCelu: employee.emerTel,
+            domicilio: employee.calle + employee.numExt + employee.numInt + employee.colonia + employee.codPost,
+            estatus: employee.estatus,
+            curp: employee.curp,
+            rfc: employee.rfc,
+            nss: employee.nss,
+            numeroNomina: employee.nomina,
+            salarioQuin: employee.salario,
+            compleNomina: employee.complementoNomina,
+            fechaIngreso: employee.fecIngreso,
+            anosCumplir: employee.anosLaborales,
+            area_id: employee.area,
+            rol_id: employee.rol,
+            registroPatro: employee.patronal,
+            tipoContrato: employee.tipoContrato,
+            inicioContrato: employee.fecInContrato,
+            finContrato: employee.fecFinContrato,
+            activo: employee.activo 
+        };
+        await pool.query('INSERT INTO empleados SET ?', [newEmployee]);
+        const empleado = await pool.query('SELECT * FROM empleados WHERE numeroNomina = ?', [employee.nomina]);
+        const today = new Date();
+        console.log(today);
+        newEmployee = {
+            modificado_usuario_id: 1,
+            empleado_id: empleado[0].empleadoId,
+            cambioRealizado: "Se ha creado el empleado",
+            fechaCambio: today,
+    
+            nombreComp: employee.nombre,
+            sexo: employee.sexo,
+            estadoCivil: employee.estadoCivil,
+            nacLugar: employee.lugNacimiento,
+            nacFecha: employee.fecNacimiento,
+            edadCumplir: employee.edad,
+            extension: employee.extension,
+            numeroCelu: employee.numeroTelefono,
+            correoElec: employee.correo,
+            emerNombre: employee.emerNombre,
+            emerCelu: employee.emerTel,
+            domicilio: employee.calle + " " + employee.numExt + " " + employee.numInt + " " + employee.colonia + " " + employee.codPost,
+            estatus: employee.estatus,
+            curp: employee.curp,
+            rfc: employee.rfc,
+            nss: employee.nss,
+            numeroNomina: employee.nomina,
+            salarioQuin: employee.salario,
+            compleNomina: employee.complementoNomina,
+            fechaIngreso: employee.fecIngreso,
+            anosCumplir: employee.anosLaborales,
+            area_id: employee.area,
+            rol_id: employee.rol,
+            registroPatro: employee.patronal,
+            tipoContrato: employee.tipoContrato,
+            inicioContrato: employee.fecInContrato,
+            finContrato: employee.fecFinContrato,
+            activo: employee.activo
+        }
+        await pool.query('INSERT INTO historialempleados SET ?', [newEmployee]);
+        req.flash('success', 'El empleado ha sido registrado con exito.');
+        res.redirect('/employees');
     }
-    await pool.query('INSERT INTO historialempleados SET ?', [newEmployee]);
-    req.flash('success', 'El empleado ha sido registrado con exito.');
-    res.redirect('/employees');
 });
 
 router.get('/edit/:id', isLoggedIn, async (req, res) =>{
@@ -150,7 +158,6 @@ router.post('/edit/:id', isLoggedIn, async (req, res) =>{
     console.log(newEmployee)
     await pool.query('UPDATE empleados SET ? WHERE empleadoId = ?', [newEmployee, id]);
     const today = new Date();
-    console.log(today);
     editEmployee = {
         modificado_usuario_id: 1,
         empleado_id: id,
@@ -210,7 +217,6 @@ router.get('/history/:id', isLoggedIn, async (req, res)=>{
     const rol = await pool.query('SELECT * FROM roles');
     const area = await pool.query('SELECT * FROM areas');
     var employees = await pool.query('SELECT * FROM historialempleados WHERE empleado_id = ? ORDER BY cambioId DESC', [id]);
-    console.log(employees);
     const nombreComp = await pool.query('SELECT nombreComp FROM empleados WHERE empleadoId = ?', [id]);
     const total = employees.length;
     for (i=0; i < employees.length; i++){
