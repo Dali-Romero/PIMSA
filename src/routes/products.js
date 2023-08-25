@@ -9,17 +9,8 @@ router.get('/', isLoggedIn, async (req, res) =>{
     res.render('../views/products/allProducts', {products, procesos});
 });
 
-router.post('/', isLoggedIn, async (req, res) =>{
-    const {buscar, productSearchField} = req.body;
-    const products = await pool.query('SELECT * FROM productos');
-    const procesos = await pool.query('SELECT * FROM procesos');
-    
-    res.render('../views/products/allProducts', {products, procesos}); 
-});
-
 router.get('/add', isLoggedIn, async (req, res) =>{
     const procesos = await pool.query('SELECT * FROM procesos');
-    console.log(procesos[0].nombre);
     res.render('../views/products/addProduct', {procesos});
 });
 
@@ -38,7 +29,7 @@ router.post('/add', isLoggedIn, async (req, res) =>{
         proceso_id: product.proceso
     };
     pool.query('INSERT into productos SET ?', [newProduct]);
-    req.flash('success_msg', 'Producto agregado correctamente.');
+    req.flash('success', 'Producto agregado correctamente.');
     res.redirect('/products');
 
 });
@@ -50,7 +41,6 @@ router.get('/edit/:id', isLoggedIn, async (req, res) =>{
         proceso: await pool.query('SELECT * FROM procesos'),
         proceso_id: product[0].proceso_id
     }
-    console.log(editProduct);
     res.render('products/editProduct', {product: product[0], editProduct});
 
 });
@@ -70,9 +60,8 @@ router.post('/edit/:id', isLoggedIn, async (req, res) =>{
         porcentaje: product.porcentaje,
         proceso_id: product.proceso
     };
-    console.log('Porcentaje: ' + editProduct.porcentaje)
     pool.query('UPDATE productos SET ? WHERE productoId = ?', [editProduct, id]);
-    req.flash('success_msg', 'Producto modificado correctamente.');
+    req.flash('success', 'Producto modificado correctamente.');
     res.redirect('/products');
 
 });

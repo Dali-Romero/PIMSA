@@ -21,10 +21,6 @@ CREATE TABLE Usuarios(
     PRIMARY KEY(usuarioId)
 );
 
--- posible eliminacion del rol_id
-ALTER TABLE Usuarios
-DROP COLUMN rol_id;
-
 CREATE TABLE Empleados(
     empleadoId INT NOT NULL AUTO_INCREMENT,
     nombreComp VARCHAR(50) NOT NULL,
@@ -190,10 +186,6 @@ CREATE TABLE Grupos(
     descripcion VARCHAR(30) NOT NULL,
     PRIMARY KEY(grupoId)
 );
-
--- posible agregacion de la columna descripcion
-ALTER TABLE Grupos
-ADD descripcion VARCHAR(25) NOT NULL;
 
 CREATE TABLE Cotizaciones(
     cotId INT NOT NULL AUTO_INCREMENT,
