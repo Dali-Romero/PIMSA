@@ -128,7 +128,7 @@ function validateQuotationsForm(form){
 
         // amount product validation
         const patternAmountProducts= /[^0-9]/g;
-        const amountProducts = $('.amountproduct');
+        const amountProducts = $('.quantityproduct');
         amountProducts.each(function(i, obj){
             $(this).removeClass('border-dark');
             if ($(this).val().length === 0) {
@@ -204,7 +204,7 @@ function validateQuotationsForm(form){
                 }else if (patternWidthProducts.test($(this).val())){
                     $(this).removeClass('is-valid');
                     $(this).addClass('is-invalid');
-                    $(this).siblings().eq(1).text('La medida del ancho solo debe contener solo números');
+                    $(this).siblings().eq(1).text('La medida del ancho solo debe contener números');
                 }else if (!($(this).val() > 0 && $(this).val() <= 100)){
                     $(this).removeClass('is-valid');
                     $(this).addClass('is-invalid');
@@ -233,7 +233,7 @@ function validateQuotationsForm(form){
                 }else if (patternHeightProducts.test($(this).val())){
                     $(this).removeClass('is-valid');
                     $(this).addClass('is-invalid');
-                    $(this).siblings().eq(1).text('La medida del alto solo debe contener solo números');
+                    $(this).siblings().eq(1).text('La medida del alto solo debe contener números');
                 }else if (!($(this).val() > 0 && $(this).val() <= 100)){
                     $(this).removeClass('is-valid');
                     $(this).addClass('is-invalid');
@@ -256,15 +256,15 @@ function validateQuotationsForm(form){
             if ($(this).val().length === 0) {
                 $(this).removeClass('is-valid');
                 $(this).addClass('is-invalid');
-                $(this).siblings().eq(2).text('Por favor, agregue un nombre');
+                $(this).siblings().eq(3).text('Por favor, agregue un nombre');
             }else if (patternOutProduct.test($(this).val())){
                 $(this).removeClass('is-valid');
                 $(this).addClass('is-invalid');
-                $(this).siblings().eq(2).text('El nombre del producto solo debe contener solo números y letras');
+                $(this).siblings().eq(3).text('El nombre del producto solo debe contener solo números y letras');
             }else if ($(this).val().length < 1 || $(this).val().length > 30){
                 $(this).removeClass('is-valid');
                 $(this).addClass('is-invalid');
-                $(this).siblings().eq(2).text('El nombre del producto deben contener entre 1 y 30 caracteres');
+                $(this).siblings().eq(3).text('El nombre del producto deben contener entre 1 y 30 caracteres');
             }else{
                 $(this).removeClass('is-invalid');
                 $(this).addClass('is-valid');
@@ -348,10 +348,10 @@ $(document).ready(function(){
     });
 
     // add product
-    $('#nameproduct').on('change', function(){
-        const idProduct = $(this).val();
+    $('#cotbtn').on('click', function(){
+        const idProduct = $('#nameproduct').val();
         const cardsContainer = $('#products-cards-container');
-        if ($(this).val().length !== 0){
+        if (idProduct.length !== 0){
             $.ajax({
                 type: 'POST',
                 url: '/quotations/listProducts',
@@ -365,7 +365,8 @@ $(document).ready(function(){
                         product: data.product
                     };
                     const htmlProduct = templateProduct(contextProduct);
-                    cardsContainer.append(htmlProduct);
+                    $(htmlProduct).hide().appendTo(cardsContainer).show('slow');
+                    //cardsContainer.append(htmlProduct);
 
                     // increase products counter
                     productsCounter++;
@@ -405,16 +406,15 @@ $(document).ready(function(){
                     $('.remove-product-button').on('click', function(e){
                         e.stopPropagation();
                         e.stopImmediatePropagation();
-                        $(this).parents().eq(5).remove();
-
-                        // decrease counter
-                        productsCounter--;
+                        $(this).parents().eq(5).hide('slow', ()=>{
+                            $(this).parents().eq(5).remove();
+                            // decrease counter
+                            productsCounter--;
+                        });
                     });
                 }
             })
         }
-        // select fisrt option ("seleccione un producto")
-        $(this).children().eq(0).prop('selected', true);
     })
 
     // add product out catalog
@@ -431,7 +431,8 @@ $(document).ready(function(){
             product: data.product
         };
         const htmlOutProduct = templateOutProduct(contextOutProduct);
-        cardsContainer.append(htmlOutProduct);
+        //cardsContainer.append(htmlOutProduct);
+        $(htmlOutProduct).hide().appendTo(cardsContainer).show('slow');
 
         // increase products counter
         productsCounter++;
@@ -486,10 +487,11 @@ $(document).ready(function(){
         $('.remove-product-button').on('click', function(e){
             e.stopPropagation();
             e.stopImmediatePropagation();
-            $(this).parents().eq(5).remove();
-
-            // decrease counter
-            productsCounter--;
+            $(this).parents().eq(5).hide('slow', ()=>{
+                $(this).parents().eq(5).remove();
+                // decrease counter
+                productsCounter--;
+            });
         });
     })
 
