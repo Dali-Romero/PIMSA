@@ -197,6 +197,7 @@ CREATE TABLE Cotizaciones(
     PRIMARY KEY (cotId)
 );
 
+-- Tabla pivote
 CREATE TABLE ProductosCotizados(
     prodCotizadoId INT NOT NULL AUTO_INCREMENT,
     cot_id INT, -- llave foranea
