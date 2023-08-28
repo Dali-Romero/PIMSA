@@ -192,7 +192,7 @@ function validateQuotationsForm(form){
 
         // width product field validation
         const patternWidthProducts = /[^0-9.]/g;
-        const widthProducts = $('.widthproduct');
+        const widthProducts = $('.lengthproduct');
         widthProducts.each(function(i, obj){
             $(this).removeClass('border-dark');
             const unitProduct = $(this).parents().eq(6).children().eq(1).children().eq(0).children().eq(0).children().eq(0).children().find('input:checked').val()
@@ -200,15 +200,15 @@ function validateQuotationsForm(form){
                 if ($(this).val().length === 0) {
                     $(this).removeClass('is-valid');
                     $(this).addClass('is-invalid');
-                    $(this).siblings().eq(1).text('Por favor, agregue una medida para el ancho');
+                    $(this).siblings().eq(1).text('Por favor, agregue una medida para el largo');
                 }else if (patternWidthProducts.test($(this).val())){
                     $(this).removeClass('is-valid');
                     $(this).addClass('is-invalid');
-                    $(this).siblings().eq(1).text('La medida del ancho solo debe contener números');
+                    $(this).siblings().eq(1).text('La medida del largo solo debe contener números');
                 }else if (!($(this).val() > 0 && $(this).val() <= 100)){
                     $(this).removeClass('is-valid');
                     $(this).addClass('is-invalid');
-                    $(this).siblings().eq(1).text('La medida del ancho debe ser mayor a 0Mt y menor a 100Mt');
+                    $(this).siblings().eq(1).text('La medida del largo debe ser mayor a 0Mt y menor a 100Mt');
                 }else{
                     $(this).removeClass('is-invalid');
                     $(this).addClass('is-valid');
@@ -221,7 +221,7 @@ function validateQuotationsForm(form){
 
         // height product field validation
         const patternHeightProducts = /[^0-9.]/g;
-        const heightproductProducts = $('.heightproduct');
+        const heightproductProducts = $('.widthproduct');
         heightproductProducts.each(function(i, obj){
             $(this).removeClass('border-dark');
             const unitProduct = $(this).parents().eq(6).children().eq(1).children().eq(0).children().eq(0).children().eq(0).children().find('input:checked').val()
@@ -229,15 +229,15 @@ function validateQuotationsForm(form){
                 if ($(this).val().length === 0) {
                     $(this).removeClass('is-valid');
                     $(this).addClass('is-invalid');
-                    $(this).siblings().eq(1).text('Por favor, agregue una medida para el alto');
+                    $(this).siblings().eq(1).text('Por favor, agregue una medida para el ancho');
                 }else if (patternHeightProducts.test($(this).val())){
                     $(this).removeClass('is-valid');
                     $(this).addClass('is-invalid');
-                    $(this).siblings().eq(1).text('La medida del alto solo debe contener números');
+                    $(this).siblings().eq(1).text('La medida del ancho solo debe contener números');
                 }else if (!($(this).val() > 0 && $(this).val() <= 100)){
                     $(this).removeClass('is-valid');
                     $(this).addClass('is-invalid');
-                    $(this).siblings().eq(1).text('La medida del alto debe ser mayor a 0Mt y menor a 100Mt');
+                    $(this).siblings().eq(1).text('La medida del ancho debe ser mayor a 0Mt y menor a 100Mt');
                 }else{
                     $(this).removeClass('is-invalid');
                     $(this).addClass('is-valid');

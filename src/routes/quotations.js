@@ -27,6 +27,11 @@ router.post('/preview', async (req, res)=>{
     const clienteId = body.clientid;
     const usr = await pool.query('SELECT Empleados.nombreComp FROM (Empleados INNER JOIN Usuarios ON Empleados.empleadoId = Usuarios.empleado_id) WHERE Usuarios.usuarioId = ?', [usrId]);
     const cliente = await pool.query('SELECT * FROM Clientes WHERE clienteId = ?', [clienteId]);
+    const date = new Date();
+
+    // formatos de fecha
+    fechaCotizacion = date.toLocaleDateString('es-mx', {year: 'numeric', month: 'long', day: 'numeric', hour:'numeric', minute: 'numeric', hour12: true});
+    fechaBasedatos = date.toISOString();
 
     // obtener informacion de los productos 
     let i = 0;
@@ -45,7 +50,7 @@ router.post('/preview', async (req, res)=>{
     let productosCotArray = [];
     const valoresProductos = Object.values(productos);
     for (const key in productos) {
-        if (j !==0 && j%9 === 0) {
+        if (j !==0 && j%10 === 0) {
             productosCotArray.push(productosCot);
             productosCot = {};
         }
@@ -61,11 +66,11 @@ router.post('/preview', async (req, res)=>{
     let iva = 0
     productosCotArray.forEach(producto => {
         if(producto.unitproduct === 'Mt'){
-            producto.measure = dimensiones(producto.widthproduct * producto.heightproduct);
+            producto.measure = dimensiones(producto.lengthproduct * producto.widthproduct);
             producto.priceach = moneda(producto.measure * producto.priceproduct);
             producto.amount = moneda(producto.priceach * producto.quantityproduct);
         }else{
-            producto.measure = dimensiones(producto.widthproduct * producto.heightproduct);
+            producto.measure = dimensiones(producto.lengthproduct * producto.widthproduct);
             producto.priceach = moneda(producto.measure * producto.priceproduct);
             producto.amount = moneda(producto.priceproduct * producto.quantityproduct);
         }
@@ -77,8 +82,20 @@ router.post('/preview', async (req, res)=>{
     iva = moneda((16*subtotal)/100);
     total = moneda(subtotal + iva);
 
+    // separar productos en mediciones
+    let productosconMedidas = [];
+    let productosSinMedidas= [];
+    productosCotArray.forEach(producto =>{
+        if(producto.unitproduct === 'Mt'){
+            productosconMedidas.push(producto);
+        }else{
+            productosSinMedidas.push(producto)
+        }
+    })
+
     // crear datos de factura (calculos de la cotizacion)
     const factura = {
+        gross: bruto,
         discount: descuento,
         subtotal: subtotal,
         taxes: iva,
@@ -88,18 +105,21 @@ router.post('/preview', async (req, res)=>{
     // crear cotizacion
     const cot = {
         cliente_id: body.clientid,
-        representante: body.nameapplicant,
+        fecha: fechaCotizacion,
+        solicitante: body.nameapplicant,
         proyecto: body.nameproyect,
         observaciones: body.observations,
         elaboro: usr[0].nombreComp,
-        estatus: 'G',
+        estatus: 'Generada',
         descuento: body.numdiscount,
         subtotal: subtotal,
         total: total
     }
 
-    console.log(productosCotArray);
-    //res.render('quotations/preview', {products:productosCotArray});
+    console.log(productosconMedidas);
+    console.log(productosSinMedidas);
+
+    res.render('quotations/preview', {quotation:cot, client: cliente, products: productosCotArray, bill: factura});
 })
 
 router.post('/listProducts', async (req, res)=>{

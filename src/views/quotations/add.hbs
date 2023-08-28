@@ -110,7 +110,7 @@
                                     {{#each products}}
                                         <option value={{productoId}}>{{nombre}}</option>
                                     {{else}}
-                                    <option value="" selected>No existen productos disponibles...</option>
+                                    <option value="">No existen productos disponibles...</option>
                                     {{/each}}
                                 </select>
                                 <div class="valid-feedback">
@@ -149,6 +149,7 @@
                                 <p class="card-title m-0"><b>Producto:</b> \{{nombre}}</p>
                                 <input class="d-none" name="productId\{{countProduct}}" type="text" value="\{{productoId}}">
                                 <input class="d-none" name="nameproduct\{{countProduct}}" type="text" value="\{{nombre}}">
+                                <input class="d-none" name="isoutcatalog\{{countProduct}}" type="text" value="0">
                             </div>
                             <div class="col-4 text-end">
                                 <button class="btn btn-danger btn-sm remove-product-button" type="button"><i class="bi bi-trash3"></i></button>
@@ -228,6 +229,18 @@
                                 \{{#equal unidad "Mt"}}
                                     <div class="row row-cols-2 justify-content-md-start">
                                         <div class="col-md-6 h-100">
+                                            <label for="lengthproduct" class="form-label">Largo:</label>
+                                            <div class="input-group input-group-sm has-validation">
+                                                <input type="text" name="lengthproduct\{{countProduct}}" class="form-control border-dark border-2 rounded lengthproduct" placeholder="Mt" required>
+                                                <div class="valid-feedback">
+                                                    ¡Perfecto!
+                                                </div>
+                                                <div class="invalid-feedback">
+                                                    <span class="invalid-feedback-lengthproduct"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 h-100">
                                             <label for="widthproduct" class="form-label">Ancho:</label>
                                             <div class="input-group input-group-sm has-validation">
                                                 <input type="text" name="widthproduct\{{countProduct}}" class="form-control border-dark border-2 rounded widthproduct" placeholder="Mt" required>
@@ -239,32 +252,20 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6 h-100">
-                                            <label for="heightproduct" class="form-label">Alto:</label>
-                                            <div class="input-group input-group-sm has-validation">
-                                                <input type="text" name="heightproduct\{{countProduct}}" class="form-control border-dark border-2 rounded heightproduct" placeholder="Mt" required>
-                                                <div class="valid-feedback">
-                                                    ¡Perfecto!
-                                                </div>
-                                                <div class="invalid-feedback">
-                                                    <span class="invalid-feedback-heightproduct"></span>
-                                                </div>
-                                            </div>
-                                        </div>
                                     </div>
                                 \{{/equal}}
                                 \{{#equal unidad "Pieza"}}
                                     <div class="row row-cols-2 justify-content-md-start d-none">
                                         <div class="col-md-6 d-grid">
-                                            <label for="widthproduct" class="form-label">Ancho:</label>
+                                            <label for="lengthproduct" class="form-label">Largo:</label>
                                             <div class="input-group input-group-sm has-validation">
-                                                <input type="text" name="widthproduct\{{countProduct}}" value="0" class="form-control border-dark border-2 rounded widthproduct" placeholder="Mt">
+                                                <input type="text" name="lengthproduct\{{countProduct}}" value="0" class="form-control border-dark border-2 rounded lengthproduct" placeholder="Mt">
                                             </div>
                                         </div>
                                         <div class="col-md-6 d-grid">
-                                            <label for="heightproduct" class="form-label">Alto:</label>
+                                            <label for="widthproduct" class="form-label">Ancho:</label>
                                             <div class="input-group input-group-sm has-validation">
-                                                <input type="text" name="heightproduct\{{countProduct}}" value="0" class="form-control border-dark border-2 rounded heightproduct" placeholder="Mt">
+                                                <input type="text" name="widthproduct\{{countProduct}}" value="0" class="form-control border-dark border-2 rounded widthproduct" placeholder="Mt">
                                             </div>
                                         </div>
                                     </div>
@@ -272,15 +273,15 @@
                                 \{{#equal unidad "Millar"}}
                                     <div class="row row-cols-2 justify-content-md-start d-none">
                                         <div class="col-md-6 d-grid">
-                                            <label for="widthproduct" class="form-label">Ancho:</label>
+                                            <label for="lengthproduct" class="form-label">Largo:</label>
                                             <div class="input-group input-group-sm has-validation">
-                                                <input type="text" name="widthproduct\{{countProduct}}" value="0" class="form-control border-dark border-2 rounded widthproduct" placeholder="Mt">
+                                                <input type="text" name="lengthproduct\{{countProduct}}" value="0" class="form-control border-dark border-2 rounded lengthproduct" placeholder="Mt">
                                             </div>
                                         </div>
                                         <div class="col-md-6 d-grid">
-                                            <label for="heightproduct" class="form-label">Alto:</label>
+                                            <label for="widthproduct" class="form-label">Ancho:</label>
                                             <div class="input-group input-group-sm has-validation">
-                                                <input type="text" name="heightproduct\{{countProduct}}" value="0" class="form-control border-dark border-2 rounded heightproduct" placeholder="Mt">
+                                                <input type="text" name="widthproduct\{{countProduct}}" value="0" class="form-control border-dark border-2 rounded widthproduct" placeholder="Mt">
                                             </div>
                                         </div>
                                     </div>
@@ -312,6 +313,7 @@
                                     <div class="invalid-feedback">
                                         <span class="invalid-feedback-nameoutproduct"></span>
                                     </div>
+                                    <input class="d-none" name="isoutcatalog\{{countProduct}}" type="text" value="1">
                                 </div>
                             </div>
                             <div class="col-2 h-100 text-end">
@@ -397,6 +399,18 @@
                             <div class="col-md-3">
                                 <div class="row row-cols-2 justify-content-md-start">
                                     <div class="col-md-6 h-100">
+                                        <label for="lengthproduct" class="form-label">Largo:</label>
+                                        <div class="input-group input-group-sm has-validation">
+                                            <input type="text" name="lengthproduct\{{countProduct}}" class="form-control border-dark border-2 rounded lengthproduct" placeholder="Mt" required>
+                                            <div class="valid-feedback">
+                                                ¡Perfecto!
+                                            </div>
+                                            <div class="invalid-feedback">
+                                                <span class="invalid-feedback-lengthproduct"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 h-100">
                                         <label for="widthproduct" class="form-label">Ancho:</label>
                                         <div class="input-group input-group-sm has-validation">
                                             <input type="text" name="widthproduct\{{countProduct}}" class="form-control border-dark border-2 rounded widthproduct" placeholder="Mt" required>
@@ -404,19 +418,7 @@
                                                 ¡Perfecto!
                                             </div>
                                             <div class="invalid-feedback">
-                                                <span class="invalid-feedback-widthoutproduct"></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 h-100">
-                                        <label for="heightproduct" class="form-label">Alto:</label>
-                                        <div class="input-group input-group-sm has-validation">
-                                            <input type="text" name="heightproduct\{{countProduct}}" class="form-control border-dark border-2 rounded heightproduct" placeholder="Mt" required>
-                                            <div class="valid-feedback">
-                                                ¡Perfecto!
-                                            </div>
-                                            <div class="invalid-feedback">
-                                                <span class="invalid-feedback-heightoutproduct"></span>
+                                                <span class="invalid-feedback-widthproduct"></span>
                                             </div>
                                         </div>
                                     </div>

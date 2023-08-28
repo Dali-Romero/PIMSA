@@ -15,3 +15,11 @@ hbs.registerHelper('equalNR', function(v1, v2, options){
         return options.inverse(this);
     }
 });
+
+const helpers = {};
+
+helpers.formatNumber = (n) => {
+    return Number(n).toLocaleString();
+};
+
+module.exports = helpers;
