@@ -26,31 +26,27 @@
                             </a>
                         </th>
                         <td>{{formatDateShort fecha}}</td>
-                        <td>
+                        <td class="text-start">
                             <div class="row">
-                                <div class="col-md-12 text-start">
-                                    {{#each ../clientes}}
-                                        {{#equal ../clienteId cliente_id}} 
-                                            <a class="link-offset-2 link-offset-2-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover" href="clients/editclient/{{clienteId}}">
-                                                {{nombre}}
-                                            </a>
-                                        {{/equal}}
-                                    {{/each}}
+                                <div class="col-md-12">
+                                    <a class="link-offset-2 link-offset-2-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover" href="clients/editclient/{{clienteId}}">
+                                        {{nombre}}
+                                    </a>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-3 text-start">
+                                <div class="col-md-3 pe-md-0">
                                     <b>Proyecto:</b>
                                 </div>
-                                <div class="col-md-9 text-start">
+                                <div class="col-md-9 ps-md-0">
                                     {{proyecto}}
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-3">
+                                <div class="col-md-3 pe-md-0">
                                     <b>Solicitante:</b>
                                 </div>
-                                <div class="col-md-9 text-start">
+                                <div class="col-md-9 ps-md-0">
                                     {{solicitante}}
                                 </div>
                             </div>
