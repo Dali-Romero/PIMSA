@@ -1,0 +1,326 @@
+<div class="row p-3" id="client-title">
+    <h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-people-fill"></i> clientes</h1>
+</div>
+<div class="row p-4">
+    <p class="fs-5 p-2 m-0" id="client-add-title">Agregar cliente</p>
+</div>
+<div class="row px-3">
+    <form action="/clients/addclient" class="needs-validation" id="form-add-client" method="post" novalidate>
+        <div class="row mb-4 justify-content-md-between">
+            <div class="col-md-4">
+                <div class="row mb-4">
+                    <label for="date" class="form-label">Fecha de registro:</label>
+                    <div class="input-group">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-calendar"></i></span>
+                        <input type="date" name="date" id="date" class="form-control border-dark border-2" aria-describedby="basic-addon1" placeholder="Fecha">
+                        <div class="valid-feedback">
+                            Este campo es opcional
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="executive" class="form-label">Ejecutivo:</label><br>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border2 border-end-0" id="basic-addon1"><i class="bi bi-person"></i></span>
+                        <!--input type="text" name="executive" id="executive" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required-->
+                        <select name="executive" id="executive" class="form-select border-dark border-2" required>
+                            {{#each executive}}
+                                <option value={{usuarioId}}>{{nombre}}</option>
+                            {{/each}}
+                        </select>
+                        <div class="valid-feedback">
+                            ¡Perfecto!
+                        </div>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-executive"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="group" class="form-label">Grupo:</label><br>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border2 border-end-0" id="basic-"><i class="bi bi-people"></i></span>
+                        <!--input type="text" name="group" id="group" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required-->
+                        <select name="group" id="group" class="form-select border-dark border-2" required>
+                            {{#each group}}
+                                <option value={{grupoId}}>{{nombre}}</option>
+                            {{/each}}
+                        </select>
+                        <div class="valid-feedback">
+                            ¡Perfecto!
+                        </div>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-group"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="tradename" class="form-label">Nombre comercial:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-card-text"></i></span>
+                        <input type="text" name="tradename" id="tradename" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required>
+                        <div class="valid-feedback">
+                            ¡Perfecto!
+                        </div>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-tradename"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="contact" class="form-label">Contacto (Empresa):</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-telephone"></i></span>
+                        <input type="text" name="contact" id="contact" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required>
+                        <div class="valid-feedback">
+                            ¡Perfecto!
+                        </div>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-contact"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="companyname" class="form-label">Razón social:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-house"></i></span>
+                        <input type="text" name="companyname" id="companyname" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required>
+                        <div class="valid-feedback">
+                            ¡Perfecto!
+                        </div>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-companyname"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="rfc" class="form-label">RFC:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-person-fill-lock"></i></span>
+                        <input type="text" name="rfc" id="rfc" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required>
+                        <div class="valid-feedback">
+                            ¡Perfecto!
+                        </div>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-rfc"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="street" class="form-label">Calle:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-houses"></i></span>
+                        <input type="text" name="street" id="street" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required>
+                        <div class="valid-feedback">
+                            ¡Perfecto!
+                        </div>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-street"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="outernumber" class="form-label">Número exterior:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-house-up"></i></span>
+                        <input type="text" name="outernumber" id="outernumber" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required>
+                        <div class="valid-feedback">
+                            ¡Perfecto!
+                        </div>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-outernumber"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="innernumber" class="form-label">Número interior:</label>
+                    <div class="input-group">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-house-up-fill"></i></span>
+                        <input type="text" name="innernumber" id="innernumber" class="form-control border-dark border-2" aria-describedby="basic-addon1">
+                        <div class="valid-feedback">
+                            Este campo es opcional
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="colony" class="form-label">Colonia:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-houses-fill"></i></span>
+                        <input type="text" name="colony" id="colony" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required>
+                        <div class="valid-feedback">
+                            ¡Perfecto!
+                        </div>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-colony"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="cp" class="form-label">Código postal:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-envelope"></i></span>
+                        <input type="text" name="cp" id="cp" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required>
+                        <div class="valid-feedback">
+                            ¡Perfecto!
+                        </div>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-cp"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="row mb-4">
+                    <label for="state" class="form-label">Estado:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-pin-map"></i></span>
+                        <input type="text" name="state" id="state" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required>
+                        <div class="valid-feedback">
+                            ¡Perfecto!
+                        </div>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-state"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="city" class="form-label">Ciudad:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-pin-map-fill"></i></span>
+                        <input type="text" name="city" id="city" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required>
+                        <div class="valid-feedback">
+                            ¡Perfecto!
+                        </div>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-city"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="telephone" class="form-label">Teléfono:</label>
+                    <div class="row m-0 p-0">
+                        <div class="col-5">
+                            <input type="text" name="extension" id="extension" class="form-control border-dark border-2" aria-describedby="basic-addon1" placeholder="Extensión">
+                            <div class="valid-feedback">
+                                Este campo es opcional
+                            </div>
+                        </div>
+                        <div class="col-7">
+                            <div class="input-group has-validation">
+                                <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-telephone"></i></span>
+                                <input type="text" name="telephone" id="telephone" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required>
+                                <div class="valid-feedback">
+                                    ¡Perfecto!
+                                </div>
+                                <div class="invalid-feedback">
+                                    <span id="invalid-feedback-telephone"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="cell" class="form-label">Celular (cliente):</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-phone"></i></span>
+                        <input type="text" name="cell" id="cell" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required>
+                        <div class="valid-feedback">
+                            ¡Perfecto!
+                        </div>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-cell"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="email" class="form-label">Correo electrónico:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-at"></i></span>
+                        <input type="email" name="email" id="email" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required>
+                        <div class="valid-feedback">
+                            ¡Perfecto!
+                        </div>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-email"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="emailAlt" class="form-label">Correo electrónico alterno:</label>
+                    <div class="input-group">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-at"></i></span>
+                        <input type="email" name="emailAlt" id="emailAlt" class="form-control border-dark border-2" aria-describedby="basic-addon1">
+                        <div class="valid-feedback">
+                            Este campo es opcional
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="creditlimit" class="form-label">Limite de crédito:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-cash-stack"></i></span>
+                        <input type="text" name="creditlimit" id="creditlimit" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required>
+                        <div class="valid-feedback">
+                            ¡Perfecto!
+                        </div>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-creditlimit"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="creditdays" class="form-label">Días de crédito:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-calendar3"></i></span>
+                        <input type="text" name="creditdays" id="creditdays" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required>
+                        <div class="valid-feedback">
+                            ¡Perfecto!
+                        </div>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-creditdays"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="descuento" class="form-label">Porcentaje de descuento:</label>
+                    <div class="input-group">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-percent"></i></span>
+                        <input type="text" name="descuento" id="descuento" class="form-control border-dark border-2" aria-describedby="basic-addon1">
+                        <div class="valid-feedback">
+                            Este campo es opcional
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="observaciones" class="form-label">Observaciones:</label>
+                    <div class="input-group">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-book"></i></span>
+                        <input type="text" name="observaciones" id="observaciones" class="form-control border-dark border-2" aria-describedby="basic-addon1">
+                        <div class="valid-feedback">
+                            Este campo es opcional
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="status" class="form-label">Estatus:</label>
+                    <div class="row row-cols-2 justify-content-md-start">
+                        <div class="col-md-4 d-grid">
+                            <input type="radio" name="status" id="statusop1" class="btn-check" value="1" autocomplete="off" checked>
+                            <label for="statusop1" class="btn btn-outline-success border-success border-2">Activo</label>
+                        </div>
+                        <div class="col-md-4 d-grid">
+                            <input type="radio" name="status" id="statusop2" class="btn-check" value="0" autocomplete="off">
+                            <label for="statusop2" class="btn btn-outline-danger border-danger border-2">Inactivo</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <div class="col-mb-4">
+                        <button class="btn btn-success me-4" type="submit">Agregar cliente</button>
+                        <button class="btn btn-danger" type="reset">Limpiar campos</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
