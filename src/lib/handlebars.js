@@ -23,8 +23,14 @@ helpers.formatNumber = (n) => {
 };
 
 helpers.formatDate = (date) => {
-    const newDate = date.toLocaleDateString('es-mx', {year: 'numeric', month: 'long', day: 'numeric', hour:'numeric', minute: 'numeric'});
-    return newDate;
+    date = new Date(date);
+    fecha = date.toLocaleDateString('es-mx', {year: 'numeric', month: 'long', day: 'numeric', hour:'numeric', minute: 'numeric'});
+    return fecha;
+};
+helpers.formatDateShort = (date) => {
+    date = new Date(date);
+    fecha = date.toLocaleDateString('es-mx', {year: 'numeric', month: '2-digit', day: '2-digit', hour:'numeric', minute: 'numeric'});
+    return fecha;
 };
 
 module.exports = helpers;

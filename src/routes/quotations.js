@@ -174,7 +174,9 @@ router.post('/preview', async (req, res)=>{
 })
 
 router.get('/', async (req, res)=>{
-    res.send('lista cot');
+    const cotizaciones = await pool.query('SELECT * FROM Cotizaciones');
+    const clientes = await pool.query('SELECT clienteId, nombre FROM CLientes');
+    res.render('quotations/list', {cotizaciones: cotizaciones, clientes: clientes});
 })
 
 module.exports = router;

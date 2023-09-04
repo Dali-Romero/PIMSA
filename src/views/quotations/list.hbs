@@ -1,0 +1,86 @@
+<div class="row p-3" id="machine-title">
+    <h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-journals"></i> Cotizaciones</h1>
+</div>
+<div class="row p-4">
+    <p class="fs-5 p-2 m-0" id="machine-add-title">Cotizaciones registradas</p>
+</div>
+<div class="row px-4 pt-0 pb-4">
+    <div class="table-responsive-xxl p-0">
+        <table class="table table-striped align-middle" id="quotations-table">
+            <thead>
+                <tr>
+                    <th scope="col">No. Cotización</th>
+                    <th scope="col">Fecha y hora</th>
+                    <th scope="col">Cliente</th>
+                    <th scope="col">Monto total</th>
+                    <th scope="col">Estatus</th>
+                    <th scope="col">Empleado</th>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                {{#each cotizaciones}}
+                    <tr>
+                        <th scope="row">
+                            <a class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover" href="quotations/info/{{cotId}}">
+                                COT-{{cotId}}
+                            </a>
+                        </th>
+                        <td>{{formatDateShort fecha}}</td>
+                        <td>
+                            <div class="row">
+                                <div class="col-md-12 text-start">
+                                    {{#each ../clientes}}
+                                        {{#equal ../clienteId cliente_id}} 
+                                            <a class="link-offset-2 link-offset-2-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover" href="clients/editclient/{{clienteId}}">
+                                                {{nombre}}
+                                            </a>
+                                        {{/equal}}
+                                    {{/each}}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3 text-start">
+                                    <b>Proyecto:</b>
+                                </div>
+                                <div class="col-md-9 text-start">
+                                    {{proyecto}}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <b>Solicitante:</b>
+                                </div>
+                                <div class="col-md-9 text-start">
+                                    {{solicitante}}
+                                </div>
+                            </div>
+                        </td>
+                        <td>$ {{formatNumber total}}</td>
+                        {{#equal estatus "Generada"}}
+                            <td class="text-info">{{estatus}}</td>
+                        {{/equal}}
+                        {{#equal estatus "Cancelada"}}
+                            <td class="text-danger">{{estatus}}</td>
+                        {{/equal}}
+                        {{#equal estatus "Ordenada"}}
+                            <td class="text-success">{{estatus}}</td>
+                        {{/equal}}
+                        {{#equal estatus "Espera"}}
+                            <td class="text-waining">En espera</td>
+                        {{/equal}}
+                        <td>{{empleado}}</td>
+                    </tr>
+                {{else}}
+                    <tr>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td colspan="6">No existen cotizaciones registradas</td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>

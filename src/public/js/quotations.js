@@ -409,6 +409,24 @@ function validateQuotationsForm(form){
 }
 
 $(document).ready(function(){
+    // list quotations table
+    var table = new DataTable('#quotations-table', {
+        paging: false,
+        info: false,
+        padding: false,
+        order: [],
+        dom: '<"float-start pb-2"f><"button-add-quotation pb-2"B>', 
+        columnDefs: [
+            {className: "dt-center", targets: "_all"},
+        ],
+        fnInitComplete: function(){
+            $('div.button-add-quotation').html('<a href="/quotations/add" class="btn btn-outline-success border-success border-2 float-end" role="button"><i class="bi bi-bag-plus"></i> Cotizar</a>');
+        },
+        language:{
+            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-MX.json',
+        },
+    });
+
     // enable discount field
     $('#discountop1').on('click', ()=>{
         $('#numdiscount').prop('disabled', false);
