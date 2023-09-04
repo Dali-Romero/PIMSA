@@ -1,0 +1,63 @@
+<div class="row p-3" id="group-title">
+    <h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-people"></i>grupos de clientes</h1>
+</div>
+
+<div class="row p-4">
+    <div class="row justify-content-between p-0 m-0" id="group-add-title">
+        <div class="col-md-8 p-2">
+            <p class="fs-5 m-0">Grupos registrados</p>
+        </div>
+    </div>
+</div>
+
+<div class="row p-4 pt-0">
+    <div class="table-responsive-xxl p-0">
+        <table class="table table-striped" id="groups_table">
+            <thead>
+                <tr>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Descripción</th>
+                    <th scope="col">Miembros totales</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                {{#each groups}}
+                    <tr>
+                        <th scope="row">{{nombre}}</th>
+                        <td>{{descripcion}}</td>
+                        <td></td>
+                        <td><a href="/grupos/editgroup/{{grupoId}}" class="btn btn-sm btn-secondary"><i class="bi bi-pencil-square"></i> Editar</a></td>
+                    </tr>
+                {{else}}
+                    <tr>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td colspan="10">No existen grupos registrados.</td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<script>
+    var table = new DataTable('#groups_table', {
+        paging: false,
+        info: false,
+        padding: false,
+        order: [],
+        dom: '<"float-start pb-2"f><"button-add-groups pb-2"B>', 
+        columnDefs: [
+            {className: "dt-center", targets: "_all"}
+        ],
+        fnInitComplete: function(){
+            $('div.button-add-groups').html('<a href="/grupos/addgroup" class="btn btn-outline-success border-success border-2 float-end" role="button"><i class="bi bi-patch-plus-fill"></i> Añadir grupo</a>');
+        },
+        language:{
+            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-MX.json',
+        },
+    })
+</script>

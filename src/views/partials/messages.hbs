@@ -1,0 +1,51 @@
+{{#if success}}
+<div class="toast-container top-0 start-50 translate-middle-x mt-2">
+    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header text-bg-success" data-bs-theme="dark">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            <strong class="me-auto">Operación exitosa</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body bg-light">
+            {{{success}}}
+            <div class="mt-2 pt-2 border-top">
+                <div class="row justify-content-end">
+                    <div class="col-md-auto">
+                        <button type="button" class="btn btn-success btn-sm" data-bs-dismiss="toast">Aceptar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    const toast = new bootstrap.Toast(document.getElementById('liveToast'), {});
+    toast.show();
+</script>
+{{/if}}
+
+{{#if error}}
+<div class="toast-container top-0 start-50 translate-middle-x mt-2">
+    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header text-bg-danger" data-bs-theme="dark">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            <strong class="me-auto">Operación fallida</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body bg-light">
+            {{{error}}}
+            <div class="mt-2 pt-2 border-top">
+                <div class="row justify-content-end">
+                    <div class="col-md-auto">
+                        <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="toast">Aceptar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    const toast = new bootstrap.Toast(document.getElementById('liveToast'), {});
+    toast.show();
+</script>
+{{/if}}

@@ -1,0 +1,52 @@
+<div class="col-md-4 mx-auto">
+    <div class="card">
+        <div class="card-header">
+            Inicio de Sesion
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <img src="/img/PIMSAlogo.png" class="img-fluid">
+            </div>
+            <form action="/login" class="needs-validation" id="form-login" method="POST" novalidate>
+                <div class="mb-3">
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-at"></i></span>
+                        <input type="email" class="form-control border-dark border-2" name="correo" id="correo" placeholder="Correo" autofocus>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-correo"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-key"></i></span>
+                        <input type="password" class="form-control border-dark border-2" name="password" placeholder="Contraseña" id="password">
+                        <button class="btn btn-class-primary border-dark border-2" type="button" onclick="mostrarContrasena()"><i class="bi bi-eye-slash-fill" id="showPass"></i></button>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-password"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-grid gap-2 col-6 mx-auto">
+                    <button class="btn btn-primary" type="submit">
+                        Iniciar Sesion 
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function mostrarContrasena(){
+        var tipo = document.getElementById("password");
+        var im = document.getElementById("showPass");
+        im.classList.toggle("bi-eye-fill");
+        im.classList.toggle("bi-eye-slash-fill");
+        if(tipo.type == "password"){
+            tipo.type = "text";
+        }else{
+            tipo.type = "password";
+        }
+    }
+</script>

@@ -1,0 +1,183 @@
+<div class="row p-3" id="machine-title">
+    <h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-gear-wide-connected"></i> máquinas</h1>
+</div>
+<div class="row p-4">
+    <p class="fs-5 p-2 m-0" id="machine-add-title">Agregar máquina</p>
+</div>
+<div class="row px-3">
+    <form action="/machines/add" class="needs-validation" id="form-add-machine" method="post" novalidate>
+        <div class="row mb-4 justify-content-md-between">
+            <div class="col-md-4">
+                <div class="row mb-4">
+                    <label for="serialnumber" class="form-label">Número de serie:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-upc"></i></span>
+                        <input type="text" name="serialnumber" id="serialnumber" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" autofocus required>
+                        <div class="valid-feedback">
+                            ¡Perfecto!
+                        </div>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-serialnumber"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="brand" class="form-label">Marca:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-gear"></i></span>
+                        <input type="text" name="brand" id="brand" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required>
+                        <div class="valid-feedback">
+                            ¡Perfecto!
+                        </div>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-brand"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="name" class="form-label">Nombre:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-card-text"></i></span>
+                        <input type="text" name="name" id="name" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required>
+                        <div class="valid-feedback">
+                            ¡Perfecto!
+                        </div>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-name"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="headtype" class="form-label">Tipo de cabezal:</label>
+                    <div class="input-group">
+                        <select name="headtype" id="headtype" class="form-select border-dark border-2">
+                            <option value="Térmico" selected>Térmico</option>
+                            <option value="Piezoeléctrico">Piezoeléctrico</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="headnum" class="form-label">Número de cabezales:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-123"></i></span>
+                        <input type="number" min="0" max="10" name="headnum" id="headnum" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required>
+                        <div class="valid-feedback">
+                            ¡Perfecto!
+                        </div>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-headnum"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="speed" class="form-label">Velocidad (<var>Mt²/h</var>):</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-speedometer2"></i></span>
+                        <input type="number" min="0" name="speed" id="speed" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required>
+                        <div class="valid-feedback">
+                            ¡Perfecto!
+                        </div>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-speed"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="row mb-4">
+                    <label for="inktype" class="form-label">Tipo de tinta:</label>
+                    <div class="input-group">
+                        <select name="inktype" id="inktype" class="form-select border-dark border-2">
+                            <option value="Acuosa" selected>Acuosa</option>
+                            <option value="Sublimación">Sublimación</option>
+                            <option value="Solvente">Solvente</option>
+                            <option value="Ecosolvente">Ecosolvente</option>
+                            <option value="Latex o resina">Latex o resina</option>
+                            <option value="Curado UV">Curado UV</option>
+                            <option value="Híbrida solvente-UV">Híbrida solvente-UV</option>
+                            <option value="Sólida">Sólida</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="techcontact" class="form-label">Contacto del técnico:</label>
+                    <div class="row m-0 p-0">
+                        <div class="col-5">
+                            <input type="text" name="extension" id="extension" class="form-control border-dark border-2" aria-describedby="basic-addon1" placeholder="Extensión">
+                            <div class="valid-feedback">
+                                Este campo es opcional
+                            </div>
+                        </div>
+                        <div class="col-7">
+                            <div class="input-group has-validation">
+                                <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-telephone"></i></span>
+                                <input type="text" name="techcontact" id="techcontact" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required>
+                                <div class="valid-feedback">
+                                    ¡Perfecto!
+                                </div>
+                                <div class="invalid-feedback">
+                                    <span id="invalid-feedback-techcontact"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="status" class="form-label">Estatus:</label>
+                    <div class="row row-cols-2 justify-content-md-start">
+                        <div class="col-md-4 d-grid">
+                            <input type="radio" name="status" id="statusop1" class="btn-check" value="1" autocomplete="off" checked>
+                            <label for="statusop1" class="btn btn-outline-success border-success border-2">Activa</label>
+                        </div>
+                        <div class="col-md-4 d-grid">
+                            <input type="radio" name="status" id="statusop2" class="btn-check" value="0" autocomplete="off">
+                            <label for="statusop2" class="btn btn-outline-danger border-danger border-2">Inactiva</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="allowedUsers" class="form-label mb-0">Usuarios autorizados:</label>
+                    <div class="table-responsive-xxl overflow-y-auto" id="table-users-add">
+                        <table class="table table-sm table-striped align-middle">
+                            <thead>
+                                <tr>
+                                    <th scope="col"></th>
+                                    <th scope="col">Nombre del usuario</th>
+                                    <th scope="col">Area</th>
+                                    <th scope="col">Rol</th>
+                                </tr>
+                            </thead>
+                            <tbody class="table-group-divider">
+                                {{#each users}}
+                                    <tr>
+                                        <td>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="allowedUser" value="{{usuarioId}}" id="allowedUser">
+                                            </div>
+                                        </td>
+                                        <th scope="row">{{Empleado}}</th>
+                                        <td>{{Area}}</td>
+                                        <td>{{Rol}}</td>
+                                    </tr>
+                                {{else}}
+                                    <tr>
+                                        <td class="d-none"></td>
+                                        <td class="d-none"></td>
+                                        <td class="d-none"></td>
+                                        <td colspan="4">No existen usuarios registrados</td>
+                                    </tr>
+                                {{/each}}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <div class="col-mb-4">
+                        <button class="btn btn-success me-4" type="submit">Agregar máquina</button>
+                        <button class="btn btn-danger" type="reset">Limpiar campos</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
