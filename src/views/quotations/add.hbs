@@ -5,19 +5,18 @@
     <p class="fs-5 p-2 m-0" id="machine-add-title">Agregar cotización</p>
 </div>
 <div class="row px-4">
-    <form action="/quotations/preview" method="post" class="needs-validation" id="form-add-quotation" novalidate>
+    <form action="/quotations/add" method="post" class="needs-validation" id="form-add-quotation" novalidate>
         <div class="row mb-4 gy-4 justify-content-md-between">
-            <div class="col-md-3 h-100"> <!-- <div class="col-md-4 p-0 bg-info"> alinear con titulo -->
-                <div class="row mb-2 text-center bg-danger text-white"> <!-- <div class="row mb-2 m-0 text-center bg-danger"> alinear con titulo -->
+            <div class="col-md-3 p-0 h-100">
+                <div class="row mb-2 m-0 text-center bg-danger text-white">
                     <p class="fs-6 p-2 m-0">Información general</p>
                 </div>
-                <div class="row p-2"> <!-- <div class="row mb-4 px-2"> alinear con titulo -->
+                <div class="row p-2">
                     <label for="clientid" class="form-label">Nombre del cliente:</label>
                     <div class="input-group has-validation">
                         <select name="clientid" id="clientid" class="form-select border-dark border-2 rounded-end" required>
                             <option value="">Seleccione un cliente</option>
-                            <option value="1">Cliente</option>
-                            {{#each clients}}
+                            {{#each clientes}}
                                 <option value="{{clienteId}}">{{nombre}}</option>
                             {{else}}
                                 <option value="" disabled>No existen clientes registrados...</option>
@@ -97,20 +96,20 @@
                 </div>
             </div>
             <div class="col-md-8 h-100">
-                <div class="row mb-3 text-center bg-danger text-white">
+                <div class="row text-center bg-danger text-white">
                     <p class="fs-6 p-2 m-0">Información de los productos</p>
                 </div>
-                <div class="row p-3 justify-content-md-between" id="products-cards-container">
-                    <div class="row m-0 mb-4">
-                        <div class="col-8">
+                <div class="row justify-content-md-between" id="products-cards-container">
+                    <div class="row my-4 m-0">
+                        <div class="col-8 p-0">
                             <div class="input-group has-validation">
                                 <button class="btn btn-primary border-dark border-2 border-end-0" id="cotbtn" type="button">Cotizar</button>
                                 <select class="form-select border-dark border-2 rounded-end" id="nameproduct" required>
                                     <option value="">Seleccione un producto</option>
-                                    {{#each products}}
+                                    {{#each productos}}
                                         <option value={{productoId}}>{{nombre}}</option>
                                     {{else}}
-                                    <option value="" selected>No existen productos disponibles...</option>
+                                    <option value="" disabled>No existen productos disponibles...</option>
                                     {{/each}}
                                 </select>
                                 <div class="valid-feedback">
@@ -121,15 +120,15 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-4 align-self-start text-end">
+                        <div class="col-4 p-0 align-self-start text-end">
                             <button class="btn btn-outline-secondary border-secondary border-2" id="outCatalog" type="button"><i class="bi bi-bag-x"></i> <span class="d-md-inline d-none">Fuera de catálogo</span></button>
                         </div>
                     </div>
                 </div>
-                <div class="row m-0 mb-4 justify-content-end text-end">
+                <div class="row mb-3 justify-content-end text-end">
                     <div class="col-md-6">
                         <button class="btn btn-danger me-4" type="reset">Limpiar campos</button>
-                        <button class="btn btn-success me-3" type="submit">Vista previa</button>
+                        <button class="btn btn-success" type="submit">Vista previa</button>
                     </div>
                 </div>
             </div>
@@ -137,18 +136,39 @@
     </form>
 </div>
 
+{{!-- Modal preview --}}
+<div class="modal fade" id="preview-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header">
+                <p class="modal-title fs-3">Vista previa</p>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="preview-container">
+
+            </div>
+            <div class="modal-footer">
+                <a href="/quotations" class="btn btn-danger" role="button">Cancelar cotización</a>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Seguir editando</button>
+                <button type="button" class="btn btn-success" id="send-quotation">Crear cotización</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {{!-- Templates --}}
 <script type="text/x-handlebars-template" id="products-card-added">
-    \{{#with product}}
+    \{{#with producto}}
         <div class="row m-0">
-            <div class="col-md-12">
+            <div class="col-md-12 p-0">
                 <div class="card mb-4">
                     <div class="card-header text-bg-light">
                         <div class="row m-0 align-items-center">
                             <div class="col-8">
                                 <p class="card-title m-0"><b>Producto:</b> \{{nombre}}</p>
-                                <input class="d-none" name="productId\{{countProduct}}" type="text" value="\{{productoId}}">
-                                <input class="d-none" name="nameproduct\{{countProduct}}" type="text" value="\{{nombre}}">
+                                <input class="d-none" name="productId\{{contadorProducto}}" type="text" value="\{{productoId}}">
+                                <input class="d-none" name="nameproduct\{{contadorProducto}}" type="text" value="\{{nombre}}">
+                                <input class="d-none" name="isoutcatalog\{{contadorProducto}}" type="text" value="0">
                             </div>
                             <div class="col-4 text-end">
                                 <button class="btn btn-danger btn-sm remove-product-button" type="button"><i class="bi bi-trash3"></i></button>
@@ -160,23 +180,29 @@
                             <div class="col-md-4">
                                 <div class="row row-cols-3 justify-content-md-start">
                                     <div class="col-md-4 d-grid">
-                                        <input type="radio" name="unitproduct\{{countProduct}}" class="btn-check unitproduct" id="unitproduct\{{countProduct}}op1" value="Pieza" autocomplete="off" \{{#equal unidad "Pieza"}} checked \{{/equal}}disabled>
-                                        <label for="unitproduct\{{countProduct}}op1" class="btn btn-sm btn-outline-primary border-2">Pieza</label>
+                                        <input type="radio" name="unitproduct\{{contadorProducto}}" class="btn-check unitproduct" id="unitproduct\{{contadorProducto}}op1" value="Pieza" autocomplete="off" \{{#equal unidad "Pieza"}} checked \{{/equal}}disabled>
+                                        <label for="unitproduct\{{contadorProducto}}op1" class="btn btn-sm btn-outline-primary border-2">Pieza</label>
                                     </div>
                                     <div class="col-md-4 d-grid">
-                                        <input type="radio" name="unitproduct\{{countProduct}}" class="btn-check" id="unitproduct\{{countProduct}}op2" value="Mt" autocomplete="off" \{{#equal unidad "Mt"}} checked \{{/equal}} disabled>
-                                        <label for="unitproduct\{{countProduct}}op2" class="btn btn-sm btn-outline-primary border-2">Mt²</label>
+                                        <input type="radio" name="unitproduct\{{contadorProducto}}" class="btn-check" id="unitproduct\{{contadorProducto}}op2" value="Mt" autocomplete="off" \{{#equal unidad "Mt"}} checked \{{/equal}} disabled>
+                                        <label for="unitproduct\{{contadorProducto}}op2" class="btn btn-sm btn-outline-primary border-2">Mt²</label>
                                     </div>
                                     <div class="col-md-4 d-grid">
-                                        <input type="radio" name="unitproduct\{{countProduct}}" class="btn-check" id="unitproduct\{{countProduct}}op3" value="Millar" autocomplete="off" \{{#equal unidad "Millar"}} checked \{{/equal}} disabled>
-                                        <label for="unitproduct\{{countProduct}}op3" class="btn btn-sm btn-outline-primary border-2 ">Millar</label>
+                                        <input type="radio" name="unitproduct\{{contadorProducto}}" class="btn-check" id="unitproduct\{{contadorProducto}}op3" value="Millar" autocomplete="off" \{{#equal unidad "Millar"}} checked \{{/equal}} disabled>
+                                        <label for="unitproduct\{{contadorProducto}}op3" class="btn btn-sm btn-outline-primary border-2 ">Millar</label>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-2 pt-md-0 pt-4">
+                            <div class="col-md-3 pt-md-0 pt-4">
                                 <div class="input-group input-group-sm">
                                     <span class="input-group-text border-dark border-2 border-end-0"><i class="bi bi-currency-dollar"></i></span>
-                                    <input type="number" name="priceproduct\{{countProduct}}" min="0" value="\{{precio}}" class="form-control border-dark border-2 priceproduct" disabled>
+                                    <input type="number" name="priceproduct\{{contadorProducto}}" min="1" value="\{{precio}}" class="form-control border-dark border-2 rounded-end priceoutproduct" required>
+                                    <div class="valid-feedback">
+                                        ¡Perfecto!
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        <span class="invalid-feedback-priceproduct"></span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -185,7 +211,7 @@
                                 <label for="quantityproduct" class="form-label">Cantidad:</label>
                                 <div class="input-group input-group-sm has-validation">
                                     <span class="input-group-text border-dark border-2 border-end-0"><i class="bi bi-hash"></i></span>
-                                    <input type="number" min="1" name="quantityproduct\{{countProduct}}" class="form-control border-dark border-2 rounded-end quantityproduct" required>
+                                    <input type="number" min="1" name="quantityproduct\{{contadorProducto}}" class="form-control border-dark border-2 rounded-end quantityproduct" required>
                                     <div class="valid-feedback">
                                         ¡Perfecto!
                                     </div>
@@ -200,7 +226,7 @@
                                         <label for="coatingproduct" class="form-label">Acabados:</label>
                                         <div class="input-group input-group-sm has-validation">
                                             <button class="btn btn-outline-primary border-primary border-2 coatingproduct-toggle" type="button"><i class="bi bi-toggle2-on"></i></button>
-                                            <input type="text" name="coatingproduct\{{countProduct}}" class="form-control border-dark border-2 border-start-0 rounded-end coatingproduct" required>
+                                            <input type="text" name="coatingproduct\{{contadorProducto}}" class="form-control border-dark border-2 border-start-0 rounded-end coatingproduct" required>
                                             <div class="valid-feedback">
                                                 ¡Perfecto!
                                             </div>
@@ -213,7 +239,7 @@
                                         <label for="fileproduct" class="form-label">Archivo:</label>
                                         <div class="input-group input-group-sm has-validation">
                                             <button class="btn btn-outline-primary border-primary border-2 fileproduct-toggle" type="button"><i class="bi bi-toggle2-on"></i></button>
-                                            <input type="text" name="fileproduct\{{countProduct}}"  class="form-control border-dark border-2 border-start-0 rounded-end fileproduct" required>
+                                            <input type="text" name="fileproduct\{{contadorProducto}}"  class="form-control border-dark border-2 border-start-0 rounded-end fileproduct" required>
                                             <div class="valid-feedback">
                                                 ¡Perfecto!
                                             </div>
@@ -228,9 +254,21 @@
                                 \{{#equal unidad "Mt"}}
                                     <div class="row row-cols-2 justify-content-md-start">
                                         <div class="col-md-6 h-100">
+                                            <label for="lengthproduct" class="form-label">Largo:</label>
+                                            <div class="input-group input-group-sm has-validation">
+                                                <input type="text" name="lengthproduct\{{contadorProducto}}" class="form-control border-dark border-2 rounded lengthproduct" placeholder="Mt" required>
+                                                <div class="valid-feedback">
+                                                    ¡Perfecto!
+                                                </div>
+                                                <div class="invalid-feedback">
+                                                    <span class="invalid-feedback-lengthproduct"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 h-100">
                                             <label for="widthproduct" class="form-label">Ancho:</label>
                                             <div class="input-group input-group-sm has-validation">
-                                                <input type="text" name="widthproduct\{{countProduct}}" class="form-control border-dark border-2 rounded widthproduct" placeholder="Mt" required>
+                                                <input type="text" name="widthproduct\{{contadorProducto}}" class="form-control border-dark border-2 rounded widthproduct" placeholder="Mt" required>
                                                 <div class="valid-feedback">
                                                     ¡Perfecto!
                                                 </div>
@@ -239,32 +277,20 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6 h-100">
-                                            <label for="heightproduct" class="form-label">Alto:</label>
-                                            <div class="input-group input-group-sm has-validation">
-                                                <input type="text" name="heightproduct\{{countProduct}}" class="form-control border-dark border-2 rounded heightproduct" placeholder="Mt" required>
-                                                <div class="valid-feedback">
-                                                    ¡Perfecto!
-                                                </div>
-                                                <div class="invalid-feedback">
-                                                    <span class="invalid-feedback-heightproduct"></span>
-                                                </div>
-                                            </div>
-                                        </div>
                                     </div>
                                 \{{/equal}}
                                 \{{#equal unidad "Pieza"}}
                                     <div class="row row-cols-2 justify-content-md-start d-none">
                                         <div class="col-md-6 d-grid">
-                                            <label for="widthproduct" class="form-label">Ancho:</label>
+                                            <label for="lengthproduct" class="form-label">Largo:</label>
                                             <div class="input-group input-group-sm has-validation">
-                                                <input type="text" name="widthproduct\{{countProduct}}" value="0" class="form-control border-dark border-2 rounded widthproduct" placeholder="Mt">
+                                                <input type="text" name="lengthproduct\{{contadorProducto}}" value="0" class="form-control border-dark border-2 rounded lengthproduct" placeholder="Mt">
                                             </div>
                                         </div>
                                         <div class="col-md-6 d-grid">
-                                            <label for="heightproduct" class="form-label">Alto:</label>
+                                            <label for="widthproduct" class="form-label">Ancho:</label>
                                             <div class="input-group input-group-sm has-validation">
-                                                <input type="text" name="heightproduct\{{countProduct}}" value="0" class="form-control border-dark border-2 rounded heightproduct" placeholder="Mt">
+                                                <input type="text" name="widthproduct\{{contadorProducto}}" value="0" class="form-control border-dark border-2 rounded widthproduct" placeholder="Mt">
                                             </div>
                                         </div>
                                     </div>
@@ -272,15 +298,15 @@
                                 \{{#equal unidad "Millar"}}
                                     <div class="row row-cols-2 justify-content-md-start d-none">
                                         <div class="col-md-6 d-grid">
-                                            <label for="widthproduct" class="form-label">Ancho:</label>
+                                            <label for="lengthproduct" class="form-label">Largo:</label>
                                             <div class="input-group input-group-sm has-validation">
-                                                <input type="text" name="widthproduct\{{countProduct}}" value="0" class="form-control border-dark border-2 rounded widthproduct" placeholder="Mt">
+                                                <input type="text" name="lengthproduct\{{contadorProducto}}" value="0" class="form-control border-dark border-2 rounded lengthproduct" placeholder="Mt">
                                             </div>
                                         </div>
                                         <div class="col-md-6 d-grid">
-                                            <label for="heightproduct" class="form-label">Alto:</label>
+                                            <label for="widthproduct" class="form-label">Ancho:</label>
                                             <div class="input-group input-group-sm has-validation">
-                                                <input type="text" name="heightproduct\{{countProduct}}" value="0" class="form-control border-dark border-2 rounded heightproduct" placeholder="Mt">
+                                                <input type="text" name="widthproduct\{{contadorProducto}}" value="0" class="form-control border-dark border-2 rounded widthproduct" placeholder="Mt">
                                             </div>
                                         </div>
                                     </div>
@@ -295,23 +321,24 @@
 </script>
 
 <script type="text/x-handlebars-template" id="products-outCatalog-card-added">
-    \{{#with product}}
+    \{{#with producto}}
         <div class="row m-0">
-            <div class="col-md-12">
+            <div class="col-md-12 p-0">
                 <div class="card mb-4">
                     <div class="card-header">
                         <div class="row m-0 justify-content-between align-items-center">
                             <div class="col-10 col-md-6">
                                 <div class="input-group input-group-sm has-validation">
-                                    <input class="d-none" name="productId\{{countProduct}}" type="text" value="">
+                                    <input class="d-none" name="productId\{{contadorProducto}}" type="text" value="">
                                     <label for="nameoutproduct" class="col-form-label col-form-label-sm me-2"><b>Producto:</b></label>
-                                    <input class="form-control border-dark border-2 rounded-0 nameoutproduct" name="nameproduct\{{countProduct}}" type="text" required>
+                                    <input class="form-control border-dark border-2 rounded-0 nameoutproduct" name="nameproduct\{{contadorProducto}}" type="text" required>
                                     <div class="valid-feedback">
                                         ¡Perfecto!
                                     </div>
                                     <div class="invalid-feedback">
                                         <span class="invalid-feedback-nameoutproduct"></span>
                                     </div>
+                                    <input class="d-none" name="isoutcatalog\{{contadorProducto}}" type="text" value="1">
                                 </div>
                             </div>
                             <div class="col-2 h-100 text-end">
@@ -324,23 +351,23 @@
                             <div class="col-md-4">
                                 <div class="row row-cols-3 justify-content-md-start">
                                     <div class="col-md-4 d-grid">
-                                        <input type="radio" name="unitproduct\{{countProduct}}" class="btn-check unitoutproduct1" id="unitoutproduct\{{countProduct}}op1" value="Pieza" autocomplete="off">
-                                        <label for="unitoutproduct\{{countProduct}}op1" class="form-check-label btn btn-sm btn-outline-primary border-2">Pieza</label>
+                                        <input type="radio" name="unitproduct\{{contadorProducto}}" class="btn-check unitoutproduct1" id="unitoutproduct\{{contadorProducto}}op1" value="Pieza" autocomplete="off">
+                                        <label for="unitoutproduct\{{contadorProducto}}op1" class="form-check-label btn btn-sm btn-outline-primary border-2">Pieza</label>
                                     </div>
                                     <div class="col-md-4 d-grid">
-                                        <input type="radio" name="unitproduct\{{countProduct}}" class="btn-check unitoutproduct2" id="unitoutproduct\{{countProduct}}op2" value="Mt" autocomplete="off" checked>
-                                        <label for="unitoutproduct\{{countProduct}}op2" class="form-check-label btn btn-sm btn-outline-primary border-2">Mt²</label>
+                                        <input type="radio" name="unitproduct\{{contadorProducto}}" class="btn-check unitoutproduct2" id="unitoutproduct\{{contadorProducto}}op2" value="Mt" autocomplete="off" checked>
+                                        <label for="unitoutproduct\{{contadorProducto}}op2" class="form-check-label btn btn-sm btn-outline-primary border-2">Mt²</label>
                                     </div>
                                     <div class="col-md-4 d-grid">
-                                        <input type="radio" name="unitproduct\{{countProduct}}" class="btn-check unitoutproduct3" id="unitoutproduct\{{countProduct}}op3" value="Millar" autocomplete="off">
-                                        <label for="unitoutproduct\{{countProduct}}op3" class="form-check-label btn btn-sm btn-outline-primary border-2 ">Millar</label>
+                                        <input type="radio" name="unitproduct\{{contadorProducto}}" class="btn-check unitoutproduct3" id="unitoutproduct\{{contadorProducto}}op3" value="Millar" autocomplete="off">
+                                        <label for="unitoutproduct\{{contadorProducto}}op3" class="form-check-label btn btn-sm btn-outline-primary border-2 ">Millar</label>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-3 pt-md-0 pt-4">
                                 <div class="input-group input-group-sm has-validation">
                                     <span class="input-group-text border-dark border-2 border-end-0"><i class="bi bi-currency-dollar"></i></span>
-                                    <input type="number" name="priceproduct\{{countProduct}}" min="0"  class="form-control border-dark border-2 rounded-end priceoutproduct" required>
+                                    <input type="number" name="priceproduct\{{contadorProducto}}" min="1"  class="form-control border-dark border-2 rounded-end priceoutproduct" required>
                                     <div class="valid-feedback">
                                         ¡Perfecto!
                                     </div>
@@ -355,7 +382,7 @@
                                 <label for="quantityproduct" class="form-label">Cantidad:</label>
                                 <div class="input-group input-group-sm has-validation">
                                     <span class="input-group-text border-dark border-2 border-end-0"><i class="bi bi-hash"></i></span>
-                                    <input type="number" min="1" name="quantityproduct\{{countProduct}}" class="form-control border-dark border-2 rounded-end quantityproduct" required>
+                                    <input type="number" min="1" name="quantityproduct\{{contadorProducto}}" class="form-control border-dark border-2 rounded-end quantityproduct" required>
                                     <div class="valid-feedback">
                                         ¡Perfecto!
                                     </div>
@@ -370,7 +397,7 @@
                                         <label for="coatingproduct" class="form-label">Acabados:</label>
                                         <div class="input-group input-group-sm has-validation">
                                             <button class="btn btn-outline-primary border-primary border-2 coatingproduct-toggle" type="button"><i class="bi bi-toggle2-on"></i></button>
-                                            <input type="text" name="coatingproduct\{{countProduct}}" class="form-control border-dark border-2 border-start-0 rounded-end coatingproduct" required>
+                                            <input type="text" name="coatingproduct\{{contadorProducto}}" class="form-control border-dark border-2 border-start-0 rounded-end coatingproduct" required>
                                             <div class="valid-feedback">
                                                 ¡Perfecto!
                                             </div>
@@ -383,7 +410,7 @@
                                         <label for="fileproduct" class="form-label">Archivo:</label>
                                         <div class="input-group input-group-sm has-validation">
                                             <button class="btn btn-outline-primary border-primary border-2 fileproduct-toggle" type="button"><i class="bi bi-toggle2-on"></i></button>
-                                            <input type="text" name="fileproduct\{{countProduct}}"  class="form-control border-dark border-2 border-start-0 rounded-end fileproduct" required>
+                                            <input type="text" name="fileproduct\{{contadorProducto}}"  class="form-control border-dark border-2 border-start-0 rounded-end fileproduct" required>
                                             <div class="valid-feedback">
                                                 ¡Perfecto!
                                             </div>
@@ -397,26 +424,26 @@
                             <div class="col-md-3">
                                 <div class="row row-cols-2 justify-content-md-start">
                                     <div class="col-md-6 h-100">
-                                        <label for="widthproduct" class="form-label">Ancho:</label>
+                                        <label for="lengthproduct" class="form-label">Largo:</label>
                                         <div class="input-group input-group-sm has-validation">
-                                            <input type="text" name="widthproduct\{{countProduct}}" class="form-control border-dark border-2 rounded widthproduct" placeholder="Mt" required>
+                                            <input type="text" name="lengthproduct\{{contadorProducto}}" class="form-control border-dark border-2 rounded lengthproduct" placeholder="Mt" required>
                                             <div class="valid-feedback">
                                                 ¡Perfecto!
                                             </div>
                                             <div class="invalid-feedback">
-                                                <span class="invalid-feedback-widthoutproduct"></span>
+                                                <span class="invalid-feedback-lengthproduct"></span>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-6 h-100">
-                                        <label for="heightproduct" class="form-label">Alto:</label>
+                                        <label for="widthproduct" class="form-label">Ancho:</label>
                                         <div class="input-group input-group-sm has-validation">
-                                            <input type="text" name="heightproduct\{{countProduct}}" class="form-control border-dark border-2 rounded heightproduct" placeholder="Mt" required>
+                                            <input type="text" name="widthproduct\{{contadorProducto}}" class="form-control border-dark border-2 rounded widthproduct" placeholder="Mt" required>
                                             <div class="valid-feedback">
                                                 ¡Perfecto!
                                             </div>
                                             <div class="invalid-feedback">
-                                                <span class="invalid-feedback-heightoutproduct"></span>
+                                                <span class="invalid-feedback-widthproduct"></span>
                                             </div>
                                         </div>
                                     </div>
@@ -428,4 +455,249 @@
             </div>
         </div>
     \{{/with}}
+</script>
+
+<script type="text/x-handlebars-template" id="preview">
+    <div class="row p-4 gy-4 justify-content-md-between">
+        <div class="col-md-5">
+            <div class="row">
+                <img src="/img/PIMSAlogo.png" alt="Logo PIMSA" class="img-fluid d-block mx-auto">
+            </div>
+            <div class="row mt-4">
+                <div class="row m-0 text-center bg-danger text-white">
+                    <p class="fs-6 p-2 m-0">Información de la cotización</p>
+                </div>
+                <table class="table table-responsive-md align-middle table-light m-0">
+                    <tbody>
+                        \{{#with cotizacion}}
+                            <tr>
+                                <th scope="row">Fecha:</th>
+                                <td>\{{#formatDate fecha}} \{{/formatDate}}</td>
+                                <th scope="row">Estatus:</th>
+                                <td>\{{estatus}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Proyecto:</th>
+                                <td colspan="3">\{{proyecto}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Solicitante:</th>
+                                <td colspan="3">\{{solicitante}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Empleado:</th>
+                                <td colspan="3">\{{empleado}}</td>
+                            </tr>
+                        \{{else}}
+                            <tr>
+                                <td colspan="4" class="text-center">No existe información sobre la cotización</td>
+                            </tr>
+                        \{{/with}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row">
+                <div class="row m-0 text-center bg-danger text-white">
+                    <p class="fs-6 p-2 m-0">Información del cliente</p>
+                </div>
+                <table class="table table-responsive-md align-middle table-light m-0">
+                    <tbody>
+                        \{{#with cliente}}
+                            <tr>
+                                <th scope="row" class="col-md-3">Cliente:</th>
+                                <td colspan="3">\{{nombre}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Empresa:</th>
+                                <td colspan="3">\{{razonSocial}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">RFC:</th>
+                                <td colspan="3">\{{rfc}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Estado:</th>
+                                <td>\{{domEstado}}</td>
+                                <th scope="row" class="col-md-2">Municipio:</th>
+                                <td>\{{domCiudad}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Colonia:</th>
+                                <td>\{{domColonia}}</td>
+                                <th scope="row">Código postal:</th>
+                                <td>\{{domCp}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Calle:</th>
+                                <td>\{{domCalle}}</td>
+                                <th scope="row">Número:</th>
+                                <td>\{{domNumEx}} \{{#if domNumIn}}Int \{{domNumIn}}\{{/if}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Teléfono:</th>
+                                <td colspan="3">\{{#if telefonoExt}}Ext \{{telefonoExt}}\{{/if}} \{{telefono}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Correo electrónico:</th>
+                                <td colspan="3">\{{correoElec}}</td>
+                            </tr>
+                        \{{else}}
+                            <td colspan="4" class="text-center">No existe información sobre el cliente</td>
+                        \{{/with}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row p-4 pt-0 justify-content-md-between">
+        <div class="row m-0 text-center bg-danger text-white">
+            <p class="fs-6 p-2 m-0">Información de los productos</p>
+        </div>
+        <div class="table-responsive overflow-y-auto p-0">
+            <table class="table table-responsive-md align-middle table-light">
+                <thead>
+                    <tr>
+                        <th scope="col" class="text-center">Cantidad</th>
+                        <th scope="col">Producto</th>
+                        <th scope="col">Precio por unidad</th>
+                        <th scope="col">Dimensiones</th>
+                        <th scope="col">Precio c/u</th>
+                        <th scope="col">Monto</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    \{{#each productos}}
+                        \{{#equal unitproduct "Mt"}}
+                            <tr>
+                                <th scope="row" class="text-center">\{{quantityproduct}}</th>
+                                <td>
+                                    <div class="row mb-2 mb-md-0">
+                                        <div class="col-md-3">
+                                            <b>Producto:</b> 
+                                        </div>
+                                        <div class="col-md-6">
+                                            \{{nameproduct}}
+                                        </div>
+                                    </div>
+                                    <div class="row mb-2 mb-md-0">
+                                        <div class="col-md-3">
+                                            <b>Acabados:</b>
+                                        </div>
+                                        <div class="col-md-6">
+                                            \{{coatingproduct}}
+                                        </div>
+                                    </div>
+                                    <div class="row mb-2 mb-md-0">
+                                        <div class="col-md-3">
+                                            <b>Archivo:</b>
+                                        </div>
+                                        <div class="col-md-6">
+                                            \{{fileproduct}}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>$ \{{#formatNumber priceproduct}} \{{/formatNumber}} (x \{{unitproduct}}²)</td>
+                                <td>
+                                    <div class="row m-0">
+                                        \{{measure}} mts²
+                                    </div>
+                                    <div class="row m-0">
+                                        (L) \{{lengthproduct}} mts x (A) \{{widthproduct}} mts
+                                    </div>
+                                </td>
+                                <td>$ \{{#formatNumber priceach}} \{{/formatNumber}}</td>
+                                <td>$ \{{#formatNumber amount}} \{{/formatNumber}}</td>
+                            </tr>
+                        \{{else}}
+                            <tr>
+                                <th scope="row" class="text-center">\{{quantityproduct}}</th>
+                                <td>
+                                    <div class="row mb-2 mb-md-0">
+                                        <div class="col-md-3">
+                                            <b>Producto:</b> 
+                                        </div>
+                                        <div class="col-md-6">
+                                            \{{nameproduct}}
+                                        </div>
+                                    </div>
+                                    <div class="row mb-2 mb-md-0">
+                                        <div class="col-md-3">
+                                            <b>Acabados:</b>
+                                        </div>
+                                        <div class="col-md-6">
+                                            \{{coatingproduct}}
+                                        </div>
+                                    </div>
+                                    <div class="row mb-2 mb-md-0">
+                                        <div class="col-md-3">
+                                            <b>Archivo:</b>
+                                        </div>
+                                        <div class="col-md-6">
+                                            \{{fileproduct}}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>$ \{{#formatNumber priceproduct}} \{{/formatNumber}} (x \{{unitproduct}})</td>
+                                <td>No aplica</td>
+                                <td>$ \{{#formatNumber priceproduct}} \{{/formatNumber}}</td>
+                                <td>$ \{{#formatNumber amount}} \{{/formatNumber}}</td>
+                            </tr>
+                        \{{/equal}}
+                    \{{else}}
+                        <tr>
+                            <td colspan="6" class="text-center">No existen productos cotizados</td>
+                        </tr>
+                    \{{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row p-4 gy-4 pt-0 justify-content-md-between">
+        <div class="col-md-8">
+            \{{#with cotizacion}}
+                <p class="fs-6"><b>Observaciones:</b></p>
+                \{{observaciones}}
+            \{{else}}
+                <p class="fs-6"><b>Sin información sobre las observaciones</b></p>
+            \{{/with}}
+        </div>
+        <div class="col-md-3">
+            \{{#with cotizacion}}
+                <table class="table-responsive-md align-middle table-light w-100">
+                    <tbody>
+                        <tr>
+                            <th scope="row">Bruto:</th>
+                            <td>$ \{{#formatNumber totalBruto}} \{{/formatNumber}}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Descuento (\{{porcentajeDescuento}} %):</th>
+                            <td>- $ \{{#formatNumber descuento}} \{{/formatNumber}}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Subtotal:</th>
+                            <td>$ \{{#formatNumber subtotal}} \{{/formatNumber}}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">IVA (16 %):</th>
+                            <td>+ $ \{{#formatNumber iva}} \{{/formatNumber}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            \{{else}}
+                <td class="2">No existe información sobre la cotización</td>
+            \{{/with}}
+        </div>
+    </div>
+    <div class="row p-4 gy-4 pt-2 justify-content-md-end">
+        <div class="col-md-3 text-center border border-dark border-2">
+            <p class="fs-4 p-2 m-0 pb-0">Total:</p>
+            \{{#with cotizacion}}
+                <p class="fs-4 p-2 m-0 pt-0">$ \{{#formatNumber total}} \{{/formatNumber}}</p>
+            \{{else}}
+                <p class="fs-4 p-2 m-0 pt-0">Sin información</p>
+            \{{/with}}
+        </div>
+    </div>
 </script>

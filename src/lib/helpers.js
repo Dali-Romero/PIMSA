@@ -16,4 +16,12 @@ helpers.matchPassword = async (password, savePassword) =>{
     }
 };
 
+helpers.moneda = (n) => {
+    return Number(Number.parseFloat(n).toFixed(2));
+}
+
+helpers.dimensiones = (n) => {
+    return Number(Number.parseFloat(n).toFixed(3));
+}
+
 module.exports = helpers;

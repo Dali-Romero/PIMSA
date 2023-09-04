@@ -12,7 +12,6 @@ router.get('/add', isLoggedIn ,async (req, res)=>{
 router.post('/add', isLoggedIn, async (req, res)=>{
     const resBody = req.body;
     const selects = req.body.allowedUser;
-    console
     const newMachine = {
         numSerie: resBody.serialnumber,
         marca: resBody.brand,
