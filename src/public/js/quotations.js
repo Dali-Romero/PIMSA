@@ -1,6 +1,7 @@
 // Global variables
 let productsCounter = 0; // products counter
 let productsGenerated = 1; // products generated counter
+let maxClientDiscount = 0; // max discount per client
 
 // Handlebars front-end helpers
 Handlebars.registerHelper('equal', function(v1, v2, options){
@@ -11,10 +12,23 @@ Handlebars.registerHelper('equal', function(v1, v2, options){
     }
 });
 
+Handlebars.registerHelper('formatNumber', function(v1, options){
+    return Number(v1).toLocaleString();
+});
+
+Handlebars.registerHelper('formatDate', function(v1, options){
+    date = new Date(v1);
+    fechaCotizacion = date.toLocaleDateString('es-mx', {year: 'numeric', month: 'long', day: 'numeric', hour:'numeric', minute: 'numeric'});
+    return fechaCotizacion;
+});
+
 // function to validate the quoter
 function validateQuotationsForm(form){
     let validated = false;
     form.on('submit', (event)=>{
+        // avoid default form behavior
+        event.preventDefault();
+        event.stopPropagation();
 
         // client name select validation
         const nameClientSelect = $('#clientid');
@@ -28,7 +42,7 @@ function validateQuotationsForm(form){
         }
 
         // applicant name field validation
-        const patternNameApplicant = /[^a-zA-Z\s]/g;
+        const patternNameApplicant = /[^a-zA-Z\sñÑ]/;
         const nameApplicant = $('#nameapplicant');
         const invalidFeedbackNameApplicant = $('#invalid-feedback-nameapplicant');
         nameApplicant.removeClass('border-dark');
@@ -50,7 +64,7 @@ function validateQuotationsForm(form){
         };
 
         // proyect name field validation
-        const patternNameProyect = /[^a-zA-Z0-9\s]/g;
+        const patternNameProyect = /[^a-zA-Z0-9\sñÑ]/;
         const nameProyect = $('#nameproyect');
         const invalidFeedbackNameProyect = $('#invalid-feedback-nameproyect');
         nameProyect.removeClass('border-dark');
@@ -72,7 +86,7 @@ function validateQuotationsForm(form){
         };
 
         // discount field validation
-        const patternNumDiscount = /[^0-9.]/g;
+        const patternNumDiscount = /^\d+(\.\d+)?$/;
         const numDiscount = $('#numdiscount');
         const invalidFeedbackNumDiscount = $('#invalid-feedback-numdiscount');
         numDiscount.removeClass('border-dark');
@@ -80,7 +94,7 @@ function validateQuotationsForm(form){
             numDiscount.removeClass('is-valid');
             numDiscount.addClass('is-invalid');
             invalidFeedbackNumDiscount.text('Por favor, agregue un porcentaje de descuento');
-        }else if (patternNumDiscount.test(numDiscount.val())){
+        }else if (!patternNumDiscount.test(numDiscount.val())){
             numDiscount.removeClass('is-valid');
             numDiscount.addClass('is-invalid');
             invalidFeedbackNumDiscount.text('El porcentaje solo debe contener números');
@@ -88,13 +102,17 @@ function validateQuotationsForm(form){
             numDiscount.removeClass('is-valid');
             numDiscount.addClass('is-invalid');
             invalidFeedbackNumDiscount.text('El porcentaje debe ser entre 0% y 100%');
+        }else if (nameClientSelect.val().length !== 0 && numDiscount.val() > maxClientDiscount){
+            numDiscount.removeClass('is-valid');
+            numDiscount.addClass('is-invalid');
+            invalidFeedbackNumDiscount.text(`Este cliente no puede tener un descuento mayor a ${maxClientDiscount} %`);
         }else{
             numDiscount.removeClass('is-invalid');
             numDiscount.addClass('is-valid');
         }
 
         // observations field validation
-        const patternObservations = /^(\r|\t|\s|[^a-zA-Z0-9])/g;
+        const patternObservations = /^(\r|\t|\s|[^a-zA-Z0-9ñÑ])/;
         const observations = $('#observations');
         const invalidFeedbackObservations = $('#invalid-feedback-observations');
         observations.removeClass('border-dark');
@@ -115,7 +133,7 @@ function validateQuotationsForm(form){
             observations.addClass('is-valid');
         }
 
-        // client name select validation
+        // product name select validation
         const nameProductSelect = $('#nameproduct');
         nameProductSelect.removeClass('border-dark');
         if (productsCounter === 0){
@@ -126,8 +144,8 @@ function validateQuotationsForm(form){
             nameProductSelect.addClass('is-valid');
         }
 
-        // amount product validation
-        const patternAmountProducts= /[^0-9]/g;
+        // quantity product validation
+        const patternAmountProducts= /[^0-9]/;
         const amountProducts = $('.quantityproduct');
         amountProducts.each(function(i, obj){
             $(this).removeClass('border-dark');
@@ -168,7 +186,7 @@ function validateQuotationsForm(form){
         })
 
         // file product field validation
-        const patternFileProducts =  /[^a-zA-Z0-9\s_]/g;
+        const patternFileProducts =  /[^a-zA-Z0-9\s_ñÑ]/;
         const fileProducts = $('.fileproduct');
         fileProducts.each(function(i, obj){
             $(this).removeClass('border-dark');
@@ -190,18 +208,18 @@ function validateQuotationsForm(form){
             };
         })
 
-        // width product field validation
-        const patternWidthProducts = /[^0-9.]/g;
-        const widthProducts = $('.lengthproduct');
-        widthProducts.each(function(i, obj){
+        // lenght product field validation
+        const patternLenghtProducts = /^\d+(\.\d+)?$/;
+        const lenghtProducts = $('.lengthproduct');
+        lenghtProducts.each(function(i, obj){
             $(this).removeClass('border-dark');
-            const unitProduct = $(this).parents().eq(6).children().eq(1).children().eq(0).children().eq(0).children().eq(0).children().find('input:checked').val()
+            const unitProduct = $(this).parents().eq(6).children().eq(1).children().eq(0).children().eq(0).children().eq(0).children().find('input:checked').val();
             if (unitProduct === 'Mt'){
                 if ($(this).val().length === 0) {
                     $(this).removeClass('is-valid');
                     $(this).addClass('is-invalid');
                     $(this).siblings().eq(1).text('Por favor, agregue una medida para el largo');
-                }else if (patternWidthProducts.test($(this).val())){
+                }else if (!patternLenghtProducts.test($(this).val())){
                     $(this).removeClass('is-valid');
                     $(this).addClass('is-invalid');
                     $(this).siblings().eq(1).text('La medida del largo solo debe contener números');
@@ -219,10 +237,10 @@ function validateQuotationsForm(form){
             }
         })
 
-        // height product field validation
-        const patternHeightProducts = /[^0-9.]/g;
-        const heightproductProducts = $('.widthproduct');
-        heightproductProducts.each(function(i, obj){
+        // width product field validation
+        const patternWidthProducts = /^\d+(\.\d+)?$/;
+        const widthproductProducts = $('.widthproduct');
+        widthproductProducts.each(function(i, obj){
             $(this).removeClass('border-dark');
             const unitProduct = $(this).parents().eq(6).children().eq(1).children().eq(0).children().eq(0).children().eq(0).children().find('input:checked').val()
             if (unitProduct === 'Mt'){
@@ -230,7 +248,7 @@ function validateQuotationsForm(form){
                     $(this).removeClass('is-valid');
                     $(this).addClass('is-invalid');
                     $(this).siblings().eq(1).text('Por favor, agregue una medida para el ancho');
-                }else if (patternHeightProducts.test($(this).val())){
+                }else if (!patternWidthProducts.test($(this).val())){
                     $(this).removeClass('is-valid');
                     $(this).addClass('is-invalid');
                     $(this).siblings().eq(1).text('La medida del ancho solo debe contener números');
@@ -249,7 +267,7 @@ function validateQuotationsForm(form){
         })
 
         // product out catalog name field validation
-        const patternOutProduct = /[^a-zA-Z0-9\s]/g;
+        const patternOutProduct = /[^a-zA-Z0-9\sñÑ]/;
         const nameOutProducts= $('.nameoutproduct');
         nameOutProducts.each(function(i, obj){
             $(this).removeClass('border-dark');
@@ -271,8 +289,8 @@ function validateQuotationsForm(form){
             };
         })
 
-        // amount product validation
-        const patternPriceOutProducts = /[^0-9.]/g;
+        // price product validation
+        const patternPriceOutProducts = /[^0-9.]/;
         const priceOutProducts = $('.priceoutproduct');
         priceOutProducts.each(function(i, obj){
             $(this).removeClass('border-dark');
@@ -296,7 +314,14 @@ function validateQuotationsForm(form){
 
         // Checking the validations
         const nonValidatedFields = $('.is-invalid');
-        if (nonValidatedFields.length === 0){
+        if (nonValidatedFields.length !== 0){
+            validated = false;
+        }else{
+            validated = true;
+        }
+
+        // If it is not validated, it is not sent
+        if (validated){
             // enabling  discount input field to send
             $('#numdiscount').prop('disabled', false);
 
@@ -305,12 +330,6 @@ function validateQuotationsForm(form){
             unitProducts.each(function(i, obj){
                 const nameRadio = $(this).attr('name');
                 ($(`input[name="${nameRadio}"]`)).prop('disabled', false);
-            })
-            
-            // enabling price fields to send
-            const priceProducts = $('.priceproduct');
-            priceProducts.each(function(i, obj){
-                $(this).prop('disabled', false);
             })
             
             // enabling coating product field to send
@@ -323,13 +342,68 @@ function validateQuotationsForm(form){
                 $(this).prop('disabled', false);
             })
 
-            validated = true;
-        }
+            const inputsValues = {};
+            const inputs = form.find(':input');
+            inputs.each(function(){
+                if ($(this).is(':radio')){
+                    if($(this).is(':checked')){
+                        inputsValues[$(this).attr('name')] = $(this).val();
+                    }
+                }else{
+                    inputsValues[$(this).attr('name')] = $(this).val();
+                } 
+            })
 
-        // If it is not validated, it is not sent
-        if (!validated){
-            event.preventDefault();
-            event.stopPropagation();
+            $.ajax({
+                type: 'POST',
+                url: '/quotations/preview',
+                headers: {'Content-Type': 'application/json'},
+                data: JSON.stringify({inputs: inputsValues}),
+                success: function(data){
+                    const sourcePreview = $('#preview').html();
+                    const templatePreview = Handlebars.compile(sourcePreview);
+                    const contextPreview = {
+                        cotizacion: data.cotizacion,
+                        cliente: data.cliente,
+                        productos: data.productos
+                    };
+                    const htmlPreview = templatePreview(contextPreview);
+                    $('#preview-container').html(htmlPreview);
+                    $("#preview-modal").modal('show');
+
+                    // disable discount field
+                    if ($('#discountop2').is(':checked')){
+                        $('#numdiscount').prop('disabled', true);
+                    }
+
+                    // enabling coating product field to send
+                    coatingProducts.each(function(i, obj){
+                        if($(this).val() === 'Sin acabados'){
+                            $(this).prop('disabled', true);
+                        }
+                    })
+            
+                    // enabling coating product field to send
+                    fileProducts.each(function(i, obj){
+                        if($(this).val() === 'Sin archivo'){
+                            $(this).prop('disabled', true);
+                        }
+                    })
+
+                    $('#send-quotation').on('click', function(){
+                        $.ajax({
+                            type: 'POST',
+                            url: '/quotations/add',
+                            headers: {'Content-Type': 'application/json'},
+                            data: JSON.stringify({data: contextPreview}),
+                            success: function (data) {
+                                window.location.replace(data.url);
+                            }
+                        })
+                    })
+                }
+            })
+            
         }
     });
 }
@@ -360,13 +434,12 @@ $(document).ready(function(){
                 success: function(data){
                     const sourceProduct = $('#products-card-added').html();
                     const templateProduct = Handlebars.compile(sourceProduct);
-                    data.product.countProduct = productsGenerated;
+                    data.producto.contadorProducto = productsGenerated;
                     const contextProduct = {
-                        product: data.product
+                        producto: data.producto
                     };
                     const htmlProduct = templateProduct(contextProduct);
                     $(htmlProduct).hide().appendTo(cardsContainer).show('slow');
-                    //cardsContainer.append(htmlProduct);
 
                     // increase products counter
                     productsCounter++;
@@ -423,15 +496,14 @@ $(document).ready(function(){
         const sourceOutCatalogProduct = $('#products-outCatalog-card-added').html();
         const templateOutProduct = Handlebars.compile(sourceOutCatalogProduct);
         const data ={
-            product: {
-                countProduct: productsGenerated
+            producto: {
+                contadorProducto: productsGenerated
             }
         }
         const contextOutProduct = {
-            product: data.product
+            producto: data.producto
         };
         const htmlOutProduct = templateOutProduct(contextOutProduct);
-        //cardsContainer.append(htmlOutProduct);
         $(htmlOutProduct).hide().appendTo(cardsContainer).show('slow');
 
         // increase products counter
@@ -493,6 +565,22 @@ $(document).ready(function(){
                 productsCounter--;
             });
         });
+    })
+
+    // get discount client
+    $('#clientid').on('change', function(){
+        const clientid = $(this).val();
+        if(clientid.length !== 0){
+            $.ajax({
+                type: 'POST',
+                url: '/quotations/discountClient',
+                headers: {'Content-Type': 'application/json'},
+                data: JSON.stringify({clientid: clientid}),
+                success: function(data){
+                    maxClientDiscount = data.descuento.descuento;
+                }
+            })
+        }
     })
 
     // quoter validation

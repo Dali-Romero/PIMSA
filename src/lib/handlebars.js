@@ -22,4 +22,9 @@ helpers.formatNumber = (n) => {
     return Number(n).toLocaleString();
 };
 
+helpers.formatDate = (date) => {
+    const newDate = date.toLocaleDateString('es-mx', {year: 'numeric', month: 'long', day: 'numeric', hour:'numeric', minute: 'numeric'});
+    return newDate;
+};
+
 module.exports = helpers;
