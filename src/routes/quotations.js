@@ -6,8 +6,8 @@ const { isLoggedIn } = require('../lib/auth.js');
 const router = express.Router();
 
 router.get('/add', async (req, res)=>{
-    const productos = await pool.query('SELECT productoId, nombre FROM Productos ORDER BY nombre ASC');
-    const clientes = await pool.query('SELECT clienteId, nombre FROM Clientes ORDER BY nombre ASC')
+    const productos = await pool.query('SELECT productoId, nombre FROM Productos ORDER BY nombre ASC;');
+    const clientes = await pool.query('SELECT clienteId, nombre FROM Clientes ORDER BY nombre ASC;')
     res.render('quotations/add', {productos: productos, clientes: clientes});
 });
 
@@ -29,7 +29,7 @@ router.post('/add', async (req, res)=>{
         iva: body.cotizacion.iva,
         total: body.cotizacion.total
     };
-    const {insertId} = await pool.query('INSERT INTO Cotizaciones SET ?', [newCot]);
+    const {insertId} = await pool.query('INSERT INTO Cotizaciones SET ?;', [newCot]);
     let productosEnCatalogo = [];
     let ProductosFueraCatalogo = [];
     let newProducto = [];
@@ -71,10 +71,10 @@ router.post('/add', async (req, res)=>{
     });
 
     if (productosEnCatalogo.length > 0){
-        await pool.query('INSERT INTO ProductosCotizados (cot_id, cantidad, producto_id, acabados, archivo, largo, ancho, area, precioCadaUno, monto, precio) VALUES ?', [productosEnCatalogo]);
+        await pool.query('INSERT INTO ProductosCotizados (cot_id, cantidad, producto_id, acabados, archivo, largo, ancho, area, precioCadaUno, monto, precio) VALUES ?;', [productosEnCatalogo]);
     }
     if (ProductosFueraCatalogo.length > 0){
-        await pool.query('INSERT INTO FueraCatalogoCotizados (cot_id, cantidad, concepto, acabados, archivo, precio, unidad, largo, ancho, area, precioCadaUno, monto) VALUES ?', [ProductosFueraCatalogo]);
+        await pool.query('INSERT INTO FueraCatalogoCotizados (cot_id, cantidad, concepto, acabados, archivo, precio, unidad, largo, ancho, area, precioCadaUno, monto) VALUES ?;', [ProductosFueraCatalogo]);
     }
 
     req.flash('success', 'Cotización <b>COT-'+insertId+'</b> ha sido creada correctamente');
@@ -83,13 +83,13 @@ router.post('/add', async (req, res)=>{
 
 router.post('/listProducts', async (req, res)=>{
     const productoId = req.body.idProduct;
-    const producto = await pool.query('SELECT productoId, nombre, unidad, precio FROM Productos WHERE productoId = ?', [productoId]);
+    const producto = await pool.query('SELECT productoId, nombre, unidad, precio FROM Productos WHERE productoId = ?;', [productoId]);
     res.send({producto: producto[0]});
 })
 
 router.post('/discountClient', async (req, res)=>{
     const clienteId = req.body.clientid;
-    const descuento = await pool.query('SELECT descuento FROM Clientes WHERE clienteId = ?', [clienteId]);
+    const descuento = await pool.query('SELECT descuento FROM Clientes WHERE clienteId = ?;', [clienteId]);
     res.send({descuento: descuento[0]});
 })
 
@@ -97,8 +97,8 @@ router.post('/preview', async (req, res)=>{
     const body = req.body.inputs;
     const usruarioId = req.user.usuarioId;
     const clienteId = body.clientid;
-    const empleado = await pool.query('SELECT Empleados.nombreComp FROM (Empleados INNER JOIN Usuarios ON Empleados.empleadoId = Usuarios.empleado_id) WHERE Usuarios.usuarioId = ?', [usruarioId]);
-    const cliente = await pool.query('SELECT * FROM Clientes WHERE clienteId = ?', [clienteId]);
+    const empleado = await pool.query('SELECT Empleados.nombreComp FROM (Empleados INNER JOIN Usuarios ON Empleados.empleadoId = Usuarios.empleado_id) WHERE Usuarios.usuarioId = ?;', [usruarioId]);
+    const cliente = await pool.query('SELECT * FROM Clientes WHERE clienteId = ?;', [clienteId]);
     const date = new Date();
 
     // formatos de fecha
@@ -174,8 +174,36 @@ router.post('/preview', async (req, res)=>{
 })
 
 router.get('/', async (req, res)=>{
-    const cotizaciones = await pool.query('SELECT Cotizaciones.*, Clientes.clienteId, Clientes.nombre FROM (Cotizaciones INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId)');
+    const cotizaciones = await pool.query('SELECT Cotizaciones.*, Clientes.clienteId, Clientes.nombre FROM (Cotizaciones INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId);');
     res.render('quotations/list', {cotizaciones: cotizaciones});
+})
+
+router.get('/info/:id', async (req, res)=>{
+    const {id} = req.params;
+    const cotizacion = await pool.query('SELECT * FROM Cotizaciones WHERE cotId = ?', [id]);
+    const cliente = await pool.query('SELECT * FROM (Cotizaciones INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId) WHERE Cotizaciones.cotId = ?;', [id]);
+    const productosEnCatalogo = await pool.query('SELECT ProductosCotizados.*, Productos.nombre, Productos.unidad FROM ((Cotizaciones INNER JOIN ProductosCotizados ON Cotizaciones.cotId = ProductosCotizados.cot_id) INNER JOIN Productos ON ProductosCotizados.producto_id = Productos.productoId) WHERE Cotizaciones.cotId = ?;', [id]);
+    const productosFueraCatalogo = await pool.query('SELECT FueraCatalogoCotizados.* FROM (Cotizaciones INNER JOIN FueraCatalogoCotizados ON Cotizaciones.cotId = FueraCatalogoCotizados.cot_id) WHERE Cotizaciones.cotId = ?;', [id]);
+    const productos = productosEnCatalogo.concat(productosFueraCatalogo);
+    res.render('quotations/info', {cotizacion: cotizacion[0], cliente: cliente[0], productos: productos});
+})
+
+router.get('/cancel/:id', async (req, res)=>{
+    const {id} = req.params;
+    await pool.query('UPDATE Cotizaciones SET estatus = "Cancelada" WHERE cotId = ?', [id]);
+    res.redirect('/quotations/info/' + id);
+})
+
+router.post('/email/:id', async (req, res)=>{
+    const {id} = req.params;
+    const correoCliente = req.body.inputEmailClient;
+    console.log(id, correoCliente);
+})
+
+router.get('/download/:id', (req, res)=>{
+    const {id} = req.params;
+    const file = 'src/public/img/PIMSAlogo.png';
+    res.download(file);
 })
 
 module.exports = router;

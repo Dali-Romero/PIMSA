@@ -22,6 +22,14 @@ helpers.formatNumber = (n) => {
     return Number(n).toLocaleString();
 };
 
+helpers.formatNumberMeasure = (n) => {
+    if(Number.isInteger(n)){
+        return Number(n)
+    }else{
+        return Number(Number.parseFloat(n).toFixed(3));
+    }
+};
+
 helpers.formatDate = (date) => {
     date = new Date(date);
     fecha = date.toLocaleDateString('es-mx', {year: 'numeric', month: 'long', day: 'numeric', hour:'numeric', minute: 'numeric'});
