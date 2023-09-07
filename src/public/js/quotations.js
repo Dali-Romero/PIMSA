@@ -408,6 +408,45 @@ function validateQuotationsForm(form){
     });
 }
 
+function validateQuotationEmailForm(form) {
+    let validated = false;
+    form.on('submit', (event)=>{
+        // email validation
+        const patternEmailClient= /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/;
+        const inputEmailClient = $('#inputEmailClient');
+        const invalidFeedbackEmailClient = $('.invalid-feedback-emailClient');
+        inputEmailClient.removeClass('border-dark');
+        if (inputEmailClient.val().length === 0) {
+            inputEmailClient.removeClass('is-valid');
+            inputEmailClient.addClass('is-invalid');
+            invalidFeedbackEmailClient.text('Por favor, agregue un correo electrónico');
+        }else if (!(patternEmailClient.test(inputEmailClient.val()))){
+            inputEmailClient.removeClass('is-valid');
+            inputEmailClient.addClass('is-invalid');
+            invalidFeedbackEmailClient.text('El formato del correo electrónico no es válido');
+        }else if (inputEmailClient.val().length < 1 || inputEmailClient.val().length > 40){
+            inputEmailClient.removeClass('is-valid');
+            inputEmailClient.addClass('is-invalid');
+            invalidFeedbackEmailClient.text('El correo electrónico debe contener entre 1 y 40 caracteres');
+        }else{
+            inputEmailClient.removeClass('is-invalid');
+            inputEmailClient.addClass('is-valid');
+        };
+
+        // Checking the validations
+        const nonValidatedFields = $('.is-invalid');
+        if (nonValidatedFields.length === 0){
+            validated = true;
+        }
+
+        // If it is not validated, it is not sent
+        if(!validated){
+            event.preventDefault();
+            event.stopPropagation();
+        }
+    })
+}
+
 $(document).ready(function(){
     // list quotations table
     var table = new DataTable('#quotations-table', {
@@ -603,4 +642,24 @@ $(document).ready(function(){
 
     // quoter validation
     validateQuotationsForm($('#form-add-quotation'));
+
+    // show cancel quotation warning
+    $('#cancel-quotation').on('click', function(){
+        const toast = new bootstrap.Toast(document.getElementById('cancelToast'), {});
+        toast.show();
+    })
+
+    // add client email
+    let emailClient = $('#inputEmailClient').val();
+    $('#checkClient').on('click', ()=>{
+        $('#inputEmailClient').val(emailClient);
+    });
+    
+    // delete client email
+    $('#checkAnother').on('click', ()=>{
+        $('#inputEmailClient').val('');
+    });
+
+    // validate email send
+    validateQuotationEmailForm($('#emailClientForm'));
 });
