@@ -1,4 +1,8 @@
 const bcrypt = require('bcryptjs');
+const puppeteer = require('puppeteer');
+
+// variables globales
+let browserPup;
 
 const helpers = {};
 
@@ -22,6 +26,21 @@ helpers.moneda = (n) => {
 
 helpers.dimensiones = (n) => {
     return Number(Number.parseFloat(n).toFixed(3));
+}
+
+helpers.createPdf = async (html, options) => {
+    if (!browserPup){
+        browserPup = await puppeteer.launch({
+            args: ['--no-sandbox'],
+            headless: 'new'
+        })
+    }
+
+    const page = await browserPup.newPage();
+    await page.setContent(html);
+    const pdf = await page.pdf(options);
+    await page.close();
+    return pdf;
 }
 
 module.exports = helpers;

@@ -1,7 +1,13 @@
 const express = require('express');
+const hbs = require('handlebars');
+const puppeteer = require('puppeteer');
+const fs = require('fs');
+const {Stream} = require('stream');
 const pool = require('../database.js');
-const {moneda, dimensiones} = require('../lib/helpers.js');
+const {moneda, dimensiones, createPdf} = require('../lib/helpers.js');
 const { isLoggedIn } = require('../lib/auth.js');
+const path = require('path');
+require('../lib/handlebars.js');
 
 const router = express.Router();
 
@@ -200,10 +206,52 @@ router.post('/email/:id', async (req, res)=>{
     console.log(id, correoCliente);
 })
 
-router.get('/download/:id', (req, res)=>{
+router.get('/download/:id', async (req, res)=>{
     const {id} = req.params;
-    const file = 'src/public/img/PIMSAlogo.png';
-    res.download(file);
+    const cotizacion = await pool.query('SELECT * FROM Cotizaciones WHERE cotId = ?', [id]);
+    const cliente = await pool.query('SELECT * FROM (Cotizaciones INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId) WHERE Cotizaciones.cotId = ?;', [id]);
+    const productosEnCatalogo = await pool.query('SELECT ProductosCotizados.*, Productos.nombre, Productos.unidad FROM ((Cotizaciones INNER JOIN ProductosCotizados ON Cotizaciones.cotId = ProductosCotizados.cot_id) INNER JOIN Productos ON ProductosCotizados.producto_id = Productos.productoId) WHERE Cotizaciones.cotId = ?;', [id]);
+    const productosFueraCatalogo = await pool.query('SELECT FueraCatalogoCotizados.* FROM (Cotizaciones INNER JOIN FueraCatalogoCotizados ON Cotizaciones.cotId = FueraCatalogoCotizados.cot_id) WHERE Cotizaciones.cotId = ?;', [id]);
+    const productos = productosEnCatalogo.concat(productosFueraCatalogo);
+
+    // leer imagen del logo
+    const bitMap = fs.readFileSync(path.join(process.cwd(), 'src', 'public', 'img', 'PIMSAlogo.png'));
+    const buffer = Buffer.from(bitMap).toString('base64');
+    const imgSrc = `data:image/png;base64,${buffer}`;
+
+    // compilar template para el archivo pdf
+    const source = fs.readFileSync(path.join(process.cwd(), 'src', 'views', 'quotations', 'pdfTemplate.hbs'), 'utf8');
+    const template = hbs.compile(source);
+    const context = {
+        pimsaLogo: imgSrc,
+        cotizacion: cotizacion[0],
+        cliente: cliente[0],
+        productos: productos
+    }
+    const html = template(context);
+
+    // construir el archivo pdf
+    const timeMilis = new Date().getTime();
+    const readStream = Stream.PassThrough();
+    const options = {
+        format: 'Letter',
+		margin: {
+			top: "30px",
+			bottom: "30px",
+            left: "20px",
+            right: "20px"
+		},
+		printBackground: true,
+        scale: 0.75,
+    }
+
+    const pdf = await createPdf(html, options)
+    readStream.end(pdf);
+
+    // enviar archivo pdf
+    res.attachment(`cot${id}_${timeMilis}.pdf`);
+    res.contentType('application/pdf');
+    readStream.pipe(res).on('error', function(e){console.log(e)});
 })
 
 module.exports = router;
