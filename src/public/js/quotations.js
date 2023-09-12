@@ -3,25 +3,6 @@ let productsCounter = 0; // products counter
 let productsGenerated = 1; // products generated counter
 let maxClientDiscount = 0; // max discount per client
 
-// Handlebars front-end helpers
-Handlebars.registerHelper('equal', function(v1, v2, options){
-    if (v1 === v2){
-        return options.fn(this);
-    } else{
-        return options.inverse(this);
-    }
-});
-
-Handlebars.registerHelper('formatNumber', function(v1, options){
-    return Number(v1).toLocaleString();
-});
-
-Handlebars.registerHelper('formatDate', function(v1, options){
-    date = new Date(v1);
-    fechaCotizacion = date.toLocaleDateString('es-mx', {year: 'numeric', month: 'long', day: 'numeric', hour:'numeric', minute: 'numeric'});
-    return fechaCotizacion;
-});
-
 // function to validate the quoter
 function validateQuotationsForm(form){
     let validated = false;
@@ -86,7 +67,7 @@ function validateQuotationsForm(form){
         };
 
         // discount field validation
-        const patternNumDiscount = /^\d+(\.\d+)?$/;
+        const patternNumDiscount = /^\d+(\.\d{1,2})?$/;
         const numDiscount = $('#numdiscount');
         const invalidFeedbackNumDiscount = $('#invalid-feedback-numdiscount');
         numDiscount.removeClass('border-dark');
@@ -97,7 +78,7 @@ function validateQuotationsForm(form){
         }else if (!patternNumDiscount.test(numDiscount.val())){
             numDiscount.removeClass('is-valid');
             numDiscount.addClass('is-invalid');
-            invalidFeedbackNumDiscount.text('El porcentaje solo debe contener números');
+            invalidFeedbackNumDiscount.text('El formato ingresado no es válido');
         }else if (numDiscount.val() < 0 || numDiscount.val() > 100){
             numDiscount.removeClass('is-valid');
             numDiscount.addClass('is-invalid');
@@ -209,7 +190,7 @@ function validateQuotationsForm(form){
         })
 
         // lenght product field validation
-        const patternLenghtProducts = /^\d+(\.\d+)?$/;
+        const patternLenghtProducts = /^\d+(\.\d{1,3})?$/;
         const lenghtProducts = $('.lengthproduct');
         lenghtProducts.each(function(i, obj){
             $(this).removeClass('border-dark');
@@ -238,7 +219,7 @@ function validateQuotationsForm(form){
         })
 
         // width product field validation
-        const patternWidthProducts = /^\d+(\.\d+)?$/;
+        const patternWidthProducts = /^\d+(\.\d{1,3})?$/;
         const widthproductProducts = $('.widthproduct');
         widthproductProducts.each(function(i, obj){
             $(this).removeClass('border-dark');
@@ -290,7 +271,8 @@ function validateQuotationsForm(form){
         })
 
         // price product validation
-        const patternPriceOutProducts = /[^0-9.]/;
+        //const patternPriceOutProducts = /[^0-9.]/;
+        const patternPriceOutProducts = /^\d+(\.\d{1,2})?$/;
         const priceOutProducts = $('.priceoutproduct');
         priceOutProducts.each(function(i, obj){
             $(this).removeClass('border-dark');
@@ -298,11 +280,11 @@ function validateQuotationsForm(form){
                 $(this).removeClass('is-valid');
                 $(this).addClass('is-invalid');
                 $(this).siblings().eq(2).text('Por favor, agregue un precio');
-            }else if(patternPriceOutProducts.test($(this).val())){
+            }else if(!patternPriceOutProducts.test($(this).val())){
                 $(this).removeClass('is-valid');
                 $(this).addClass('is-invalid');
                 $(this).siblings().eq(2).text('El precio solo debe contener números');
-            }else if ($(this).val() < 1 || $(this).val() > 9999){
+            }else if (!($(this).val() > 0 && $(this).val() <= 10000)){
                 $(this).removeClass('is-valid');
                 $(this).addClass('is-invalid');
                 $(this).siblings().eq(2).text('El precio debe ser mayor a 0 y menor a 10,000');
@@ -369,12 +351,19 @@ function validateQuotationsForm(form){
                     };
                     const htmlPreview = templatePreview(contextPreview);
                     $('#preview-container').html(htmlPreview);
-                    $("#preview-modal").modal('show');
+                    $("#preview-modal").unbind().modal('show');
 
                     // disable discount field
                     if ($('#discountop2').is(':checked')){
                         $('#numdiscount').prop('disabled', true);
                     }
+
+                    // disabling unit selects to send
+                    const unitProducts = $('.unitproduct');
+                    unitProducts.each(function(i, obj){
+                        const nameRadio = $(this).attr('name');
+                        ($(`input[name="${nameRadio}"]`)).prop('disabled', true);
+                    })
 
                     // enabling coating product field to send
                     coatingProducts.each(function(i, obj){
@@ -390,7 +379,8 @@ function validateQuotationsForm(form){
                         }
                     })
 
-                    $('#send-quotation').on('click', function(){
+                    $('#send-quotation').unbind().on('click', function(e){
+                        e.preventDefault();
                         $.ajax({
                             type: 'POST',
                             url: '/quotations/add',

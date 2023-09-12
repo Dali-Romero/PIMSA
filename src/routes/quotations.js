@@ -1,17 +1,22 @@
 const express = require('express');
+const hbs = require('handlebars');
+const fs = require('fs');
+const {Stream} = require('stream');
 const pool = require('../database.js');
-const {moneda, dimensiones} = require('../lib/helpers.js');
+const {moneda, dimensiones, createPdf} = require('../lib/helpers.js');
 const { isLoggedIn } = require('../lib/auth.js');
+const path = require('path');
+require('../lib/handlebars.js');
 
 const router = express.Router();
 
-router.get('/add', async (req, res)=>{
+router.get('/add', isLoggedIn, async (req, res)=>{
     const productos = await pool.query('SELECT productoId, nombre FROM Productos ORDER BY nombre ASC;');
     const clientes = await pool.query('SELECT clienteId, nombre FROM Clientes ORDER BY nombre ASC;')
     res.render('quotations/add', {productos: productos, clientes: clientes});
 });
 
-router.post('/add', async (req, res)=>{
+router.post('/add', isLoggedIn, async (req, res)=>{
     const body = req.body.data;
     const productos = req.body.data.productos;
     const newCot = {
@@ -81,19 +86,19 @@ router.post('/add', async (req, res)=>{
     res.send({url: '/quotations'});
 })
 
-router.post('/listProducts', async (req, res)=>{
+router.post('/listProducts', isLoggedIn, async (req, res)=>{
     const productoId = req.body.idProduct;
     const producto = await pool.query('SELECT productoId, nombre, unidad, precio FROM Productos WHERE productoId = ?;', [productoId]);
     res.send({producto: producto[0]});
 })
 
-router.post('/discountClient', async (req, res)=>{
+router.post('/discountClient', isLoggedIn, async (req, res)=>{
     const clienteId = req.body.clientid;
     const descuento = await pool.query('SELECT descuento FROM Clientes WHERE clienteId = ?;', [clienteId]);
     res.send({descuento: descuento[0]});
 })
 
-router.post('/preview', async (req, res)=>{
+router.post('/preview', isLoggedIn, async (req, res)=>{
     const body = req.body.inputs;
     const usruarioId = req.user.usuarioId;
     const clienteId = body.clientid;
@@ -173,12 +178,12 @@ router.post('/preview', async (req, res)=>{
     res.send({cotizacion:cot, cliente: cliente[0], productos: productosCotArray});
 })
 
-router.get('/', async (req, res)=>{
+router.get('/', isLoggedIn, async (req, res)=>{
     const cotizaciones = await pool.query('SELECT Cotizaciones.*, Clientes.clienteId, Clientes.nombre FROM (Cotizaciones INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId);');
     res.render('quotations/list', {cotizaciones: cotizaciones});
 })
 
-router.get('/info/:id', async (req, res)=>{
+router.get('/info/:id', isLoggedIn, async (req, res)=>{
     const {id} = req.params;
     const cotizacion = await pool.query('SELECT * FROM Cotizaciones WHERE cotId = ?', [id]);
     const cliente = await pool.query('SELECT * FROM (Cotizaciones INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId) WHERE Cotizaciones.cotId = ?;', [id]);
@@ -188,22 +193,64 @@ router.get('/info/:id', async (req, res)=>{
     res.render('quotations/info', {cotizacion: cotizacion[0], cliente: cliente[0], productos: productos});
 })
 
-router.get('/cancel/:id', async (req, res)=>{
+router.get('/cancel/:id', isLoggedIn, async (req, res)=>{
     const {id} = req.params;
     await pool.query('UPDATE Cotizaciones SET estatus = "Cancelada" WHERE cotId = ?', [id]);
     res.redirect('/quotations/info/' + id);
 })
 
-router.post('/email/:id', async (req, res)=>{
+router.post('/email/:id', isLoggedIn, async (req, res)=>{
     const {id} = req.params;
     const correoCliente = req.body.inputEmailClient;
     console.log(id, correoCliente);
 })
 
-router.get('/download/:id', (req, res)=>{
+router.get('/download/:id', isLoggedIn, async (req, res)=>{
     const {id} = req.params;
-    const file = 'src/public/img/PIMSAlogo.png';
-    res.download(file);
+    const cotizacion = await pool.query('SELECT * FROM Cotizaciones WHERE cotId = ?', [id]);
+    const cliente = await pool.query('SELECT * FROM (Cotizaciones INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId) WHERE Cotizaciones.cotId = ?;', [id]);
+    const productosEnCatalogo = await pool.query('SELECT ProductosCotizados.*, Productos.nombre, Productos.unidad FROM ((Cotizaciones INNER JOIN ProductosCotizados ON Cotizaciones.cotId = ProductosCotizados.cot_id) INNER JOIN Productos ON ProductosCotizados.producto_id = Productos.productoId) WHERE Cotizaciones.cotId = ?;', [id]);
+    const productosFueraCatalogo = await pool.query('SELECT FueraCatalogoCotizados.* FROM (Cotizaciones INNER JOIN FueraCatalogoCotizados ON Cotizaciones.cotId = FueraCatalogoCotizados.cot_id) WHERE Cotizaciones.cotId = ?;', [id]);
+    const productos = productosEnCatalogo.concat(productosFueraCatalogo);
+
+    // leer imagen del logo
+    const bitMap = fs.readFileSync(path.join(process.cwd(), 'src', 'public', 'img', 'PIMSAlogo.png'));
+    const buffer = Buffer.from(bitMap).toString('base64');
+    const imgSrc = `data:image/png;base64,${buffer}`;
+
+    // compilar template para el archivo pdf
+    const source = fs.readFileSync(path.join(process.cwd(), 'src', 'views', 'quotations', 'pdfTemplate.hbs'), 'utf8');
+    const template = hbs.compile(source);
+    const context = {
+        pimsaLogo: imgSrc,
+        cotizacion: cotizacion[0],
+        cliente: cliente[0],
+        productos: productos
+    }
+    const html = template(context);
+
+    // construir el archivo pdf
+    const timeMilis = new Date().getTime();
+    const readStream = Stream.PassThrough();
+    const options = {
+        format: 'Letter',
+		margin: {
+			top: "30px",
+			bottom: "30px",
+            left: "20px",
+            right: "20px"
+		},
+		printBackground: true,
+        scale: 0.75,
+    }
+
+    const pdf = await createPdf(html, options)
+    readStream.end(pdf);
+
+    // enviar archivo pdf
+    res.attachment(`cot${id}_${timeMilis}.pdf`);
+    res.contentType('application/pdf');
+    readStream.pipe(res).on('error', function(e){console.log(e)});
 })
 
 module.exports = router;
