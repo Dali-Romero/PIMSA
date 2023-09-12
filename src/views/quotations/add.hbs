@@ -150,7 +150,7 @@
             <div class="modal-footer">
                 <a href="/quotations" class="btn btn-danger" role="button">Cancelar cotización</a>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Seguir editando</button>
-                <button type="button" class="btn btn-success" id="send-quotation">Crear cotización</button>
+                <button type="submit" class="btn btn-success" id="send-quotation">Crear cotización</button>
             </div>
         </div>
     </div>
@@ -472,7 +472,7 @@
                         \{{#with cotizacion}}
                             <tr>
                                 <th scope="row">Fecha:</th>
-                                <td>\{{#formatDate fecha}} \{{/formatDate}}</td>
+                                <td>\{{formatDate fecha}}</td>
                                 <th scope="row">Estatus:</th>
                                 <td>\{{estatus}}</td>
                             </tr>
@@ -598,17 +598,17 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td>$ \{{#formatNumber priceproduct}} \{{/formatNumber}} (x \{{unitproduct}}²)</td>
+                                <td>$ \{{formatNumber priceproduct}} (x \{{unitproduct}}²)</td>
                                 <td>
                                     <div class="row m-0">
-                                        \{{measure}} mts²
+                                        \{{formatNumberMeasure measure}} mts²
                                     </div>
                                     <div class="row m-0">
-                                        (L) \{{lengthproduct}} mts x (A) \{{widthproduct}} mts
+                                        (L) \{{formatNumberMeasure lengthproduct}} mts x (A) \{{formatNumberMeasure widthproduct}} mts
                                     </div>
                                 </td>
-                                <td>$ \{{#formatNumber priceach}} \{{/formatNumber}}</td>
-                                <td>$ \{{#formatNumber amount}} \{{/formatNumber}}</td>
+                                <td>$ \{{formatNumber priceach}}</td>
+                                <td>$ \{{formatNumber amount}}</td>
                             </tr>
                         \{{else}}
                             <tr>
@@ -639,10 +639,10 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td>$ \{{#formatNumber priceproduct}} \{{/formatNumber}} (x \{{unitproduct}})</td>
+                                <td>$ \{{formatNumber priceproduct}} (x \{{unitproduct}})</td>
                                 <td>No aplica</td>
-                                <td>$ \{{#formatNumber priceproduct}} \{{/formatNumber}}</td>
-                                <td>$ \{{#formatNumber amount}} \{{/formatNumber}}</td>
+                                <td>$ \{{formatNumber priceproduct}}</td>
+                                <td>$ \{{formatNumber amount}}</td>
                             </tr>
                         \{{/equal}}
                     \{{else}}
@@ -669,19 +669,19 @@
                     <tbody>
                         <tr>
                             <th scope="row">Bruto:</th>
-                            <td>$ \{{#formatNumber totalBruto}} \{{/formatNumber}}</td>
+                            <td>$ \{{formatNumber totalBruto}}</td>
                         </tr>
                         <tr>
-                            <th scope="row">Descuento (\{{porcentajeDescuento}} %):</th>
-                            <td>- $ \{{#formatNumber descuento}} \{{/formatNumber}}</td>
+                            <th scope="row">Descuento (\{{formatNumber porcentajeDescuento}} %):</th>
+                            <td>- $ \{{formatNumber descuento}}</td>
                         </tr>
                         <tr>
                             <th scope="row">Subtotal:</th>
-                            <td>$ \{{#formatNumber subtotal}} \{{/formatNumber}}</td>
+                            <td>$ \{{formatNumber subtotal}}</td>
                         </tr>
                         <tr>
                             <th scope="row">IVA (16 %):</th>
-                            <td>+ $ \{{#formatNumber iva}} \{{/formatNumber}}</td>
+                            <td>+ $ \{{formatNumber iva}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -694,7 +694,7 @@
         <div class="col-md-3 text-center border border-dark border-2">
             <p class="fs-4 p-2 m-0 pb-0">Total:</p>
             \{{#with cotizacion}}
-                <p class="fs-4 p-2 m-0 pt-0">$ \{{#formatNumber total}} \{{/formatNumber}}</p>
+                <p class="fs-4 p-2 m-0 pt-0">$ \{{formatNumber total}}</p>
             \{{else}}
                 <p class="fs-4 p-2 m-0 pt-0">Sin información</p>
             \{{/with}}

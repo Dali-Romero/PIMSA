@@ -1,6 +1,5 @@
 const express = require('express');
 const hbs = require('handlebars');
-const puppeteer = require('puppeteer');
 const fs = require('fs');
 const {Stream} = require('stream');
 const pool = require('../database.js');
@@ -11,13 +10,13 @@ require('../lib/handlebars.js');
 
 const router = express.Router();
 
-router.get('/add', async (req, res)=>{
+router.get('/add', isLoggedIn, async (req, res)=>{
     const productos = await pool.query('SELECT productoId, nombre FROM Productos ORDER BY nombre ASC;');
     const clientes = await pool.query('SELECT clienteId, nombre FROM Clientes ORDER BY nombre ASC;')
     res.render('quotations/add', {productos: productos, clientes: clientes});
 });
 
-router.post('/add', async (req, res)=>{
+router.post('/add', isLoggedIn, async (req, res)=>{
     const body = req.body.data;
     const productos = req.body.data.productos;
     const newCot = {
@@ -87,19 +86,19 @@ router.post('/add', async (req, res)=>{
     res.send({url: '/quotations'});
 })
 
-router.post('/listProducts', async (req, res)=>{
+router.post('/listProducts', isLoggedIn, async (req, res)=>{
     const productoId = req.body.idProduct;
     const producto = await pool.query('SELECT productoId, nombre, unidad, precio FROM Productos WHERE productoId = ?;', [productoId]);
     res.send({producto: producto[0]});
 })
 
-router.post('/discountClient', async (req, res)=>{
+router.post('/discountClient', isLoggedIn, async (req, res)=>{
     const clienteId = req.body.clientid;
     const descuento = await pool.query('SELECT descuento FROM Clientes WHERE clienteId = ?;', [clienteId]);
     res.send({descuento: descuento[0]});
 })
 
-router.post('/preview', async (req, res)=>{
+router.post('/preview', isLoggedIn, async (req, res)=>{
     const body = req.body.inputs;
     const usruarioId = req.user.usuarioId;
     const clienteId = body.clientid;
@@ -179,12 +178,12 @@ router.post('/preview', async (req, res)=>{
     res.send({cotizacion:cot, cliente: cliente[0], productos: productosCotArray});
 })
 
-router.get('/', async (req, res)=>{
+router.get('/', isLoggedIn, async (req, res)=>{
     const cotizaciones = await pool.query('SELECT Cotizaciones.*, Clientes.clienteId, Clientes.nombre FROM (Cotizaciones INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId);');
     res.render('quotations/list', {cotizaciones: cotizaciones});
 })
 
-router.get('/info/:id', async (req, res)=>{
+router.get('/info/:id', isLoggedIn, async (req, res)=>{
     const {id} = req.params;
     const cotizacion = await pool.query('SELECT * FROM Cotizaciones WHERE cotId = ?', [id]);
     const cliente = await pool.query('SELECT * FROM (Cotizaciones INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId) WHERE Cotizaciones.cotId = ?;', [id]);
@@ -194,19 +193,19 @@ router.get('/info/:id', async (req, res)=>{
     res.render('quotations/info', {cotizacion: cotizacion[0], cliente: cliente[0], productos: productos});
 })
 
-router.get('/cancel/:id', async (req, res)=>{
+router.get('/cancel/:id', isLoggedIn, async (req, res)=>{
     const {id} = req.params;
     await pool.query('UPDATE Cotizaciones SET estatus = "Cancelada" WHERE cotId = ?', [id]);
     res.redirect('/quotations/info/' + id);
 })
 
-router.post('/email/:id', async (req, res)=>{
+router.post('/email/:id', isLoggedIn, async (req, res)=>{
     const {id} = req.params;
     const correoCliente = req.body.inputEmailClient;
     console.log(id, correoCliente);
 })
 
-router.get('/download/:id', async (req, res)=>{
+router.get('/download/:id', isLoggedIn, async (req, res)=>{
     const {id} = req.params;
     const cotizacion = await pool.query('SELECT * FROM Cotizaciones WHERE cotId = ?', [id]);
     const cliente = await pool.query('SELECT * FROM (Cotizaciones INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId) WHERE Cotizaciones.cotId = ?;', [id]);

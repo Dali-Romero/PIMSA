@@ -17,7 +17,9 @@ hbs.registerHelper('equalNR', function(v1, v2, options){
 });
 
 hbs.registerHelper('formatNumber', function(n){
-    return Number(n).toLocaleString();
+    let num = Number.parseFloat(n).toFixed(2);
+    num = Number(num).toLocaleString();
+    return num;
 });
 
 hbs.registerHelper('formatNumberMeasure', function(n){
