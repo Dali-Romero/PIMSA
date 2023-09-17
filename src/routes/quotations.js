@@ -12,27 +12,27 @@ const router = express.Router();
 
 router.get('/add', isLoggedIn, async (req, res)=>{
     const productos = await pool.query('SELECT productoId, nombre FROM Productos ORDER BY nombre ASC;');
-    const clientes = await pool.query('SELECT clienteId, nombre FROM Clientes ORDER BY nombre ASC;')
+    const clientes = await pool.query('SELECT clienteId, nombre FROM Clientes ORDER BY nombre ASC;');
     res.render('quotations/add', {productos: productos, clientes: clientes});
 });
 
 router.post('/add', isLoggedIn, async (req, res)=>{
-    const body = req.body.data;
+    const cotizacion = req.body.data.cotizacion;
     const productos = req.body.data.productos;
     const newCot = {
-        fecha: body.cotizacion.fecha,
-        cliente_id: body.cotizacion.cliente_id,
-        proyecto: body.cotizacion.proyecto,
-        observaciones: body.cotizacion.observaciones,
-        porcentajeDescuento: Number(body.cotizacion.porcentajeDescuento),
-        solicitante: body.cotizacion.solicitante,
-        empleado: body.cotizacion.empleado,
-        estatus: body.cotizacion.estatus,
-        totalBruto: body.cotizacion.totalBruto,
-        descuento: body.cotizacion.descuento,
-        subtotal: body.cotizacion.subtotal,
-        iva: body.cotizacion.iva,
-        total: body.cotizacion.total
+        fecha: cotizacion.fecha,
+        cliente_id: cotizacion.cliente_id,
+        proyecto: cotizacion.proyecto,
+        observaciones: cotizacion.observaciones,
+        porcentajeDescuento: Number(cotizacion.porcentajeDescuento),
+        solicitante: cotizacion.solicitante,
+        empleado: cotizacion.empleado,
+        estatus: cotizacion.estatus,
+        totalBruto: cotizacion.totalBruto,
+        descuento: cotizacion.descuento,
+        subtotal: cotizacion.subtotal,
+        iva: cotizacion.iva,
+        total: cotizacion.total
     };
     const {insertId} = await pool.query('INSERT INTO Cotizaciones SET ?;', [newCot]);
     let productosEnCatalogo = [];
@@ -82,7 +82,7 @@ router.post('/add', isLoggedIn, async (req, res)=>{
         await pool.query('INSERT INTO FueraCatalogoCotizados (cot_id, cantidad, concepto, acabados, archivo, precio, unidad, largo, ancho, area, precioCadaUno, monto) VALUES ?;', [ProductosFueraCatalogo]);
     }
 
-    req.flash('success', 'Cotización <b>COT-'+insertId+'</b> ha sido creada correctamente');
+    req.flash('success', 'La cotización <b>COT-'+insertId+'</b> ha sido creada correctamente');
     res.send({url: '/quotations'});
 })
 
@@ -199,6 +199,109 @@ router.get('/cancel/:id', isLoggedIn, async (req, res)=>{
     res.redirect('/quotations/info/' + id);
 })
 
+router.get('/edit/:id', isLoggedIn, async (req,res)=>{
+    const {id} = req.params;
+    const cotizacion = await pool.query('SELECT * FROM Cotizaciones WHERE cotId = ?', [id]);
+    const productos = await pool.query('SELECT productoId, nombre FROM Productos ORDER BY nombre ASC;');
+    const clientes = await pool.query('SELECT clienteId, nombre FROM Clientes ORDER BY nombre ASC;');
+    const cliente = await pool.query('SELECT clienteId FROM (Cotizaciones INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId) WHERE Cotizaciones.cotId = ?;', [id]);
+    const productosEnCatalogo = await pool.query('SELECT ProductosCotizados.*, Productos.nombre, Productos.unidad FROM ((Cotizaciones INNER JOIN ProductosCotizados ON Cotizaciones.cotId = ProductosCotizados.cot_id) INNER JOIN Productos ON ProductosCotizados.producto_id = Productos.productoId) WHERE Cotizaciones.cotId = ?;', [id]);
+    const productosFueraCatalogo = await pool.query('SELECT FueraCatalogoCotizados.* FROM (Cotizaciones INNER JOIN FueraCatalogoCotizados ON Cotizaciones.cotId = FueraCatalogoCotizados.cot_id) WHERE Cotizaciones.cotId = ?;', [id]);
+    
+    // asignar que productos estan en catalogo y cuales no;
+    productosEnCatalogo.forEach(producto =>{
+        producto.fueraCatalogo = '0' 
+    })
+    productosFueraCatalogo.forEach(producto =>{
+        producto.fueraCatalogo = '1' 
+    })
+    const productosCotizados = productosEnCatalogo.concat(productosFueraCatalogo);
+
+    // renderizar vista
+    res.render('quotations/edit', {cotizacion: cotizacion[0], clientes:clientes, cliente: cliente[0], productos: productos, productosCotizados: productosCotizados});
+})
+
+router.post('/edit/:id', async(req, res)=>{
+    const {id} = req.params;
+    const cotizacion = req.body.data.cotizacion;
+    const productos = req.body.data.productos;
+
+    // ordenar cotizacion
+    const newCot = {
+        fecha: cotizacion.fecha,
+        cliente_id: cotizacion.cliente_id,
+        proyecto: cotizacion.proyecto,
+        observaciones: cotizacion.observaciones,
+        porcentajeDescuento: Number(cotizacion.porcentajeDescuento),
+        solicitante: cotizacion.solicitante,
+        empleado: cotizacion.empleado,
+        estatus: cotizacion.estatus,
+        totalBruto: cotizacion.totalBruto,
+        descuento: cotizacion.descuento,
+        subtotal: cotizacion.subtotal,
+        iva: cotizacion.iva,
+        total: cotizacion.total
+    };
+
+    // actualizar cotizacion
+    await pool.query('UPDATE Cotizaciones SET ? WHERE cotId = ?', [newCot, id]);
+
+    // eliminar productos cotizados
+    await pool.query('DELETE FROM ProductosCotizados WHERE cot_id = ?', [id]);
+    await pool.query('DELETE FROM FueraCatalogoCotizados WHERE cot_id = ?', [id]);
+
+    // ordenar productos
+    let productosEnCatalogo = [];
+    let ProductosFueraCatalogo = [];
+    let newProducto = [];
+    productos.forEach(producto => {
+        if(producto.isoutcatalog === '0'){
+            newProducto = [
+                Number(id),
+                producto.quantityproduct,
+                producto.productId,
+                producto.coatingproduct,
+                producto.fileproduct,
+                Number(producto.lengthproduct),
+                Number(producto.widthproduct),
+                producto.measure,
+                producto.priceach,
+                producto.amount,
+                Number(producto.priceproduct)
+            ]
+            productosEnCatalogo.push(newProducto);
+            newProducto = [];
+        }else{
+            newProducto = [
+                Number(id),
+                Number(producto.quantityproduct),
+                producto.nameproduct,
+                producto.coatingproduct,
+                producto.fileproduct,
+                Number(producto.priceproduct),
+                producto.unitproduct,
+                Number(producto.lengthproduct),
+                Number(producto.widthproduct),
+                producto.measure,
+                producto.priceach,
+                producto.amount
+            ]
+            ProductosFueraCatalogo.push(newProducto);
+            newProducto = [];
+        }
+    });
+
+    // agregar nuevos productos cotizados
+    if (productosEnCatalogo.length > 0){
+        await pool.query('INSERT INTO ProductosCotizados (cot_id, cantidad, producto_id, acabados, archivo, largo, ancho, area, precioCadaUno, monto, precio) VALUES ?;', [productosEnCatalogo]);
+    }
+    if (ProductosFueraCatalogo.length > 0){
+        await pool.query('INSERT INTO FueraCatalogoCotizados (cot_id, cantidad, concepto, acabados, archivo, precio, unidad, largo, ancho, area, precioCadaUno, monto) VALUES ?;', [ProductosFueraCatalogo]);
+    }
+    req.flash('success', 'La cotización <b>COT-'+id+'</b> ha sido editada correctamente');
+    res.send({url: '/quotations'});
+})
+
 router.post('/email/:id', isLoggedIn, async (req, res)=>{
     const {id} = req.params;
     const correoCliente = req.body.inputEmailClient;
@@ -250,7 +353,7 @@ router.get('/download/:id', isLoggedIn, async (req, res)=>{
     // enviar archivo pdf
     res.attachment(`cot${id}_${timeMilis}.pdf`);
     res.contentType('application/pdf');
-    readStream.pipe(res).on('error', function(e){console.log(e)});
+    readStream.pipe(res).on('error', function(e){console.error(e)});
 })
 
 module.exports = router;

@@ -16,6 +16,14 @@ hbs.registerHelper('equalNR', function(v1, v2, options){
     }
 });
 
+hbs.registerHelper('greaterThan', function(v1, v2, options){
+    if (Number(v1) > Number(v2)){
+        return options.fn(this);
+    } else{
+        return options.inverse(this);
+    }
+});
+
 hbs.registerHelper('formatNumber', function(n){
     let num = Number.parseFloat(n).toFixed(2);
     num = Number(num).toLocaleString();

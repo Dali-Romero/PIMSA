@@ -1,10 +1,10 @@
 // Global variables
 let productsCounter = 0; // products counter
-let productsGenerated = 1; // products generated counter
+let productsGenerated = 0; // products generated counter 1
 let maxClientDiscount = 0; // max discount per client
 
 // function to validate the quoter
-function validateQuotationsForm(form){
+function validateQuotationsForm(form, url){
     let validated = false;
     form.on('submit', (event)=>{
         // avoid default form behavior
@@ -271,7 +271,6 @@ function validateQuotationsForm(form){
         })
 
         // price product validation
-        //const patternPriceOutProducts = /[^0-9.]/;
         const patternPriceOutProducts = /^\d+(\.\d{1,2})?$/;
         const priceOutProducts = $('.priceoutproduct');
         priceOutProducts.each(function(i, obj){
@@ -379,13 +378,18 @@ function validateQuotationsForm(form){
                         }
                     })
 
+                    // get and send all form data inputs
+                    const formData = {
+                        cotizacion: contextPreview.cotizacion,
+                        productos: contextPreview.productos
+                    }
                     $('#send-quotation').unbind().on('click', function(e){
                         e.preventDefault();
                         $.ajax({
                             type: 'POST',
-                            url: '/quotations/add',
+                            url: url,
                             headers: {'Content-Type': 'application/json'},
-                            data: JSON.stringify({data: contextPreview}),
+                            data: JSON.stringify({data: formData}),
                             success: function (data) {
                                 window.location.replace(data.url);
                             }
@@ -438,8 +442,9 @@ function validateQuotationEmailForm(form) {
 }
 
 $(document).ready(function(){
+    // ------------------------------- list file -------------------------------
     // list quotations table
-    var table = new DataTable('#quotations-table', {
+    new DataTable('#quotations-table', {
         paging: false,
         info: false,
         padding: false,
@@ -456,6 +461,7 @@ $(document).ready(function(){
         },
     });
 
+    // ------------------------------- add file -------------------------------
     // enable discount field
     $('#discountop1').on('click', ()=>{
         $('#numdiscount').prop('disabled', false);
@@ -465,7 +471,7 @@ $(document).ready(function(){
     // disable discount field
     $('#discountop2').on('click', ()=>{
         $('#numdiscount').prop('disabled', true);
-        $('#numdiscount').val('0');
+        $('#numdiscount').val('0.00');
     });
 
     // add product
@@ -482,6 +488,7 @@ $(document).ready(function(){
                     const sourceProduct = $('#products-card-added').html();
                     const templateProduct = Handlebars.compile(sourceProduct);
                     data.producto.contadorProducto = productsGenerated;
+                    data.producto.fueraCatalogo = '0';
                     const contextProduct = {
                         producto: data.producto
                     };
@@ -540,11 +547,12 @@ $(document).ready(function(){
     // add product out catalog
     $('#outCatalog').on('click', function(){
         const cardsContainer = $('#products-cards-container');
-        const sourceOutCatalogProduct = $('#products-outCatalog-card-added').html();
+        const sourceOutCatalogProduct = $('#products-card-added').html();
         const templateOutProduct = Handlebars.compile(sourceOutCatalogProduct);
         const data ={
             producto: {
-                contadorProducto: productsGenerated
+                contadorProducto: productsGenerated,
+                fueraCatalogo: '1'
             }
         }
         const contextOutProduct = {
@@ -631,8 +639,9 @@ $(document).ready(function(){
     })
 
     // quoter validation
-    validateQuotationsForm($('#form-add-quotation'));
+    validateQuotationsForm($('#form-add-quotation'), '/quotations/add');
 
+    // ------------------------------- info file -------------------------------
     // show cancel quotation warning
     $('#cancel-quotation').on('click', function(){
         const toast = new bootstrap.Toast(document.getElementById('cancelToast'), {});
@@ -652,4 +661,92 @@ $(document).ready(function(){
 
     // validate email send
     validateQuotationEmailForm($('#emailClientForm'));
+
+    // ------------------------------- Edit file -------------------------------
+    // count products
+    productsCounter = $('#products-cards-container').children().length;
+    productsGenerated = $('#products-cards-container').children().length;
+    if($('#clientid').length){
+        if($('#clientid').val().length !== 0){
+            const clientid = $('#clientid').val();
+            $.ajax({
+                type: 'POST',
+                url: '/quotations/discountClient',
+                headers: {'Content-Type': 'application/json'},
+                data: JSON.stringify({clientid: clientid}),
+                success: function(data){
+                    maxClientDiscount = data.descuento.descuento;
+                }
+            })
+        }
+    }
+
+    // enable/disable coating (acabados) field
+    if ($('.coatingproduct-toggle').length){
+        $('.coatingproduct-toggle').on('click', function(e){
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            $(this).children().toggleClass('bi bi-toggle2-on bi bi-toggle2-off')
+            $(this).siblings().prop('disabled', function(_, pv){
+                if (!$(this).is(':disabled')){
+                    $(this).val('Sin acabados');
+                }else{
+                    $(this).val('');
+                }
+                return !pv;
+            });
+        })
+    }
+
+    // enable/disable file (archivo) field
+    if ($('.fileproduct-toggle').length){
+        $('.fileproduct-toggle').on('click', function(e){
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            $(this).children().toggleClass('bi bi-toggle2-on bi bi-toggle2-off')
+            $(this).siblings().prop('disabled', function(_, pv){
+                if (!$(this).is(':disabled')){
+                    $(this).val('Sin archivo');
+                }else{
+                    $(this).val('');
+                }
+                return !pv;
+            });
+        })
+    }
+
+    //remove product
+    if ($('.remove-product-button').length){
+        $('.remove-product-button').on('click', function(e){
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            $(this).parents().eq(5).hide('slow', ()=>{
+                $(this).parents().eq(5).remove();
+                // decrease counter
+                productsCounter--;
+            });
+        });
+    }
+    
+
+    // show/hide width input field
+    if ($('.unitoutproduct1, .unitoutproduct2, .unitoutproduct3').length){
+        $('.unitoutproduct1, .unitoutproduct2, .unitoutproduct3').on('click', function(e){
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            if ($(this).val() === 'Mt'){
+                $(this).parents().eq(4).children().eq(1).children().eq(2).children().eq(0).children().eq(0).children().eq(1).children().eq(0).val('');
+                $(this).parents().eq(4).children().eq(1).children().eq(2).children().eq(0).children().eq(1).children().eq(1).children().eq(0).val('');
+                $(this).parents().eq(4).children().eq(1).children().eq(2).children().eq(0).removeClass('d-none');
+            }else{
+                $(this).parents().eq(4).children().eq(1).children().eq(2).children().eq(0).children().eq(0).children().eq(1).children().eq(0).val('0');
+                $(this).parents().eq(4).children().eq(1).children().eq(2).children().eq(0).children().eq(1).children().eq(1).children().eq(0).val('0');
+                $(this).parents().eq(4).children().eq(1).children().eq(2).children().eq(0).addClass('d-none');
+            }
+        })
+    }
+
+    // quoter validation
+    let formEditUrl = $('#form-edit-quotation').attr('action');
+    validateQuotationsForm($('#form-edit-quotation'), formEditUrl);
 });
