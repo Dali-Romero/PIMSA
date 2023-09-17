@@ -448,7 +448,7 @@ $(document).ready(function(){
         paging: false,
         info: false,
         padding: false,
-        order: [],
+        order: [[1, 'Desc']],
         dom: '<"float-start pb-2"f><"button-add-quotation pb-2"B>', 
         columnDefs: [
             {className: "dt-center", targets: "_all"},
