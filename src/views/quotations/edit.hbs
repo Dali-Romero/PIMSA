@@ -2,22 +2,22 @@
     <h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-journals"></i> Cotizaciones</h1>
 </div>
 <div class="row p-4">
-    <p class="fs-5 p-2 m-0" id="machine-add-title">Agregar cotización</p>
+    <p class="fs-5 p-2 m-0" id="machine-add-title">Editar cotización</p>
 </div>
 <div class="row px-4">
-    <form action="/quotations/add" method="post" class="needs-validation" id="form-add-quotation" novalidate>
+    <form action="/quotations/edit/{{#with cotizacion}}{{cotId}}{{/with}}" method="post" class="needs-validation" id="form-edit-quotation" novalidate>
         <div class="row mb-4 gy-4 justify-content-md-between">
             <div class="col-md-3 p-0 h-100">
                 <div class="row mb-2 m-0 text-center bg-danger text-white">
                     <p class="fs-6 p-2 m-0">Información general</p>
                 </div>
-                <div class="row py-2 px-0">
+                <div class="row py-2 px-0"> {{!-- <div class="row p-2"> (todos los campos de la columna) espacio por si se colocará un background --}}
                     <label for="clientid" class="form-label">Nombre del cliente:</label>
                     <div class="input-group has-validation">
                         <select name="clientid" id="clientid" class="form-select border-dark border-2 rounded-end" required>
                             <option value="">Seleccione un cliente</option>
                             {{#each clientes}}
-                                <option value="{{clienteId}}">{{nombre}}</option>
+                                <option value="{{clienteId}}" {{#equal clienteId ../cliente.clienteId}}selected{{/equal}}>{{nombre}}</option>
                             {{else}}
                                 <option value="" disabled>No existen clientes registrados...</option>
                             {{/each}}
@@ -30,77 +30,79 @@
                         </div>
                     </div>
                 </div>
-                <div class="row py-2 px-0">
-                    <label for="nameapplicant" class="form-label">Nombre del solicitante:</label>
-                    <div class="input-group has-validation">
-                        <span class="input-group-text border-dark border-2 border-end-0"><i class="bi bi-person-vcard"></i></span>
-                        <input type="text" name="nameapplicant" id="nameapplicant" class="form-control border-dark border-2 rounded-end" required>
-                        <div class="valid-feedback">
-                            ¡Perfecto!
-                        </div>
-                        <div class="invalid-feedback">
-                            <span id="invalid-feedback-nameapplicant"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="row py-2 px-0">
-                    <label for="nameproyect" class="form-label">Nombre del proyecto:</label>
-                    <div class="input-group">
-                        <span class="input-group-text border-dark border-2 border-end-0"><i class="bi bi-folder2-open"></i></span>
-                        <input type="text" name="nameproyect" id="nameproyect" class="form-control border-dark border-2 rounded-end" required>
-                        <div class="valid-feedback">
-                            ¡Perfecto!
-                        </div>
-                        <div class="invalid-feedback">
-                            <span id="invalid-feedback-nameproyect"></span>
+                {{#with cotizacion}}
+                    <div class="row py-2 px-0">
+                        <label for="nameapplicant" class="form-label">Nombre del solicitante:</label>
+                        <div class="input-group has-validation">
+                            <span class="input-group-text border-dark border-2 border-end-0"><i class="bi bi-person-vcard"></i></span>
+                            <input type="text" name="nameapplicant" value="{{solicitante}}" id="nameapplicant" class="form-control border-dark border-2 rounded-end" required>
+                            <div class="valid-feedback">
+                                ¡Perfecto!
+                            </div>
+                            <div class="invalid-feedback">
+                                <span id="invalid-feedback-nameapplicant"></span>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="row py-2 px-0">
-                    <label for="discountop1" class="form-label">¿Aplicar descuento?</label>
-                    <div class="row row-cols-3 m-0 p-0 justify-content-md-start">
-                        <div class="col-3 h-100">
-                            <input type="radio" name="discount" id="discountop1" class="btn-check" autocomplete="off">
-                            <label for="discountop1" class="btn btn-outline-success w-100 border-success border-2">Si</label>
+                    <div class="row py-2 px-0">
+                        <label for="nameproyect" class="form-label">Nombre del proyecto:</label>
+                        <div class="input-group">
+                            <span class="input-group-text border-dark border-2 border-end-0"><i class="bi bi-folder2-open"></i></span>
+                            <input type="text" name="nameproyect" value="{{proyecto}}" id="nameproyect" class="form-control border-dark border-2 rounded-end" required>
+                            <div class="valid-feedback">
+                                ¡Perfecto!
+                            </div>
+                            <div class="invalid-feedback">
+                                <span id="invalid-feedback-nameproyect"></span>
+                            </div>
                         </div>
-                        <div class="col-3 h-100">
-                            <input type="radio" name="discount" id="discountop2" class="btn-check" autocomplete="off" checked>
-                            <label for="discountop2" class="btn btn-outline-danger w-100 border-danger border-2">No</label>
-                        </div>
-                        <div class="col-6 h-100">
-                            <div class="input-group has-validation">
-                                <input type="text" name="numdiscount" id="numdiscount" value="0.00" class="form-control border-dark border-2" placeholder="Desc." disabled required>
-                                <span class="input-group-text border-dark border-2 border-start-0 rounded-end"><i class="bi bi-percent"></i></span>
-                                <div class="valid-feedback">
-                                    ¡Perfecto!
-                                </div>
-                                <div class="invalid-feedback">
-                                    <span id="invalid-feedback-numdiscount"></span>
+                    </div>
+                    <div class="row py-2 px-0">
+                        <label for="discountop1" class="form-label">¿Aplicar descuento?</label>
+                        <div class="row row-cols-3 m-0 p-0 justify-content-md-start">
+                            <div class="col-3 h-100">
+                                <input type="radio" name="discount" id="discountop1" class="btn-check" autocomplete="off" {{#greaterThan porcentajeDescuento '0'}}checked{{/greaterThan}}>
+                                <label for="discountop1" class="btn btn-outline-success w-100 border-success border-2">Si</label>
+                            </div>
+                            <div class="col-3 h-100">
+                                <input type="radio" name="discount" id="discountop2" class="btn-check" autocomplete="off" {{#greaterThan porcentajeDescuento '0'}}{{else}}checked{{/greaterThan}}>
+                                <label for="discountop2" class="btn btn-outline-danger w-100 border-danger border-2">No</label>
+                            </div>
+                            <div class="col-6 h-100">
+                                <div class="input-group has-validation">
+                                    <input type="text" name="numdiscount" value="{{porcentajeDescuento}}" id="numdiscount" class="form-control border-dark border-2" placeholder="Desc." {{#greaterThan porcentajeDescuento '0'}}{{else}}disabled{{/greaterThan}} required>
+                                    <span class="input-group-text border-dark border-2 border-start-0 rounded-end"><i class="bi bi-percent"></i></span>
+                                    <div class="valid-feedback">
+                                        ¡Perfecto!
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        <span id="invalid-feedback-numdiscount"></span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="row py-2 px-0 mb-3">
-                    <label for="observations" class="form-label">Observaciones:</label>
-                    <div class="input-group has-validation">
-                        <span class="input-group-text border-dark border-2 border-end-0"><i class="bi bi-info-square"></i></span>
-                        <textarea class="form-control border-dark border-2 rounded-end" name="observations" id="observations" rows="5" required></textarea>
-                        <div class="valid-feedback">
-                            ¡Perfecto!
-                        </div>
-                        <div class="invalid-feedback">
-                            <span id="invalid-feedback-observations"></span>
+                    <div class="row py-2 px-0 mb-3">
+                        <label for="observations" class="form-label">Observaciones:</label>
+                        <div class="input-group has-validation">
+                            <span class="input-group-text border-dark border-2 border-end-0"><i class="bi bi-info-square"></i></span>
+                            <textarea class="form-control border-dark border-2 rounded-end" name="observations" id="observations" rows="5" required>{{observaciones}}</textarea>
+                            <div class="valid-feedback">
+                                ¡Perfecto!
+                            </div>
+                            <div class="invalid-feedback">
+                                <span id="invalid-feedback-observations"></span>
+                            </div>
                         </div>
                     </div>
-                </div>
+                {{/with}}
             </div>
             <div class="col-md-8 h-100">
                 <div class="row text-center bg-danger text-white">
                     <p class="fs-6 p-2 m-0">Información de los productos</p>
                 </div>
                 <div class="row justify-content-md-between">
-                    <div class="row my-4 m-0 p-0">
+                    <div class="row my-4 m-0 p-0"> {{!-- <div class="row my-4 m-0"> espacio por si se colocará un background --}}
                         <div class="col-8 p-0">
                             <div class="input-group has-validation">
                                 <button class="btn btn-primary border-dark border-2 border-end-0" id="cotbtn" type="button">Cotizar</button>
@@ -120,12 +122,197 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-4 p-0 align-self-start text-end">
+                        <div class="col-4 p-0 align-self-start text-end"> {{!-- <div class="col-4 p-0 align-self-start text-end"> espacio por si se colocará un background --}}
                             <button class="btn btn-outline-secondary border-secondary border-2" id="outCatalog" type="button"><i class="bi bi-bag-x"></i> <span class="d-md-inline d-none">Fuera de catálogo</span></button>
                         </div>
                     </div>
                     <div class="row m-0 p-0 justify-content-md-between" id="products-cards-container">
-                        {{!-- The cards of the quoted products will be added here --}}
+                        {{#each productosCotizados}}
+                            <div class="row m-0 p-0">
+                                <div class="col-md-12 p-0">
+                                    <div class="card mb-4">
+                                        <div class="card-header text-bg-light">
+                                            <div class="row m-0 align-items-center">
+                                                <div class="col-8">
+                                                    {{#equal fueraCatalogo '1'}}
+                                                        <div class="input-group input-group-sm has-validation">
+                                                            <label for="nameoutproduct{{@index}}" class="col-form-label col-form-label-sm me-2"><b>Producto:</b></label>
+                                                            <input class="form-control border-dark border-2 rounded-0 nameoutproduct" name="nameproduct{{@index}}" id="nameoutproduct{{@index}}" value="{{concepto}}" type="text" required>
+                                                            <div class="valid-feedback">
+                                                                ¡Perfecto!
+                                                            </div>
+                                                            <div class="invalid-feedback">
+                                                                <span class="invalid-feedback-nameoutproduct"></span>
+                                                            </div>
+                                                            <input class="d-none" name="productId{{@index}}" type="text" value="">
+                                                        </div>
+                                                    {{else}}
+                                                        <p class="card-title m-0"><b>Producto:</b> {{nombre}}</p>
+                                                        <input class="d-none" name="nameproduct{{@index}}" value="{{nombre}}" type="text">
+                                                        <input class="d-none" name="productId{{@index}}" type="text" value="{{producto_id}}">
+                                                    {{/equal}}
+                                                    <input class="d-none" name="isoutcatalog{{@index}}" type="text" value="{{fueraCatalogo}}">
+                                                </div>
+                                                <div class="col-4 text-end">
+                                                    <button class="btn btn-danger btn-sm remove-product-button" type="button"><i class="bi bi-trash3"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row m-0 gy-md-0 justify-content-md-between">
+                                                <div class="col-md-4">
+                                                    {{#equal fueraCatalogo '1'}}
+                                                    <div class="row row-cols-3 justify-content-md-start">
+                                                        <div class="col-md-4 d-grid">
+                                                            <input type="radio" name="unitproduct{{@index}}" class="btn-check unitoutproduct1" id="unitoutproduct{{@index}}op1" value="Pieza" autocomplete="off" {{#equal unidad "Pieza"}} checked {{/equal}}>
+                                                            <label for="unitoutproduct{{@index}}op1" class="form-check-label btn btn-sm btn-outline-primary border-2">Pieza</label>
+                                                        </div>
+                                                        <div class="col-md-4 d-grid">
+                                                            <input type="radio" name="unitproduct{{@index}}" class="btn-check unitoutproduct2" id="unitoutproduct{{@index}}op2" value="Mt" autocomplete="off" {{#equal unidad "Mt"}} checked {{/equal}}>
+                                                            <label for="unitoutproduct{{@index}}op2" class="form-check-label btn btn-sm btn-outline-primary border-2">Mt²</label>
+                                                        </div>
+                                                        <div class="col-md-4 d-grid">
+                                                            <input type="radio" name="unitproduct{{@index}}" class="btn-check unitoutproduct3" id="unitoutproduct{{@index}}op3" value="Millar" autocomplete="off" {{#equal unidad "Millar"}} checked {{/equal}}>
+                                                            <label for="unitoutproduct{{@index}}op3" class="form-check-label btn btn-sm btn-outline-primary border-2">Millar</label>
+                                                        </div>
+                                                    </div>
+                                                    {{else}}
+                                                        <div class="row row-cols-3 justify-content-md-start">
+                                                            <div class="col-md-4 d-grid">
+                                                                <input type="radio" name="unitproduct{{@index}}" class="btn-check unitproduct" id="unitproduct{{@index}}op1" value="Pieza" autocomplete="off" {{#equal unidad "Pieza"}} checked {{/equal}} disabled>
+                                                                <label for="unitproduct{{@index}}op1" class="btn btn-sm btn-outline-primary border-2">Pieza</label>
+                                                            </div>
+                                                            <div class="col-md-4 d-grid">
+                                                                <input type="radio" name="unitproduct{{@index}}" class="btn-check" id="unitproduct{{@index}}op2" value="Mt" autocomplete="off" {{#equal unidad "Mt"}} checked {{/equal}} disabled>
+                                                                <label for="unitproduct{{@index}}op2" class="btn btn-sm btn-outline-primary border-2">Mt²</label>
+                                                            </div>
+                                                            <div class="col-md-4 d-grid">
+                                                                <input type="radio" name="unitproduct{{@index}}" class="btn-check" id="unitproduct{{@index}}op3" value="Millar" autocomplete="off" {{#equal unidad "Millar"}} checked {{/equal}} disabled>
+                                                                <label for="unitproduct{{@index}}op3" class="btn btn-sm btn-outline-primary border-2 ">Millar</label>
+                                                            </div>
+                                                        </div>
+                                                    {{/equal}}
+                                                </div>
+                                                <div class="col-md-3 pt-md-0 pt-4">
+                                                    <div class="input-group input-group-sm">
+                                                        <span class="input-group-text border-dark border-2 border-end-0"><i class="bi bi-currency-dollar"></i></span>
+                                                        <input type="number" name="priceproduct{{@index}}" min="1" value="{{precio}}" class="form-control border-dark border-2 rounded-end priceoutproduct" required>
+                                                        <div class="valid-feedback">
+                                                            ¡Perfecto!
+                                                        </div>
+                                                        <div class="invalid-feedback">
+                                                            <span class="invalid-feedback-priceproduct"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row m-0 gy-4 justify-content-md-between">
+                                                <div class="col-md-2">
+                                                    <label for="quantityproduct{{@index}}" class="form-label">Cantidad:</label>
+                                                    <div class="input-group input-group-sm has-validation">
+                                                        <span class="input-group-text border-dark border-2 border-end-0"><i class="bi bi-hash"></i></span>
+                                                        <input type="number" min="1" name="quantityproduct{{@index}}" id="quantityproduct{{@index}}" value="{{cantidad}}" class="form-control border-dark border-2 rounded-end quantityproduct" required>
+                                                        <div class="valid-feedback">
+                                                            ¡Perfecto!
+                                                        </div>
+                                                        <div class="invalid-feedback">
+                                                            <span class="invalid-feedback-quantityproduct"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-7">
+                                                    <div class="row gy-4 justify-content-md-between">
+                                                        <div class="col-md-6">
+                                                            <label for="coatingproduct{{@index}}" class="form-label">Acabados:</label>
+                                                            <div class="input-group input-group-sm has-validation">
+                                                                <button class="btn btn-outline-primary border-primary border-2 coatingproduct-toggle" type="button"><i class="{{#equal acabados 'Sin acabados'}}bi bi-toggle2-off{{else}}bi bi-toggle2-on{{/equal}}"></i></button>
+                                                                <input type="text" name="coatingproduct{{@index}}" id="coatingproduct{{@index}}" value="{{acabados}}" class="form-control border-dark border-2 border-start-0 rounded-end coatingproduct" {{#equal acabados 'Sin acabados'}}disabled{{/equal}} required>
+                                                                <div class="valid-feedback">
+                                                                    ¡Perfecto!
+                                                                </div>
+                                                                <div class="invalid-feedback">
+                                                                    <span class="invalid-feedback-coatingproduct"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label for="fileproduct{{@index}}" class="form-label">Archivo:</label>
+                                                            <div class="input-group input-group-sm has-validation">
+                                                                <button class="btn btn-outline-primary border-primary border-2 fileproduct-toggle" type="button"><i class="{{#equal archivo 'Sin archivo'}}bi bi-toggle2-off{{else}}bi bi-toggle2-on{{/equal}}"></i></button>
+                                                                <input type="text" name="fileproduct{{@index}}" id="fileproduct{{@index}}" value="{{archivo}}" class="form-control border-dark border-2 border-start-0 rounded-end fileproduct" {{#equal archivo 'Sin archivo'}}disabled{{/equal}} required>
+                                                                <div class="valid-feedback">
+                                                                    ¡Perfecto!
+                                                                </div>
+                                                                <div class="invalid-feedback">
+                                                                    <span class="invalid-feedback-fileproduct"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    {{#equal unidad 'Mt'}}
+                                                        <div class="row row-cols-2 justify-content-md-start">
+                                                            <div class="col-md-6 h-100">
+                                                                <label for="lengthproduct{{@index}}" class="form-label">Largo:</label>
+                                                                <div class="input-group input-group-sm has-validation">
+                                                                    <input type="text" name="lengthproduct{{@index}}" id="lengthproduct{{@index}}" value="{{largo}}" class="form-control border-dark border-2 rounded lengthproduct" placeholder="Mt" required>
+                                                                    <div class="valid-feedback">
+                                                                        ¡Perfecto!
+                                                                    </div>
+                                                                    <div class="invalid-feedback">
+                                                                        <span class="invalid-feedback-lengthproduct"></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6 h-100">
+                                                                <label for="widthproduct{{@index}}" class="form-label">Ancho:</label>
+                                                                <div class="input-group input-group-sm has-validation">
+                                                                    <input type="text" name="widthproduct{{@index}}" id="widthproduct{{@index}}" value="{{ancho}}" class="form-control border-dark border-2 rounded widthproduct" placeholder="Mt" required>
+                                                                    <div class="valid-feedback">
+                                                                        ¡Perfecto!
+                                                                    </div>
+                                                                    <div class="invalid-feedback">
+                                                                        <span class="invalid-feedback-widthproduct"></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    {{else}}
+                                                        <div class="row row-cols-2 justify-content-md-start d-none">
+                                                            <div class="col-md-6 h-100">
+                                                                <label for="lengthproduct{{@index}}" class="form-label">Largo:</label>
+                                                                <div class="input-group input-group-sm has-validation">
+                                                                    <input type="text" name="lengthproduct{{@index}}" id="lengthproduct{{@index}}" value="0" class="form-control border-dark border-2 rounded lengthproduct" placeholder="Mt" required>
+                                                                    <div class="valid-feedback">
+                                                                        ¡Perfecto!
+                                                                    </div>
+                                                                    <div class="invalid-feedback">
+                                                                        <span class="invalid-feedback-lengthproduct"></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6 h-100">
+                                                                <label for="widthproduct{{@index}}" class="form-label">Ancho:</label>
+                                                                <div class="input-group input-group-sm has-validation">
+                                                                    <input type="text" name="widthproduct{{@index}}" id="widthproduct{{@index}}" value="0" class="form-control border-dark border-2 rounded widthproduct" placeholder="Mt" required>
+                                                                    <div class="valid-feedback">
+                                                                        ¡Perfecto!
+                                                                    </div>
+                                                                    <div class="invalid-feedback">
+                                                                        <span class="invalid-feedback-widthproduct"></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    {{/equal}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {{/each}}
                     </div>
                 </div>
                 <div class="row mb-2 justify-content-end text-end">
@@ -171,8 +358,8 @@
                                 \{{#equal fueraCatalogo '1'}}
                                     <div class="input-group input-group-sm has-validation">
                                         <input class="d-none" name="productId\{{contadorProducto}}" type="text" value="">
-                                        <label for="nameproduct\{{contadorProducto}}" class="col-form-label col-form-label-sm me-2"><b>Producto:</b></label>
-                                        <input class="form-control border-dark border-2 rounded-0 nameoutproduct" name="nameproduct\{{contadorProducto}}" id="nameproduct\{{contadorProducto}}" type="text" required>
+                                        <label for="nameoutproduct\{{contadorProducto}}" class="col-form-label col-form-label-sm me-2"><b>Producto:</b></label>
+                                        <input class="form-control border-dark border-2 rounded-0 nameoutproduct" name="nameproduct\{{contadorProducto}}" id="nameoutproduct\{{contadorProducto}}" type="text" required>
                                         <div class="valid-feedback">
                                             ¡Perfecto!
                                         </div>
@@ -564,7 +751,7 @@
         </div>
     </div>
     <div class="row p-4 gy-4 pt-0 justify-content-md-between">
-        <div class="col-md-8">
+        <div class="col-md-8 p-0">
             \{{#with cotizacion}}
                 <p class="fs-6"><b>Observaciones:</b></p>
                 \{{observaciones}}

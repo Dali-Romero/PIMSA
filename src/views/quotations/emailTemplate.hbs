@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        .body{
+            padding: 2rem;
+            background-color: #E8E8E8;
+        }
+
+        .email-container{
+            width: 70%;
+            padding: 2rem;
+            margin: auto;
+            background-color: #fff;
+        }
+
+        .email-title{
+            display: table;
+            width: 100%;
+        }
+
+        .title, .date {
+            margin-bottom: 0;
+        }
+
+        .title{
+            display: table-cell;
+            text-align: left;
+        }
+
+        .date{
+            display: table-cell;
+            text-align: right;
+        }
+
+        .img{
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        hr{
+            border: 1px solid #000;
+        }
+
+        .email-message{
+            text-align: start;
+        }
+
+        .spanData {
+            color: #ED0A3F;
+        }
+
+        .email-footer{
+            display: table;
+            width: 100%;
+        }
+
+        .website{
+            display: table-cell;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        .phoneNumber{
+            display: table-cell;
+            text-align: right;
+            vertical-align: middle;
+        }
+
+        .email-social{
+            width: 50%;
+            display: table;
+            margin-left: -8rem;
+        }
+
+        .facebook{
+            display: table-cell;
+            text-align: left;
+            padding-right: 1rem;
+        }
+
+        .logoFacebook, .logoInstagram{
+            width: 24px;
+            height: 24px;
+        }
+
+        .instagram{
+            display: table-cell;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="body">
+        <div class="email-container">
+            <div class="email-header">
+                <div class="email-title">
+                    <h3 class="title">Cotización</h3>
+                    <p class="date">{{fecha}}</p>
+                </div>
+                <hr>
+                <img src="cid:logoPimsa" alt="logo PIMSA" class="img">
+            </div>
+            <div class="email-body">
+                <p>Hola <b>{{solicitante}}</b>.</p>
+                <p class="email-message">
+                    Gracias por confiar en PIMSA Publicidad para promocionar tu negocio, a continuación, 
+                    incluimos un documento con la información completa de su cotización. Cualquier duda
+                    o comentario favor de comunicarse con nosotros.
+                </p>
+                <h4>Contacto de quien lo atendió</h4>
+                <p>
+                    {{#with empleado}}
+                        {{nombreComp}}
+                    {{/with}}
+                </p>
+                <p>
+                    {{#with empleado}}
+                        <span class="spanData">[Correo]</span> {{correoElec}}
+                    {{/with}}
+                </p>
+                <p>
+                    {{#with empleado}}
+                        <span class="spanData">[Teléfono]</span> {{numeroCelu}}
+                    {{/with}}
+                </p>
+                <hr>
+            </div>
+            <div class="email-footer">
+                <p class="website"><a href="https://www.pimsapublicidad.com/">www.pimsapublicidad.com</a></p>
+                <div class="email-social">
+                    <a href="https://www.facebook.com/PimsaPublicidad/" class="facebook">
+                        <img src="cid:logoFacebook" alt="logo Facebook" class="logoFacebook">
+                    </a>
+                    <a href="https://www.instagram.com/pimsapublicidad/" class="instagram">
+                        <img src="cid:logoInstagram" alt="logo Instagram" class="logoInstagram">
+                    </a>
+                </div>
+                <p class="phoneNumber">+52 312 595 3076</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
