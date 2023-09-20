@@ -2,10 +2,11 @@ const express = require('express');
 const hbs = require('handlebars');
 const fs = require('fs');
 const {Stream} = require('stream');
+const path = require('path');
+const nodemailer = require('nodemailer');
 const pool = require('../database.js');
 const {moneda, dimensiones, createPdf} = require('../lib/helpers.js');
 const { isLoggedIn } = require('../lib/auth.js');
-const path = require('path');
 require('../lib/handlebars.js');
 
 const router = express.Router();
@@ -305,7 +306,104 @@ router.post('/edit/:id', async(req, res)=>{
 router.post('/email/:id', isLoggedIn, async (req, res)=>{
     const {id} = req.params;
     const correoCliente = req.body.inputEmailClient;
-    console.log(id, correoCliente);
+    const usruarioId = req.user.usuarioId;
+
+    // obtener datos para generar el pdf de la cotizacion
+    const cotizacion = await pool.query('SELECT * FROM Cotizaciones WHERE cotId = ?', [id]);
+    const cliente = await pool.query('SELECT * FROM (Cotizaciones INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId) WHERE Cotizaciones.cotId = ?;', [id]);
+    const productosEnCatalogo = await pool.query('SELECT ProductosCotizados.*, Productos.nombre, Productos.unidad FROM ((Cotizaciones INNER JOIN ProductosCotizados ON Cotizaciones.cotId = ProductosCotizados.cot_id) INNER JOIN Productos ON ProductosCotizados.producto_id = Productos.productoId) WHERE Cotizaciones.cotId = ?;', [id]);
+    const productosFueraCatalogo = await pool.query('SELECT FueraCatalogoCotizados.* FROM (Cotizaciones INNER JOIN FueraCatalogoCotizados ON Cotizaciones.cotId = FueraCatalogoCotizados.cot_id) WHERE Cotizaciones.cotId = ?;', [id]);
+    const productos = productosEnCatalogo.concat(productosFueraCatalogo);
+
+    // obtener datos de contacto del empleado
+    const empleado = await pool.query('SELECT Empleados.nombreComp, Empleados.correoElec, Empleados.numeroCelu FROM (Empleados INNER JOIN Usuarios ON Empleados.empleadoId = Usuarios.empleado_id) WHERE Usuarios.usuarioId = ?;', [usruarioId]);
+
+    // leer imagen del logo
+    const bitMap = fs.readFileSync(path.join(process.cwd(), 'src', 'public', 'img', 'PIMSAlogo.png'));
+    const buffer = Buffer.from(bitMap).toString('base64');
+    const imgSrc = `data:image/png;base64,${buffer}`;
+
+    // generar pdf de la cotizacion
+    const sourcePdf = fs.readFileSync(path.join(process.cwd(), 'src', 'views', 'quotations', 'pdfTemplate.hbs'), 'utf8');
+    const templatePdf = hbs.compile(sourcePdf);
+    const contextPdf = {
+        pimsaLogo: imgSrc,
+        cotizacion: cotizacion[0],
+        cliente: cliente[0],
+        productos: productos
+    };
+    const htmlPdf = templatePdf(contextPdf);
+    const readStream = Stream.PassThrough();
+    const options = {
+        format: 'Letter',
+        margin: {
+            top: "30px",
+            bottom: "30px",
+            left: "20px",
+            right: "20px"
+        },
+        printBackground: true,
+        scale: 0.75,
+    };
+    const pdf = await createPdf(htmlPdf, options);
+    readStream.end(pdf);
+
+    // compilar template del correo
+    const fechaEmail = new Date().toLocaleDateString('es-mx', {year: 'numeric', month: 'numeric', day: 'numeric'});
+    const sourceEmail = fs.readFileSync(path.join(process.cwd(), 'src', 'views', 'quotations', 'emailTemplate.hbs'), 'utf8');
+    const templateEmail = hbs.compile(sourceEmail);
+    const contextEmail = {
+        fecha: new Date().toLocaleDateString('es-mx', {year: 'numeric', month: 'long', day: 'numeric'}),
+        solicitante: cotizacion[0].solicitante,
+        empleado: empleado[0],
+    };
+    const htmlEmail = templateEmail(contextEmail);
+
+    // crear servicio para enviar email
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'hagantyr@gmail.com',
+            pass: 'ollzhyjewlbpnaye'
+        }
+    });
+
+    // opciones del email
+    const mailOptions = {
+        from: 'hagantyr@gmail.com',
+        to: correoCliente,
+        subject: 'PIMSA Cotización',
+        html: htmlEmail,
+        attachments: [{
+            filename: `Cotizacion_${fechaEmail}.pdf`,
+            content: pdf,
+            contentType: 'application/pdf'
+        },{
+            filename: 'PIMSAlogo.png',
+            path: path.join(process.cwd(), 'src', 'public', 'img', 'PIMSAlogo.png'),
+            cid: 'logoPimsa'
+        },{
+            filename: 'facebook.png',
+            path: path.join(process.cwd(), 'src', 'public', 'img', 'facebook.png'),
+            cid: 'logoFacebook'
+        },{
+            filename: 'instagram.png',
+            path: path.join(process.cwd(), 'src', 'public', 'img', 'instagram.png'),
+            cid: 'logoInstagram'
+        }]
+    }
+
+    // enviar email
+    try {
+        const info = await transporter.sendMail(mailOptions);
+        console.log('mensaje enviado: ', info.messageId);
+        req.flash('success', 'El correo electrónico a <b>'+correoCliente+'</b> ha sido enviado correctamente');
+        res.redirect('/quotations/info/' + id);
+    } catch (error) {
+        req.flash('error', 'Ha ocurrido un error al momento de enviar el correo electrónico a <b>'+correoCliente+'</b>');
+        res.redirect('/quotations/info/' + id);
+        console.log(error);
+    }
 })
 
 router.get('/download/:id', isLoggedIn, async (req, res)=>{
