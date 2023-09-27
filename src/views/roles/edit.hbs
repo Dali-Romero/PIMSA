@@ -1,0 +1,90 @@
+<div class="row p-3" id="machine-title">
+    <h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-shield-lock"></i> Roles</h1>
+</div>
+<div class="row p-4">
+    <p class="fs-5 p-2 m-0" id="machine-add-title">Agregar rol</p>
+</div>
+<div class="row px-4">
+    {{#with rol}}
+        <form action="/roles/edit/{{rolId}}" method="post" class="needs-validation" id="editRoleForm" novalidate>
+            <div class="row mb-4 gy-4 justify-content-md-between">
+                <div class="col-md-3 p-0 h-100">
+                    <div class="row mb-2 m-0 text-center bg-danger text-white">
+                        <p class="fs-6 p-1 m-0">Información general</p>
+                    </div>
+                    <div class="row py-2 px-0">
+                        <label for="rolename" class="form-label">Nombre del rol:</label>
+                        <div class="input-group has-validation">
+                            <span class="input-group-text border-dark border-2 border-end-0"><i class="bi bi-person-fill-lock"></i></span>
+                            <input type="text" name="rolename" value="{{nombre}}" id="rolename" class="form-control border-dark border-2 rounded-end" required>
+                            <div class="valid-feedback">
+                                ¡Perfecto!
+                            </div>
+                            <div class="invalid-feedback">
+                                <span id="invalid-feedback-rolename"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row py-2 px-0">
+                        <label for="rolestatusop1" class="form-label">Estatus:</label>
+                        <div class="row m-0 justify-content-md-start">
+                            <div class="col-6 d-grid ps-0">
+                                <input type="radio" name="rolestatus" id="rolestatusop1" class="btn-check" value="1" autocomplete="off" {{#if activo}}checked{{/if}}>
+                                <label for="rolestatusop1" class="btn btn-outline-success border-success border-2">Activo</label>
+                            </div>
+                            <div class="col-6 d-grid pe-0">
+                                <input type="radio" name="rolestatus" id="rolestatusop2" class="btn-check" value="0" autocomplete="off" {{#unless activo}}checked{{/unless}}>
+                                <label for="rolestatusop2" class="btn btn-outline-danger border-danger border-2">Inactivo</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row py-2 px-0">
+                        <label for="roledescription" class="form-label">Descripción:</label>
+                        <div class="input-group has-validation">
+                            <span class="input-group-text border-dark border-2 border-end-0"><i class="bi bi-info-square"></i></span>
+                            <textarea class="form-control border-dark border-2 rounded-end" name="roledescription" id="roledescription" rows="6" required>{{descripcion}}</textarea>
+                            <div class="valid-feedback">
+                                ¡Perfecto!
+                            </div>
+                            <div class="invalid-feedback">
+                                <span id="invalid-feedback-roledescription"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8 p-0 h-100">
+                    <div class="row m-0 text-center bg-danger text-white">
+                        <p class="fs-6 p-1 m-0">Permisos</p>
+                    </div>
+                    <div class="row py-3 m-0 justify-content-between">
+                        <div class="col-md-auto p-0">
+                            <div class="form-check form-switch">
+                                <input type="checkbox" id="selectAllRoles" class="form-check-input" role="switch">
+                                <label for="selectAllRoles" class="form-check-label">Marcar todos</label>
+                            </div>
+                        </div>
+                        <div class="col-md-auto p-0">
+                            <span id="invalid-feedback-permissions"></span>
+                        </div>
+                    </div>
+                    <div class="row row-cols-2 row-cols-md-5 g-4 justify-content-md-start">
+                        {{#each ../permisos}}
+                            <div class="col">
+                                <div class="form-check p-0">
+                                    <input type="checkbox" name="permissions" value="{{permisoId}}" id="{{permiso}}" class="form-check-input btn-check" autocomplete="off" {{#if permiso_seleccionado}}checked{{/if}}>
+                                    <label for="{{permiso}}" class="form-check-label btn btn-sm btn-outline-primary w-100">{{descripcion}}</label>
+                                </div>
+                            </div>
+                        {{/each}}
+                    </div>
+                    <div class="row my-4 m-0 justify-content-end">
+                        <div class="col-md-auto p-0">
+                            <button class="btn btn-danger me-4" type="reset">Limpiar campos</button>
+                            <button class="btn btn-success" type="submit">Crear rol</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    {{/with}}
+</div>

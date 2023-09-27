@@ -1,0 +1,93 @@
+<div class="row p-3" id="machine-title">
+    <h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-shield-lock"></i> Roles</h1>
+</div>
+<div class="row p-4">
+    <div class="row justify-content-between p-0 m-0" id="machine-add-title">
+        <div class="col-6">
+            <p class="fs-5 p-2 m-0">Roles registrados</p>
+        </div>
+        <div class="col-6 text-end">
+            <p class="fs-5 p-2 m-0">Total: {{total_roles.total_roles}}</p>
+        </div>
+    </div>
+</div>
+<div class="row px-4 pt-0 pb-4">
+    <div class="table-responsive-xxl p-0">
+        <table class="table table-striped align-middle" id="roles-table">
+            <thead>
+                <tr>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Descripción</th>
+                    <th scope="col">Estatus</th>
+                    <th scope="col">Total asignados</th>
+                    <th scope="col">Permisos</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                {{#each roles}}
+                    <tr>
+                        <th scope="row">{{nombre}}</th>
+                        <td>{{descripcion}}</td>
+                        {{#if activo}}
+                            <td class="text-success">Activo</td>
+                        {{else}}
+                            <td class="text-danger">Inactivo</td>
+                        {{/if}}
+                        <td>{{total_usuarios_rol}}</td>
+                        <td>
+                            <div class="row g-0">
+                                <div class="col-md-6 col-12">
+                                    <button class="btn btn-sm btn-outline-primary w-100" id="btnExpandPermissions" value="{{rolId}}" type="button" aria-expanded="false"><i class="bi bi-shield-lock pe-2"></i>
+                                        {{total_usuario_permisos}}/{{../total_permisos.total_permisos}}
+                                    </button>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="row g-0 justify-content-center">
+                                <div class="col-md-6 col-12">
+                                    <a href="/roles/edit/{{rolId}}" class="btn btn-sm btn-secondary w-100"><i class="bi bi-pencil-square"></i></a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {{else}}
+                    <tr>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td colspan="6" class="text-center">No existen roles registrados</td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/x-handlebars-template" id="roles-permissions-expand">
+    <div class="row py-3 m-0 text-center">
+        <p class="fs-5 fw-bold p-1 m-0">Permisos \{{#with role}}del \{{nombre}} \{{/with}}</p>
+    </div>
+    <div class="row row-cols-2 row-cols-md-5 g-4 pb-3 justify-content-md-start">
+        \{{#each permissions}}
+            <div class="col">
+                <div class="card bg-primary-subtle">
+                    <div class="card-body">
+                        <p class="card-text"><i class="bi bi-shield-lock-fill"></i> \{{descripcion}}</p>
+                    </div>
+                </div>
+            </div>
+        \{{else}}
+            <div class="col-md-12">
+                <div class="card bg-primary-subtle">
+                    <div class="card-body">
+                        <p class="card-text text-center">No existen permisos asignados a este rol</p>
+                    </div>
+                </div>
+            </div>
+        \{{/each}}
+    </div>
+</script>
