@@ -100,6 +100,32 @@ $(document).ready(function(){
         },
     });
 
+    $('#roles-table tbody').on('click', '#btnExpandAssignedUsers', function () {
+        const tr = $(this).closest('tr');
+        const row = table.row(tr);
+        const idRole = $(this).val();
+        if (row.child.isShown()) {
+            row.child.hide();
+        }else {
+            $.ajax({
+                type: 'POST',
+                url: '/roles/listAssignedUsers',
+                headers: {'Content-Type': 'application/json'},
+                data: JSON.stringify({idRole: idRole}),
+                success: function(data){
+                    const sourceAssignedUsers = $('#roles-users-expand').html();
+                    const templateAssignedUsers = Handlebars.compile(sourceAssignedUsers);
+                    const contextAssignedUsers = {
+                        assignedUsers: data.usuariosAsignados,
+                        role: data.rol
+                    };
+                    const htmlAssignedUsers = templateAssignedUsers(contextAssignedUsers);
+                    row.child(htmlAssignedUsers).show();
+                }
+            });
+        }
+    });
+
     $('#roles-table tbody').on('click', '#btnExpandPermissions', function () {
         const tr = $(this).closest('tr');
         const row = table.row(tr);

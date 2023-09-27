@@ -48,6 +48,13 @@ router.post('/listPermissions', isLoggedIn, async (req, res)=>{
     res.send({permisos:permisos, rol:rol[0]});
 })
 
+router.post('/listAssignedUsers', isLoggedIn, async (req, res)=>{
+    const rolId = req.body.idRole;
+    const rol = await pool.query('SELECT Roles.nombre FROM Roles WHERE Roles.rolId = ?;', [rolId]);
+    const usuariosAsignados = await pool.query('SELECT Empleados.empleadoId, Empleados.nombreComp AS Empleado, Areas.areaId, Areas.nombre AS Area FROM (((Roles INNER JOIN Usuarios ON Roles.rolId = Usuarios.rol_id) INNER JOIN Empleados ON Usuarios.empleado_id = Empleados.empleadoId) INNER JOIN Areas ON Empleados.area_id = Areas.areaId) WHERE Roles.rolId = ?;', [rolId]);
+    res.send({rol:rol[0], usuariosAsignados:usuariosAsignados});
+})
+
 router.get('/edit/:id', isLoggedIn, async (req, res)=>{
     const {id} = req.params;
     const rol = await pool.query('SELECT * FROM Roles WHERE Roles.rolId = ?;', [id]);
