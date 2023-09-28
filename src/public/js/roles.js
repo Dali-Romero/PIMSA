@@ -104,9 +104,16 @@ $(document).ready(function(){
         const tr = $(this).closest('tr');
         const row = table.row(tr);
         const idRole = $(this).val();
-        if (row.child.isShown()) {
+        if (tr.hasClass('PermissionsIsShowing')) {
             row.child.hide();
-        }else {
+            tr.removeClass('PermissionsIsShowing');
+        }
+        if (row.child.isShown()) {
+            $('div.roles-users-slider', row.child()).slideUp(function () {
+                row.child.hide();
+                tr.removeClass('UsersIsShowing');
+            });
+        } else {
             $.ajax({
                 type: 'POST',
                 url: '/roles/listAssignedUsers',
@@ -120,7 +127,9 @@ $(document).ready(function(){
                         role: data.rol
                     };
                     const htmlAssignedUsers = templateAssignedUsers(contextAssignedUsers);
-                    row.child(htmlAssignedUsers).show();
+                    row.child(htmlAssignedUsers, 'p-0' ).show();
+                    $('div.roles-users-slider', row.child()).slideDown();
+                    tr.addClass('UsersIsShowing');
                 }
             });
         }
@@ -130,9 +139,16 @@ $(document).ready(function(){
         const tr = $(this).closest('tr');
         const row = table.row(tr);
         const idRole = $(this).val();
-        if (row.child.isShown()) {
+        if (tr.hasClass('UsersIsShowing')) {
             row.child.hide();
-        }else {
+            tr.removeClass('UsersIsShowing');
+        }
+        if (row.child.isShown()) {
+            $('div.roles-permissions-slider', row.child()).slideUp(function () {
+                row.child.hide();
+                tr.removeClass('PermissionsIsShowing');
+            });
+        } else {
             $.ajax({
                 type: 'POST',
                 url: '/roles/listPermissions',
@@ -146,7 +162,9 @@ $(document).ready(function(){
                         role: data.rol
                     };
                     const htmlPermissions = templatePermissions(contextPermissions);
-                    row.child(htmlPermissions).show();
+                    row.child(htmlPermissions, 'p-0' ).show();
+                    $('div.roles-permissions-slider', row.child()).slideDown();
+                    tr.addClass('PermissionsIsShowing');
                 }
             });
         }
