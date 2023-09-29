@@ -107,6 +107,7 @@ $(document).ready(function(){
         if (tr.hasClass('PermissionsIsShowing')) {
             row.child.hide();
             tr.removeClass('PermissionsIsShowing');
+            tr.find('button#btnExpandPermissions').removeClass('active');
         }
         if (row.child.isShown()) {
             $('div.roles-users-slider', row.child()).slideUp(function () {
@@ -142,6 +143,7 @@ $(document).ready(function(){
         if (tr.hasClass('UsersIsShowing')) {
             row.child.hide();
             tr.removeClass('UsersIsShowing');
+            tr.find('button#btnExpandAssignedUsers').removeClass('active');
         }
         if (row.child.isShown()) {
             $('div.roles-permissions-slider', row.child()).slideUp(function () {
