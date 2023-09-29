@@ -37,7 +37,6 @@ app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(flash());
 
 // Global variables
 app.use((req, res, next)=>{
@@ -59,6 +58,7 @@ app.use('/products', require('./routes/products'));
 app.use('/clients/', require('./routes/clients'));
 app.use('/quotations', require('./routes/quotations'));
 app.use('/users', require('./routes/users'));
+app.use('/roles', require('./routes/roles'));
 
 // Public
 app.use(express.static(path.join(__dirname, 'public')));
