@@ -1,0 +1,314 @@
+<div class="row p-3" id="machine-title">
+    <h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-person-gear"></i> empleados</h1>
+</div>
+<div class="row p-4">
+    <p class="fs-5 p-2 m-0" id="machine-add-title">Modificar empleado.</p>
+</div>
+<div class="row px-3">
+    <form action="/employees/edit/{{employee.empleadoId}}" class="needs-validation" id="form-edit-employee" method="post" novalidate>
+        <div class="row mb-4 justify-content-md-between">
+            <div class="col-md-4">
+                <div class="row mb-4">
+                    <label for="serialnumber" class="form-label">Nombre completo:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-card-text"></i></span>
+                        <input type="text" name="nombre" id="nombre" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" autofocus required  value='{{employee.nombreComp}}'>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-nombre"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="inktype" class="form-label">Sexo:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-gender-ambiguous"></i></span>
+                        <select name="sexo" id="sexo" class="form-select border-dark border-2">
+                            <option value="H" {{#equal employee.sexo "H"}} selected {{/equal}}>Masculino</option>
+                            <option value="M" {{#equal employee.sexo "M"}} selected {{/equal}}>Femenino</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="inktype" class="form-label">Estado civil:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-person-square"></i></span>
+                        <select name="estadoCivil" id="estadoCivil" class="form-select border-dark border-2">
+                            <option value="Soltero" {{#equal employee.estadoCivil "Soltero"}} selected {{/equal}}>Soltero</option>
+                            <option value="Casado" {{#equal employee.estadoCivil "Casado"}} selected {{/equal}}>Casado</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="brand" class="form-label">Lugar de nacimiento:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-geo-alt-fill"></i></span>
+                        <input type="text" name="lugNacimiento" id="lugNacimiento" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{employee.nacLugar}}>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-lugNacimiento"></span>
+                        </div>
+                    </div>
+                </div>
+                <!--
+                    Agregar script para Edad por cumplir
+                -->
+                <div class="row mb-4">
+                    <label for="fechaNacimeinto" class="form-label">Fecha de nacimiento:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-calendar-date-fill"></i></span>
+                        <input type="date" name="fecNacimiento" id="fecNacimiento" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{employee.nacFecha}}>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-fecNacimiento"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="name" class="form-label">Edad por cumplir:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-balloon-fill"></i></span>
+                        <input type="number" name="edad" id="edad" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{employee.edadCumplir}}>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-edad"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="techcontact" class="form-label">Numero de telefono:</label>
+                    <div class="row m-0 p-0">
+                        <div class="col-5">
+                            <input type="text" name="extension" id="extension" class="form-control border-dark border-2" aria-describedby="basic-addon1" placeholder="Extensión" value={{employee.extension}}>
+                        </div>
+                        <div class="col-7">
+                            <div class="input-group has-validation">
+                                <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-telephone-fill"></i></span>
+                                <input type="text" name="numeroTelefono" id="numeroTelefono" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{employee.numeroCelu}}>
+                                <div class="invalid-feedback">
+                                    <span id="invalid-feedback-numeroTelefono"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="name" class="form-label">Correo electronico:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-at"></i></span>
+                        <input type="text" name="correo" id="correo" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{employee.correoElec}}>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-correo"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="headtype" class="form-label">Nombre de contacto de emergencia:</label>
+                    <div class="input-group">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-card-text"></i></span>
+                        <input type="text" name="emerNombre" id="emerNombre" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{employee.emerNombre}}>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-emerNombre"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="headnum" class="form-label">Telefono de contacto de emergencia:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-telephone-fill"></i></span>
+                        <input type="number" min="0" max="9999999999" name="emerTel" id="emerTel" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{employee.emerCelu}}>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-emerTel"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="speed" class="form-label">Domicilio:</label>
+                    <div class="input-group has-validation">
+                        <textarea id="domicilio" name="domicilio" class="form-control border-dark border-2">{{employee.domicilio}}</textarea>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-domicilio"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="speed" class="form-label">CURP:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-file-earmark-person"></i></span>
+                        <input type="text" name="curp" id="curp" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{employee.curp}}>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-curp"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="speed" class="form-label">RFC:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-file-earmark-person"></i></span>
+                        <input type="text" name="rfc" id="rfc" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{employee.rfc}}>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-rfc"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="speed" class="form-label">Numero de Seguro Social (NSS):</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-file-earmark-person"></i></span>
+                        <input type="text" name="nss" id="nss" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{employee.nss}}>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-nss"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <div class="col-mb-4">
+                        <p><br></p>
+                        <button class="btn btn-success me-4" type="submit">Editar empleado</button>
+                        <a href="/employees/info/{{employee.empleadoId}}" type="button" class="btn btn-danger me-4">Cancelar</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="row mb-4">
+                    <label for="speed" class="form-label">Numero de nomina:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-bank"></i></span>
+                        <input type="number" name="nomina" id="nomina" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{employee.numeroNomina}}>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-nomina"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="speed" class="form-label">Salario quincenal:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-cash-coin"></i></span>
+                        <input type="number" name="salario" id="salario" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{employee.salarioQuin}}>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-salario"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="speed" class="form-label">Complemento de nomina:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-coin"></i></span>
+                        <input type="text" name="complementoNomina" id="complementoNomina" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{employee.compleNomina}}>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-complementoNomina"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="fechaNacimeinto" class="form-label">Fecha de ingreso:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-calendar-event"></i></span>
+                        <input type="date" name="fecIngreso" id="fecIngreso" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{employee.fechaIngreso}}>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-fecIngreso"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="speed" class="form-label">Años laborales (Por cumplir):</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-balloon"></i></span>
+                        <input type="number" name="anosLaborales" id="anosLaborales" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{employee.anosCumplir}}>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-anosLaborales"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="rol" class="form-label">Departamento (area):</label><br>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-person-rolodex"></i></span>
+                        <select name="area" id="area" class="form-select border-dark border-2">   
+                            {{#each area}}
+                                <option value={{areaId}} {{#equal areaId ../employee.area_id}} selected {{/equal}}>{{nombre}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="rol" class="form-label">Puesto (Rol):</label><br>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-person-badge"></i></span>
+                        <select name="rol" id="rol" class="form-select border-dark border-2">   
+                            {{#each rol}}
+                                <option value={{rolId}} {{#equal rolId ../employee.rol_id}} selected {{/equal}}>{{nombre}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="speed" class="form-label">Registro patronal:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-speedometer2"></i></span>
+                        <input type="text" name="patronal" id="patronal" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{employee.registroPatro}}>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-patronal"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="speed" class="form-label">Estatus:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-arrow-down-up"></i></span>
+                        <input type="text" name="estatus" id="estatus" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{employee.estatus}}>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-estatus"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="speed" class="form-label">Tipo de contrato:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-file-text"></i></span>
+                        <input type="text" name="tipoContrato" id="tipoContrato" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{employee.tipoContrato}}>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-tipoContrato"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="fechaNacimeinto" class="form-label">Inicio de contrato:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-calendar4-range"></i></span>
+                        <input type="date" name="fecInContrato" id="fecInContrato" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{employee.inicioContrato}}>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-fecInContrato"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="fechaNacimeinto" class="form-label">Final de contrato:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-calendar4-range"></i></span>
+                        <input type="date" name="fecFinContrato" id="fecFinContrato" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{employee.finContrato}}>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-fecFinContrato"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="status" class="form-label">Estatus:</label>
+                    <div class="row row-cols-2 justify-content-md-start">
+                        <div class="col-md-4 d-grid">
+                            <input type="radio" name="activo" id="activoop1" class="btn-check" value="1" autocomplete="off" {{#equalNR employee.activo 1}} checked {{/equalNR}}>
+                            <label for="activoop1" class="btn btn-outline-success border-success border-2">Activo</label>
+                        </div>
+                        <div class="col-md-4 d-grid">
+                            <input type="radio" name="activo" id="activoop2" class="btn-check" value="0" autocomplete="off" {{#equalNR employee.activo 0}} checked {{/equalNR}}>
+                            <label for="activoop2" class="btn btn-outline-danger border-danger border-2">Inactivo</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="descripcion" class="form-label">Descripcion de cambios:</label>
+                    <textarea id="descripcion" name="descripcion" class="form-control border-dark border-2"></textarea>
+                    <div class="invalid-feedback">
+                        <span id="invalid-feedback-descripcion"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

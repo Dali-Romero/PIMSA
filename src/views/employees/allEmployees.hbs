@@ -1,0 +1,90 @@
+<div class="container-fluid">
+    <div class="row p-3" id="machine-title">
+        <h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-person-badge-fill"></i>empleados</h1>
+    </div>
+    <div class="row p-4">
+        <div class="row justify-content-between p-0 m-0" id="machine-add-title">
+            <div class="col-md-8 p-2">
+                <p class="fs-5 m-0">Empleados registrados.</p>
+            </div>
+            <div class="col-md-4 p-2">
+                <div class="row justify-content-md-end" id="machines-total">
+                    <div class="col-4">
+                        <p class="fs-5 m-0 text-success">Activos: {{activos}}</p>
+                    </div>
+                    <div class="col-4">
+                        <p class="fs-5 m-0 text-danger">Inactivos: {{inactivos}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row p-4 pt-0">
+        <div class="table-responsive-xxl p-0">
+            <table class="table table-striped align-middle text-center" id="tabla_empleados">
+                <thead>
+                    <tr>
+                        <th scope="col">No Nomina</th>
+                        <th scope="col">Nombre Completo</th>
+                        <th scope="col">Correo Electronico</th>
+                        <th scope="col">Rol</th>
+                        <th scope="col">Area</th>
+                        <th scope="col">Estatus</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                    {{#each employees}}
+                        <tr>
+                            <th>{{numeroNomina}}</th>
+                            <th>{{nombreComp}}</th>
+                            <th>{{correoElec}}</th>
+                            {{#each ../rol}}
+                                {{#equal ../rol_id rolId}}<th>{{nombre}}</th>{{/equal}}
+                            {{/each}}
+                            {{#each ../area}}
+                                {{#equal ../area_id areaId}}<th>{{nombre}}</th>{{/equal}}
+                            {{/each}}
+                            {{#if activo}}
+                                <td class="text-success">Activo</td>
+                            {{else}}
+                                <td class="text-danger">Inactivo</td>
+                            {{/if}}
+                            <th><a href="/employees/info/{{empleadoId}}" class="btn btn-sm btn-secondary"><i class="bi bi-person-vcard-fill"></i> Informacion completa</a></th>
+                        </tr>
+                    {{else}}
+                    <tr>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td colspan="10">No existen empleados registrados.</td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    var table = new DataTable('#tabla_empleados', {
+        paging: false,
+        info: false,
+        padding: false,
+        order: [],
+        dom: '<"float-start pb-2"f><"button-add-machines pb-2"B>', 
+        columnDefs: [
+            {className: "dt-center", targets: "_all"}
+        ],
+        fnInitComplete: function(){
+            $('div.button-add-machines').html('<a href="/employees/add" class="btn btn-outline-success border-success border-2 float-end" role="button"><i class="bi bi-person-fill-add"></i> Registrar empleado</a>');
+        },
+        language:{
+            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-MX.json',
+        },
+    })
+</script>

@@ -1,0 +1,187 @@
+<div class="container-fluid">
+    <div class="row p-3" id="machine-title">
+        <h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-person-vcard-fill"></i> empleados</h1>
+    </div>
+    <div class="row p-4">
+        <p class="d-inline-flex gap-1">
+            <a href="/employees/" type="button" class="btn btn-secondary me-4"><i class="bi bi-box-arrow-left"></i> Regresar</a>
+            <a href="/employees/edit/{{employee.empleadoId}}" type="button" class="btn btn-info me-4"><i class="bi bi-pencil-square"></i> Editar</a>
+            <a href="/employees/history/{{employee.empleadoId}}" type="button" class="btn btn-primary me-4"><i class="bi bi-clock-history"></i> Ver historial de cambios</a>
+        </p>
+        <div class="row justify-content-between p-0 m-0" id="machine-add-title">
+            <div class="col-md-8 p-2">
+                <p class="fs-5 m-0">Empleado: {{employee.nombreComp}}</p>
+            </div>
+            <div class="col-md-4 p-2">
+                <div class="row justify-content-md-end" id="machines-total">
+                    <div class="col-5">
+                        <div class="input-group">
+                            <p class="fs-5 m-0">Estatus:&ensp;</p>
+                            {{#if employee.activo}}
+                            <p class="fs-5 m-0 text-success">Activo</p>
+                            {{else}}
+                            <p class="fs-5 m-0 text-danger">Inactivo</p>
+                            {{/if}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row px-3">
+        <div class="row mb-4 justify-content-md-between">
+            <div class="col-md-5">
+                <div class="row mb-4">
+                    <img src="/img/PIMSAlogo.png" class="img-fluid">
+                </div>
+                <div class="row mb-4">
+                    <table class="table align-middle table-bordered border-dark">
+                        <thead class="table-danger border-dark">
+                            <tr style="text-align: center; color: red;">
+                                <th colspan="4" style="color: red;">Informacion empresarial</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th colspan="2">No. Nomina</td>
+                                <td colspan="2">{{employee.numeroNomina}}</td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Salario Quincenal</td>
+                                <td colspan="2">{{employee.salarioQuin}}</td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Complemento de nomina</td>
+                                <td colspan="2">{{employee.compleNomina}}</td>
+                            </tr>
+                            <tr>
+                                <th>Fecha de ingreso</td>
+                                <td>{{fechas.fechaIngreso}}</td>
+                                <th>Años laborales</td>
+                                <td>{{employee.anosCumplir}}</td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Departamento (Area)</td>
+                                {{#each area}}
+                                    {{#equal ../employee.area_id areaId}}<td colspan="2">{{nombre}}</td>{{/equal}}
+                                {{/each}}
+                            </tr>
+                            <tr>
+                                <th colspan="2">Puesto (Rol)</td>
+                                {{#each rol}}
+                                    {{#equal ../employee.rol_id rolId}}<td colspan="2">{{nombre}}</td>{{/equal}}
+                                {{/each}}
+                            </tr>
+                            <tr>
+                                <th>Registro patronal</td>
+                                <td>{{employee.registroPatro}}</td>
+                                <th>Estatus</td>
+                                <td>{{employee.estatus}}</td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Tipo de contrato</td>
+                                <td colspan="2">{{employee.tipoContrato}}</td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Fecha de inicio de contrato</td>
+                                <td colspan="2">{{fechas.inicioContrato}}</td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Fecha de termino de contrato</td>
+                                <td colspan="2">{{fechas.finContrato}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="row mb-4">
+                    <table class="table align-middle table-bordered border-dark">
+                        <thead class="table-danger border-dark">
+                            <tr>
+                                <th colspan="4" style="color: red; text-align: center;">Informacion general</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th colspan="2">Nombre completo</td>
+                                <td colspan="2">{{employee.nombreComp}}</td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Sexo</th>
+                                {{#equalNR employee.sexo "H"}}<td colspan="2">Hombre</td>{{/equalNR}}
+                                {{#equalNR employee.sexo "M"}}<td colspan="2">Mujer</td>{{/equalNR}}
+                            </tr>
+                            <tr>
+                                <th colspan="2">Estado civil</th>
+                                <td colspan="2">{{employee.estadoCivil}}</th>
+                            </tr>
+                            <tr>
+                                <th>Fecha de nacimiento</th>
+                                <td>{{fechas.fecNac}}</th>
+                                <th>Edad por cumplir</th>
+                                <td>{{employee.edadCumplir}}</th>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Lugar de nacimiento</th>
+                                <td colspan="2">{{employee.nacLugar}}</td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Domicilio</th>
+                                <td colspan="2">{{employee.domicilio}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row mb-4">
+                    <table class="table align-middle table-bordered border-dark">
+                        <thead class="table-danger border-dark">
+                            <tr>
+                                <th colspan="2" style="color: red; text-align:center;">Informacion relevante</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>RFC</th>
+                                <td>{{employee.rfc}}</td>
+                            </tr>
+                            <tr>
+                                <th>CURP</th>
+                                <td>{{employee.curp}}</td>
+                            </tr>
+                            <tr>
+                                <th>NSS</th>
+                                <td>{{employee.nss}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row mb-4">
+                    <table class="table align-middle table-bordered border-dark">
+                        <thead class="table-danger border-dark">
+                            <th colspan="2" style="text-align: center; color: red;">Informacion de contacto</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>Telefono celular</th>
+                                <td>{{employee.numeroCelu}}</td>
+                            </tr>
+                            <tr>
+                                <th>Correo electronico</th>
+                                <td>{{employee.correoElec}}</td>
+                            </tr>
+                            <tr>
+                                <th>Nombre de contacto de emergencia</th>
+                                <td>{{employee.emerNombre}}</td>
+                            </tr>
+                            <tr>
+                                <th>Telefono de contacto de emergencia</th>
+                                <td>{{employee.emerCelu}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
