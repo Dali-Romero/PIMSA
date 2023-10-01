@@ -1,0 +1,393 @@
+<div class="container-fluid">
+    <div class="row p-3" id="machine-title">
+        <h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-person-fill"> clientes</i></h1>
+    </div>
+    <div class="row p-4">
+        <p class="d-inline-flex gap-1">
+            <a href="/clients/" type="button" class="btn btn-secondary me-4"><i class="bi bi-box-arrow-left"></i> Regresar</a>
+            <a href="/quotations/add/{{clients.clienteId}}" type="button" class="btn btn-warning me-4"><i class="bi bi-cart4"></i> Cotizar</a>
+            <a href="/clients/editclient/{{client.clienteId}}" type="button" class="btn btn-info me-4"><i class="bi bi-pencil-square"></i> Editar</a>
+        </p>
+        <div class="row justify-content-between p-0 m-0" id="machine-add-title">
+            <div class="col-md-8 p-2">
+                <p class="fs-5 m-0">Cliente: {{client.nombre}}</p>
+            </div>
+            <div class="col-md-4 p-2">
+                <div class="row justify-content-md-end" id="machines-total">
+                    <div class="col-5">
+                        <div class="input-group">
+                            <p class="fs-5 m-0">Estatus: </p>
+                            {{#if client.activo}}
+                            <p class="fs-5 m-o text-success">Activo</p>
+                            {{else}}
+                            <p class="fs-5 m-0 text-danger">Inactivo</p>
+                            {{/if}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row px-3">
+        <div class="row mb-4 justify-content-md-between">
+            <div class="col-md-5">
+                <div class="row mb-4">
+                    <img src="/img/PIMSAlogo.png" alt="img-fluid">
+                </div>
+                <div class="row mb-4">
+                    <table class="table align-middle table-bordered border-dark">
+                        <thead class="table-danger border-dark">
+                            <tr style="text-align: center; color: red">
+                                <th colspan="4" style="color: red">Información general</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th colspan="2">Nombre</th>
+                                <td colspan="2">{{client.nombre}}</td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Fecha de registro</th>
+                                <td colspan="2">date</td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Grupo</th>
+                                {{#each group}}
+                                    {{#equal ../client.grupo_id grupoId}}<td colspan="2">{{nombre}}</td>{{/equal}}
+                                {{/each}}
+                            </tr>
+                            <tr>
+                                <th colspan="2">Crédito</th>
+                                <td colspan="2">{{client.limiteCredito}}</td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Días de credito</th>
+                                <td colspan="2">{{client.diasCredito}}</td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Descuento</th>
+                                <td colspan="2">{{client.descuento}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row mb-4">
+                    <table class="table align-middle table-bordered border-dark">
+                        <thead class="table-danger border-dark">
+                            <tr>
+                                <th colspan="4" style="color: red; text-align: center;">Infromación fiscal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th colspan="2">Razón social</th>
+                                <td colspan="2">{{client.razonSocial}}</td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">RFC</th>
+                                <td colspan="2">{{client.rfc}}</td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Domicilio</th>
+                                <td colspan="2">{{client.domCalle}}, {{client.domNumEx}}, {{client.domNumIn}}</td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Colonia</th>
+                                <td colspan="2">{{client.domColonia}}</td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Código postal</th>
+                                <td colspan="2">{{client.domCp}}</td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Localidad</th>
+                                <td colspan="2">{{client.domCiudad}}, {{client.domEstado}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="row mb-4">
+                    <table class="table align-middle table-bordered border-dark">
+                        <thead class="table-danger border-dark">
+                            <tr>
+                                <th colspan="4" style="color: red; text-align:center;">Información de contacto</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th colspan="2">Contacto</th>
+                                <td colspan="2">{{client.contacto}}</td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Email</th>
+                                <td colspan="2">{{client.correoElec}}</td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Email alterno</th>
+                                <td colspan="2">{{client.correoElecAlt}}</td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Teléfono</th>
+                                <td colspan="2">{{client.telefono}}</td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Celular</th>
+                                <td colspan="2">{{client.celular}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row mb-4">
+                    <table class="table align-middle table-bordered border-dark">
+                        <thead class="table-danger border-dark">
+                            <tr>
+                                <th colspan="4" style="color: red; text-align:center;">Ejecutivo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                {{#each executive}}
+                                    {{#equal ../client.usuario_id usuarioId}}<td colspan="1">{{nombre}}</td>{{/equal}}
+                                {{/each}}
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row mb-4">
+                    <table class="table align-middle table-bordered border-dark">
+                        <thead class="table-danger border-dark">
+                            <tr>
+                                <th colspan="4" style="color: red; text-align:center;">Observaciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="1">{{client.observaciones}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row md-4">
+                    <div class="col">
+                        <table class="table align-middle table-bordered border-dark">
+                            <thead class="table-danger border-dark">
+                            <tr>
+                                <th colspan="4" style="color: red; text-align:center;">Venta total acumulada</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="1">$$$</td>
+                            </tr>
+                        </tbody>
+                        </table>
+                    </div>
+                    <div class="col">
+                        <table class="table align-middle table-bordered border-dark">
+                            <thead class="table-danger border-dark">
+                            <tr>
+                                <th colspan="4" style="color: red; text-align:center;">Deuda total acumulada</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="1">$$$</td>
+                            </tr>
+                        </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row p-4">
+        <div class="row justify-content-between p-0 m-0" id="client-add-title">
+            <div class="col-md-8 p-2">
+                <p class="fs-5 m-0">Órdenes por cobrar</p>
+            </div>
+        </div>
+    </div>
+    <div class="row px-4 pt-0 pb-4">
+        <div class="table-responsive-xxl p-0">
+            <table class="table table-striped align-middle" id="ordenes-cobrar">
+                <thead>
+                    <tr>
+                        <th scope="col">No. Órden</th>
+                        <th scope="col">Fecha</th>
+                        <th scope="col">Datos Órden</th>
+                        <th scope="col">Monto total</th>
+                        <th scope="col">Estatus</th>
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                    {{#each clients}}
+                        <tr>
+                            <th scope="row">{{rfc}}</th>
+                            <td scope="row">{{nombre}}</td>
+                            <td scope="row">{{correoElec}}</td>
+                            <td scope="row">{{telefono}}</td>
+                            {{#if activo}}
+                                <td class="text-success">Activo</td>
+                            {{else}}
+                                <td class="text-danger">Inactivo</td>
+                            {{/if}}
+                        </tr>
+                    {{else}}
+                        <tr>
+                            <td class="d-none"></td>
+                            <td class="d-none"></td>
+                            <td class="d-none"></td>
+                            <td class="d-none"></td>
+                            <td colspan="5">No hay ordenes por cobrar</td>
+                        </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row p-4">
+        <div class="row justify-content-between p-0 m-0" id="client-add-title">
+            <div class="col-md-8 p-2">
+                <p class="fs-5 m-0">Órdenes de trabajo</p>
+            </div>
+        </div>
+    </div>
+    <div class="row px-4 pt-0 pb-4">
+        <div class="table-responsive-xxl p-0">
+            <table class="table table-striped align-middle" id="ordenes-trabajo">
+                <thead>
+                    <tr>
+                        <th scope="col">No. Órden</th>
+                        <th scope="col">Fecha de generacion</th>
+                        <th scope="col">Fecha de entrega</th>
+                        <th scope="col">Monto total</th>
+                        <th scope="col">Elaboró</th>
+                        <th scope="col">Estatus</th>
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                    {{#each clients}}
+                        <tr>
+                            <th scope="row">{{rfc}}</th>
+                            <td scope="row">{{nombre}}</td>
+                            <td scope="row">{{correoElec}}</td>
+                            <td scope="row">{{telefono}}</td>
+                            {{#if activo}}
+                                <td class="text-success">Activo</td>
+                            {{else}}
+                                <td class="text-danger">Inactivo</td>
+                            {{/if}}
+                        </tr>
+                    {{else}}
+                        <tr>
+                            <td class="d-none"></td>
+                            <td class="d-none"></td>
+                            <td class="d-none"></td>
+                            <td class="d-none"></td>
+                            <td class="d-none"></td>
+                            <td colspan="6">No hay ordenes realizadas</td>
+                        </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row p-4">
+        <div class="row justify-content-between p-0 m-0" id="client-add-title">
+            <div class="col-md-8 p-2">
+                <p class="fs-5 m-0">Cotizaciones</p>
+            </div>
+        </div>
+    </div>
+    <div class="row px-4 pt-0 pb-4">
+        <div class="table-responsive-xxl p-0">
+            <table class="table table-striped align-middle" id="cotizaciones">
+                <thead>
+                    <tr>
+                        <th scope="col">Identificador</th>
+                        <th scope="col">Fecha</th>
+                        <th scope="col">Monto total</th>
+                        <th scope="col">Elaboró</th>
+                        <th scope="col">Estatus</th>
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                    {{#each clients}}
+                        <tr>
+                            <th scope="row">{{rfc}}</th>
+                            <td scope="row">{{nombre}}</td>
+                            <td scope="row">{{correoElec}}</td>
+                            <td scope="row">{{telefono}}</td>
+                            {{#if activo}}
+                                <td class="text-success">Activo</td>
+                            {{else}}
+                                <td class="text-danger">Inactivo</td>
+                            {{/if}}
+                        </tr>
+                    {{else}}
+                        <tr>
+                            <td class="d-none"></td>
+                            <td class="d-none"></td>
+                            <td class="d-none"></td>
+                            <td class="d-none"></td>
+                            <td colspan="5">No hay cotizaciones</td>
+                        </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    var table = new DataTable('#ordenes-cobrar', {
+        paging: false,
+        info: false,
+        padding: false,
+        order: [],
+        searching: false,
+        columnDefs: [
+            {className: "dt-center", targets: "_all"},
+        ],
+        language:{
+            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-MX.json',
+        },
+    });
+</script>
+
+<script>
+    var table = new DataTable('#ordenes-trabajo', {
+        paging: true,
+        info: false,
+        padding: false,
+        order: [],
+        
+        columnDefs: [
+            {className: "dt-center", targets: "_all"},
+        ],
+        language:{
+            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-MX.json',
+        },
+    });
+</script>
+
+<script>
+    var table = new DataTable('#cotizaciones', {
+        paging: true,
+        info: false,
+        padding: false,
+        order: [],
+        
+        columnDefs: [
+            {className: "dt-center", targets: "_all"},
+        ],
+        language:{
+            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-MX.json',
+        },
+    });
+</script>

@@ -11,6 +11,9 @@ router.get('/addclient', async (req, res)=> {
 
 router.post('/addclient', async (req, res)=>{
     const resBody = req.body;
+    if (resBody.descuento == 0 ){
+        resBody.descuento = 0;
+    }
     const newClient = {
         nombre: resBody.tradename,
         usuario_id: resBody.executive,
@@ -57,18 +60,51 @@ router.get('/', isLoggedIn, async (req, res)=>{
     res.render('clients/listclient.hbs', {clients:clients, activos:activos, inactivos:inactivos, group, executive});
 });
 
-//clientes informacion completa
+
 
 router.get('/editclient/:id', isLoggedIn, async (req, res)=>{
     const {id} = req.params;
+    const executive = await pool.query('SELECT * FROM Usuarios');
+    const group = await pool.query('SELECT * FROM Grupos');
     const client = await pool.query('SELECT * FROM Clientes WHERE clienteId = ?', [id]);
-    res.render('clients/editclient', {client: client[0]});
+    res.render('../views/clients/editclient.hbs', {client: client[0], executive, group});
 });
 
 router.post('/editclient/:id', isLoggedIn, async(req, res)=>{
     const {id} = req.params;
     const resBody = req.body;
+    if (resBody.descuento == 0 ){
+        resBody.descuento = 0;
+    }  
     const newClient = {
+        nombre: resBody.tradename,
+        usuario_id: resBody.executive,
+        grupo_id: resBody.group,
+        contacto: resBody.contact,
+        razonSocial: resBody.companyname,
+        rfc: resBody.rfc, 
+        domCalle: resBody.street,
+        domNumEx: resBody.outernumber,
+        domNumIn: resBody.innernumber,
+        domColonia: resBody.colony, 
+        domCp: resBody.cp, 
+        domEstado: resBody.state, 
+        domCiudad: resBody.city, 
+        telefono: resBody.telephone,
+        telefonoExt: resBody.extension,
+        celular: resBody.cell,
+        correoElec: resBody.email,
+        correoElecAlt: resBody.emailAlt,
+        limiteCredito: resBody.creditlimit,
+        diasCredito: resBody.creditdays,
+        descuento: null,
+        observaciones: resBody.observaciones,
+        activo: resBody.status
+    };
+    await pool.query('UPDATE Clientes SET ? WHERE clienteId = ?', [newClient, id]);
+    
+    //prueba para ver si funciona editar cliente
+    editClient = {
         nombre: resBody.tradename,
         usuario_id: resBody.executive,
         grupo_id: resBody.group,
@@ -92,10 +128,21 @@ router.post('/editclient/:id', isLoggedIn, async(req, res)=>{
         descuento: resBody.descuento,
         observaciones: resBody.observaciones,
         activo: resBody.status
-    };
-    await pool.query('UPDATE Clientes SET ? WHERE clienteId = ?', [newClient, id]);
-    req.flash('success', 'El cliente editado correctamente');
-    res.redirect('/clients');
+    }
+    await pool.query('INSERT INTO Clientes SET ?', [editClient]);
+    
+    req.flash('success', 'El cliente ha sido editado correctamente');
+    res.redirect('/clients/infoclient/'+id);
+});
+
+//clientes informacion completa
+
+router.get('/infoclient/:id', isLoggedIn, async(req, res)=>{
+    const {id} = req.params;
+    const executive = await pool.query('SELECT * FROM Usuarios');
+    const group = await pool.query('SELECT * FROM Grupos');
+    const clients = await pool.query('SELECT * FROM Clientes WHERE clienteId = ?', [id]);
+    res.render('../views/clients/infoclient', {client: clients[0], executive, group});
 });
 
 module.exports = router; 
