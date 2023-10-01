@@ -40,13 +40,26 @@
 </head>
 
 <body>
+
     <main class="container-fluid">
+        {{!--> navigations--}}
+
         {{> messages}}
+
         {{{body}}}
     </main>
 
+    {{!-- Handlebars front-end helpers --}}
+    <script src="/js/handlebars.js"></script>
+
     {{!-- Machines CRUD script --}}
     <script src="/js/machines.js"></script>
+    
+    {{!-- Clientes CRUD script --}}
+    <script src="/js/clients.js"></script>
+
+    {{!-- Quotations CRUD script --}}
+    <script src="/js/quotations.js"></script>
 
     {{!-- Login CRUD script --}}
     <script src="/js/login.js"></script>
@@ -59,5 +72,9 @@
 
     {{!-- Employees CRUD script --}}
     <script src="/js/employees.js"></script> 
+
+    {{!-- Roles CRUD script --}}
+    <script src="/js/roles.js"></script>
+
 </body>
 </html>

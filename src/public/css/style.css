@@ -43,4 +43,13 @@ table.dataTable.display tbody tr.even {
     background: red;
 }
 
+#client-title{
+    color: white;
+    background: var(--z);
+}
+
+#client-add-title{
+    background-color: #C3CDE6;
+}
+
 

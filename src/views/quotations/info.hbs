@@ -1,0 +1,328 @@
+<div class="row p-3" id="machine-title">
+    <h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-journals"></i> Cotizaciones</h1>
+</div>
+<div class="row p-4 gy-4 justify-content-md-between">
+    <div class="btn-toolbar justify-content-md-start justify-content-center p-0" role="toolbar">
+        {{#with cotizacion}}
+            <div class="btn-group mb-3 mb-md-0" role="group">
+                <button class="btn btn-danger me-3" id="cancel-quotation" type="button" {{#equal estatus "Cancelada"}} disabled {{/equal}}><i class="bi bi-x-octagon"></i> Cancelar</button>
+            </div>
+            <div class="btn-group mb-3 mb-md-0" role="group">
+                <a href="/quotations/edit/{{cotId}}" class="btn btn-warning me-3" role="button"><i class="bi bi-arrow-repeat"></i> Recotizar</a>
+            </div>
+            <div class="btn-group mb-3 mb-md-0" role="group">
+                <div class="dropdown">
+                    <button type="button" class="btn btn-info dropdown-toggle me-3" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside" {{#equal estatus "Cancelada"}} disabled {{/equal}}>
+                        <i class="bi bi-envelope-at"></i>
+                        Enviar
+                    </button>
+                    <form action="/quotations/email/{{cotId}}" method="post" id="emailClientForm" class="dropdown-menu p-3 needs-validation" style="width: 300px" novalidate>
+                        <div class="row mb-3 m-0">
+                            <div class="col-6 p-0">
+                                <div class="form-check p-0 text-start">
+                                    <input type="radio" name="checkEmail" id="checkClient" class="btn-check" autocomplete="off" checked>
+                                    <label for="checkClient" class="btn btn-outline-primary btn-sm border-2">Cliente</label>
+                                </div>
+                            </div>
+                            <div class="col-6 p-0">
+                                <div class="form-check p-0 text-end">
+                                    <input type="radio" name="checkEmail" id="checkAnother" class="btn-check" autocomplete="off">
+                                    <label for="checkAnother" class="btn btn-outline-primary btn-sm border-2">Otro</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-4 m-0">
+                            <label for="inputEmailClient" class="form-label p-0">Correo electrónico:</label>
+                            <input type="email" name="inputEmailClient" id="inputEmailClient" class="form-control border border-black border-2" value="{{#with ../cliente}}{{correoElec}}{{/with}}" required>
+                            <div class="valid-feedback">
+                                ¡Perfecto!
+                            </div>
+                            <div class="invalid-feedback">
+                                <span class="invalid-feedback-emailClient"></span>
+                            </div>
+                        </div>
+                        <div class="row m-0 justify-content-end text-end">
+                            <div class="col-4 p-0">
+                                <button type="submit" class="btn btn-success">Enviar</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="btn-group" role="group">
+                <a class="btn btn-primary me-3" href="/quotations/download/{{cotId}}" role="button"><i class="bi bi-file-earmark-arrow-down"></i> Descargar PDF</a>
+            </div>
+            <div class="btn-group" role="group">
+                <button class="btn btn-success" type="button" {{#equal estatus "Cancelada"}} disabled {{/equal}}><i class="bi bi-journal-check"></i> Generar orden</button>
+            </div>
+        {{/with}}
+    </div>
+</div>
+<div class="row p-4 gy-4 justify-content-md-between">
+    <div class="col-md-5">
+        <div class="row">
+            <img src="/img/PIMSAlogo.png" alt="Logo PIMSA" class="img-fluid d-block mx-auto">
+        </div>
+        <div class="row mt-4">
+            <div class="row m-0 text-center bg-danger text-white">
+                <p class="fs-6 p-2 m-0">Información de la cotización</p>
+            </div>
+            <table class="table table-responsive-md align-middle table-light m-0">
+                <tbody>
+                    {{#with cotizacion}}
+                        <tr>
+                            <th scope="row">Fecha:</th>
+                            <td>{{formatDate fecha}}</td>
+                            <th scope="row">Estatus:</th>
+                            <td>{{estatus}}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Proyecto:</th>
+                            <td colspan="3">{{proyecto}}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Solicitante:</th>
+                            <td colspan="3">{{solicitante}}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Empleado:</th>
+                            <td colspan="3">{{empleado}}</td>
+                        </tr>
+                    {{else}}
+                        <tr>
+                            <td colspan="4" class="text-center">No existe información sobre la cotización</td>
+                        </tr>
+                    {{/with}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="row">
+            <div class="row m-0 text-center bg-danger text-white">
+                <p class="fs-6 p-2 m-0">Información del cliente</p>
+            </div>
+            <table class="table table-responsive-md align-middle table-light m-0">
+                <tbody>
+                    {{#with cliente}}
+                        <tr>
+                            <th scope="row" class="col-md-3">Cliente:</th>
+                            <td colspan="3">{{nombre}}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Empresa:</th>
+                            <td colspan="3">{{razonSocial}}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">RFC:</th>
+                            <td colspan="3">{{rfc}}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Estado:</th>
+                            <td>{{domEstado}}</td>
+                            <th scope="row" class="col-md-2">Municipio:</th>
+                            <td>{{domCiudad}}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Colonia:</th>
+                            <td>{{domColonia}}</td>
+                            <th scope="row">Código postal:</th>
+                            <td>{{domCp}}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Calle:</th>
+                            <td>{{domCalle}}</td>
+                            <th scope="row">Número:</th>
+                            <td>{{domNumEx}} {{#if domNumIn}}Int {{domNumIn}}{{/if}}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Teléfono:</th>
+                            <td colspan="3">{{#if telefonoExt}}Ext {{telefonoExt}}{{/if}} {{telefono}}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Correo electrónico:</th>
+                            <td colspan="3">{{correoElec}}</td>
+                        </tr>
+                    {{else}}
+                        <td colspan="4" class="text-center">No existe información sobre el cliente</td>
+                    {{/with}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="row p-4 pt-0 justify-content-md-between">
+    <div class="row m-0 text-center bg-danger text-white">
+        <p class="fs-6 p-2 m-0">Información de los productos</p>
+    </div>
+    <div class="table-responsive overflow-y-auto p-0">
+        <table class="table table-responsive-md align-middle table-light">
+            <thead>
+                <tr>
+                    <th scope="col" class="text-center">Cantidad</th>
+                    <th scope="col">Producto</th>
+                    <th scope="col">Precio por unidad</th>
+                    <th scope="col">Dimensiones</th>
+                    <th scope="col">Precio c/u</th>
+                    <th scope="col">Monto</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each productos}}
+                    {{#equal unidad "Mt"}}
+                        <tr>
+                            <th scope="row" class="text-center">{{cantidad}}</th>
+                            <td>
+                                <div class="row mb-2 mb-md-0">
+                                    <div class="col-md-3">
+                                        <b>Producto:</b> 
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{#if nombre}}
+                                            {{nombre}}
+                                        {{else}}
+                                            {{concepto}}
+                                        {{/if}}
+                                    </div>
+                                </div>
+                                <div class="row mb-2 mb-md-0">
+                                    <div class="col-md-3">
+                                        <b>Acabados:</b>
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{acabados}}
+                                    </div>
+                                </div>
+                                <div class="row mb-2 mb-md-0">
+                                    <div class="col-md-3">
+                                        <b>Archivo:</b>
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{archivo}}
+                                    </div>
+                                </div>
+                            </td>
+                            <td>$ {{formatNumber precio}} (x {{unidad}}²)</td>
+                            <td>
+                                <div class="row m-0">
+                                    {{formatNumberMeasure area}} mts²
+                                </div>
+                                <div class="row m-0">
+                                    (L) {{formatNumberMeasure largo}} mts x (A) {{formatNumberMeasure ancho}} mts
+                                </div>
+                            </td>
+                            <td>$ {{formatNumber precioCadaUno}}</td>
+                            <td>$ {{formatNumber monto}}</td>
+                        </tr>
+                    {{else}}
+                        <tr>
+                            <th scope="row" class="text-center">{{cantidad}}</th>
+                            <td>
+                                <div class="row mb-2 mb-md-0">
+                                    <div class="col-md-3">
+                                        <b>Producto:</b> 
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{#if nombre}}
+                                            {{nombre}}
+                                        {{else}}
+                                            {{concepto}}
+                                        {{/if}}
+                                    </div>
+                                </div>
+                                <div class="row mb-2 mb-md-0">
+                                    <div class="col-md-3">
+                                        <b>Acabados:</b>
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{acabados}}
+                                    </div>
+                                </div>
+                                <div class="row mb-2 mb-md-0">
+                                    <div class="col-md-3">
+                                        <b>Archivo:</b>
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{archivo}}
+                                    </div>
+                                </div>
+                            </td>
+                            <td>$ {{formatNumber precio}} (x {{unidad}})</td>
+                            <td>No aplica</td>
+                            <td>$ {{formatNumber precio}}</td>
+                            <td>$ {{formatNumber monto}}</td>
+                        </tr>
+                    {{/equal}}
+                {{else}}
+                    <tr>
+                        <td colspan="6" class="text-center">No existen productos cotizados</td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row p-4 gy-4 pt-0 justify-content-md-between">
+    <div class="col-md-8 p-0">
+        {{#with cotizacion}}
+            <p class="fs-6"><b>Observaciones:</b></p>
+            {{observaciones}}
+        {{else}}
+            <p class="fs-6"><b>Sin información sobre las observaciones</b></p>
+        {{/with}}
+    </div>
+    <div class="col-md-3 p-0">
+        {{#with cotizacion}}
+            <table class="table-responsive-md align-middle table-light w-100">
+                <tbody>
+                    <tr>
+                        <th scope="row" class="text-start">Bruto:</th>
+                        <td class="text-end">$ {{formatNumber totalBruto}}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-start">Descuento ({{formatNumberMeasure porcentajeDescuento}} %):</th>
+                        <td class="text-end">- $ {{formatNumber descuento}}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-start">Subtotal:</th>
+                        <td class="text-end">$ {{formatNumber subtotal}}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-start">IVA (16 %):</th>
+                        <td class="text-end">+ $ {{formatNumber iva}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="row m-0 pt-4">
+                <div class="col-md-12 p-0 text-center border border-dark border-2">
+                    <p class="fs-4 p-2 m-0 pb-0">Total:</p>
+                    <p class="fs-4 p-2 m-0 pt-0">$ {{formatNumber total}}</p>
+                </div>
+            </div>
+        {{else}}
+            <td class="2">No existe información sobre la cotización</td>
+        {{/with}}
+    </div>
+</div>
+
+{{!-- Toast cancel confirmation --}}
+<div class="toast-container top-0 start-50 translate-middle-x mt-2">
+    <div id="cancelToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
+        <div class="toast-header text-bg-warning" data-bs-theme="light">
+            <i class="bi bi-exclamation-circle me-2"></i>
+            <strong class="me-auto">Advertencia</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body bg-light">
+            ¿Desea cancelar esta cotización?
+            <div class="mt-2 pt-2 border-top">
+                <div class="row justify-content-end">
+                    <div class="col-md-auto">
+                        <button type="button" class="btn btn-danger btn-sm me-2" data-bs-dismiss="toast">Rechazar</button>
+                        <a class="btn btn-success btn-sm" href="/quotations/cancel/{{#with cotizacion}}{{cotId}}{{/with}}" role="button">Aceptar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

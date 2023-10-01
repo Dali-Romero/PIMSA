@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    {{!-- BOOTSTRAP 5 --}}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+</head>
+<body>
+    <main class="container-fluid">
+        <div class="row p-4 gy-4 justify-content-md-between">
+            <div class="col-5">
+                <div class="row">
+                    <img src="{{pimsaLogo}}" alt="Logo PIMSA" class="img-fluid d-block mx-auto" style="height: 156px;">
+                </div>
+                <div class="row mt-4">
+                    <div class="row m-0 text-center bg-danger text-white">
+                        <p class="fs-6 p-1 m-0">Información de la cotización</p>
+                    </div>
+                    <table class="table table-responsive table-sm align-middle table-light m-0">
+                        <tbody>
+                            {{#with cotizacion}}
+                                <tr>
+                                    <th scope="row">Fecha:</th>
+                                    <td>{{formatDate fecha}}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Proyecto:</th>
+                                    <td colspan="3">{{proyecto}}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Solicitante:</th>
+                                    <td colspan="3">{{solicitante}}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Empleado:</th>
+                                    <td colspan="3">{{empleado}}</td>
+                                </tr>
+                            {{else}}
+                                <tr>
+                                    <td colspan="4" class="text-center">No existe información sobre la cotización</td>
+                                </tr>
+                            {{/with}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="row m-0 text-center bg-danger text-white">
+                        <p class="fs-6 p-1 m-0">Información del cliente</p>
+                    </div>
+                    <table class="table table-responsive table-sm align-middle table-light m-0">
+                        <tbody>
+                            {{#with cliente}}
+                                <tr>
+                                    <th scope="row" class="col-3">Cliente:</th>
+                                    <td colspan="3">{{nombre}}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Empresa:</th>
+                                    <td colspan="3">{{razonSocial}}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">RFC:</th>
+                                    <td colspan="3">{{rfc}}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Estado:</th>
+                                    <td>{{domEstado}}</td>
+                                    <th scope="row" class="col-2">Municipio:</th>
+                                    <td>{{domCiudad}}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Colonia:</th>
+                                    <td>{{domColonia}}</td>
+                                    <th scope="row">Código postal:</th>
+                                    <td>{{domCp}}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Calle:</th>
+                                    <td>{{domCalle}}</td>
+                                    <th scope="row">Número:</th>
+                                    <td>{{domNumEx}} {{#if domNumIn}}Int {{domNumIn}}{{/if}}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Teléfono:</th>
+                                    <td colspan="3">{{#if telefonoExt}}Ext {{telefonoExt}}{{/if}} {{telefono}}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Correo electrónico:</th>
+                                    <td colspan="3">{{correoElec}}</td>
+                                </tr>
+                            {{else}}
+                                <td colspan="4" class="text-center">No existe información sobre el cliente</td>
+                            {{/with}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row p-4 pt-0 justify-content-md-between">
+            <div class="row m-0 text-center bg-danger text-white">
+                <p class="fs-6 p-1 m-0">Información de los productos</p>
+            </div>
+            <div class="table-responsive p-0">
+                <table class="table table-responsive table-sm align-middle table-light">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="text-center">Cantidad</th>
+                            <th scope="col">Producto</th>
+                            <th scope="col">Precio por unidad</th>
+                            <th scope="col">Dimensiones</th>
+                            <th scope="col">Precio c/u</th>
+                            <th scope="col">Monto</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each productos}}
+                            {{#equal unidad "Mt"}}
+                                <tr>
+                                    <th scope="row" class="text-center">{{cantidad}}</th>
+                                    <td>
+                                        <div class="row mb-2 mb-md-0">
+                                            <div class="col-4">
+                                                <b>Producto:</b> 
+                                            </div>
+                                            <div class="col-8">
+                                                {{#if nombre}}
+                                                    {{nombre}}
+                                                {{else}}
+                                                    {{concepto}}
+                                                {{/if}}
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2 mb-md-0">
+                                            <div class="col-4">
+                                                <b>Acabados:</b>
+                                            </div>
+                                            <div class="col-8">
+                                                {{acabados}}
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2 mb-md-0">
+                                            <div class="col-4">
+                                                <b>Archivo:</b>
+                                            </div>
+                                            <div class="col-8">
+                                                {{archivo}}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>$ {{formatNumber precio}} (x {{unidad}}²)</td>
+                                    <td>
+                                        <div class="row m-0">
+                                            {{formatNumberMeasure area}} mts²
+                                        </div>
+                                        <div class="row m-0">
+                                            (L) {{formatNumberMeasure largo}} mts x (A) {{formatNumberMeasure ancho}} mts
+                                        </div>
+                                    </td>
+                                    <td>$ {{formatNumber precioCadaUno}}</td>
+                                    <td>$ {{formatNumber monto}}</td>
+                                </tr>
+                            {{else}}
+                                <tr>
+                                    <th scope="row" class="text-center">{{cantidad}}</th>
+                                    <td>
+                                        <div class="row mb-2 mb-md-0">
+                                            <div class="col-4">
+                                                <b>Producto:</b> 
+                                            </div>
+                                            <div class="col-8">
+                                                {{#if nombre}}
+                                                    {{nombre}}
+                                                {{else}}
+                                                    {{concepto}}
+                                                {{/if}}
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2 mb-md-0">
+                                            <div class="col-4">
+                                                <b>Acabados:</b>
+                                            </div>
+                                            <div class="col-8">
+                                                {{acabados}}
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2 mb-md-0">
+                                            <div class="col-4">
+                                                <b>Archivo:</b>
+                                            </div>
+                                            <div class="col-8">
+                                                {{archivo}}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>$ {{formatNumber precio}} (x {{unidad}})</td>
+                                    <td>No aplica</td>
+                                    <td>$ {{formatNumber precio}}</td>
+                                    <td>$ {{formatNumber monto}}</td>
+                                </tr>
+                            {{/equal}}
+                        {{else}}
+                            <tr>
+                                <td colspan="6" class="text-center">No existen productos cotizados</td>
+                            </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row p-4 gy-4 pt-0 justify-content-md-between">
+            <div class="col-6 p-0">
+                {{#with cotizacion}}
+                    <p class="fs-6"><b>Observaciones:</b></p>
+                    {{observaciones}}
+                {{else}}
+                    <p class="fs-6"><b>Sin información sobre las observaciones</b></p>
+                {{/with}}
+            </div>
+            <div class="col-4 p-0">
+                {{#with cotizacion}}
+                    <table class="table-responsive table-sm align-middle table-light w-100">
+                        <tbody>
+                            <tr>
+                                <th scope="row" class="text-start">Bruto:</th>
+                                <td class="text-end">$ {{formatNumber totalBruto}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="text-start">Descuento ({{formatNumberMeasure porcentajeDescuento}} %):</th>
+                                <td class="text-end">- $ {{formatNumber descuento}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="text-start">Subtotal:</th>
+                                <td class="text-end">$ {{formatNumber subtotal}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="text-start">IVA (16 %):</th>
+                                <td class="text-end">+ $ {{formatNumber iva}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="row m-0 pt-4">
+                        <div class="col-md-12 p-0 text-center border border-dark border-2">
+                            <p class="fs-4 p-2 m-0 pb-0">Total:</p>
+                            <p class="fs-4 p-2 m-0 pt-0">$ {{formatNumber total}}</p>
+                        </div>
+                    </div>
+                {{else}}
+                    <td class="2">No existe información sobre la cotización</td>
+                {{/with}}
+            </div>
+        </div>
+    </main>
+</body>
+</html>
