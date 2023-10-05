@@ -48,14 +48,11 @@
                         </div>
                     </div>
                 </div>
-                <!--
-                    Agregar script para Edad por cumplir
-                -->
                 <div class="row mb-4">
                     <label for="fechaNacimeinto" class="form-label">Fecha de nacimiento:</label>
                     <div class="input-group has-validation">
                         <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-calendar-date-fill"></i></span>
-                        <input type="date" name="fecNacimiento" id="fecNacimiento" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{employee.nacFecha}}>
+                        <input type="date" name="fecNacimiento" id="fecNacimiento" class="fecNac form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{employee.nacFecha}}>
                         <div class="invalid-feedback">
                             <span id="invalid-feedback-fecNacimiento"></span>
                         </div>
@@ -200,7 +197,7 @@
                     <label for="fechaNacimeinto" class="form-label">Fecha de ingreso:</label>
                     <div class="input-group has-validation">
                         <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-calendar-event"></i></span>
-                        <input type="date" name="fecIngreso" id="fecIngreso" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{employee.fechaIngreso}}>
+                        <input type="date" name="fecIngreso" id="fecIngreso" class="fecIngreso form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{employee.fechaIngreso}}>
                         <div class="invalid-feedback">
                             <span id="invalid-feedback-fecIngreso"></span>
                         </div>
@@ -312,3 +309,32 @@
         </div>
     </form>
 </div>
+
+<script>
+    const nacimientoElement = document.querySelector(".fecNac");
+
+    nacimientoElement.addEventListener("change", (event) => {
+        const nac= new Date(event.target.value);
+        const hoy = new Date();
+
+        const diff = hoy - nac;
+        var anos = diff / (1000*60*60*24*365) + 1;
+
+        const anosCump = document.getElementById('edad');
+        anosCump.value = Math.floor(anos);
+    });
+
+
+    const trabajoElement = document.querySelector(".fecIngreso");
+
+    trabajoElement.addEventListener("change", (event) =>{
+        const inic = new Date(event.target.value);
+        const hoy = new Date();
+
+        const diff = (hoy - inic);
+        var anos = diff / (1000*60*60*24*365) + 1;
+
+        const anosLab = document.getElementById('anosLaborales');
+        anosLab.value = Math.floor(anos);
+    });
+</script>
