@@ -599,6 +599,7 @@ function validateQuotationProcessesForm(form) {
 $(document).ready(function(){
     // ------------------------------- list file -------------------------------
     // list quotations table
+    $.fn.dataTable.moment('DD/MM/YYYY, HH:mm');
     new DataTable('#quotations-table', {
         paging: false,
         info: false,
