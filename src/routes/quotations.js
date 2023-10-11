@@ -426,14 +426,13 @@ router.post('/email/:id', isLoggedIn, async (req, res)=>{
 
     // enviar email
     try {
-        const info = await transporter.sendMail(mailOptions);
-        console.log('mensaje enviado: ', info.messageId);
+        await transporter.sendMail(mailOptions);
+        await pool.query('UPDATE Cotizaciones SET estatus = "Enviada" WHERE cotId = ?', [id]);
         req.flash('success', 'El correo electrónico a <b>'+correoCliente+'</b> ha sido enviado correctamente');
         res.redirect('/quotations/info/' + id);
     } catch (error) {
         req.flash('error', 'Ha ocurrido un error al momento de enviar el correo electrónico a <b>'+correoCliente+'</b>');
         res.redirect('/quotations/info/' + id);
-        console.log(error);
     }
 })
 
@@ -485,55 +484,55 @@ router.get('/download/:id', isLoggedIn, async (req, res)=>{
     readStream.pipe(res).on('error', function(e){console.error(e)});
 })
 
-module.exports = router;
-
 router.post('/generateOrder/:id', async (req, res)=>{
     const {id} = req.params;
     const body = req.body;
     const usruarioId = req.user.usuarioId;
     const productosFueraCatalogoId = await pool.query('SELECT FueraCatalogoCotizados.fueraCotizadoId FROM (Cotizaciones INNER JOIN FueraCatalogoCotizados ON Cotizaciones.cotId = FueraCatalogoCotizados.cot_id) WHERE Cotizaciones.cotId = ?;', [id]);
 
-    // separar los procesos dependiendo de los productos
-    let j = 0;
-    let procesos = {};
-    let procesosArray = [];
-    const valoresProcesos = Object.values(body);
-    for (const key in body) {
-        if (j !==0 && j%2 === 0) {
-            procesosArray.push(procesos);
-            procesos = {};
+    if(productosFueraCatalogoId.length > 0){
+        // separar los procesos dependiendo de los productos
+        let j = 0;
+        let procesos = {};
+        let procesosArray = [];
+        const valoresProcesos = Object.values(body);
+        for (const key in body) {
+            if (j !==0 && j%2 === 0) {
+                procesosArray.push(procesos);
+                procesos = {};
+            }
+            procesos[key.replace(/[0-9]/g, '')] = valoresProcesos[j];
+            j++;
         }
-        procesos[key.replace(/[0-9]/g, '')] = valoresProcesos[j];
-        j++;
+        procesosArray.push(procesos);
+
+        // generar nuevo proceso para cada producto fuera de catalogo
+        let newProcesos = [];
+        procesosArray.forEach((element, i) => {
+            newProcesos.push([
+                'Personalizado'
+            ])
+        });
+
+        // almacenar n procesos personalizados
+        const resultadoProcesos = await pool.query('INSERT INTO Procesos (nombre) VALUES ?;', [newProcesos]);
+
+        // almacenar los procesos en los productos fuera de catalogo
+        productosFueraCatalogoId.forEach(async (productoId, i) => {
+            await pool.query('UPDATE FueraCatalogoCotizados SET proceso_id = ? WHERE fueraCotizadoId = ?', [resultadoProcesos.insertId + i, Number(productoId.fueraCotizadoId)]);
+        });
+
+        // organizar los procesos para su almacenamiento
+        let procesosOrden = [];
+        procesosArray.forEach((producto, i) => {
+            for (let j = 0; j < producto.orderProcess.length; j++) {
+                procesosOrden.push([Number(producto.orderProcess[j]), resultadoProcesos.insertId + i, Number(producto.areaProcess[j])]);
+            }
+        });
+
+        // almacenar los procesos en procesosOrdenes
+        await pool.query('INSERT INTO ProcesosOrdenes (area_id, proceso_id, orden) VALUES ?;', [procesosOrden]);
     }
-    procesosArray.push(procesos);
-
-    // generar nuevo proceso para cada producto fuera de catalogo
-    let newProcesos = [];
-    procesosArray.forEach((element, i) => {
-        newProcesos.push([
-            'Personalizado'
-        ])
-    });
-
-    // almacenar n procesos personalizados
-    const resultadoProcesos = await pool.query('INSERT INTO Procesos (nombre) VALUES ?;', [newProcesos]);
-
-    // almacenar los procesos en los productos fuera de catalogo
-    productosFueraCatalogoId.forEach(async (productoId, i) => {
-        await pool.query('UPDATE FueraCatalogoCotizados SET proceso_id = ? WHERE fueraCotizadoId = ?', [resultadoProcesos.insertId + i, Number(productoId.fueraCotizadoId)]);
-    });
-
-    // organizar los procesos para su almacenamiento
-    let procesosOrden = [];
-    procesosArray.forEach((producto, i) => {
-        for (let j = 0; j < producto.orderProcess.length; j++) {
-            procesosOrden.push([Number(producto.orderProcess[j]), resultadoProcesos.insertId + i, Number(producto.areaProcess[j])]);
-        }
-    });
-
-    // almacenar los procesos en procesosOrdenes
-    await pool.query('INSERT INTO ProcesosOrdenes (area_id, proceso_id, orden) VALUES ?;', [procesosOrden]);
 
     // crear orden
     const date = new Date();
@@ -549,6 +548,11 @@ router.post('/generateOrder/:id', async (req, res)=>{
     }
     const resultadoOrden = await pool.query('INSERT INTO Ordenes SET ?;', [newOrden]);
 
+    // asignar estatus de ordenada a la cotizacion
+    await pool.query('UPDATE Cotizaciones SET estatus = "Ordenada" WHERE cotId = ?', [id]);
+
     req.flash('success', 'La orden <b>OT-'+resultadoOrden.insertId+'</b> ha sido creada correctamente');
-    res.redirect('/quotations');
+    res.redirect('/orders');
 })
+
+module.exports = router;
