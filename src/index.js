@@ -59,6 +59,7 @@ app.use('/clients/', require('./routes/clients'));
 app.use('/quotations', require('./routes/quotations'));
 app.use('/users', require('./routes/users'));
 app.use('/roles', require('./routes/roles'));
+app.use('/orders', require('./routes/orders'));
 
 // Public
 app.use(express.static(path.join(__dirname, 'public')));

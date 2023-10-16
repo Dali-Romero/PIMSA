@@ -1,0 +1,52 @@
+<div class="row p-3" id="machine-title">
+    <h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-journal-bookmark-fill"></i> Órdenes</h1>
+</div>
+<div class="row p-4">
+    <p class="fs-5 p-2 m-0" id="machine-add-title">Órdenes registradas</p>
+</div>
+<div class="row px-4 pt-0 pb-4">
+    <div class="table-responsive-xxl p-0">
+        <table class="table table-striped align-middle" id="orders-table">
+            <thead>
+                <tr>
+                    <th scope="col">No. Orden</th>
+                    <th scope="col">Fecha de generación</th>
+                    <th scope="col">Fecha de entrega</th>
+                    <th scope="col">Empleado</th>
+                    <th scope="col">Estatus</th>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                {{#each ordenes}}
+                    <tr>
+                        <th scope="row">
+                            <a class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover" href="orders/info/{{ordenId}}">
+                                OT-{{ordenId}}
+                            </a>
+                        </th>
+                        <td>{{formatDateShort fechaGen}}</td>
+                        {{#equal fechaEnt "-"}}
+                            <td class="text-danger">Sin asignar</td>
+                        {{else}}
+                            <td>{{formatDateShort fechaEnt}}</td>
+                        {{/equal}}
+                        <td>{{nombreComp}}</td>
+                        {{#if terminada}}
+                            <td class="text-success">Terminada</td>
+                        {{else}}
+                            <td class="text-danger">Trabajando</td>
+                        {{/if}}
+                    </tr>
+                {{else}}
+                    <tr>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td colspan="5">No existen órdenes registradas</td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>
