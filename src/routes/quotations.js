@@ -526,7 +526,7 @@ router.post('/generateOrder/:id', async (req, res)=>{
         let procesosOrden = [];
         procesosArray.forEach((producto, i) => {
             for (let j = 0; j < producto.orderProcess.length; j++) {
-                procesosOrden.push([Number(producto.orderProcess[j]), resultadoProcesos.insertId + i, Number(producto.areaProcess[j])]);
+                procesosOrden.push([Number(producto.areaProcess[j]), resultadoProcesos.insertId + i, Number(producto.orderProcess[j])]);
             }
         });
 
