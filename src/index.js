@@ -60,6 +60,7 @@ app.use('/quotations', require('./routes/quotations'));
 app.use('/users', require('./routes/users'));
 app.use('/employees', require('./routes/employees'));
 app.use('/roles', require('./routes/roles'));
+app.use('/dashboard', require('./routes/dashboard'));
 
 // Public
 app.use(express.static(path.join(__dirname, 'public')));

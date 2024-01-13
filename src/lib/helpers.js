@@ -43,4 +43,21 @@ helpers.createPdf = async (html, options) => {
     return pdf;
 }
 
+helpers.filterOthers = (acumulador, arreglo) => {
+    if(arreglo.compras <= 1000){
+        const otros = acumulador.find(function(arreglo){
+            return arreglo.categoria == 'Otros';
+        })
+        if(!otros){
+            acumulador.push({categoria: 'Otros', compras: parseFloat(arreglo.compras), nombres: `$ (${Number(arreglo.compras).toLocaleString(undefined, {minimumFractionDigits: 2})}) ${arreglo.categoria}\n`});
+        }else{
+            otros.compras += parseFloat(arreglo.compras);                        
+            otros.nombres += `$ (${Number(arreglo.compras).toLocaleString(undefined, {minimumFractionDigits: 2})}) ${arreglo.categoria}\n`;
+        }
+    }else{
+        acumulador.push({categoria: arreglo.categoria, compras: parseFloat(arreglo.compras), nombres: arreglo.categoria});
+    }
+    return acumulador;
+}
+
 module.exports = helpers;
