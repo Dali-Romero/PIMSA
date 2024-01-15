@@ -35,12 +35,12 @@ body{
 
 table.dataTable.stripe tbody tr.odd,
 table.dataTable.display tbody tr.odd {
-    background: #B0DAD7;
+    background: #f8f9fa;
 }
 
 table.dataTable.stripe tbody tr.even,
 table.dataTable.display tbody tr.even {
-    background: red;
+    background: #fff;
 }
 
 #client-title{
