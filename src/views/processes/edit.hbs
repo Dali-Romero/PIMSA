@@ -1,0 +1,109 @@
+<div class="row p-3" id="machine-title">
+    <h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-bezier"></i> Procesos</h1>
+</div>
+<div class="row p-4">
+    <p class="fs-5 p-2 m-0" id="machine-add-title">Editar proceso</p>
+</div>
+<div class="row px-4">
+    {{#with proceso}}
+        <form action="/processes/edit/{{proceso_id}}" method="post" class="needs-validation" id="editProcessForm" novalidate>
+            <div class="row mb-4 gy-4 justify-content-md-between">
+                <div class="col-md-3 p-0">
+                    <div class="row mb-2 m-0 text-center bg-danger text-white">
+                        <p class="fs-6 p-1 m-0">Información general</p>
+                    </div>
+                    <div class="row py-2 px-0">
+                        <label for="processname" class="form-label">Nombre del proceso:</label>
+                        <div class="input-group has-validation">
+                            <span class="input-group-text border-dark border-2 border-end-0"><i class="bi bi-bezier"></i></span>
+                            <input type="text" name="processname" value="{{proceso_nombre}}" id="processname" class="form-control border-dark border-2 rounded-end" required>
+                            <div class="valid-feedback">
+                                ¡Perfecto!
+                            </div>
+                            <div class="invalid-feedback">
+                                <span id="invalid-feedback-processname"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row py-2 px-0">
+                        <label for="processdescription" class="form-label">Descripción:</label>
+                        <div class="input-group has-validation">
+                            <span class="input-group-text border-dark border-2 border-end-0"><i class="bi bi-info-square"></i></span>
+                            <textarea class="form-control border-dark border-2 rounded-end" name="processdescription" id="processdescription" rows="6" required>{{descripcion}}</textarea>
+                            <div class="valid-feedback">
+                                ¡Perfecto!
+                            </div>
+                            <div class="invalid-feedback">
+                                <span id="invalid-feedback-processdescription"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8 p-0">
+                    <div class="row m-0 text-center bg-danger text-white">
+                        <p class="fs-6 p-1 m-0">Información sobre las etapas</p>
+                    </div>
+                    <div class="row py-2 mx-0 my-1 align-items-center">
+                        <div class="col-9 p-0">
+                            <p class="fs-6 my-auto">Seleccione las áreas con su respectivo orden:</p>
+                        </div>
+                        <div class="col-3 p-0 text-end">
+                            <button class="btn btn-sm btn-outline-success border-success border-2" id="addStage" type="button"><i class="bi bi-plus-circle"></i> Añadir área</button>
+                        </div>
+                    </div>
+                    <div class="row" id="stagesContainer">
+                        {{#each etapas}}
+                            <div class="row py-3 m-0">
+                                <div class="col-2 p-0">
+                                    <div class="input-group has-validation">
+                                        <select name="orderProcess" class="form-select border-dark border-2 border-end-0 rounded-end-0 orderProcess" required>
+                                            {{#each ../../orden as | posible_orden |}}
+                                                <option value="{{posible_orden}}" {{#equalNR ../orden posible_orden}}selected{{/equalNR}}>{{posible_orden}}</option>
+                                            {{/each}}
+                                        </select>
+                                        <div class="valid-feedback">
+                                            ¡Perfecto!
+                                        </div>
+                                        <div class="invalid-feedback">
+                                            <span class="invalid-feedback-process-order"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-9 p-0">
+                                    <div class="input-group has-validation">
+                                        <select name="areaProcess" class="form-select border-dark border-2 rounded-start-0 rounded-end-2 areaProcess" required>
+                                            {{#each ../../areas}}
+                                                <option value="{{areaId}}" {{#equal ../area nombre}}selected{{/equal}}>{{nombre}}</option>
+                                            {{/each}}
+                                        </select>
+                                        <div class="valid-feedback">
+                                            ¡Perfecto!
+                                        </div>
+                                        <div class="invalid-feedback">
+                                            <span class="invalid-feedback-process-area"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                {{#equal @index 0}}
+                                <div class="col-1 pe-0 text-end d-none">
+                                    <button class="btn btn-danger remove-process-select" type="button"><i class="bi bi-trash3"></i></button>
+                                </div>
+                                {{else}}
+                                <div class="col-1 pe-0 text-end">
+                                    <button class="btn btn-danger remove-process-select" type="button"><i class="bi bi-trash3"></i></button>
+                                </div>
+                                {{/equal}}
+                            </div>
+                        {{/each}}
+                    </div>
+                    <div class="row my-3 m-0 justify-content-end">
+                        <div class="col-md-auto p-0">
+                            <button class="btn btn-danger me-4" type="reset">Restablecer campos</button>
+                            <button class="btn btn-success" type="submit">Aceptar cambios</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    {{/with}}
+</div>
