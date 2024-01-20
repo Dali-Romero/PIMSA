@@ -4,7 +4,7 @@ const { isLoggedIn } = require('../lib/auth');
 const router = express.Router();
 
 router.get('/', isLoggedIn, async (req, res) =>{
-    const employees = await pool.query('SELECT * FROM empleados ORDER BY numeroNomina');
+    const employees = await pool.query('SELECT * FROM empleados ORDER BY numeroNomina AND activo desc');
     const rol = await pool.query('SELECT * FROM roles');
     const area = await pool.query('SELECT * FROM areas');
     let activos = 0

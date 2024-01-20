@@ -31,7 +31,7 @@
                             <th>{{fechaEnt}}</th>
                             <th>{{proyecto}}</th>
                             <th>Sin Usuario</th>
-                            <th>{{observaciones}}</th>
+                            <th>{{notes}}</th>
                             <th><a href="/tareas/enterado/{{tareaId}}" class="btn btn-sm btn-success"><i class="bi bi-check-square"></i>  Enterado</a></th>
                         </tr>
                     {{else}}
@@ -52,7 +52,7 @@
     <div class="row p-4">
         <div class="row justify-content-between p-0 m-0" id="machine-add-title">
             <div class="col-md-8 p-2">
-                <p class="fs-5 m-0">Total de tareas: {{conteo}}</p>
+                <p class="fs-5 m-0">Tareas pendientes: {{conteo}}</p>
             </div>
         </div>
     </div>
@@ -80,8 +80,8 @@
                             {{#each ../users}}
                                 {{#equal usuarioId ../usuario_id}} <th>{{nombre}} {{apellido}}</th> {{/equal}}
                             {{/each}}
-                            <th>{{observaciones}}</th>
-                            <th><a id="mostrarModal" class="btn btn-sm btn-success"><i class="bi bi-person-vcard-fill"></i> Terminar tarea</a></th>
+                            <th>{{notes}}</th>
+                            <th><a href="/tareas/{{tareaId}}" class="btn btn-sm btn-success"><i class="bi bi-person-vcard-fill"></i> Terminar tarea</a></th>
                         </tr>
                     {{else}}
                     <tr>
