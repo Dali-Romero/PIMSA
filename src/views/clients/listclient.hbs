@@ -47,9 +47,9 @@
                         {{else}}
                             <td class="text-danger">Inactivo</td>
                         {{/if}}
-                        <td>
-                                    <a type="button" class="btn btn-secondary" href="/clients/infoclient{{clienteId}}" > ver información del cliente</a>
-                        </td>
+                        <th>
+                            <a href="/clients/infoclient/{{clienteId}}" class="btn btn-sm btn-secondary"><i class="bi bi-person-vcard-fill"></i> información completa</a>
+                        </th>
                     </tr>
                 {{else}}
                     <tr>

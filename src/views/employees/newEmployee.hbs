@@ -1,0 +1,384 @@
+<div class="row p-3" id="machine-title">
+    <a href="/employees" style="color: white; text-decoration: none;"><h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-person-add"></i> empleados</h1></a>
+</div>
+<div class="row p-4">
+    <p class="fs-5 p-2 m-0" id="machine-add-title">Registrar empleado.</p>
+</div>
+<div class="row px-3">
+    <form action="/employees/add" class="needs-validation" id="form-add-employee" method="post" novalidate>
+        <div class="row mb-4 justify-content-md-between">
+            <div class="col-md-4">
+                <div class="row mb-4">
+                    <label for="serialnumber" class="form-label">Nombre completo:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-card-text"></i></span>
+                        <input type="text" name="nombre" id="nombre" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" value="{{errorUser.nombre}}" autofocus required>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-nombre"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="inktype" class="form-label">Sexo:</label>
+                    <div class="input-group">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-gender-ambiguous"></i></span>
+                        <select name="sexo" id="sexo" class="form-select border-dark border-2">
+                            <option value="H" {{#equal errorUser.sexo "H"}} selected {{/equal}}>Masculino</option>
+                            <option value="M" {{#equal errorUser.sexo "M"}} selected {{/equal}}>Femenino</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="inktype" class="form-label">Estado civil:</label>
+                    <div class="input-group">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-person-square"></i></span>
+                        <select name="estadoCivil" id="estadoCivil" class="form-select border-dark border-2">
+                            <option value="Soltero" {{#equal errorUser.estadoCivil "Soltero"}} selected {{/equal}}>Soltero</option>
+                            <option value="Casado" {{#equal errorUser.estadoCivil "Casado"}} selected {{/equal}}>Casado</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="brand" class="form-label">Lugar de nacimiento:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-geo-alt-fill"></i></span>
+                        <input type="text" name="lugNacimiento" id="lugNacimiento" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value="{{errorUser.lugNacimiento}}">
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-lugNacimiento"></span>
+                        </div>
+                    </div>
+                </div>
+                <!--
+                    Agregar script para Edad por cumplir
+                -->
+                <div class="row mb-4">
+                    <label for="fechaNacimeinto" class="form-label">Fecha de nacimiento:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-calendar-date-fill"></i></span>
+                        <input type="date" name="fecNacimiento" id="fecNacimiento" class="fecNac form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" value={{errorUser.fecNacimiento}} required>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-fecNacimiento"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="name" class="form-label">Edad por cumplir:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-balloon-fill"></i></span>
+                        <input type="number" name="edad" id="edad" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{errorUser.edad}}>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-edad"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="techcontact" class="form-label">Numero de telefono:</label>
+                    <div class="row m-0 p-0">
+                        <div class="col-5">
+                            <input type="text" name="extension" id="extension" class="form-control border-dark border-2" aria-describedby="basic-addon1" placeholder="Extensión" value={{errorUser.extension}}>
+                        </div>
+                        <div class="col-7">
+                            <div class="input-group has-validation">
+                                <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-telephone-fill"></i></span>
+                                <input type="text" name="numeroTelefono" id="numeroTelefono" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{errorUser.numeroTelefono}}>
+                                <div class="invalid-feedback">
+                                    <span id="invalid-feedback-numeroTelefono"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="name" class="form-label">Correo electronico:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-at"></i></span>
+                        <input type="text" name="correo" id="correo" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{errorUser.correo}}>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-correo"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="headtype" class="form-label">Nombre de contacto de emergencia:</label>
+                    <div class="input-group">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-card-text"></i></span>
+                        <input type="text" name="emerNombre" id="emerNombre" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{errorUser.emerNombre}}>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-emerNombre"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="headnum" class="form-label">Telefono de contacto de emergencia:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-telephone-fill"></i></span>
+                        <input type="number" min="0" max="9999999999" name="emerTel" id="emerTel" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{errorUser.emerTel}}>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-emerTel"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="speed" class="form-label">Codigo postal:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-mailbox2"></i></span>
+                        <input type="number" min="0" max="99999" name="codPost" id="codPost" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{errorUser.codPost}}>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-codPost"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="speed" class="form-label">Colonia:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-pin-map-fill"></i></span>
+                        <input type="text" name="colonia" id="colonia" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value="{{errorUser.colonia}}">
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-colonia"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="speed" class="form-label">Calle:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-house-fill"></i></span>
+                        <input type="text" name="calle" id="calle" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value="{{errorUser.calle}}">
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-calle"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="speed" class="form-label">Numero exterior:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-123"></i></span>
+                        <input type="text" name="numExt" id="numExt" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value="{{errorUser.numExt}}">
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-numExt"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="speed" class="form-label">Numero interior:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-123"></i></span>
+                        <input type="text" name="numInt" id="numInt" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{errorUser.numInt}}>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="status" class="form-label">Activo:</label>
+                    <div class="row row-cols-2 justify-content-md-start">
+                        <div class="col-md-4 d-grid">
+                            <input type="radio" name="activo" id="activoop1" class="btn-check" value="1" autocomplete="off" {{#if errorUser.activo}} {{#equalNR errorUser.activo "1"}} checked {{/equalNR}} {{else}} checked {{/if}}>
+                            <label for="activoop1" class="btn btn-outline-success border-success border-2">Activo</label>
+                        </div>
+                        <div class="col-md-4 d-grid">
+                            <input type="radio" name="activo" id="activoop2" class="btn-check" value="0" autocomplete="off" {{#equalNR errorUser.activo "0"}} checked {{/equalNR}}>
+                            <label for="activoop2" class="btn btn-outline-danger border-danger border-2">Inactivo</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="row mb-4">
+                    <label for="speed" class="form-label">CURP:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-file-earmark-person"></i></span>
+                        <input type="text" name="curp" id="curp" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{errorUser.curp}}>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-curp"></span>
+                        </div>
+                        {{#if errorUser.curp}}
+                            <span style="font-size: small; color: red;" id="mailUsed">Revisar los datos personales. Es posible que la CURP haya sido usada en otro usuario.</span>
+                        {{/if}}
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="speed" class="form-label">RFC:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-file-earmark-person"></i></span>
+                        <input type="text" name="rfc" id="rfc" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{errorUser.rfc}}>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-rfc"></span>
+                        </div>
+                        {{#if errorUser.rfc}}
+                            <span style="font-size: small; color: red;" id="mailUsed">Revisar los datos personales. Es posible que el RFC haya sido usado en otro usuario.</span>
+                        {{/if}}
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="speed" class="form-label">Numero de Seguro Social (NSS):</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-file-earmark-person"></i></span>
+                        <input type="text" name="nss" id="nss" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{errorUser.nss}}>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-nss"></span>
+                        </div>
+                        {{#if errorUser.nss}}
+                            <span style="font-size: small; color: red;" id="mailUsed">Revisar los datos personales. Es posible que el NSS haya sido usado en otro usuario.</span>
+                        {{/if}}
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="speed" class="form-label">Numero de nomina:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-bank"></i></span>
+                        <input type="number" name="nomina" id="nomina" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{errorUser.nomina}}>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-nomina"></span>
+                        </div>
+                        {{#if errorUser.nomina}}
+                            <span style="font-size: small; color: red;" id="mailUsed">Revisar los datos personales. Es posible que el numero de nomina haya sido usado en otro usuario.</span>
+                        {{/if}}
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="speed" class="form-label">Salario quincenal:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-cash-coin"></i></span>
+                        <input type="number" name="salario" id="salario" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{errorUser.salario}}>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-salario"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="speed" class="form-label">Complemento de nomina:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-coin"></i></span>
+                        <input type="text" name="complementoNomina" id="complementoNomina" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{errorUser.complementoNomina}}>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="fechaNacimeinto" class="form-label">Fecha de ingreso:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-calendar-event"></i></span>
+                        <input type="date" name="fecIngreso" id="fecIngreso" class="fecIngreso form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{errorUser.fecIngreso}}>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-fecIngreso"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="speed" class="form-label">Años laborales (Por cumplir):</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-balloon"></i></span>
+                        <input type="number" name="anosLaborales" id="anosLaborales" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required {{#if errorUser.anosLaborales}} value={{errorUser.anosLaborales}} {{else}} value="0" {{/if}}>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-anosLaborales"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="rol" class="form-label">Departamento (area):</label><br>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-person-rolodex"></i></span>
+                        <select name="area" id="area" class="form-select border-dark border-2">   
+                            {{#each area}}
+                                <option value={{areaId}} {{#equalNR ../errorUser.area areaId}} selected {{/equalNR}}>{{nombre}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="rol" class="form-label">Puesto (Rol):</label><br>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-person-badge"></i></span>
+                        <select name="rol" id="rol" class="form-select border-dark border-2">   
+                            {{#each rol}}
+                                <option value={{rolId}} {{#equalNR ../errorUser.rol rolId}} selected {{/equalNR}}>{{nombre}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="speed" class="form-label">Registro patronal:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-speedometer2"></i></span>
+                        <input type="text" name="patronal" id="patronal" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{errorUser.patronal}}>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-patronal"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="speed" class="form-label">Estatus:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-arrow-down-up"></i></span>
+                        <input type="text" name="estatus" id="estatus" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{errorUser.estatus}}>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-estatus"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="speed" class="form-label">Tipo de contrato:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-file-text"></i></span>
+                        <input type="text" name="tipoContrato" id="tipoContrato" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{errorUser.tipoContrato}}>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-tipoContrato"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="fechaNacimeinto" class="form-label">Inicio de contrato:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-calendar4-range"></i></span>
+                        <input type="date" name="fecInContrato" id="fecInContrato" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{errorUser.fecInContrato}}>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-fecInContrato"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <label for="fechaNacimeinto" class="form-label">Final de contrato:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-calendar4-range"></i></span>
+                        <input type="date" name="fecFinContrato" id="fecFinContrato" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{errorUser.fecFinContrato}}>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-fecFinContrato"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-mb-4">
+                        <p><br></p>
+                        <button class="btn btn-success me-4" type="submit">Agregar máquina</button>
+                        <button class="btn btn-danger" type="reset">Limpiar campos</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    const nacimientoElement = document.querySelector(".fecNac");
+
+    nacimientoElement.addEventListener("change", (event) => {
+        const nac= new Date(event.target.value);
+        const hoy = new Date();
+
+        const diff = hoy - nac;
+        var anos = diff / (1000*60*60*24*365) + 1;
+
+        const anosCump = document.getElementById('edad');
+        anosCump.value = Math.floor(anos);
+    });
+
+
+    const trabajoElement = document.querySelector(".fecIngreso");
+
+    trabajoElement.addEventListener("change", (event) =>{
+        const inic = new Date(event.target.value);
+        const hoy = new Date();
+
+        const diff = (hoy - inic);
+        var anos = diff / (1000*60*60*24*365) + 1;
+
+        const anosLab = document.getElementById('anosLaborales');
+        anosLab.value = Math.floor(anos);
+    });
+</script>

@@ -58,8 +58,10 @@ app.use('/products', require('./routes/products'));
 app.use('/clients/', require('./routes/clients'));
 app.use('/quotations', require('./routes/quotations'));
 app.use('/users', require('./routes/users'));
+app.use('/employees', require('./routes/employees'));
 app.use('/roles', require('./routes/roles'));
 app.use('/orders', require('./routes/orders'));
+app.use('/tareas', require('./routes/tareas'));
 
 // Public
 app.use(express.static(path.join(__dirname, 'public')));

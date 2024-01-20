@@ -1,0 +1,76 @@
+<div class="row align-items-center p-3" id="machine-title">
+    <a href="/tareas" style="color: white; text-decoration: none;"><h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-clipboard2"></i> Tareas</h1></a>
+</div>
+<div class="row align-items-center p-4">
+    <p class="fs-5 p-2 m-0" id="machine-add-title">Terminar tarea.</p>
+</div>
+<div class="row px-3">
+    <form action="/tareas/terminar/{{tarea.tareaId}}" method="post" class="needs-validation" id="form-edit-product" novalidate>
+        <div class="row mb-4 gy-4 justify-content-md-between">
+            <div class="col-md-4">
+                <label for="nombreTarea" class="form-label">Nombre: {{tarea.nombre}}</label>
+            </div>
+        </div>
+        <div class="row mb-4 gy-4 justify-content-md-between">
+            <div class="col-md-4">
+                <label for="nombreProducto" class="form-label">Producto: {{tarea.proyecto}}</label>
+            </div>
+        </div>
+        <div class="row mb-4 gy-4 justify-content-md-between">
+            <div class="col-md-4">
+                <label for="maquina" class="form-label">Maquina:</label><br>
+                <div class="input-group has-validation">
+                    <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-arrow-down-up"></i></span>
+                    <select name="maquina" id="maquina" class="form-select border-dark border-2">
+                        {{#each machines}}
+                            <option value={{maquinaId}} {{#equal ../tarea.maquina_id maquinaId}} selected {{/equal}}>{{nombre}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label for="impresor" class="form-label">Impresor:</label>
+                <div class="input-group has-validation">
+                    <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-arrow-down-up"></i></span>
+                    <select name="usuario" id="usuario" class="form-select border-dark border-2">
+                        {{#each users}}
+                            <option value={{usuarioId}} {{#equal ../tarea.usuario_id usuarioId}} selected {{/equal}}>{{nombre}} {{apellido}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+            </div>
+        <div class="row mb-4 gy-4 justify-content-md-between">
+            <div class="col-md-4 has-validation">
+                <label for="notas" class="form-label">Notas (o observaciones):</label>
+                <textarea id="descripcion" name="descripcion" class="form-control border-dark border-2">{{tarea.notes}}</textarea>
+            </div>
+        </div>
+        <div class="row mb-4 gy-4 justify-content-md-between">
+            <div class="col-md-4">
+                <br>
+                <button class="btn btn-success me-4" type="submit">Guardar cambios</button>
+                <a href="/tareas/" type="button" class="btn btn-danger me-4">Cancelar</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    var discounted = document.getElementById('descuentoOp1');
+    var no_discounted = document.getElementById('descuentoOp2');
+    var discount_percentage = document.getElementById('porcentaje');
+    var value = discount_percentage.value;
+
+    function updateStatus() {
+        if (discounted.checked) {
+            discount_percentage.disabled = false;
+            discount_percentage.value = value;
+        } else {
+            discount_percentage.disabled = true;
+            discount_percentage.value = '0';
+        }
+    }
+
+    discounted.addEventListener('change', updateStatus)
+    no_discounted.addEventListener('change', updateStatus)
+</script>

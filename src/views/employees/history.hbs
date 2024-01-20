@@ -1,0 +1,58 @@
+<div class="container-fluid">
+    <div class="row p-3" id="machine-title">
+        <a href="/employees" style="color: white; text-decoration: none;"><h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-clock-history"></i> empleados</h1></a>
+    </div>
+    <div class="row p-4">
+        <div class="row justify-content-between p-0 m-0" id="machine-add-title">
+            <div class="col-md-8 p-2">
+                <p class="fs-5 m-0">Historial de cambios realizados.</p>
+            </div>
+            <div class="col-md-4 p-2">
+                <div class="row justify-content-md-end" id="machines-total">
+                    <div class="col-8">
+                        <div class="input-group">
+                            <p class="fs-5 m-0">Total de cambios realizados:&ensp;</p>
+                            <p class="fs-5 m-0">{{total}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row p-4 pt-0">
+        <div class="table-responsive-xxl p-0">
+            <table class="table table-striped align-middle text-center" id="tabla_productos">
+                <thead>
+                    <tr class="table-danger border-dark">
+                        <th colspan="5" style="color: red;">Empleado: {{nombreComp}}</th>
+                    </tr>
+                    <tr>
+                        <th>Cambios realizados</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Modificado por</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                    {{#each employees}}
+                        <tr>
+                            <td>{{cambioRealizado}}</td>
+                            <td>{{fechaCambio}}</td>
+                            <td>{{hora}}</td>
+                            
+                            {{#each ../users}}
+                                {{#equal usuarioId ../modificado_usuario_id}} <td>{{nombre}} {{apellido}}</td> {{/equal}}
+                            {{/each}}
+                            <th><a href="/employees/history/{{empleado_id}}/view/{{cambioId}}" class="btn btn-sm btn-secondary"><i class="bi bi-person-vcard-fill"></i> Informacion completa</a></th>
+                        </tr>
+                    {{else}}
+                        <tr>
+                            <td colspan="5">No existen cambios en el historial</th>
+                        </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
