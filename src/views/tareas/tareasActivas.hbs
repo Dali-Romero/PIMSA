@@ -26,7 +26,7 @@
                 <tbody class="table-group-divider">
                     {{#each tareasNuevas}}
                         <tr>
-                            <th>{{tareaId}}</th>
+                            <th><a href="orders/info/{{orden_id}}">{{orden_id}}</a></th>
                             <th>{{fechaGen}}</th>
                             <th>{{fechaEnt}}</th>
                             <th>{{proyecto}}</th>
@@ -58,7 +58,7 @@
     </div>
     <div class="row p-4 pt-0">
         <div class="table-responsive-xxl p-0">
-            <table class="table table-striped align-middle text-center" id="tabla_tareas_nuevas">
+            <table class="table table-striped align-middle text-center" id="tabla_tareas_todas">
                 <thead>
                     <tr>
                         <th scope="col">No Orden</th>
@@ -73,7 +73,7 @@
                 <tbody class="table-group-divider">
                     {{#each tareas}}
                         <tr>
-                            <th>{{tareaId}}</th>
+                            <th><a href="orders/info/{{orden_id}}">{{orden_id}}</a></th>
                             <th>{{fechaGen}}</th>
                             <th>{{fechaEnt}}</th>
                             <th>{{proyecto}}</th>
@@ -106,10 +106,14 @@
         info: false,
         padding: false,
         order: [],
-        dom: '<"float-start pb-2"f><"button-add-machines pb-2"B>', 
+        dom: '<"float-start pb-2"f><"button-add-machines"B><"button-add-machines-2 pb-2"B>',
         columnDefs: [
             {className: "dt-center", targets: "_all"}
         ],
+        fnInitComplete: function(){
+            $('div.button-add-machines').html('<a href="/tareas/historial" class="btn btn-outline-success border-success border-2 float-end" role="button"><i class="bi bi-clipboard2-check-fill"></i> Historial de tareas</a>');
+            $('div.button-add-machines-2').html('<a href="/tareas/todas" class="btn btn-outline-success border-success border-2 float-end" role="button"><i class="bi bi-clipboard-plus-fill"></i> Todas las tareas</a>');
+        },
         language:{
             url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-MX.json',
         },

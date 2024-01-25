@@ -26,7 +26,7 @@
                 <tbody class="table-group-divider">
                     {{#each tareasNuevas}}
                         <tr>
-                            <th>{{tareaId}}</th>
+                            <th><a href="orders/info/{{orden_id}}">{{orden_id}}</a></th>
                             <th>{{fechaGen}}</th>
                             <th>{{fechaEnt}}</th>
                             <th>{{proyecto}}</th>
@@ -67,13 +67,13 @@
                         <th scope="col">Titulo</th>
                         <th scope="col">Encargado</th>
                         <th scope="col">Nota</th>
-                        <th scope="col"></th>
+                        <th scope="col">Estatus</th>
                     </tr>
                 </thead>
                 <tbody class="table-group-divider">
                     {{#each tareas}}
                         <tr>
-                            <th>{{tareaId}}</th>
+                            <th><a href="orders/info/{{orden_id}}">{{orden_id}}</a></th>
                             <th>{{fechaGen}}</th>
                             <th>{{fechaEnt}}</th>
                             <th>{{proyecto}}</th>
@@ -81,7 +81,15 @@
                                 {{#equal usuarioId ../usuario_id}} <th>{{nombre}} {{apellido}}</th> {{/equal}}
                             {{/each}}
                             <th>{{observaciones}}</th>
-                            <th><a id="mostrarModal" class="btn btn-sm btn-success"><i class="bi bi-person-vcard-fill"></i> Terminar tarea</a></th>
+                            {{#equalNR activa 1}}
+                                <th><a href="/tareas/{{tareaId}}" class="btn btn-sm btn-success"><i class="bi bi-person-vcard-fill"></i> Terminar tarea</a></th>
+                            {{else}}
+                                {{#equalNR terminada 1}}
+                                    <th> Tarea terminada.</th>
+                                {{else}}
+                                    <th> Tarea en actividad anterior.</th>
+                                {{/equalNR}}
+                            {{/equalNR}}
                         </tr>
                     {{else}}
                     <tr>
