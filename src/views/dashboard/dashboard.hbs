@@ -6,9 +6,12 @@
         <div class="card text-bg-light border-secondary">
             <div class="card-body">
                 <div class="row">
-                    <div class="col-7 my-auto">
+                    <div class="col-7" style="margin-top: 0.4rem; margin-bottom: 0.4rem;">
                         <h6 class="card-subtitle">
-                            Empleados activos
+                            <a class="icon-link icon-link-hover link-body-emphasis link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0);" href="/employees">
+                                <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
+                                Empleados activos
+                            </a>
                         </h6>
                         <h3 class="card-title mb-0 mt-1">
                             {{#with tarjetas}}
@@ -55,7 +58,10 @@
                 <div class="row">
                     <div class="col-7 my-auto">
                         <h6 class="card-subtitle">
-                            Cotizaciones
+                            <a class="icon-link icon-link-hover link-body-emphasis link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0);" href="/quotations">
+                                <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
+                                Cotizaciones
+                            </a>
                         </h6>
                         <h3 class="card-title mb-0 mt-1">
                             {{#with tarjetas}}
@@ -104,7 +110,10 @@
                 <div class="row">
                     <div class="col-7 my-auto">
                         <h6 class="card-subtitle">
-                            Órdenes
+                            <a class="icon-link icon-link-hover link-body-emphasis link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0);" href="/orders">
+                                <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
+                                Órdenes
+                            </a>
                         </h6>
                         <h3 class="card-title mb-0 mt-1">
                             {{#with tarjetas}}
@@ -153,7 +162,10 @@
                 <div class="row">
                     <div class="col-6 my-auto">
                         <h6 class="card-subtitle">
-                            Ventas
+                            <a class="icon-link icon-link-hover link-body-emphasis link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0);" href="/collection">
+                                <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
+                                Ventas
+                            </a>
                         </h6>
                         <h5 class="card-title mb-0 mt-2">
                             {{#with tarjetas}}
@@ -198,29 +210,71 @@
     </div>
 </div>
 <div class="row pb-4 pt-2 px-2">
-    <div class="col-md-7">
+    <div class="col-md-4">
         <div class="card text-bg-light border-secondary">
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="row justify-content-center justify-content-md-end">
-                            <div class="col-12 col-md-4">
-                                <h5 class="card-title text-center">
-                                    Productos vendidos
+                        <div class="row justify-content-center">
+                            <div class="col-12 col-md-8">
+                                <h5 class="card-title text-center text-md-start h-100">
+                                    <a class="icon-link icon-link-hover link-body-emphasis link-underline link-underline-opacity-0 h-100" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0);" href="/employees">
+                                        <i class="bi bi-box-arrow-in-up-right mb-1"></i>
+                                        Mejores vendedores
+                                    </a>
                                 </h5>
                             </div>
-                            <div class="col-7 col-md-4 pb-md-0 pb-2">
-                                <select name="filter-chart5" id="filter-chart5" class="form-select form-select-sm w-auto float-md-end mx-auto bg-transparent border border-2 border-top-0 border-end-0 border-start-0 border-primary rounded-0" aria-label="filter for bar char">
+                            <div class="col-7 col-md-4">
+                                <select name="filter-chart5" id="filter-chart5" class="form-select form-select-sm w-auto float-md-end mx-auto bg-transparent border border-2 border-top-0 border-end-0 border-start-0 border-primary rounded-0" aria-label="filter for polar area char">
                                     <option value="global" selected>Global</option>
-                                    {{#each filtroProductos}}
+                                    {{#each filtroVendedores}}
                                         <option value="{{year}}-{{num_month}}">{{year}} - {{name_month}}.</option>
                                     {{/each}}
                                 </select>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-12">
+                    <div class="col-md-12 pt-2">
                         <canvas id="chart5" style="height: 18rem;"></canvas>
+                    </div>
+                    <div class="col-md-12 pt-2">
+                        <input type="radio" name="filter-unit-chart5" value="Mt" id="filter-chart5-mt" class="form-check-input btn-check" autocomplete="off" checked>
+                        <label for="filter-chart5-mt" class="form-check-label btn btn-sm btn-outline-primary me-2">m²</label>
+                        <input type="radio" name="filter-unit-chart5" value="Pieza" id="filter-chart5-pieza" class="form-check-input btn-check" autocomplete="off">
+                        <label for="filter-chart5-pieza" class="form-check-label btn btn-sm btn-outline-primary me-2">Pieza</label>
+                        <input type="radio" name="filter-unit-chart5" value="Millar" id="filter-chart5-millar" class="form-check-input btn-check" autocomplete="off">
+                        <label for="filter-chart5-millar" class="form-check-label btn btn-sm btn-outline-primary">millar</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 pt-4 pt-md-0">
+        <div class="card text-bg-light border-secondary">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row justify-content-center">
+                            <div class="col-12 col-md-8">
+                                <h5 class="card-title text-center text-md-start h-100">
+                                    <a class="icon-link icon-link-hover link-body-emphasis link-underline link-underline-opacity-0 h-100" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0);" href="/clients">
+                                        <i class="bi bi-box-arrow-in-up-right mb-1"></i>
+                                        Compradores
+                                    </a>
+                                </h5>
+                            </div>
+                            <div class="col-7 col-md-4">
+                                <select name="filter-chart6" id="filter-chart6" class="form-select form-select-sm w-auto float-md-end mx-auto bg-transparent border border-2 border-top-0 border-end-0 border-start-0 border-primary rounded-0" aria-label="filter for doughnut char">
+                                    <option value="global" selected>Global</option>
+                                    {{#each filtroClientes}}
+                                        <option value="{{year}}-{{num_month}}">{{year}} - {{name_month}}.</option>
+                                    {{/each}}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 pt-2">
+                        <canvas id="chart6" style="height: 20.4rem;"></canvas> {{!-- style="height: 18rem;" original size --}}
                     </div>
                 </div>
             </div>
@@ -231,24 +285,37 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="row justify-content-center justify-content-md-end">
-                            <div class="col-12 col-md-6">
-                                <h5 class="card-title text-center">
-                                    Compras por cliente
+                        <div class="row justify-content-center justify-content-md-center">
+                            <div class="col-12 col-md-8">
+                                <h5 class="card-title text-center text-md-start h-100">
+                                    <a class="icon-link icon-link-hover link-body-emphasis link-underline link-underline-opacity-0 h-100" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0);" href="/products">
+                                        <i class="bi bi-box-arrow-in-up-right mb-1"></i>
+                                        Productos más vendidos
+                                    </a>
                                 </h5>
                             </div>
-                            <div class="col-7 col-md-5 pb-md-0 pb-2">
-                                <select name="filter-chart6" id="filter-chart6" class="form-select form-select-sm w-auto float-md-end mx-auto bg-transparent border border-2 border-top-0 border-end-0 border-start-0 border-primary rounded-0" aria-label="filter for doughnut char">
+                            <div class="col-7 col-md-4 pb-md-0 pb-2">
+                                <select name="filter-chart7" id="filter-chart7" class="form-select form-select-sm w-auto float-md-end mx-auto bg-transparent border border-2 border-top-0 border-end-0 border-start-0 border-primary rounded-0" aria-label="filter for bar char">
                                     <option value="global" selected>Global</option>
-                                    {{#each filtroClientes}}
+                                    {{#each filtroProductos}}
                                         <option value="{{year}}-{{num_month}}">{{year}} - {{name_month}}.</option>
                                     {{/each}}
                                 </select>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-12">
-                        <canvas id="chart6" style="height: 18rem;"></canvas>
+                    <div class="col-md-12 pt-2">
+                        <canvas id="chart7" style="height: 18rem;"></canvas>
+                    </div>
+                    <div class="col-md-12 pt-2">
+                        <input type="radio" name="filter-unit-chart7" value="Global" id="filter-chart7-global" class="form-check-input btn-check" autocomplete="off" checked>
+                        <label for="filter-chart7-global" class="form-check-label btn btn-sm btn-outline-primary me-2">Global</label>
+                        <input type="radio" name="filter-unit-chart7" value="Mt" id="filter-chart7-mt" class="form-check-input btn-check" autocomplete="off">
+                        <label for="filter-chart7-mt" class="form-check-label btn btn-sm btn-outline-primary me-2">m²</label>
+                        <input type="radio" name="filter-unit-chart7" value="Pieza" id="filter-chart7-pieza" class="form-check-input btn-check" autocomplete="off">
+                        <label for="filter-chart7-pieza" class="form-check-label btn btn-sm btn-outline-primary me-2">Pieza</label>
+                        <input type="radio" name="filter-unit-chart7" value="Millar" id="filter-chart7-millar" class="form-check-input btn-check" autocomplete="off">
+                        <label for="filter-chart7-millar" class="form-check-label btn btn-sm btn-outline-primary">millar</label>
                     </div>
                 </div>
             </div>
