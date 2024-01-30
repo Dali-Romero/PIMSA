@@ -5,14 +5,14 @@
     <div class="btn-toolbar justify-content-md-start justify-content-center p-0" role="toolbar">
         {{#with cotizacion}}
             <div class="btn-group mb-3 mb-md-0" role="group">
-                <button class="btn btn-danger me-3" id="cancel-quotation" type="button" {{#equal estatus "Cancelada"}} disabled {{/equal}}><i class="bi bi-x-octagon"></i> Cancelar</button>
+                <button class="btn btn-danger me-3" id="cancel-quotation" type="button" {{#equalOR estatus "Cancelada" "Ordenada"}} disabled {{/equalOR}}><i class="bi bi-x-octagon"></i> Cancelar</button>
             </div>
             <div class="btn-group mb-3 mb-md-0" role="group">
-                <a href="/quotations/edit/{{cotId}}" class="btn btn-warning me-3" role="button"><i class="bi bi-arrow-repeat"></i> Recotizar</a>
+                <a href="/quotations/edit/{{cotId}}" class="btn btn-warning me-3 {{#equal estatus 'Ordenada'}} disabled {{/equal}}" role="button" aria-disabled="true"><i class="bi bi-arrow-repeat"></i> Recotizar</a>
             </div>
             <div class="btn-group mb-3 mb-md-0" role="group">
                 <div class="dropdown">
-                    <button type="button" class="btn btn-info dropdown-toggle me-3" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside" {{#equal estatus "Cancelada"}} disabled {{/equal}}>
+                    <button type="button" class="btn btn-info dropdown-toggle me-3" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside" {{#equalOR estatus "Cancelada" "Ordenada"}} disabled {{/equalOR}}>
                         <i class="bi bi-envelope-at"></i>
                         Enviar
                     </button>
@@ -53,19 +53,19 @@
                 <a class="btn btn-primary me-3" href="/quotations/download/{{cotId}}" role="button"><i class="bi bi-file-earmark-arrow-down"></i> Descargar PDF</a>
             </div>
             <div class="btn-group" role="group">
-                <button class="btn btn-success" type="button" {{#equal estatus "Cancelada"}} disabled {{/equal}}><i class="bi bi-journal-check"></i> Generar orden</button>
+                <button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#modalGenerateOrder" {{#equalOR estatus "Cancelada" "Ordenada"}} disabled {{/equalOR}}><i class="bi bi-journal-check"></i> Generar orden</button>
             </div>
         {{/with}}
     </div>
 </div>
-<div class="row p-4 gy-4 justify-content-md-between">
+<div class="row p-4 pt-0 gy-4 justify-content-md-between">
     <div class="col-md-5">
         <div class="row">
             <img src="/img/PIMSAlogo.png" alt="Logo PIMSA" class="img-fluid d-block mx-auto">
         </div>
         <div class="row mt-4">
             <div class="row m-0 text-center bg-danger text-white">
-                <p class="fs-6 p-2 m-0">Información de la cotización</p>
+                <p class="fs-6 p-1 m-0">Información de la cotización</p>
             </div>
             <table class="table table-responsive-md align-middle table-light m-0">
                 <tbody>
@@ -100,7 +100,7 @@
     <div class="col-md-6">
         <div class="row">
             <div class="row m-0 text-center bg-danger text-white">
-                <p class="fs-6 p-2 m-0">Información del cliente</p>
+                <p class="fs-6 p-1 m-0">Información del cliente</p>
             </div>
             <table class="table table-responsive-md align-middle table-light m-0">
                 <tbody>
@@ -153,7 +153,7 @@
 </div>
 <div class="row p-4 pt-0 justify-content-md-between">
     <div class="row m-0 text-center bg-danger text-white">
-        <p class="fs-6 p-2 m-0">Información de los productos</p>
+        <p class="fs-6 p-1 m-0">Información de los productos</p>
     </div>
     <div class="table-responsive overflow-y-auto p-0">
         <table class="table table-responsive-md align-middle table-light">
@@ -322,6 +322,134 @@
                         <a class="btn btn-success btn-sm" href="/quotations/cancel/{{#with cotizacion}}{{cotId}}{{/with}}" role="button">Aceptar</a>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{!-- Modal assign areas to processes --}}
+<div class="modal fade" id="modalGenerateOrder" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content h-100">
+            <div class="modal-header">
+                <p class="modal-title fs-5">Asignar áreas</p>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row m-0">
+                    <div class="col-md-6">
+                        <div class="row m-0 mb-3 text-center">
+                            <p class="fs-6 m-0">Productos en catálogo</p>
+                        </div>
+                        {{#each procesosEnCatalogo}}
+                        <div class="row m-0">
+                            <div class="card mb-4 p-0">
+                                <div class="card-header">
+                                    <p class="card-title m-0">{{producto}}</p>
+                                </div>
+                                <div class="card-body">
+                                    <p class="fs-6 mb-3"><b>Proceso:</b> {{proceso}}</p>
+                                    <p class="fs-6 mb-0">Áreas involucradas en este proceso:</p>
+                                    {{#each orden}}
+                                    <div class="input-group py-2">
+                                        <div class="row m-0 w-100">
+                                            <div class="col-2 p-0">
+                                                <select name="orderProcess{{@../index}}{{@index}}" id="orderProcess{{@../index}}{{@index}}" class="form-select form-select-sm border-dark border-2 border-end-0 rounded-end-0" disabled>
+                                                    <option value="{{this}}">{{this}}</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-10 p-0">
+                                                <select name="areaProcess{{@../index}}{{@index}}" id="areaProcess{{@../index}}{{@index}}" class="form-select form-select-sm border-dark border-2 rounded-start-0" disabled>
+                                                    <option value="{{lookup ../areas @index}}">{{lookup ../areas @index}}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {{/each}}
+                                </div>
+                            </div>
+                        </div>
+                        {{else}}
+                        <div class="row m-0">
+                            <div class="card mb-3 p-0">
+                                <div class="card-body">
+                                    <p class="card-title m-0">No existen productos dentro de catálogo para esta cotización</p>
+                                </div>
+                            </div>
+                        </div>
+                        {{/each}}
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row m-0 mb-3 text-center">
+                            <p class="fs-6 m-0">Productos fuera de catálogo</p>
+                        </div>
+                        <form action="/quotations/generateOrder/{{#with cotizacion}}{{cotId}}{{/with}}" method="post" class="needs-validation" id="form-add-process" novalidate>
+                            {{#each procesosFueraCatalogo}}
+                            <div class="row m-0">
+                                <div class="card mb-4 p-0">
+                                    <div class="card-header">
+                                        <p class="card-title m-0">{{concepto}}</p>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row m-0 align-items-center">
+                                            <div class="col-9 p-0">
+                                                <p class="fs-6 mb-0">Seleccione las áreas con su respectivo orden:</p>
+                                            </div>
+                                            <div class="col-3 p-0 text-end">
+                                                <button class="btn btn-sm btn-outline-success border-success border-2 addArea" type="button"><i class="bi bi-plus-circle"></i> Área</button>
+                                            </div>
+                                        </div>
+                                        <div class="row p-0">
+                                            <span class="invalid-feedback-process-order"></span>
+                                        </div>
+                                        <div class="row m-0" id="cardsProcessContainer">
+                                            <div class="input-group p-0 py-3 has-validation">
+                                                <div class="row m-0 w-100">
+                                                    <div class="col-2 p-0">
+                                                        <select name="orderProcess{{@index}}" class="form-select form-select-sm border-dark border-2 border-end-0 rounded-end-0 orderProcess" required>
+                                                            {{#each ../orden}}
+                                                                <option value="{{this}}">{{this}}</option>
+                                                            {{/each}}
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-9 col-8 p-0">
+                                                        <select name="areaProcess{{@index}}" class="form-select form-select-sm border-dark border-2 rounded-start-0 areaProcess" required>
+                                                            {{#each ../areas}}
+                                                                <option value="{{areaId}}">{{nombre}}</option>
+                                                            {{/each}}
+                                                        </select>
+                                                        <div class="valid-feedback">
+                                                            ¡Perfecto!
+                                                        </div>
+                                                        <div class="invalid-feedback">
+                                                            <span class="invalid-feedback-process-area"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-1 col-2 pe-0 text-end d-none">
+                                                        <button class="btn btn-danger btn-sm remove-process-select" type="button"><i class="bi bi-trash3"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {{else}}
+                        </form>
+                        <div class="row m-0">
+                            <div class="card mb-3 p-0">
+                                <div class="card-body">
+                                    <p class="card-title m-0">No existen productos fuera de catálogo para esta cotización</p>
+                                </div>
+                            </div>
+                        </div>
+                        {{/each}}
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Cerrar</button>
+                <button type="submit" form="form-add-process" class="btn btn-sm btn-success">Generar orden</button>
             </div>
         </div>
     </div>
