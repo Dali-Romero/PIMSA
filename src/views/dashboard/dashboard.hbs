@@ -1,0 +1,446 @@
+<div class="row p-3" id="machine-title">
+    <h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-file-earmark-bar-graph"></i> Panel</h1>
+</div>
+<div class="row pt-4 pb-3 px-2">
+    <div class="col-md-3 mb-4 mb-md-0">
+        <div class="card text-bg-light border-secondary">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-7" style="margin-top: 0.4rem; margin-bottom: 0.4rem;">
+                        <h6 class="card-subtitle">
+                            <a class="icon-link icon-link-hover link-body-emphasis link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0);" href="/employees">
+                                <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
+                                Empleados activos
+                            </a>
+                        </h6>
+                        <h3 class="card-title mb-0 mt-1">
+                            {{#with tarjetas}}
+                                {{formatNumberAmount tarjEmpleados.total}}
+                            {{/with}}
+                        </h3>
+                        <h6 class="card-subtitle text-body-secondary">
+                            <small>
+                                Global
+                            </small>
+                        </h6>
+                    </div>
+                    <div class="col-5">
+                        <canvas id="chart1" style="height: 5.5rem;"></canvas>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 text-center">
+                        {{#with tarjetas}}
+                            {{#equalNR cambioEmpleados.percentage 0}}
+                                <h6 class="text-primary mb-0">
+                                    <i class="bi bi-caret-right-fill"></i> {{formatNumber cambioEmpleados.percentage}}% <span class="text-dark">desde el último mes</span>
+                                </h6>
+                            {{else}}
+                                {{#greaterThan cambioEmpleados.percentage 0}}
+                                    <h6 class="text-success mb-0">
+                                        <i class="bi bi-caret-up-fill"></i> {{formatNumber cambioEmpleados.percentage}}% <span class="text-dark">desde el último mes</span>
+                                    </h6>
+                                {{else}}
+                                    <h6 class="text-danger mb-0">
+                                        <i class="bi bi-caret-down-fill"></i> {{formatNumber cambioEmpleados.percentage}}% <small class="text-dark">desde el último mes</small>
+                                    </h6>
+                                {{/greaterThan}}
+                            {{/equalNR}}
+                        {{/with}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4 mb-md-0">
+        <div class="card text-bg-light border-secondary">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-7 my-auto">
+                        <h6 class="card-subtitle">
+                            <a class="icon-link icon-link-hover link-body-emphasis link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0);" href="/quotations">
+                                <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
+                                Cotizaciones
+                            </a>
+                        </h6>
+                        <h3 class="card-title mb-0 mt-1">
+                            {{#with tarjetas}}
+                                {{formatNumberAmount tarjCotizaciones.total}}
+                            {{/with}}
+                        </h3>
+                        <h6 class="card-subtitle text-body-secondary">
+                            <small>
+                                {{#with tarjetas}}
+                                    {{tarjCotizaciones.name_month}}
+                                {{/with}}
+                            </small>
+                        </h6>
+                    </div>
+                    <div class="col-5">
+                        <canvas id="chart2" style="height: 5rem;"></canvas>
+                    </div>
+                </div>
+                <div class="row pt-2">
+                    <div class="col-12 text-center">
+                        {{#with tarjetas}}
+                            {{#equalNR cambioCotizaciones.percentage 0}}
+                                <h6 class="text-primary mb-0">
+                                    <i class="bi bi-caret-right-fill"></i> {{formatNumber cambioCotizaciones.percentage}}% <span class="text-dark">desde el último mes</span>
+                                </h6>
+                            {{else}}
+                                {{#greaterThan cambioCotizaciones.percentage 0}}
+                                    <h6 class="text-success mb-0">
+                                        <i class="bi bi-caret-up-fill"></i> {{formatNumber cambioCotizaciones.percentage}}% <span class="text-dark">desde el último mes</span>
+                                    </h6>
+                                {{else}}
+                                    <h6 class="text-danger mb-0">
+                                        <i class="bi bi-caret-down-fill"></i> {{formatNumber cambioCotizaciones.percentage}}% <small class="text-dark">desde el último mes</small>
+                                    </h6>
+                                {{/greaterThan}}
+                            {{/equalNR}}
+                        {{/with}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4 mb-md-0">
+        <div class="card text-bg-light border-secondary">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-7 my-auto">
+                        <h6 class="card-subtitle">
+                            <a class="icon-link icon-link-hover link-body-emphasis link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0);" href="/orders">
+                                <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
+                                Órdenes
+                            </a>
+                        </h6>
+                        <h3 class="card-title mb-0 mt-1">
+                            {{#with tarjetas}}
+                                {{formatNumberAmount tarjOrdenes.total}}
+                            {{/with}}
+                        </h3>
+                        <h6 class="card-subtitle text-body-secondary">
+                            <small>
+                                {{#with tarjetas}}
+                                    {{tarjOrdenes.name_month}}
+                                {{/with}}
+                            </small>
+                        </h6>
+                    </div>
+                    <div class="col-5">
+                        <canvas id="chart3" style="height: 5rem;"></canvas>
+                    </div>
+                </div>
+                <div class="row pt-2">
+                    <div class="col-12 text-center">
+                        {{#with tarjetas}}
+                            {{#equalNR cambioOrdenes.percentage 0}}
+                                <h6 class="text-primary mb-0">
+                                    <i class="bi bi-caret-right-fill"></i> {{formatNumber cambioOrdenes.percentage}}% <span class="text-dark">desde el último mes</span>
+                                </h6>
+                            {{else}}
+                                {{#greaterThan cambioOrdenes.percentage 0}}
+                                    <h6 class="text-success mb-0">
+                                        <i class="bi bi-caret-up-fill"></i> {{formatNumber cambioOrdenes.percentage}}% <span class="text-dark">desde el último mes</span>
+                                    </h6>
+                                {{else}}
+                                    <h6 class="text-danger mb-0">
+                                        <i class="bi bi-caret-down-fill"></i> {{formatNumber cambioOrdenes.percentage}}% <small class="text-dark">desde el último mes</small>
+                                    </h6>
+                                {{/greaterThan}}
+                            {{/equalNR}}
+                        {{/with}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-bg-light border-secondary">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-6 my-auto">
+                        <h6 class="card-subtitle">
+                            <a class="icon-link icon-link-hover link-body-emphasis link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0);" href="/collection">
+                                <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
+                                Ventas
+                            </a>
+                        </h6>
+                        <h5 class="card-title mb-0 mt-2">
+                            {{#with tarjetas}}
+                                $ {{formatNumber tarjVentas.total}}
+                            {{/with}}
+                        </h5>
+                        <h6 class="card-subtitle text-body-secondary pt-1">
+                            <small>
+                                {{#with tarjetas}}
+                                    {{tarjOrdenes.name_month}}
+                                {{/with}}
+                            </small>
+                        </h6>
+                    </div>
+                    <div class="col-6 my-auto">
+                        <canvas id="chart4" style="height: 5rem;"></canvas>
+                    </div>
+                </div>
+                <div class="row pt-2">
+                    <div class="col-12 text-center">
+                        {{#with tarjetas}}
+                            {{#equalNR cambioVentas.percentage 0}}
+                                <h6 class="text-primary mb-0">
+                                    <i class="bi bi-caret-right-fill"></i> {{formatNumber cambioVentas.percentage}}% <span class="text-dark">desde el último mes</span>
+                                </h6>
+                            {{else}}
+                                {{#greaterThan cambioVentas.percentage 0}}
+                                    <h6 class="text-success mb-0">
+                                        <i class="bi bi-caret-up-fill"></i> {{formatNumber cambioVentas.percentage}}% <span class="text-dark">desde el último mes</span>
+                                    </h6>
+                                {{else}}
+                                    <h6 class="text-danger mb-0">
+                                        <i class="bi bi-caret-down-fill"></i> {{formatNumber cambioVentas.percentage}}% <small class="text-dark">desde el último mes</small>
+                                    </h6>
+                                {{/greaterThan}}
+                            {{/equalNR}}
+                        {{/with}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row pb-4 pt-2 px-2">
+    <div class="col-md-4">
+        <div class="card text-bg-light border-secondary">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row justify-content-center">
+                            <div class="col-12 col-md-8">
+                                <h5 class="card-title text-center text-md-start h-100">
+                                    <a class="icon-link icon-link-hover link-body-emphasis link-underline link-underline-opacity-0 h-100" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0);" href="/employees">
+                                        <i class="bi bi-box-arrow-in-up-right mb-1"></i>
+                                        Mejores vendedores
+                                    </a>
+                                </h5>
+                            </div>
+                            <div class="col-7 col-md-4">
+                                <select name="filter-chart5" id="filter-chart5" class="form-select form-select-sm w-auto float-md-end mx-auto bg-transparent border border-2 border-top-0 border-end-0 border-start-0 border-primary rounded-0" aria-label="filter for polar area char">
+                                    <option value="global" selected>Global</option>
+                                    {{#each filtroVendedores}}
+                                        <option value="{{year}}-{{num_month}}">{{year}} - {{name_month}}.</option>
+                                    {{/each}}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 pt-2">
+                        <canvas id="chart5" style="height: 18rem;"></canvas>
+                    </div>
+                    <div class="col-md-12 pt-2">
+                        <input type="radio" name="filter-unit-chart5" value="Mt" id="filter-chart5-mt" class="form-check-input btn-check" autocomplete="off" checked>
+                        <label for="filter-chart5-mt" class="form-check-label btn btn-sm btn-outline-primary me-2">m²</label>
+                        <input type="radio" name="filter-unit-chart5" value="Pieza" id="filter-chart5-pieza" class="form-check-input btn-check" autocomplete="off">
+                        <label for="filter-chart5-pieza" class="form-check-label btn btn-sm btn-outline-primary me-2">Pieza</label>
+                        <input type="radio" name="filter-unit-chart5" value="Millar" id="filter-chart5-millar" class="form-check-input btn-check" autocomplete="off">
+                        <label for="filter-chart5-millar" class="form-check-label btn btn-sm btn-outline-primary">millar</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 pt-4 pt-md-0">
+        <div class="card text-bg-light border-secondary">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row justify-content-center">
+                            <div class="col-12 col-md-8">
+                                <h5 class="card-title text-center text-md-start h-100">
+                                    <a class="icon-link icon-link-hover link-body-emphasis link-underline link-underline-opacity-0 h-100" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0);" href="/clients">
+                                        <i class="bi bi-box-arrow-in-up-right mb-1"></i>
+                                        Compradores
+                                    </a>
+                                </h5>
+                            </div>
+                            <div class="col-7 col-md-4">
+                                <select name="filter-chart6" id="filter-chart6" class="form-select form-select-sm w-auto float-md-end mx-auto bg-transparent border border-2 border-top-0 border-end-0 border-start-0 border-primary rounded-0" aria-label="filter for doughnut char">
+                                    <option value="global" selected>Global</option>
+                                    {{#each filtroClientes}}
+                                        <option value="{{year}}-{{num_month}}">{{year}} - {{name_month}}.</option>
+                                    {{/each}}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 pt-2">
+                        <canvas id="chart6" style="height: 20.4rem;"></canvas> {{!-- style="height: 18rem;" original size --}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-5 pt-4 pt-md-0">
+        <div class="card text-bg-light border-secondary">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row justify-content-center justify-content-md-center">
+                            <div class="col-12 col-md-8">
+                                <h5 class="card-title text-center text-md-start h-100">
+                                    <a class="icon-link icon-link-hover link-body-emphasis link-underline link-underline-opacity-0 h-100" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0);" href="/products">
+                                        <i class="bi bi-box-arrow-in-up-right mb-1"></i>
+                                        Productos más vendidos
+                                    </a>
+                                </h5>
+                            </div>
+                            <div class="col-7 col-md-4 pb-md-0 pb-2">
+                                <select name="filter-chart7" id="filter-chart7" class="form-select form-select-sm w-auto float-md-end mx-auto bg-transparent border border-2 border-top-0 border-end-0 border-start-0 border-primary rounded-0" aria-label="filter for bar char">
+                                    <option value="global" selected>Global</option>
+                                    {{#each filtroProductos}}
+                                        <option value="{{year}}-{{num_month}}">{{year}} - {{name_month}}.</option>
+                                    {{/each}}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 pt-2">
+                        <canvas id="chart7" style="height: 18rem;"></canvas>
+                    </div>
+                    <div class="col-md-12 pt-2">
+                        <input type="radio" name="filter-unit-chart7" value="Global" id="filter-chart7-global" class="form-check-input btn-check" autocomplete="off" checked>
+                        <label for="filter-chart7-global" class="form-check-label btn btn-sm btn-outline-primary me-2">Global</label>
+                        <input type="radio" name="filter-unit-chart7" value="Mt" id="filter-chart7-mt" class="form-check-input btn-check" autocomplete="off">
+                        <label for="filter-chart7-mt" class="form-check-label btn btn-sm btn-outline-primary me-2">m²</label>
+                        <input type="radio" name="filter-unit-chart7" value="Pieza" id="filter-chart7-pieza" class="form-check-input btn-check" autocomplete="off">
+                        <label for="filter-chart7-pieza" class="form-check-label btn btn-sm btn-outline-primary me-2">Pieza</label>
+                        <input type="radio" name="filter-unit-chart7" value="Millar" id="filter-chart7-millar" class="form-check-input btn-check" autocomplete="off">
+                        <label for="filter-chart7-millar" class="form-check-label btn btn-sm btn-outline-primary">millar</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row pt-0 pb-4 px-2">
+    <div class="col-md-12 pt-0">
+        <ul class="nav nav-tabs bg-light" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="dashboard-quotations-tab" data-bs-toggle="tab" data-bs-target="#dashboard-quotations-pane" type="button" role="tab" aria-controls="dashboard-quotations-pane" aria-selected="true">Cotizaciones</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="dashboard-orders-tab" data-bs-toggle="tab" data-bs-target="#dashboard-orders-pane" type="button" role="tab" aria-controls="dashboard-orders-pane" aria-selected="true">Órdenes</button>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade show active" style="height: 42rem;" id="dashboard-quotations-pane" role="tabpanel" aria-labelledby="dashboard-quotations-tab" tabindex="0">
+                <div class="table-responsive-xxl p-0">
+                    <table class="stripe" id="dashboard-quotations-table" style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th scope="col">No. Cotización</th>
+                                <th scope="col">Fecha creación</th>
+                                <th scope="col">Cliente</th>
+                                <th scope="col">Monto total</th>
+                                <th scope="col">Estatus</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each cotizaciones}}
+                                <tr>
+                                    <th scope="row">
+                                        <a class="icon-link icon-link-hover link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.125rem, 0); --bs-link-hover-color-rgb: 237, 10, 63;" href="quotations/info/{{cotId}}">
+                                            <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
+                                            COT-{{cotId}}
+                                        </a>
+                                    </th>
+                                    <td>{{formatDateShort fecha}}</td>
+                                    <td>
+                                        <a class="icon-link icon-link-hover link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.125rem, 0); --bs-link-hover-color-rgb: 237, 10, 63;" href="clients/infoclient/{{clienteId}}">
+                                            <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
+                                            {{nombre}}
+                                        </a>
+                                    </td>
+                                    <td>$ {{formatNumber total}}</td>
+                                    {{#equal estatus "Generada"}}
+                                        <td class="text-info">{{estatus}}</td>
+                                    {{/equal}}
+                                    {{#equal estatus "Cancelada"}}
+                                        <td class="text-danger">{{estatus}}</td>
+                                    {{/equal}}
+                                    {{#equal estatus "Ordenada"}}
+                                        <td class="text-success">{{estatus}}</td>
+                                    {{/equal}}
+                                    {{#equal estatus "Espera"}}
+                                        <td class="text-warning">En espera</td>
+                                    {{/equal}}
+                                </tr>
+                            {{else}}
+                                <tr>
+                                    <td class="d-none"></td>
+                                    <td class="d-none"></td>
+                                    <td class="d-none"></td>
+                                    <td class="d-none"></td>
+                                    <td colspan="5">No existen cotizaciones registradas</td>
+                                </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="tab-content">
+            <div class="tab-pane fade" style="height: 42rem;" id="dashboard-orders-pane" role="tabpanel" aria-labelledby="dashboard-orders-tab" tabindex="0">
+                <div class="table-responsive-xxl p-0">
+                    <table class="stripe" id="dashboard-orders-table" style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th scope="col">No. Orden</th>
+                                <th scope="col">Fecha generación</th>
+                                <th scope="col">Cliente</th>
+                                <th scope="col">Monto total</th>
+                                <th scope="col">Estatus</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each ordenes}}
+                                <tr>
+                                    <th scope="row">
+                                        <a class="icon-link icon-link-hover link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.125rem, 0); --bs-link-hover-color-rgb: 237, 10, 63;" href="orders/info/{{ordenId}}">
+                                            <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
+                                            OT-{{ordenId}}
+                                        </a>
+                                    </th>
+                                    <td>{{formatDateShort fechaGen}}</td>
+                                    <td>
+                                        <a class="icon-link icon-link-hover link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.125rem, 0); --bs-link-hover-color-rgb: 237, 10, 63;" href="clients/infoclient/{{clienteId}}">
+                                            <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
+                                            {{nombre}}
+                                        </a>
+                                    </td>
+                                    <td>$ {{formatNumber total}}</td>
+                                    {{#if terminada}}
+                                        <td class="text-success">Terminada</td>
+                                    {{else}}
+                                        <td class="text-danger">En proceso</td>
+                                    {{/if}}
+                                </tr>
+                            {{else}}
+                                <tr>
+                                    <td class="d-none"></td>
+                                    <td class="d-none"></td>
+                                    <td class="d-none"></td>
+                                    <td class="d-none"></td>
+                                    <td colspan="5">No existen ordenes registradas</td>
+                                </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 order-first order-md-last">
+        
+    </div>
+</div>

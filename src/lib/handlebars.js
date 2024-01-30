@@ -34,7 +34,7 @@ hbs.registerHelper('equalOR', function(v1, v2, v3, options){
 
 hbs.registerHelper('formatNumber', function(n){
     let num = Number.parseFloat(n).toFixed(2);
-    num = Number(num).toLocaleString();
+    num = Number(num).toLocaleString(undefined, {minimumFractionDigits: 2});
     return num;
 });
 
@@ -44,6 +44,11 @@ hbs.registerHelper('formatNumberMeasure', function(n){
     }else{
         return Number(Number.parseFloat(n).toFixed(3));
     }
+});
+
+hbs.registerHelper('formatNumberAmount', function(n){
+    let num = Number(n).toLocaleString();
+    return num;
 });
 
 hbs.registerHelper('formatDate', function(date){
