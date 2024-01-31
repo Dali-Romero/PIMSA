@@ -552,7 +552,7 @@ router.post('/generateOrder/:id', async (req, res)=>{
     await pool.query('UPDATE Cotizaciones SET estatus = "Ordenada" WHERE cotId = ?', [id]);
 
     req.flash('success', 'La orden <b>OT-'+resultadoOrden.insertId+'</b> ha sido creada correctamente');
-    res.redirect('/orders');
+    res.redirect('/tareas/create/'+resultadoOrden.insertId);
 })
 
-module.exports = router;
+module.exports = router; 

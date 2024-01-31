@@ -26,7 +26,7 @@
                 <tbody class="table-group-divider">
                     {{#each tareas}}
                         <tr>
-                            <th>{{tareaId}}</th>
+                            <th><a href="orders/info/{{orden_id}}">{{orden_id}}</a></th>
                             <th>{{fechaGen}}</th>
                             <th>{{fechaEnt}}</th>
                             <th>{{proyecto}}</th>
@@ -34,7 +34,7 @@
                                 {{#equal usuarioId ../usuario_id}} <th>{{nombre}} {{apellido}}</th> {{/equal}}
                             {{/each}}
                             <th>{{observaciones}}</th>
-                            <th><a id="mostrarModal" class="btn btn-sm btn-success"><i class="bi bi-person-vcard-fill"></i> Terminar tarea</a></th>
+                            <th>Terminada</th>
                         </tr>
                     {{else}}
                     <tr>

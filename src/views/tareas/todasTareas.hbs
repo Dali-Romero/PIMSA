@@ -21,17 +21,25 @@
                         <th scope="col">Encargado</th>
                         <th scope="col">Nota</th>
                         <th scope="col"></th>
+                        <th scope="col"></th>
                     </tr>
                 </thead>
                 <tbody class="table-group-divider">
                     {{#each tareasNuevas}}
                         <tr>
-                            <th>{{tareaId}}</th>
+                            <th><a href="orders/info/{{orden_id}}">{{orden_id}}</a></th>
                             <th>{{fechaGen}}</th>
                             <th>{{fechaEnt}}</th>
                             <th>{{proyecto}}</th>
-                            <th>Sin Usuario</th>
-                            <th>{{observaciones}}</th>
+                            {{#each ../users}}
+                                {{#equal usuarioId ../usuario_id}} <th>{{nombre}} {{apellido}}</th> {{/equal}}
+                            {{/each}}
+                            <th>{{notes}}</th>
+                            {{#equalNR sucesion 1}}
+                            <th></th>
+                            {{else}}
+                            <th><a href="/tareas/historial/{{tareaId}}" class="btn btn-sm btn-success"><i class="bi bi-arrow-left-square"></i> Regresar tarea</a></th>
+                            {{/equalNR}}
                             <th><a href="/tareas/enterado/{{tareaId}}" class="btn btn-sm btn-success"><i class="bi bi-check-square"></i>  Enterado</a></th>
                         </tr>
                     {{else}}
@@ -58,7 +66,7 @@
     </div>
     <div class="row p-4 pt-0">
         <div class="table-responsive-xxl p-0">
-            <table class="table table-striped align-middle text-center" id="tabla_tareas_nuevas">
+            <table class="table table-striped align-middle text-center" id="tabla_tareas_todas">
                 <thead>
                     <tr>
                         <th scope="col">No Orden</th>
@@ -67,21 +75,50 @@
                         <th scope="col">Titulo</th>
                         <th scope="col">Encargado</th>
                         <th scope="col">Nota</th>
-                        <th scope="col"></th>
+                        <th scope="col">Estatus</th>
                     </tr>
                 </thead>
                 <tbody class="table-group-divider">
-                    {{#each tareas}}
+                    {{#each tareasError}}
                         <tr>
-                            <th>{{tareaId}}</th>
+                            <th><a href="orders/info/{{orden_id}}">{{orden_id}}</a></th>
                             <th>{{fechaGen}}</th>
                             <th>{{fechaEnt}}</th>
                             <th>{{proyecto}}</th>
                             {{#each ../users}}
                                 {{#equal usuarioId ../usuario_id}} <th>{{nombre}} {{apellido}}</th> {{/equal}}
                             {{/each}}
-                            <th>{{observaciones}}</th>
-                            <th><a id="mostrarModal" class="btn btn-sm btn-success"><i class="bi bi-person-vcard-fill"></i> Terminar tarea</a></th>
+                            <th>{{notes}}</th>
+                            {{#equalNR activa 1}}
+                                <th><a href="/tareas/{{tareaId}}" class="btn btn-sm btn-success"><i class="bi bi-person-vcard-fill"></i> Terminar tarea</a></th>
+                            {{else}}
+                                {{#equalNR terminada 1}}
+                                    <th> Tarea terminada.</th>
+                                {{else}}
+                                    <th> Tarea en actividad anterior.</th>
+                                {{/equalNR}}
+                            {{/equalNR}}
+                        </tr>
+                    {{/each}}
+                    {{#each tareas}}
+                        <tr>
+                            <th><a href="orders/info/{{orden_id}}">{{orden_id}}</a></th>
+                            <th>{{fechaGen}}</th>
+                            <th>{{fechaEnt}}</th>
+                            <th>{{proyecto}}</th>
+                            {{#each ../users}}
+                                {{#equal usuarioId ../usuario_id}} <th>{{nombre}} {{apellido}}</th> {{/equal}}
+                            {{/each}}
+                            <th>{{notes}}</th>
+                            {{#equalNR activa 1}}
+                                <th><a href="/tareas/{{tareaId}}" class="btn btn-sm btn-success"><i class="bi bi-person-vcard-fill"></i> Terminar tarea</a></th>
+                            {{else}}
+                                {{#equalNR terminada 1}}
+                                    <th> Tarea terminada.</th>
+                                {{else}}
+                                    <th> Tarea en actividad anterior.</th>
+                                {{/equalNR}}
+                            {{/equalNR}}
                         </tr>
                     {{else}}
                     <tr>
