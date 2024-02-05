@@ -8,6 +8,7 @@ $(document).ready(function(){
         paging: false,
         info: false,
         padding: false,
+        order: [[1, 'Desc'], [0, 'Desc']],
         columnDefs: [
             {
                 "orderable": false,
