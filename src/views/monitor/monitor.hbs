@@ -17,7 +17,8 @@
                 {{#each ordenes}}
                     <tr>
                         <th scope="row">
-                            <a class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover" href="orders/info/{{ordenId}}">
+                            <a class="icon-link icon-link-hover link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0); --bs-link-hover-color-rgb: 237, 10, 63;" href="orders/info/{{ordenId}}">
+                                <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
                                 OT-{{ordenId}}
                             </a>
                         </th>
@@ -32,12 +33,26 @@
                                 {{#each productos}}
                                     <div class="col">
                                         {{#equal ../tareasTerminadas ../totalTareas}}
-                                            <button class="btn btn-sm btn-outline-success w-100 text-truncate btnShowTasks" id="btnShowTasks{{idTarea}}" value="{{idTarea}}" type="button"><i class="bi bi-file-earmark-text"></i>
-                                                {{nombre}}
+                                            <button class="btn btn-sm btn-outline-success w-100 btnShowTasks" id="btnShowTasks{{idTarea}}" value="{{idTarea}}" type="button">
+                                                <div class="row m-0">
+                                                    <div class="col-md-2 col-4 p-0">
+                                                        <i class="bi bi-file-earmark-text"></i>
+                                                    </div>
+                                                    <div class="col-md-10 col-8 p-0 text-start text-truncate">
+                                                        {{nombre}}
+                                                    </div>
+                                                </div>
                                             </button>
                                         {{else}}
-                                            <button class="btn btn-sm btn-outline-danger w-100 text-truncate btnShowTasks" id="btnShowTasks{{idTarea}}" value="{{idTarea}}" type="button"><i class="bi bi-file-earmark-text"></i>
-                                                {{nombre}}
+                                            <button class="btn btn-sm btn-outline-danger w-100 btnShowTasks" id="btnShowTasks{{idTarea}}" value="{{idTarea}}" type="button">
+                                                <div class="row m-0">
+                                                    <div class="col-md-2 col-4 p-0">
+                                                        <i class="bi bi-file-earmark-text"></i>
+                                                    </div>
+                                                    <div class="col-md-10 col-8 p-0 text-start text-truncate">
+                                                        {{nombre}}
+                                                    </div>
+                                                </div>
                                             </button>
                                         {{/equal}}
                                     </div>

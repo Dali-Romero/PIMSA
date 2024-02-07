@@ -80,7 +80,7 @@ router.post('/infoTask', isLoggedIn, async (req, res) => {
         }
     }
 
-    // eliminar ultima coma y espcaio en blanco
+    // eliminar ultima coma y espacio en blanco
     tareas.forEach(tarea => {
         tarea.tareasSincronas = tarea.tareasSincronas.replace(/,\s$/, '')
     });
