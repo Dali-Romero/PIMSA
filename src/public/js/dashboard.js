@@ -1,3 +1,39 @@
+function validateReportsForm (form){
+    let validated = false;
+    form.on('submit', function (event){
+        // repart sections check validation
+        const sections = $('input[name="sectionsReport"][type="checkbox"]:checked');
+        const invalidFeedbackSections = $('#invalid-feedback-sectionsReport');
+        if (sections.length === 0){
+            invalidFeedbackSections.removeClass('is-valid');
+            invalidFeedbackSections.addClass('is-invalid');
+            invalidFeedbackSections.removeClass('text-success');
+            invalidFeedbackSections.addClass('text-danger');
+            invalidFeedbackSections.text('Por favor, elija una sección');
+        }else{
+            invalidFeedbackSections.removeClass('is-invalid');
+            invalidFeedbackSections.addClass('is-valid');
+            invalidFeedbackSections.removeClass('text-danger');
+            invalidFeedbackSections.addClass('text-success');
+            invalidFeedbackSections.text('¡Perfecto!');
+        }
+
+        // Checking the validations
+        const nonValidatedFields = $('.is-invalid');
+        if (nonValidatedFields.length !== 0){
+            validated = false;
+        }else{
+            validated = true;
+        }
+
+        // avoid default form behavior
+        if(!validated){
+            event.preventDefault();
+            event.stopPropagation();
+        }
+    })
+}
+
 $(document).ready(function(){
     // list dashboard quotations table
     var quotationsTable = new DataTable('#dashboard-quotations-table', {
@@ -7,7 +43,7 @@ $(document).ready(function(){
         padding: false,
         filter: false,
         scrollCollapse: true,
-        scrollY: 628,
+        scrollY: 628, // 628
         scrollX: true,
         language:{
             url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-MX.json',
@@ -150,502 +186,516 @@ $(document).ready(function(){
     }
 
     // charts render
-    $.ajax({
-        type: 'GET',
-        url: '/dashboard/graphs',
-        headers: {'Content-Type': 'application/json'},
-        success: function(info){
-            // build chart 1 (radar chart -> employees)
-            new Chart(ctx1, {
-                type: 'radar',
-                data: {
-                    labels: info.infoGraphs.infoG1.map(function(area){return area.nombre}),
-                    datasets: [{
-                        data: info.infoGraphs.infoG1.map(function(area){return area.total}),
-                    }],
-                    fill: true
-                },
-                options: {
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            caretSize: 0,
-                            callbacks: {
-                                label: function(context){
-                                    let label = ` ${context.parsed.r}`;
-                                    return label;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        r: {
-                            beginAtZero: true,
-                            ticks: {
-                                stepSize: 1
-                            },
-                            pointLabels: {
-                                display: false
-                            },
-                            grid: {
-                                circular: true
-                            }
-                        }
-                    }
-                }
-            })
-
-            // build chart 2 (pie chart -> quotations)
-            new Chart(ctx2, {
-                type: 'pie',
-                data: {
-                    labels: info.infoGraphs.infoG2.map(function(cot){return cot.estatus}),
-                    datasets: [{
-                        data: info.infoGraphs.infoG2,
-                        backgroundColor: [
-                            'rgb(13, 202, 240)',
-                            'rgb(220, 53, 69)',
-                            'rgb(25, 135, 84)',
-                            'rgb(255, 193, 7)'
-                        ]
-                    }]
-                },
-                options: {
-                    maintainAspectRatio: false,
-                    parsing: {
-                        key: 'total'
-                    },
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            caretSize: 0,
-                            callbacks: {
-                                label: function(context){
-                                    let label = ` ${context.parsed}`;
-                                    return label;
-                                }
-                            }
-                        },
-                        emptyDoughnut: {
-                            color: 'rgba(255, 128, 0, 0.5)',
-                            width: 5,
-                            radiusDecrease: 5
-                        }
-                    }
-                },
-                plugins: [emptyChart]
-            })
-
-            // build chart 3 (pie chart -> orders)
-            new Chart(ctx3, {
-                type: 'pie',
-                data: {
-                    labels: info.infoGraphs.infoG3.map(function(ord){return ord.estatus}),
-                    datasets: [{
-                        data: info.infoGraphs.infoG3,
-                        backgroundColor: [
-                            'rgb(220, 53, 69)',
-                            'rgb(25, 135, 84)'
-                        ]
-                    }]
-                },
-                options: {
-                    maintainAspectRatio: false,
-                    parsing: {
-                        key: 'total'
-                    },
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            caretSize: 0,
-                            callbacks: {
-                                label: function(context){
-                                    let label = ` ${context.parsed}`;
-                                    return label;
-                                }
-                            }
-                        },
-                        emptyDoughnut: {
-                            color: 'rgba(255, 128, 0, 0.5)',
-                            width: 5,
-                            radiusDecrease: 5
-                        }
-                    }
-                },
-                plugins: [emptyChart]
-            })
-
-            // build chart 4 (line chart -> sales)
-            new Chart(ctx4, {
-                type: 'line',
-                data: {
-                    datasets: [{
-                        data: info.infoGraphs.infoG4,
+    if(ctx1.length !== 0){
+        $.ajax({
+            type: 'GET',
+            url: '/dashboard/graphs',
+            headers: {'Content-Type': 'application/json'},
+            success: function(info){
+                // build chart 1 (radar chart -> employees)
+                new Chart(ctx1, {
+                    type: 'radar',
+                    data: {
+                        labels: info.infoGraphs.infoG1.map(function(area){return area.nombre}),
+                        datasets: [{
+                            data: info.infoGraphs.infoG1.map(function(area){return area.total}),
+                        }],
                         fill: true
-                    }],
-                },
-                options: {
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            caretSize: 0,
-                            callbacks: {
-                                label: function(context){
-                                    console.log(context)
-                                    let amount = Number.parseFloat(context.raw.total).toFixed(2);
-                                    amount = Number(amount).toLocaleString(undefined, {minimumFractionDigits: 2});
-                                    let label = `$ ${amount}`;
-                                    return label;
-                                }
-                            }
-                        },
                     },
-                    parsing: {
-                        xAxisKey: 'name_month',
-                        yAxisKey: 'total'
-                    },
-                    scales: {
-                        x: {
-                            border: {
-                                color: 'black',
-                            },
-                            grid: {
+                    options: {
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
                                 display: false
                             },
-                            ticks: {
-                                display: false,
-                                callback: function(label){
-                                    if(this.getLabelForValue(label).length > 5){
-                                        return this.getLabelForValue(label).substring(0,5) + '...';
-                                    }else{
-                                        return this.getLabelForValue(label)
+                            tooltip: {
+                                caretSize: 0,
+                                callbacks: {
+                                    label: function(context){
+                                        let label = ` ${context.parsed.r}`;
+                                        return label;
                                     }
                                 }
                             }
                         },
-                        y: {
-                            beginAtZero: true,
-                            border: {
-                                color: 'black',
-                            },
-                            grid: {
-                                display: false
-                            },
-                            ticks: {
-                                display: false
+                        scales: {
+                            r: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1
+                                },
+                                pointLabels: {
+                                    display: false
+                                },
+                                grid: {
+                                    circular: true
+                                }
                             }
                         }
                     }
-                }
-            })
+                })
 
-            // chart 5 (doughnut chart -> sales per employee)
-            const chart5 = new Chart(ctx5, {
-                type: 'polarArea',
-                data: {
-                    labels: info.infoGraphs.infoG5.map(function(vendedor){return vendedor.apellido}),
-                    datasets: [{
-                        label: 'm²',
-                        data: info.infoGraphs.infoG5.map(function(vendedor){return vendedor.mt_vendidos}),
-                    }]
-                },
-                options: {
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: "top",
-                            labels: {
-                                filter: function(legendItem, data){
-                                    let labels = data.labels;
-                                    for (let i = 0; i < labels.length; i++) {
-                                        if(labels[i].indexOf(legendItem.text) != -1){
-                                            let label = legendItem.text;
-                                            if(label.length > 10){
-                                                return legendItem.text = label.substring(0, 10) + '...';
-                                            }else{
-                                                return legendItem.text = label;
-                                            }
-                                        }
-                                    }
-                                    return legendItem;
-                                }
-                            }
+                // build chart 2 (pie chart -> quotations)
+                new Chart(ctx2, {
+                    type: 'pie',
+                    data: {
+                        labels: info.infoGraphs.infoG2.map(function(cot){return cot.estatus}),
+                        datasets: [{
+                            data: info.infoGraphs.infoG2,
+                            backgroundColor: [
+                                'rgb(13, 202, 240)',
+                                'rgb(220, 53, 69)',
+                                'rgb(25, 135, 84)',
+                                'rgb(255, 193, 7)'
+                            ]
+                        }]
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        parsing: {
+                            key: 'total'
                         },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context){
-                                    let label = ` ${context.formattedValue} ${context.dataset.label}`;
-                                    return label;
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                caretSize: 0,
+                                callbacks: {
+                                    label: function(context){
+                                        let label = ` ${context.parsed}`;
+                                        return label;
+                                    }
                                 }
+                            },
+                            emptyDoughnut: {
+                                color: 'rgba(255, 128, 0, 0.5)',
+                                width: 5,
+                                radiusDecrease: 5
                             }
                         }
                     },
-                    scales: {
-                        r: {
-                            beginAtZero: true,
-                            pointLabels: {
+                    plugins: [emptyChart]
+                })
+
+                // build chart 3 (pie chart -> orders)
+                new Chart(ctx3, {
+                    type: 'pie',
+                    data: {
+                        labels: info.infoGraphs.infoG3.map(function(ord){return ord.estatus}),
+                        datasets: [{
+                            data: info.infoGraphs.infoG3,
+                            backgroundColor: [
+                                'rgb(220, 53, 69)',
+                                'rgb(25, 135, 84)'
+                            ]
+                        }]
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        parsing: {
+                            key: 'total'
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                caretSize: 0,
+                                callbacks: {
+                                    label: function(context){
+                                        let label = ` ${context.parsed}`;
+                                        return label;
+                                    }
+                                }
+                            },
+                            emptyDoughnut: {
+                                color: 'rgba(255, 128, 0, 0.5)',
+                                width: 5,
+                                radiusDecrease: 5
+                            }
+                        }
+                    },
+                    plugins: [emptyChart]
+                })
+
+                // build chart 4 (line chart -> sales)
+                new Chart(ctx4, {
+                    type: 'line',
+                    data: {
+                        datasets: [{
+                            data: info.infoGraphs.infoG4,
+                            fill: true
+                        }],
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                caretSize: 0,
+                                callbacks: {
+                                    label: function(context){
+                                        console.log(context)
+                                        let amount = Number.parseFloat(context.raw.total).toFixed(2);
+                                        amount = Number(amount).toLocaleString(undefined, {minimumFractionDigits: 2});
+                                        let label = `$ ${amount}`;
+                                        return label;
+                                    }
+                                }
+                            },
+                        },
+                        parsing: {
+                            xAxisKey: 'name_month',
+                            yAxisKey: 'total'
+                        },
+                        scales: {
+                            x: {
+                                border: {
+                                    color: 'black',
+                                },
+                                grid: {
+                                    display: false
+                                },
+                                ticks: {
+                                    display: false,
+                                    callback: function(label){
+                                        if(this.getLabelForValue(label).length > 5){
+                                            return this.getLabelForValue(label).substring(0,5) + '...';
+                                        }else{
+                                            return this.getLabelForValue(label)
+                                        }
+                                    }
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                border: {
+                                    color: 'black',
+                                },
+                                grid: {
+                                    display: false
+                                },
+                                ticks: {
+                                    display: false
+                                }
+                            }
+                        }
+                    }
+                })
+
+                // chart 5 (doughnut chart -> sales per employee)
+                const chart5 = new Chart(ctx5, {
+                    type: 'polarArea',
+                    data: {
+                        labels: info.infoGraphs.infoG5.map(function(vendedor){return vendedor.apellido}),
+                        datasets: [{
+                            label: 'm²',
+                            data: info.infoGraphs.infoG5.map(function(vendedor){return vendedor.mt_vendidos}),
+                        }]
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
                                 display: true,
-                                centerPointLabels: true,
-                                callback: function(label){
-                                    return '';
-                                }
-                            }
-                        }
-                    }
-                },
-                plugins: [segmentTextRotation] 
-            })
-
-            // build chart 6 (doughnut chart -> clients)
-            const chart6 = new Chart(ctx6, {
-                type: 'doughnut',
-                data: {
-                    labels: info.infoGraphs.infoG6Filtrada.map(function(cliente){return cliente.categoria}),
-                    datasets: [{
-                        data: info.infoGraphs.infoG6Filtrada,
-                        cutout: '75%',
-                    }]
-                },
-                options: {
-                    maintainAspectRatio: false,
-                    parsing: {
-                        key: 'compras'
-                    },
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'right',
-                            labels: {
-                                filter: function(legendItem, data){
-                                    let labels = data.labels;
-                                    for (let i = 0; i < labels.length; i++) {
-                                        if(labels[i].indexOf(legendItem.text) != -1){
-                                            let label = legendItem.text;
-                                            if(label.length > 7){
-                                                return legendItem.text = label.substring(0, 7) + '...';
-                                            }else{
-                                                return legendItem.text = label;
+                                position: "top",
+                                labels: {
+                                    filter: function(legendItem, data){
+                                        let labels = data.labels;
+                                        for (let i = 0; i < labels.length; i++) {
+                                            if(labels[i].indexOf(legendItem.text) != -1){
+                                                let label = legendItem.text;
+                                                if(label.length > 10){
+                                                    return legendItem.text = label.substring(0, 10) + '...';
+                                                }else{
+                                                    return legendItem.text = label;
+                                                }
                                             }
                                         }
+                                        return legendItem;
                                     }
-                                    return legendItem;
                                 }
-                            }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                beforeLabel: function(context){
-                                    let nombres = context.raw.nombres;
-                                    if(nombres === context.raw.categoria){
-                                        return '';
-                                    }else{
-                                        return nombres;
-                                    }
-                                },
-                                label: function(context){
-                                    let amount = Number.parseFloat(context.parsed).toFixed(2);
-                                    amount = Number(amount).toLocaleString(undefined, {minimumFractionDigits: 2});
-                                    let label = `$ ${amount}`;
-                                    return label;
-                                }
-                            }
-                        },
-                        emptyDoughnut: {
-                            color: 'rgba(255, 128, 0, 0.5)',
-                            width: 5,
-                            radiusDecrease: 5
-                        }
-                    }
-                },
-                plugins: [doughnutLabel, emptyChart]
-            })
-
-            // build chart 7 (bar chart -> products)
-            const chart7 = new Chart(ctx7, {
-                type: 'bar',
-                data: {
-                    datasets: [{
-                        data: info.infoGraphs.infoG7Filtrada,
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(255, 159, 64, 0.2)',
-                            'rgba(255, 205, 86, 0.2)',
-                            'rgba(75, 192, 192, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(153, 102, 255, 0.2)',
-                            'rgba(201, 203, 207, 0.2)'
-                        ],
-                        borderColor: [
-                            'rgb(255, 99, 132)',
-                            'rgb(255, 159, 64)',
-                            'rgb(255, 205, 86)',
-                            'rgb(75, 192, 192)',
-                            'rgb(54, 162, 235)',
-                            'rgb(153, 102, 255)',
-                            'rgb(201, 203, 207)'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    maintainAspectRatio: false,
-                    parsing: {
-                        xAxisKey: 'categoria',
-                        yAxisKey: 'compras'
-                    },
-                    scales: {
-                        x: {
-                            grid:{
-                                color: 'rgba(0, 0, 0, 0.2)'
                             },
-                            ticks: {
-                                callback: function(label){
-                                    if(this.getLabelForValue(label).length > 10){
-                                        return this.getLabelForValue(label).substring(0,10) + '...';
-                                    }else{
-                                        return this.getLabelForValue(label)
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context){
+                                        let label = ` ${context.formattedValue} ${context.dataset.label}`;
+                                        return label;
                                     }
                                 }
                             }
                         },
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.2)'
+                        scales: {
+                            r: {
+                                beginAtZero: true,
+                                pointLabels: {
+                                    display: true,
+                                    centerPointLabels: true,
+                                    callback: function(label){
+                                        return '';
+                                    }
+                                }
                             }
                         }
                     },
-                    plugins: {
-                        legend: {
-                            display: false,
+                    plugins: [segmentTextRotation] 
+                })
+
+                // build chart 6 (doughnut chart -> clients)
+                const chart6 = new Chart(ctx6, {
+                    type: 'doughnut',
+                    data: {
+                        labels: info.infoGraphs.infoG6Filtrada.map(function(cliente){return cliente.categoria}),
+                        datasets: [{
+                            data: info.infoGraphs.infoG6Filtrada,
+                            cutout: '75%',
+                        }]
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        parsing: {
+                            key: 'compras'
                         },
-                        tooltip: {
-                            caretSize: 0,
-                            callbacks: {
-                                beforeLabel: function(context){
-                                    let nombres = context.raw.nombres;
-                                    if(nombres === context.raw.categoria){
-                                        return '';
-                                    }else{
-                                        return nombres;
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'right',
+                                labels: {
+                                    filter: function(legendItem, data){
+                                        let labels = data.labels;
+                                        for (let i = 0; i < labels.length; i++) {
+                                            if(labels[i].indexOf(legendItem.text) != -1){
+                                                let label = legendItem.text;
+                                                if(label.length > 7){
+                                                    return legendItem.text = label.substring(0, 7) + '...';
+                                                }else{
+                                                    return legendItem.text = label;
+                                                }
+                                            }
+                                        }
+                                        return legendItem;
                                     }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    beforeLabel: function(context){
+                                        let nombres = context.raw.nombres;
+                                        if(nombres === context.raw.categoria){
+                                            return '';
+                                        }else{
+                                            return nombres;
+                                        }
+                                    },
+                                    label: function(context){
+                                        let amount = Number.parseFloat(context.parsed).toFixed(2);
+                                        amount = Number(amount).toLocaleString(undefined, {minimumFractionDigits: 2});
+                                        let label = `$ ${amount}`;
+                                        return label;
+                                    }
+                                }
+                            },
+                            emptyDoughnut: {
+                                color: 'rgba(255, 128, 0, 0.5)',
+                                width: 5,
+                                radiusDecrease: 5
+                            }
+                        }
+                    },
+                    plugins: [doughnutLabel, emptyChart]
+                })
+
+                // build chart 7 (bar chart -> products)
+                const chart7 = new Chart(ctx7, {
+                    type: 'bar',
+                    data: {
+                        datasets: [{
+                            data: info.infoGraphs.infoG7Filtrada,
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(255, 159, 64, 0.2)',
+                                'rgba(255, 205, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(201, 203, 207, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgb(255, 99, 132)',
+                                'rgb(255, 159, 64)',
+                                'rgb(255, 205, 86)',
+                                'rgb(75, 192, 192)',
+                                'rgb(54, 162, 235)',
+                                'rgb(153, 102, 255)',
+                                'rgb(201, 203, 207)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        parsing: {
+                            xAxisKey: 'categoria',
+                            yAxisKey: 'compras'
+                        },
+                        scales: {
+                            x: {
+                                grid:{
+                                    color: 'rgba(0, 0, 0, 0.2)'
                                 },
-                                label: function(context){
-                                    let amount = Number.parseFloat(context.raw.compras).toFixed(2);
-                                    amount = Number(amount).toLocaleString(undefined, {minimumFractionDigits: 2});
-                                    let label = `$ ${amount}`;
-                                    return label;
+                                ticks: {
+                                    callback: function(label){
+                                        if(this.getLabelForValue(label).length > 10){
+                                            return this.getLabelForValue(label).substring(0,10) + '...';
+                                        }else{
+                                            return this.getLabelForValue(label)
+                                        }
+                                    }
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.2)'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false,
+                            },
+                            tooltip: {
+                                caretSize: 0,
+                                callbacks: {
+                                    beforeLabel: function(context){
+                                        let nombres = context.raw.nombres;
+                                        if(nombres === context.raw.categoria){
+                                            return '';
+                                        }else{
+                                            return nombres;
+                                        }
+                                    },
+                                    label: function(context){
+                                        let amount = Number.parseFloat(context.raw.compras).toFixed(2);
+                                        amount = Number(amount).toLocaleString(undefined, {minimumFractionDigits: 2});
+                                        let label = `$ ${amount}`;
+                                        return label;
+                                    }
                                 }
                             }
                         }
                     }
-                }
-            })
+                })
 
-            // filter chart 5 (polar area chart -> sales per employee)
-            $('#filter-chart5').on('change', function(){
-                const date = $(this).val();
-                const unit = $(this).parents().eq(3).find($('input[type="radio"]:checked')).val();
-                $.ajax({
-                    type: 'POST',
-                    url: '/dashboard/salesEmployeesFilter',
-                    headers: {'Content-Type': 'application/json'},
-                    data: JSON.stringify({dateFilter: date, unitFilter: unit}),
-                    success: function(info){
-                        chart5.data.labels = info.infoFiltrada.map(function(vendedor){return vendedor.apellido});
-                        chart5.data.datasets[0].data = info.infoFiltrada.map(function(vendedor){return vendedor.vendido});
-                        if (unit === 'Pieza'){
-                            chart5.data.datasets[0].label = 'Piezas';
-                        } else if (unit === 'Millar'){
-                            chart5.data.datasets[0].label = 'Millares';
-                        }else{
-                            chart5.data.datasets[0].label = 'm²';
+                // filter chart 5 (polar area chart -> sales per employee)
+                $('#filter-chart5').on('change', function(){
+                    const date = $(this).val();
+                    const unit = $(this).parents().eq(3).find($('input[type="radio"]:checked')).val();
+                    $.ajax({
+                        type: 'POST',
+                        url: '/dashboard/salesEmployeesFilter',
+                        headers: {'Content-Type': 'application/json'},
+                        data: JSON.stringify({dateFilter: date, unitFilter: unit}),
+                        success: function(info){
+                            chart5.data.labels = info.infoFiltrada.map(function(vendedor){return vendedor.apellido});
+                            chart5.data.datasets[0].data = info.infoFiltrada.map(function(vendedor){return vendedor.vendido});
+                            if (unit === 'Pieza'){
+                                chart5.data.datasets[0].label = 'Piezas';
+                            } else if (unit === 'Millar'){
+                                chart5.data.datasets[0].label = 'Millares';
+                            }else{
+                                chart5.data.datasets[0].label = 'm²';
+                            }
+                            chart5.update();
                         }
-                        chart5.update();
-                    }
+                    })
                 })
-            })
-            
-            $('input[name="filter-unit-chart5"]').on('change', function(){
-                const date = $('#filter-chart5').val();
-                const unit = $(this).val();
-                $.ajax({
-                    type: 'POST',
-                    url: '/dashboard/salesEmployeesFilter',
-                    headers: {'Content-Type': 'application/json'},
-                    data: JSON.stringify({dateFilter: date, unitFilter: unit}),
-                    success: function(info){
-                        chart5.data.labels = info.infoFiltrada.map(function(vendedor){return vendedor.apellido});
-                        chart5.data.datasets[0].data = info.infoFiltrada.map(function(vendedor){return vendedor.vendido});
-                        if (unit === 'Pieza'){
-                            chart5.data.datasets[0].label = 'Piezas';
-                        } else if (unit === 'Millar'){
-                            chart5.data.datasets[0].label = 'Millares';
-                        }else{
-                            chart5.data.datasets[0].label = 'm²';
+
+                $('input[name="filter-unit-chart5"]').on('change', function(){
+                    const date = $('#filter-chart5').val();
+                    const unit = $(this).val();
+                    $.ajax({
+                        type: 'POST',
+                        url: '/dashboard/salesEmployeesFilter',
+                        headers: {'Content-Type': 'application/json'},
+                        data: JSON.stringify({dateFilter: date, unitFilter: unit}),
+                        success: function(info){
+                            chart5.data.labels = info.infoFiltrada.map(function(vendedor){return vendedor.apellido});
+                            chart5.data.datasets[0].data = info.infoFiltrada.map(function(vendedor){return vendedor.vendido});
+                            if (unit === 'Pieza'){
+                                chart5.data.datasets[0].label = 'Piezas';
+                            } else if (unit === 'Millar'){
+                                chart5.data.datasets[0].label = 'Millares';
+                            }else{
+                                chart5.data.datasets[0].label = 'm²';
+                            }
+                            chart5.update();
                         }
-                        chart5.update();
-                    }
-                })
-            });
+                    })
+                });
 
-            // filter chart 6 (doughnut chart -> clients)
-            $('#filter-chart6').on('change', function(){
-                const date = $(this).val();
-                $.ajax({
-                    type: 'POST',
-                    url: '/dashboard/clientsFilter',
-                    headers: {'Content-Type': 'application/json'},
-                    data: JSON.stringify({dateFilter: date}),
-                    success: function(info){
-                        chart6.data.labels = info.infoFiltrada.map(function(cliente){return cliente.categoria});
-                        chart6.data.datasets[0].data = info.infoFiltrada.map(function(cliente){return cliente.compras});
-                        chart6.update();
-                    }
+                // filter chart 6 (doughnut chart -> clients)
+                $('#filter-chart6').on('change', function(){
+                    const date = $(this).val();
+                    $.ajax({
+                        type: 'POST',
+                        url: '/dashboard/clientsFilter',
+                        headers: {'Content-Type': 'application/json'},
+                        data: JSON.stringify({dateFilter: date}),
+                        success: function(info){
+                            chart6.data.labels = info.infoFiltrada.map(function(cliente){return cliente.categoria});
+                            chart6.data.datasets[0].data = info.infoFiltrada.map(function(cliente){return cliente.compras});
+                            chart6.update();
+                        }
+                    })
                 })
-            })
 
-            // filter chart 7 (line chart -> products)
-            $('#filter-chart7').on('change', function(){
-                const date = $(this).val();
-                const unit = $(this).parents().eq(3).find($('input[type="radio"]:checked')).val();
-                $.ajax({
-                    type: 'POST',
-                    url: '/dashboard/productsFilter',
-                    headers: {'Content-Type': 'application/json'},
-                    data: JSON.stringify({dateFilter: date, unitFilter: unit}),
-                    success: function(info){
-                        chart7.data.datasets[0].data = info.infoFiltrada;
-                        chart7.update();
-                    }
+                // filter chart 7 (line chart -> products)
+                $('#filter-chart7').on('change', function(){
+                    const date = $(this).val();
+                    const unit = $(this).parents().eq(3).find($('input[type="radio"]:checked')).val();
+                    $.ajax({
+                        type: 'POST',
+                        url: '/dashboard/productsFilter',
+                        headers: {'Content-Type': 'application/json'},
+                        data: JSON.stringify({dateFilter: date, unitFilter: unit}),
+                        success: function(info){
+                            chart7.data.datasets[0].data = info.infoFiltrada;
+                            chart7.update();
+                        }
+                    })
                 })
-            })
 
-            $('input[name="filter-unit-chart7"]').on('change', function(){
-                const date = $('#filter-chart7').val();
-                const unit = $(this).val();
-                $.ajax({
-                    type: 'POST',
-                    url: '/dashboard/productsFilter',
-                    headers: {'Content-Type': 'application/json'},
-                    data: JSON.stringify({dateFilter: date, unitFilter: unit}),
-                    success: function(info){
-                        chart7.data.datasets[0].data = info.infoFiltrada;
-                        chart7.update();
-                    }
-                })
-            });
+                $('input[name="filter-unit-chart7"]').on('change', function(){
+                    const date = $('#filter-chart7').val();
+                    const unit = $(this).val();
+                    $.ajax({
+                        type: 'POST',
+                        url: '/dashboard/productsFilter',
+                        headers: {'Content-Type': 'application/json'},
+                        data: JSON.stringify({dateFilter: date, unitFilter: unit}),
+                        success: function(info){
+                            chart7.data.datasets[0].data = info.infoFiltrada;
+                            chart7.update();
+                        }
+                    })
+                });
+            }
+        })
+    }
+
+    // check/uncheck all sections
+    $('#selectAllSectionsReport').on('change', function(){
+        if ($(this).is(':checked')){
+            $('input[name="sectionsReport"][type="checkbox"]').prop('checked', true);
+        }else{
+            $('input[name="sectionsReport"][type="checkbox"]').prop('checked', false);
         }
     })
+
+    // validated reports form
+    validateReportsForm($('#ReportsForm'));
 })
