@@ -86,6 +86,7 @@ $(document).ready(function(){
         id: 'segmentTextRotation',
         afterDatasetsDraw(chart, args, plugins) {
             const { ctx, data } = chart;
+            let amount = 0;
             chart.legend.legendItems.forEach((legend, index) => {
                 if(legend.hidden == false){
                     ctx.save();
@@ -112,6 +113,10 @@ $(document).ready(function(){
                         ctx.fillText(`${data.datasets[0].data[index]} pza`, 0, 0);
                     } else if (data.datasets[0].label == 'Millares'){
                         ctx.fillText(`${data.datasets[0].data[index]} mil`, 0, 0);
+                    } else if (data.datasets[0].label == '$') {
+                        amount = Number.parseFloat(data.datasets[0].data[index]).toFixed(2);
+                        amount = Number(amount).toLocaleString(undefined, {minimumFractionDigits: 2});
+                        ctx.fillText(`${data.datasets[0].label} ${amount}`, 0, 0);
                     } else {
                         ctx.fillText(`${data.datasets[0].data[index]} ${data.datasets[0].label}`, 0, 0);
                     }
@@ -392,8 +397,8 @@ $(document).ready(function(){
                     data: {
                         labels: info.infoGraphs.infoG5.map(function(vendedor){return vendedor.apellido}),
                         datasets: [{
-                            label: 'm²',
-                            data: info.infoGraphs.infoG5.map(function(vendedor){return vendedor.mt_vendidos}),
+                            label: '$',
+                            data: info.infoGraphs.infoG5.map(function(vendedor){return vendedor.pesos_vendidos}),
                         }]
                     },
                     options: {
@@ -422,7 +427,14 @@ $(document).ready(function(){
                             tooltip: {
                                 callbacks: {
                                     label: function(context){
-                                        let label = ` ${context.formattedValue} ${context.dataset.label}`;
+                                        let label = '';
+                                        let amount = Number.parseFloat(context.raw).toFixed(2);
+                                        amount = Number(amount).toLocaleString(undefined, {minimumFractionDigits: 2});
+                                        if (context.dataset.label == '$') {
+                                            label = ` ${context.dataset.label} ${amount}`;
+                                        } else {
+                                            label = ` ${context.formattedValue} ${context.dataset.label}`;
+                                        } 
                                         return label;
                                     }
                                 }
@@ -606,7 +618,9 @@ $(document).ready(function(){
                                 chart5.data.datasets[0].label = 'Piezas';
                             } else if (unit === 'Millar'){
                                 chart5.data.datasets[0].label = 'Millares';
-                            }else{
+                            } else if (unit === 'Pesos'){
+                                chart5.data.datasets[0].label = '$';
+                            } else{
                                 chart5.data.datasets[0].label = 'm²';
                             }
                             chart5.update();
@@ -629,7 +643,9 @@ $(document).ready(function(){
                                 chart5.data.datasets[0].label = 'Piezas';
                             } else if (unit === 'Millar'){
                                 chart5.data.datasets[0].label = 'Millares';
-                            }else{
+                            } else if (unit === 'Pesos'){
+                                chart5.data.datasets[0].label = '$';
+                            } else{
                                 chart5.data.datasets[0].label = 'm²';
                             }
                             chart5.update();
