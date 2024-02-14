@@ -63,6 +63,7 @@ app.use('/roles', require('./routes/roles'));
 app.use('/orders', require('./routes/orders'));
 app.use('/tareas', require('./routes/tareas'));
 app.use('/dashboard', require('./routes/dashboard'));
+app.use('/extask', require('./routes/extask'));
 
 // Public
 app.use(express.static(path.join(__dirname, 'public')));

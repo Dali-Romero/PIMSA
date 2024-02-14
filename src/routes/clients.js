@@ -142,7 +142,8 @@ router.get('/infoclient/:id', isLoggedIn, async(req, res)=>{
     const executive = await pool.query('SELECT * FROM Usuarios');
     const group = await pool.query('SELECT * FROM Grupos');
     const clients = await pool.query('SELECT * FROM Clientes WHERE clienteId = ?', [id]);
-    res.render('../views/clients/infoclient', {client: clients[0], executive, group});
+    const cotizacion = await pool.query('SELECT Cotizaciones.*, Clientes.clienteId, Clientes.nombre FROM (Cotizaciones INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId);', [id]);
+    res.render('../views/clients/infoclient', {client: clients[0], executive, group, cotizacion});
 });
 
 module.exports = router; 

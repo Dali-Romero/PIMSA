@@ -7,6 +7,9 @@
 
 body{
     font-family: 'Open Sans', sans-serif;
+    position: relative;
+    padding-bottom: 3em;
+    min-height: 100vh;
 }
 
 #machine-title{
@@ -51,4 +54,7 @@ table.dataTable.display tbody tr.even {
     background-color: #C3CDE6;
 }
 
+#offcanvas-body a:focus{
+    color: #d7b50d;
+}
 
