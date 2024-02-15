@@ -64,6 +64,7 @@ app.use('/areas', require('./routes/areas'));
 app.use('/orders', require('./routes/orders'));
 app.use('/tareas', require('./routes/tareas'));
 app.use('/dashboard', require('./routes/dashboard'));
+app.use('/extask', require('./routes/extask'));
 app.use('/monitor', require('./routes/monitor'));
 
 // Public
