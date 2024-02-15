@@ -1,0 +1,168 @@
+<div class="container-fluid">
+    <div class="row p-3" id="machine-title">
+        <h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-file-earmark-text"></i>Tareas</h1>
+    </div>
+    <div class="row p-4">
+        <div class="row justify-content-between p-0 m-0" id="machine-add-title">
+            <div class="col-md-8 p-2">
+                <p class="fs-5 m-0">Tareas nuevas: {{conteoNuevos}}</p>
+            </div>
+        </div>
+    </div>
+    <div class="row p-4 pt-0">
+        <div class="table-responsive-xxl p-0">
+            <table class="table table-striped align-middle text-center" id="tabla_tareas_nuevas">
+                <thead>
+                    <tr>
+                        <th scope="col">No Orden</th>
+                        <th scope="col">Fecha de generacion</th>
+                        <th scope="col">Fecha de entrega</th>
+                        <th scope="col">Titulo</th>
+                        <th scope="col">Encargado</th>
+                        <th scope="col">Nota</th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                    {{#each tareasNuevas}}
+                        <tr>
+                            <th><a href="orders/info/{{orden_id}}">{{orden_id}}</a></th>
+                            <th>{{fechaGen}}</th>
+                            <th>{{fechaEnt}}</th>
+                            <th>{{proyecto}}</th>
+                            {{#each ../users}}
+                                {{#equal usuarioId ../usuario_id}} <th>{{nombre}} {{apellido}}</th> {{/equal}}
+                            {{/each}}
+                            <th>{{notes}}</th>
+                            {{#equalNR sucesion 1}}
+                            <th></th>
+                            {{else}}
+                            <th><a href="/tareas/historial/{{tareaId}}" class="btn btn-sm btn-success"><i class="bi bi-arrow-left-square"></i> Regresar tarea</a></th>
+                            {{/equalNR}}
+                            <th><a href="/tareas/enterado/{{tareaId}}" class="btn btn-sm btn-success"><i class="bi bi-check-square"></i>  Enterado</a></th>
+                        </tr>
+                    {{else}}
+                    <tr>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td colspan="7">No hay tareas nuevas.</td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row p-4">
+        <div class="row justify-content-between p-0 m-0" id="machine-add-title">
+            <div class="col-md-8 p-2">
+                <p class="fs-5 m-0">Total de tareas: {{conteo}}</p>
+            </div>
+        </div>
+    </div>
+    <div class="row p-4 pt-0">
+        <div class="table-responsive-xxl p-0">
+            <table class="table table-striped align-middle text-center" id="tabla_tareas_todas">
+                <thead>
+                    <tr>
+                        <th scope="col">No Orden</th>
+                        <th scope="col">Fecha de generacion</th>
+                        <th scope="col">Fecha de entrega</th>
+                        <th scope="col">Titulo</th>
+                        <th scope="col">Encargado</th>
+                        <th scope="col">Nota</th>
+                        <th scope="col">Estatus</th>
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                    {{#each tareasError}}
+                        <tr>
+                            <th><a href="orders/info/{{orden_id}}">{{orden_id}}</a></th>
+                            <th>{{fechaGen}}</th>
+                            <th>{{fechaEnt}}</th>
+                            <th>{{proyecto}}</th>
+                            {{#each ../users}}
+                                {{#equal usuarioId ../usuario_id}} <th>{{nombre}} {{apellido}}</th> {{/equal}}
+                            {{/each}}
+                            <th>{{notes}}</th>
+                            {{#equalNR activa 1}}
+                                <th><a href="/tareas/{{tareaId}}" class="btn btn-sm btn-success"><i class="bi bi-person-vcard-fill"></i> Terminar tarea</a></th>
+                            {{else}}
+                                {{#equalNR terminada 1}}
+                                    <th> Tarea terminada.</th>
+                                {{else}}
+                                    <th> Tarea en actividad anterior.</th>
+                                {{/equalNR}}
+                            {{/equalNR}}
+                        </tr>
+                    {{/each}}
+                    {{#each tareas}}
+                        <tr>
+                            <th><a href="orders/info/{{orden_id}}">{{orden_id}}</a></th>
+                            <th>{{fechaGen}}</th>
+                            <th>{{fechaEnt}}</th>
+                            <th>{{proyecto}}</th>
+                            {{#each ../users}}
+                                {{#equal usuarioId ../usuario_id}} <th>{{nombre}} {{apellido}}</th> {{/equal}}
+                            {{/each}}
+                            <th>{{notes}}</th>
+                            {{#equalNR activa 1}}
+                                <th><a href="/tareas/{{tareaId}}" class="btn btn-sm btn-success"><i class="bi bi-person-vcard-fill"></i> Terminar tarea</a></th>
+                            {{else}}
+                                {{#equalNR terminada 1}}
+                                    <th> Tarea terminada.</th>
+                                {{else}}
+                                    <th> Tarea en actividad anterior.</th>
+                                {{/equalNR}}
+                            {{/equalNR}}
+                        </tr>
+                    {{else}}
+                    <tr>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td colspan="7">No hay tareas pendientes.</td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    var table = new DataTable('#tabla_tareas_nuevas', {
+        paging: false,
+        info: false,
+        padding: false,
+        order: [],
+        dom: '<"float-start pb-2"f><"button-add-machines pb-2"B>', 
+        columnDefs: [
+            {className: "dt-center", targets: "_all"}
+        ],
+        language:{
+            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-MX.json',
+        },
+    })
+
+    var table = new DataTable('#tabla_tareas_todas', {
+        paging: false,
+        info: false,
+        padding: false,
+        order: [],
+        dom: '<"float-start pb-2"f><"button-add-machines pb-2"B>', 
+        columnDefs: [
+            {className: "dt-center", targets: "_all"}
+        ],
+        language:{
+            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-MX.json',
+        },
+    })
+</script>

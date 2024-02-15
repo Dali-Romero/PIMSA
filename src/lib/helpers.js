@@ -43,4 +43,50 @@ helpers.createPdf = async (html, options) => {
     return pdf;
 }
 
+helpers.filterOthers = (acumulador, arreglo) => {
+    if(arreglo.compras <= 1000){
+        const otros = acumulador.find(function(arreglo){
+            return arreglo.categoria == 'Otros';
+        })
+        if(!otros){
+            acumulador.push({categoria: 'Otros', compras: parseFloat(arreglo.compras), nombres: `$ (${Number(arreglo.compras).toLocaleString(undefined, {minimumFractionDigits: 2})}) ${arreglo.categoria}\n`});
+        }else{
+            otros.compras += parseFloat(arreglo.compras);                        
+            otros.nombres += `$ (${Number(arreglo.compras).toLocaleString(undefined, {minimumFractionDigits: 2})}) ${arreglo.categoria}\n`;
+        }
+    }else{
+        acumulador.push({categoria: arreglo.categoria, compras: parseFloat(arreglo.compras), nombres: arreglo.categoria});
+    }
+    return acumulador;
+}
+
+helpers.filterOthersOutCatalog = (acumulador, arreglo) => {
+    if(arreglo.dentro == false){
+        const fuera = acumulador.find(function(arreglo){
+            return arreglo.categoria == 'Fuera de catálogo';
+        })
+        if(!fuera){
+            acumulador.push({categoria: 'Fuera de catálogo', compras: parseFloat(arreglo.compras), nombres: `$ (${Number(arreglo.compras).toLocaleString(undefined, {minimumFractionDigits: 2})}) ${arreglo.nombre_productos}\n`});
+        }else{
+            fuera.compras += parseFloat(arreglo.compras);                        
+            fuera.nombres += `$ (${Number(arreglo.compras).toLocaleString(undefined, {minimumFractionDigits: 2})}) ${arreglo.nombre_productos}\n`;
+        }
+    }else{
+        if(arreglo.compras <= 1000){
+            const otros = acumulador.find(function(arreglo){
+                return arreglo.categoria == 'Otros';
+            })
+            if(!otros){
+                acumulador.push({categoria: 'Otros', compras: parseFloat(arreglo.compras), nombres: `$ (${Number(arreglo.compras).toLocaleString(undefined, {minimumFractionDigits: 2})}) ${arreglo.nombre_productos}\n`});
+            }else{
+                otros.compras += parseFloat(arreglo.compras);                        
+                otros.nombres += `$ (${Number(arreglo.compras).toLocaleString(undefined, {minimumFractionDigits: 2})}) ${arreglo.nombre_productos}\n`;
+            }
+        }else{
+            acumulador.push({categoria: arreglo.nombre_productos, compras: parseFloat(arreglo.compras), nombres: arreglo.nombre_productos});
+        }
+    }
+    return acumulador;
+}
+
 module.exports = helpers;

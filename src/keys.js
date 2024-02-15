@@ -5,4 +5,4 @@ module.exports = {
         password: '1234',
         database: 'pimsa_db_prueba'
     }
-}
+} 

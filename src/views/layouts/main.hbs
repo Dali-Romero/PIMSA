@@ -33,10 +33,14 @@
 
     {{!-- JQuery datatables script --}}
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
+    <script src="https://cdn.datatables.net/plug-ins/1.13.6/sorting/datetime-moment.js"></script>
 
     {{!-- Handlebars front-end script --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.8/handlebars.min.js"></script>
 
+    {{!-- Chart js --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.0.1/chart.umd.min.js" integrity="sha512-HyprZz2W40JOnIBIXDYHCFlkSscDdYaNe2FYl34g1DOmE9J+zEPoT4HHHZ2b3+milFBtiKVWb4sorDVVp+iuqA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 
 <body>
@@ -78,6 +82,15 @@
 
     {{!-- Areas CRUD script --}}
     <script src="/js/areas.js"></script>
+    
+    {{!-- Orders CRUD script --}}
+    <script src="/js/orders.js"></script>
+    
+    {{!-- Dashboard script --}}
+    <script src="/js/dashboard.js"></script>
+
+    {{!-- Monitor script --}}
+    <script src="/js/monitor.js"></script>
 
 </body>
 </html>

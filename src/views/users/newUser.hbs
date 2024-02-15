@@ -83,7 +83,7 @@
                 <label for="status" class="form-label">Estatus:</label>
                 <div class="row row-cols-2 justify-content-md-start">
                     <div class="col-md-4 d-grid">
-                        <input type="radio" name="status" id="statusop1" class="btn-check" value="1" autocomplete="off" {{#equal errorUser.status "1"}} checked {{/equal}}>
+                        <input type="radio" name="status" id="statusop1" class="btn-check" value="1" autocomplete="off" {{#if errorUser.status}} {{#equal errorUser.status "1"}} checked {{/equal}} {{else}} checked {{/if}}>
                         <label for="statusop1" class="btn btn-outline-success border-success border-2">Activo</label>
                     </div>
                     <div class="col-md-4 d-grid">
