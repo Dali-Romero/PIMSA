@@ -15,6 +15,7 @@
                 <thead>
                     <tr>
                         <th scope="col">No Orden</th>
+                        <th scope="col">No tarea</th>
                         <th scope="col">Fecha de generacion</th>
                         <th scope="col">Fecha de entrega</th>
                         <th scope="col">Titulo</th>
@@ -26,7 +27,8 @@
                 <tbody class="table-group-divider">
                     {{#each tareas}}
                         <tr>
-                            <th><a href="orders/info/{{orden_id}}">{{orden_id}}</a></th>
+                            <th><a href="/orders/info/{{orden_id}}">{{orden_id}}</a></th>
+                            <th><a href="/tareas/info/{{tareaId}}">{{tareaId}}</a></th>
                             <th>{{fechaGen}}</th>
                             <th>{{fechaEnt}}</th>
                             <th>{{proyecto}}</th>
@@ -44,7 +46,8 @@
                         <td class="d-none"></td>
                         <td class="d-none"></td>
                         <td class="d-none"></td>
-                        <td colspan="7">No hay tareas pendientes.</td>
+                        <td class="d-none"></td>
+                        <td colspan="8">No hay tareas en el historial.</td>
                     </tr>
                     {{/each}}
                 </tbody>

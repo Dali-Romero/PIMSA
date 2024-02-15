@@ -161,7 +161,7 @@ router.post('/terminar/:id', isLoggedIn, async(req, res) =>{
 
 router.get('/create/:id', isLoggedIn, async(req, res) =>{
     const {id} = req.params;
-    var productos = await pool.query('SELECT productoscotizados.producto_id FROM productoscotizados INNER JOIN ordenes ON ordenes.cot_id = productoscotizados.cot_id WHERE ordenes.ordenId = ?', [id]);
+    var productos = await pool.query('SELECT productoscotizados.producto_id, productoscotizados.prodCotizadoId FROM productoscotizados INNER JOIN ordenes ON ordenes.cot_id = productoscotizados.cot_id WHERE ordenes.ordenId = ?', [id]);
     console.log(productos);
     var productosfuera = await pool.query('SELECT fueracatalogocotizados.* FROM fueracatalogocotizados INNER JOIN ordenes ON ordenes.cot_id = fueracatalogocotizados.cot_id WHERE ordenes.ordenId = ?', [id]);
     console.log(productosfuera);
@@ -172,10 +172,11 @@ router.get('/create/:id', isLoggedIn, async(req, res) =>{
         contador += 1;
         var ordenProceso = await pool.query('SELECT * FROM procesosordenes INNER JOIN productos ON productos.proceso_id = procesosordenes.proceso_id WHERE productos.productoId = ?', [producto.producto_id]);
         console.log(ordenProceso);
-        var tareas = [];
+        var tareas = []; 
         var tareasOrden = {
             orden_id: id,
-            fueracatalogo: 0
+            fueracatalogo: 0,
+            cotizadoId: producto.prodCotizadoId
         }
         var resProceso = await pool.query('INSERT INTO tareasorden SET ?;', [tareasOrden]);
         for (let i = 0; i < ordenProceso.length; i++){
@@ -196,7 +197,8 @@ router.get('/create/:id', isLoggedIn, async(req, res) =>{
         var tareas = [];
         var tareasOrden = { 
             orden_id: id,
-            fueracatalogo: 1
+            fueracatalogo: 1,
+            cotizadoId: producto.fueraCotizadoId
         }
         var resProceso = await pool.query('INSERT INTO tareasorden SET ?;', [tareasOrden]);
         for (let i = 0; i < ordenProceso.length; i++){
@@ -221,8 +223,20 @@ router.get('/create/:id', isLoggedIn, async(req, res) =>{
     res.redirect('/tareas');
 });
 
-
-// Tambien falta lo que sigue despues de terminar todas las tareas :c Esto sera otro problemon
-
+router.get('/info/:id', isLoggedIn, async(req, res) =>{
+    var {id} = req.params;
+    var fueraCatalogo = await pool.query('SELECT tareasorden.fueracatalogo, tareasorden.cotizadoId FROM tareasorden INNER JOIN tareas ON tareas.tareaorden_id = tareasorden.tareaOrdenId WHERE tareas.tareaId = ?', [Number(id)]);
+    if (fueraCatalogo[0].fueracatalogo){
+        var datos = await pool.query('SELECT fueracatalogocotizados.*, tareas.*, ordenes.*, cotizaciones.* FROM fueracatalogocotizados INNER JOIN cotizaciones ON cotizaciones.cotId = fueracatalogocotizados.cot_id INNER JOIN ordenes ON ordenes.cot_id = cotizaciones.cotId INNER JOIN tareasorden ON tareasorden.cotizadoId = fueracatalogocotizados.fueraCotizadoId INNER JOIN tareas ON tareas.tareaorden_id = tareasorden.tareaOrdenId WHERE tareas.tareaId = ? AND fueracatalogocotizados.fueraCotizadoId = ?', [id, Number(fueraCatalogo[0].cotizadoId)]);
+        var tareas = await pool.query('SELECT * FROM tareas WHERE tareaorden_id = ?', [datos[0].tareaorden_id]);
+        var areas = await pool.query('SELECT * FROM areas');
+        res.render('../views/tareas/infoTareas', {datos: datos[0], tareas, areas});
+    } else{
+        var datos = await pool.query('SELECT productosCotizados.*, productos.*, tareas.*, ordenes.*, cotizaciones.* FROM productosCotizados INNER JOIN cotizaciones ON cotizaciones.cotId = fueracatalogocotizados.cot_id INNER JOIN ordenes ON ordenes.cot_id = cotizaciones.cotId INNER JOIN tareasorden ON tareasorden.cotizadoId = productoscotizados.prodCotizadoId INNER JOIN tareas ON tareasorden.tareaOrdenId = tareas.tareaorden_id INNER JOIN productos ON productos.productoId = productoscotizados.producto_id WHERE tareas.tareaId = ? AND productoscotizados.prodCotizadoId = ?', [id, Number(fueraCatalogo[0].cotizadoId)]);
+        var tareas = await pool.query('SELECT * FROM tareas WHERE tareaorden_id = ?', [datos[0].tareaorden_id]);
+        var areas = await pool.query('SELECT * FROM areas');
+        res.render('../views/tareas/infoTareas', {datos: datos[0], tareas, areas});
+    }
+});
 
 module.exports = router;
