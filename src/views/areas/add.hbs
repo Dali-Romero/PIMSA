@@ -1,0 +1,59 @@
+<div class="row p-3" id="machine-title">
+    <h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-person-gear"></i> Áreas</h1>
+</div>
+<div class="row p-4">
+    <p class="fs-5 p-2 m-0" id="machine-add-title">Agregar área</p>
+</div>
+<div class="row px-4">
+    <form action="/areas/add" method="post" class="needs-validation" id="addAreaForm" novalidate>
+        <div class="row mb-4 gy-4 justify-content-md-between">
+            <div class="col-md-3 p-0 h-100">
+                <div class="row py-2 px-0">
+                    <label for="areaname" class="form-label">Nombre del área:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0"><i class="bi bi-person-fill-lock"></i></span>
+                        <input type="text" name="areaname" id="areaname" class="form-control border-dark border-2 rounded-end" required>
+                        <div class="valid-feedback">
+                            ¡Perfecto!
+                        </div>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-areaename"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row py-2 px-0">
+                    <label for="areastatusop1" class="form-label">Estatus:</label>
+                    <div class="row m-0 justify-content-md-start">
+                        <div class="col-6 d-grid ps-0">
+                            <input type="radio" name="areastatus" id="areastatusop1" class="btn-check" value="1" autocomplete="off" checked>
+                            <label for="areastatusop1" class="btn btn-outline-success border-success border-2">Activo</label>
+                        </div>
+                        <div class="col-6 d-grid pe-0">
+                            <input type="radio" name="areastatus" id="areastatusop2" class="btn-check" value="0" autocomplete="off">
+                            <label for="areastatusop2" class="btn btn-outline-danger border-danger border-2">Inactivo</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row py-2 px-0">
+                    <label for="areadescription" class="form-label">Descripción:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0"><i class="bi bi-info-square"></i></span>
+                        <textarea class="form-control border-dark border-2 rounded-end" name="areadescription" id="areadescription" rows="6" required></textarea>
+                        <div class="valid-feedback">
+                            ¡Perfecto!
+                        </div>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-areadescription"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row my-4 m-0 justify-content-start">
+            <div class="col-md-auto p-0">
+                <button class="btn btn-danger me-4" type="reset">Limpiar campos</button>
+                <button class="btn btn-success" type="submit">Crear área</button>
+            </div>
+        </div>
+    </form>
+</div>

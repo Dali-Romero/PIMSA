@@ -1,0 +1,55 @@
+<div class="row p-3" id="machine-title">
+    <h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-person-gear"></i> Áreas</h1>
+</div>
+<div class="row p-4">
+    <div class="row justify-content-between p-0 m-0" id="machine-add-title">
+        <div class="col-6">
+            <p class="fs-5 p-2 m-0">Áreas registradas</p>
+        </div>
+        <div class="col-6 text-end">
+            <p class="fs-5 p-2 m-0">Total: {{total_areas.total_areas}}</p>
+        </div>
+    </div>
+</div>
+<div class="row px-4 pt-0 pb-4">
+    <div class="table-responsive-xxl p-0">
+        <table class="table table-striped align-middle" id="areas-table">
+            <thead>
+                <tr>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Descripción</th>
+                    <th scope="col">Estatus</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                {{#each areas}}
+                    <tr>
+                        <th scope="row">{{nombre}}</th>
+                        <td>{{descripcion}}</td>
+                        {{#if activo}}
+                            <td class="text-success">Activo</td>
+                        {{else}}
+                            <td class="text-danger">Inactivo</td>
+                        {{/if}}
+                        <td>
+                            <div class="row g-0 justify-content-center">
+                                <div class="col-md-6 col-12">
+                                    <a href="/areas/edit/{{areaId}}" class="btn btn-sm btn-secondary w-100"><i class="bi bi-pencil-square"></i> Editar</a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {{else}}
+                    <tr>
+                        
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td colspan="4" class="text-center">No existen áreas registradas</td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>
