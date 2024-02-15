@@ -15,6 +15,7 @@
                 <thead>
                     <tr>
                         <th scope="col">No Orden</th>
+                        <th scope="col">No Tarea</th>
                         <th scope="col">Fecha de generacion</th>
                         <th scope="col">Fecha de entrega</th>
                         <th scope="col">Titulo</th>
@@ -28,6 +29,7 @@
                     {{#each tareasNuevas}}
                         <tr>
                             <th><a href="orders/info/{{orden_id}}">{{orden_id}}</a></th>
+                            <th><a href="tareas/info/{{tareaId}}">{{tareaId}}</a></th>
                             <th>{{fechaGen}}</th>
                             <th>{{fechaEnt}}</th>
                             <th>{{proyecto}}</th>
@@ -51,7 +53,8 @@
                         <td class="d-none"></td>
                         <td class="d-none"></td>
                         <td class="d-none"></td>
-                        <td colspan="8">No hay tareas nuevas.</td>
+                        <td class="d-none"></td>
+                        <td colspan="9">No hay tareas nuevas.</td>
                     </tr>
                     {{/each}}
                 </tbody>
@@ -71,6 +74,7 @@
                 <thead>
                     <tr>
                         <th scope="col">No Orden</th>
+                        <th scope="col">No Tarea</th>
                         <th scope="col">Fecha de generacion</th>
                         <th scope="col">Fecha de entrega</th>
                         <th scope="col">Titulo</th>
@@ -83,6 +87,7 @@
                     {{#each tareasError}}
                         <tr>
                             <th><a href="orders/info/{{orden_id}}">{{orden_id}}</a></th>
+                            <th><a href="tareas/info/{{tareaId}}">{{tareaId}}</a></th>
                             <th>{{fechaGen}}</th>
                             <th>{{fechaEnt}}</th>
                             <th>{{proyecto}}</th>
@@ -96,6 +101,7 @@
                     {{#each tareas}}
                         <tr>
                             <th><a href="orders/info/{{orden_id}}">{{orden_id}}</a></th>
+                            <th><a href="tareas/info/{{tareaId}}">{{tareaId}}</a></th>
                             <th>{{fechaGen}}</th>
                             <th>{{fechaEnt}}</th>
                             <th>{{proyecto}}</th>
@@ -113,7 +119,8 @@
                         <td class="d-none"></td>
                         <td class="d-none"></td>
                         <td class="d-none"></td>
-                        <td colspan="7">No hay tareas pendientes.</td>
+                        <td class="d-none"></td>
+                        <td colspan="8">No hay tareas pendientes.</td>
                     </tr>
                     {{/each}}
                 </tbody>
