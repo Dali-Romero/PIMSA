@@ -82,47 +82,53 @@ $(document).ready(function(){
     const ctx7 = $('#chart7');
 
     // pluging for show data values in polar chart
-    const segmentTextRotation = {
-        id: 'segmentTextRotation',
-        afterDatasetsDraw(chart, args, plugins) {
-            const { ctx, data } = chart;
+    const segmentTextCloud = {
+        id: 'segmentTextCloud',
+        afterDatasetsDraw(chart){
+            const {ctx, data, scales: {r}} = chart;
+            const xCenter = chart.getDatasetMeta(0).data[0].x;
+            const yCenter = chart.getDatasetMeta(0).data[0].y;
+            const radius = r.drawingArea + 22;
             let amount = 0;
-            chart.legend.legendItems.forEach((legend, index) => {
-                if(legend.hidden == false){
-                    ctx.save();
-                    const tooltipPos = chart.getDatasetMeta(0).data[index].tooltipPosition();
-                    const pointLabelsPos = chart.getDatasetMeta(0).rScale._pointLabelItems[index];
+
+            if (radius > 120) {
+                chart.legend.legendItems.forEach((legend, index) => {
+                    if (legend.hidden === false) {
+                        const startAngle = chart.getDatasetMeta(0).data[index].startAngle;
+                        const endAngle = chart.getDatasetMeta(0).data[index].endAngle;
+                        const centerAngle = (startAngle + endAngle) / 2;
+                        const xCoordinate = xCenter + (radius * Math.cos(centerAngle));
+                        const yCoordinate = yCenter + (radius * Math.sin(centerAngle));
     
-                    ctx.font = 'bold 10px sans-serif';
-                    const textWidth = ctx.measureText(data.datasets[0].data[index]).width + 32;
+                        ctx.save();
+                        ctx.translate(xCoordinate, yCoordinate);
     
-                    if(pointLabelsPos === undefined){
-                        ctx.translate(tooltipPos.x, tooltipPos.y);
-                    } else {
-                        ctx.translate(pointLabelsPos.x, pointLabelsPos.y);
+                        ctx.font = 'bold 10px sans-serif';
+                        const textWidth = ctx.measureText(data.datasets[0].data[index]).width + 32;
+    
+                        ctx.beginPath();
+                        ctx.fillStyle = data.datasets[0].backgroundColor[index].replace('0.5', '0.8')
+                        ctx.roundRect(0 - (textWidth / 2), 0 - 10, textWidth, 20, 10);
+                        ctx.fill();
+    
+                        ctx.fillStyle = 'white';
+                        ctx.textAlign = 'center';
+                        if (data.datasets[0].label == 'Piezas') {
+                            ctx.fillText(`${data.datasets[0].data[index]} pza`, 0, 4);
+                        } else if (data.datasets[0].label == 'Millares'){
+                            ctx.fillText(`${data.datasets[0].data[index]} mil`, 0, 4);
+                        } else if (data.datasets[0].label == '$') {
+                            amount = Number.parseFloat(data.datasets[0].data[index]).toFixed(2);
+                            amount = Number(amount).toLocaleString(undefined, {minimumFractionDigits: 2});
+                            ctx.fillText(`${data.datasets[0].label} ${amount}`, 0, 4);
+                        } else {
+                            ctx.fillText(`${data.datasets[0].data[index]} ${data.datasets[0].label}`, 0, 4);
+                        }
+
+                        ctx.restore();
                     }
-                    
-                    ctx.beginPath();
-                    ctx.fillStyle = data.datasets[0].backgroundColor[index].replace('0.5', '0.8')
-                    ctx.roundRect(0 - textWidth/2, 0 - 11, textWidth, 20, 10);
-                    ctx.fill();
-    
-                    ctx.fillStyle = 'white';
-                    ctx.textAlign = 'center';
-                    if (data.datasets[0].label == 'Piezas') {
-                        ctx.fillText(`${data.datasets[0].data[index]} pza`, 0, 0);
-                    } else if (data.datasets[0].label == 'Millares'){
-                        ctx.fillText(`${data.datasets[0].data[index]} mil`, 0, 0);
-                    } else if (data.datasets[0].label == '$') {
-                        amount = Number.parseFloat(data.datasets[0].data[index]).toFixed(2);
-                        amount = Number(amount).toLocaleString(undefined, {minimumFractionDigits: 2});
-                        ctx.fillText(`${data.datasets[0].label} ${amount}`, 0, 0);
-                    } else {
-                        ctx.fillText(`${data.datasets[0].data[index]} ${data.datasets[0].label}`, 0, 0);
-                    }
-                    ctx.restore();
-                }
-            });
+                })
+            }
         }
     }
 
@@ -403,18 +409,25 @@ $(document).ready(function(){
                     },
                     options: {
                         maintainAspectRatio: false,
+                        layout: {
+                            padding: {
+                                top: 28,
+                                bottom: 28,
+                                left: 5
+                            }
+                        },
                         plugins: {
                             legend: {
                                 display: true,
-                                position: "top",
+                                position: "right",
                                 labels: {
                                     filter: function(legendItem, data){
                                         let labels = data.labels;
                                         for (let i = 0; i < labels.length; i++) {
                                             if(labels[i].indexOf(legendItem.text) != -1){
                                                 let label = legendItem.text;
-                                                if(label.length > 10){
-                                                    return legendItem.text = label.substring(0, 10) + '...';
+                                                if(label.length > 7){
+                                                    return legendItem.text = label.substring(0, 7) + '...';
                                                 }else{
                                                     return legendItem.text = label;
                                                 }
@@ -444,16 +457,16 @@ $(document).ready(function(){
                             r: {
                                 beginAtZero: true,
                                 pointLabels: {
-                                    display: true,
-                                    centerPointLabels: true,
+                                    display: false,
+                                    centerPointLabels: false,
                                     callback: function(label){
-                                        return '';
+                                        return label;
                                     }
                                 }
                             }
                         }
                     },
-                    plugins: [segmentTextRotation] 
+                    plugins: [segmentTextCloud] 
                 })
 
                 // build chart 6 (doughnut chart -> clients)
