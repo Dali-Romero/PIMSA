@@ -238,12 +238,14 @@
                         <canvas id="chart5" style="height: 18rem;"></canvas>
                     </div>
                     <div class="col-md-12 pt-2">
-                        <input type="radio" name="filter-unit-chart5" value="Mt" id="filter-chart5-mt" class="form-check-input btn-check" autocomplete="off" checked>
+                        <input type="radio" name="filter-unit-chart5" value="Pesos" id="filter-chart5-pesos" class="form-check-input btn-check" autocomplete="off" checked>
+                        <label for="filter-chart5-pesos" class="form-check-label btn btn-sm btn-outline-primary me-2">pesos</label>
+                        <input type="radio" name="filter-unit-chart5" value="Mt" id="filter-chart5-mt" class="form-check-input btn-check" autocomplete="off">
                         <label for="filter-chart5-mt" class="form-check-label btn btn-sm btn-outline-primary me-2">m²</label>
                         <input type="radio" name="filter-unit-chart5" value="Pieza" id="filter-chart5-pieza" class="form-check-input btn-check" autocomplete="off">
-                        <label for="filter-chart5-pieza" class="form-check-label btn btn-sm btn-outline-primary me-2">Pieza</label>
+                        <label for="filter-chart5-pieza" class="form-check-label btn btn-sm btn-outline-primary me-2">piezas</label>
                         <input type="radio" name="filter-unit-chart5" value="Millar" id="filter-chart5-millar" class="form-check-input btn-check" autocomplete="off">
-                        <label for="filter-chart5-millar" class="form-check-label btn btn-sm btn-outline-primary">millar</label>
+                        <label for="filter-chart5-millar" class="form-check-label btn btn-sm btn-outline-primary">millares</label>
                     </div>
                 </div>
             </div>
@@ -309,13 +311,13 @@
                     </div>
                     <div class="col-md-12 pt-2">
                         <input type="radio" name="filter-unit-chart7" value="Global" id="filter-chart7-global" class="form-check-input btn-check" autocomplete="off" checked>
-                        <label for="filter-chart7-global" class="form-check-label btn btn-sm btn-outline-primary me-2">Global</label>
+                        <label for="filter-chart7-global" class="form-check-label btn btn-sm btn-outline-primary me-2">global</label>
                         <input type="radio" name="filter-unit-chart7" value="Mt" id="filter-chart7-mt" class="form-check-input btn-check" autocomplete="off">
                         <label for="filter-chart7-mt" class="form-check-label btn btn-sm btn-outline-primary me-2">m²</label>
                         <input type="radio" name="filter-unit-chart7" value="Pieza" id="filter-chart7-pieza" class="form-check-input btn-check" autocomplete="off">
-                        <label for="filter-chart7-pieza" class="form-check-label btn btn-sm btn-outline-primary me-2">Pieza</label>
+                        <label for="filter-chart7-pieza" class="form-check-label btn btn-sm btn-outline-primary me-2">piezas</label>
                         <input type="radio" name="filter-unit-chart7" value="Millar" id="filter-chart7-millar" class="form-check-input btn-check" autocomplete="off">
-                        <label for="filter-chart7-millar" class="form-check-label btn btn-sm btn-outline-primary">millar</label>
+                        <label for="filter-chart7-millar" class="form-check-label btn btn-sm btn-outline-primary">millares</label>
                     </div>
                 </div>
             </div>
@@ -323,17 +325,20 @@
     </div>
 </div>
 <div class="row pt-0 pb-4 px-2">
-    <div class="col-md-12 pt-0">
-        <ul class="nav nav-tabs bg-light" role="tablist">
+    <div class="col-md-9 pt-md-0 pt-4">
+        <ul class="nav nav-tabs bg-body-tertiary" role="tablist">
             <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="dashboard-quotations-tab" data-bs-toggle="tab" data-bs-target="#dashboard-quotations-pane" type="button" role="tab" aria-controls="dashboard-quotations-pane" aria-selected="true">Cotizaciones</button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="dashboard-orders-tab" data-bs-toggle="tab" data-bs-target="#dashboard-orders-pane" type="button" role="tab" aria-controls="dashboard-orders-pane" aria-selected="true">Órdenes</button>
             </li>
+            <li class="nav-item ms-auto" role="presentation">
+                <button class="nav-link" id="dashboard-reports-tab" data-bs-toggle="tab" data-bs-target="#dashboard-reports-pane" type="button" role="tab" aria-controls="dashboard-reports-pane" aria-selected="true">Reportes</button>
+            </li>
         </ul>
         <div class="tab-content">
-            <div class="tab-pane fade show active" style="height: 42rem;" id="dashboard-quotations-pane" role="tabpanel" aria-labelledby="dashboard-quotations-tab" tabindex="0">
+            <div class="tab-pane fade show active bg-body border border-top-0 border-bottom-0" style="min-height: 40.4rem;" id="dashboard-quotations-pane" role="tabpanel" aria-labelledby="dashboard-quotations-tab" tabindex="0">
                 <div class="table-responsive-xxl p-0">
                     <table class="stripe" id="dashboard-quotations-table" style="width: 100%;">
                         <thead>
@@ -390,7 +395,7 @@
             </div>
         </div>
         <div class="tab-content">
-            <div class="tab-pane fade" style="height: 42rem;" id="dashboard-orders-pane" role="tabpanel" aria-labelledby="dashboard-orders-tab" tabindex="0">
+            <div class="tab-pane fade bg-body border border-top-0 border-bottom-0" style="min-height: 40.4rem;" id="dashboard-orders-pane" role="tabpanel" aria-labelledby="dashboard-orders-tab" tabindex="0">
                 <div class="table-responsive-xxl p-0">
                     <table class="stripe" id="dashboard-orders-table" style="width: 100%;">
                         <thead>
@@ -439,8 +444,155 @@
                 </div>
             </div>
         </div>
+        <div class="tab-content">
+            <div class="tab-pane fade bg-body border border-top-0" style="min-height: 40.4rem;" id="dashboard-reports-pane" role="tabpanel" aria-labelledby="dashboard-reports-tab" tabindex="0">
+                <div class="row p-3">
+                    <form action="/dashboard/report" method="post" class="needs-validation" id="ReportsForm" novalidate>
+                        <div class="row">
+                            <h5 class="fw-bold text-center">Secciones del reporte</h5>
+                        </div>
+                        <div class="row justify-content-between">
+                            <div class="col-md-6">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" id="selectAllSectionsReport" class="form-check-input" role="switch">
+                                    <label for="selectAllSectionsReport" class="form-check-label">Marcar todas</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <span id="invalid-feedback-sectionsReport"></span>
+                            </div>
+                        </div>
+                        <div class="row pt-4 row-cols-1 row-cols-md-3 g-4 justify-content-md-start">
+                            <div class="col">
+                                <div class="form-check p-0">
+                                    <input type="checkbox" name="sectionsReport" value="areas" id="areas" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="areas" class="form-check-label btn btn-outline-primary w-100">Areas</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-check p-0">
+                                    <input type="checkbox" name="sectionsReport" value="clientes" id="clientes" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="clientes" class="form-check-label btn btn-outline-primary w-100">Clientes</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-check p-0">
+                                    <input type="checkbox" name="sectionsReport" value="cotizaciones" id="cotizaciones" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="cotizaciones" class="form-check-label btn btn-outline-primary w-100">Cotizaciones</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-check p-0">
+                                    <input type="checkbox" name="sectionsReport" value="empleados" id="empleados" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="empleados" class="form-check-label btn btn-outline-primary w-100">Empleados</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-check p-0">
+                                    <input type="checkbox" name="sectionsReport" value="gruposClientes" id="gruposClientes" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="gruposClientes" class="form-check-label btn btn-outline-primary w-100">Grupos de clientes</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-check p-0">
+                                    <input type="checkbox" name="sectionsReport" value="maquinas" id="maquinas" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="maquinas" class="form-check-label btn btn-outline-primary w-100">Máquinas</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-check p-0">
+                                    <input type="checkbox" name="sectionsReport" value="ordenes" id="ordenes" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="ordenes" class="form-check-label btn btn-outline-primary w-100">Órdenes</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-check p-0">
+                                    <input type="checkbox" name="sectionsReport" value="productos" id="productos" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="productos" class="form-check-label btn btn-outline-primary w-100">Productos</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-check p-0">
+                                    <input type="checkbox" name="sectionsReport" value="productosCotizados" id="productosCotizados" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="productosCotizados" class="form-check-label btn btn-outline-primary w-100">Productos Cotizados</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-check p-0">
+                                    <input type="checkbox" name="sectionsReport" value="productosOrdenados" id="productosOrdenados" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="productosOrdenados" class="form-check-label btn btn-outline-primary w-100">Productos Ordenados</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-check p-0">
+                                    <input type="checkbox" name="sectionsReport" value="roles" id="roles" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="roles" class="form-check-label btn btn-outline-primary w-100">Roles</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-check p-0">
+                                    <input type="checkbox" name="sectionsReport" value="usuarios" id="usuarios" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="usuarios" class="form-check-label btn btn-outline-primary w-100">Usuarios</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row pt-4">
+                            <div class="col-md-12 text-end">
+                                <button class="btn btn-success" type="submit">Descargar reporte</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="col-md-12 order-first order-md-last">
-        
+    <div class="col-md-3 order-first order-md-last">
+        <div class="card h-100 text-bg-light border-secondary">
+            <div class="card-body py-2 px-4">
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <h5 class="text-center">
+                            <a class="icon-link icon-link-hover link-body-emphasis link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0);" href="/monitor">
+                                <i class="bi bi-box-arrow-in-up-right mb-1"></i>
+                                Órdenes en proceso
+                            </a>
+                        </h5>
+                    </div>
+                </div>
+                <div class="row row-cols-1 gy-3">
+                    {{#each tareas}}
+                        <div class="col p-2 bg-white border border-2">
+                            <div class="row mb-2">
+                                <div class="col-4 fw-bold text-start">
+                                    OT-{{ordenId}}
+                                </div>
+                                <div class="col-8 text-end">
+                                    {{timeago fechaGen}}
+                                </div>
+                            </div>
+                            <div class="row m-0">
+                                {{#equal tareasTerminadas 0}}
+                                    <div class="progress p-0" role="progressbar" aria-label="Basic example" aria-valuenow="{{porcentajeTerminada}}" aria-valuemin="0" aria-valuemax="100" style="height: 20px;">
+                                        <div class="progress-bar overflow-visible text-dark ms-2" style="width: {{porcentajeTerminada}}%">{{tareasTerminadas}} de {{totalTareas}}</div>
+                                    </div>
+                                {{else}}
+                                    <div class="progress p-0" role="progressbar" aria-label="Basic example" aria-valuenow="{{porcentajeTerminada}}" aria-valuemin="0" aria-valuemax="100" style="height: 20px;">
+                                        <div class="progress-bar" style="width: {{porcentajeTerminada}}%">{{tareasTerminadas}} de {{totalTareas}}</div>
+                                    </div>
+                                {{/equal}}
+                            </div>
+                        </div>
+                    {{else}}
+                        <div class="col p-2 bg-white border border-2">
+                            <div class="row">
+                                <div class="col-md-12 text-center">
+                                    No existen órdenes en proceso
+                                </div>
+                            </div>
+                        </div>
+                    {{/each}}
+                </div>
+            </div>
+        </div>
     </div>
 </div>
