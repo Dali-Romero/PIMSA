@@ -114,15 +114,15 @@ $(document).ready(function(){
                         ctx.fillStyle = 'white';
                         ctx.textAlign = 'center';
                         if (data.datasets[0].label == 'Piezas') {
-                            ctx.fillText(`${data.datasets[0].data[index]} pza`, 0, 4);
+                            ctx.fillText(`${Number(data.datasets[0].data[index]).toLocaleString()} pza`, 0, 4);
                         } else if (data.datasets[0].label == 'Millares'){
-                            ctx.fillText(`${data.datasets[0].data[index]} mil`, 0, 4);
+                            ctx.fillText(`${Number(data.datasets[0].data[index]).toLocaleString()} mil`, 0, 4);
                         } else if (data.datasets[0].label == '$') {
                             amount = Number.parseFloat(data.datasets[0].data[index]).toFixed(2);
                             amount = Number(amount).toLocaleString(undefined, {minimumFractionDigits: 2});
                             ctx.fillText(`${data.datasets[0].label} ${amount}`, 0, 4);
                         } else {
-                            ctx.fillText(`${data.datasets[0].data[index]} ${data.datasets[0].label}`, 0, 4);
+                            ctx.fillText(`${Number(data.datasets[0].data[index]).toLocaleString(undefined, {minimumFractionDigits: 3})} ${data.datasets[0].label}`, 0, 4);
                         }
 
                         ctx.restore();
