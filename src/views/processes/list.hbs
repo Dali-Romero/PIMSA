@@ -11,7 +11,7 @@
                 <tr>
                     <th scope="col">Nombre</th>
                     <th scope="col">Descripción</th>
-                    <th scope="col">Etapas</th>
+                    <th scope="col">Áreas</th>
                     <th scope="col">Productos</th>
                     <th scope="col"></th>
                 </tr>
@@ -23,12 +23,12 @@
                             {{proceso_nombre}}
                         </th>
                         <td>
-                            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Earum corporis ipsam est exercitationem nisi ducimus perspiciatis, aut ab magnam autem aperiam eaque. Exercitationem, doloremque iusto animi voluptatum molestiae voluptatibus quasi?
+                            {{proceso_descripcion}}
                         </td>
                         <td>
                             <div class="row g-0">
                                 <div class="col-md-5 col-12">
-                                    <button class="btn btn-sm btn-outline-primary w-100" id="btnExpandStages" value="{{proceso_id}}" type="button" data-bs-toggle="button" aria-pressed="true" aria-expanded="false">
+                                    <button class="btn btn-sm btn-outline-primary w-100 btnExpandStages" id="btnExpandStages" value="{{proceso_id}}" type="button" aria-pressed="true" aria-expanded="false">
                                         <i class="bi bi-bezier2 float-start"></i>
                                         {{total_areas}}
                                     </button>
@@ -66,40 +66,55 @@
     </div>
 </div>
 
+{{!-- Modal stages per process --}}
+<div class="modal fade" id="info-stages-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="info-stages-container">
+            {{!-- The stages information will be added here --}}
+        </div>
+    </div>
+</div>
+
 {{!-- Templates --}}
-<script type="text/x-handlebars-template" id="processes-stages-expand">
-    <div class="processes-stages-slider" style="display: none;">
-        \{{#with proceso}}
-            <div class="row p-3 pb-0 m-0 text-center">
-                <p class="fs-5 fw-bold p-1 m-0">Etapas de \{{proceso_nombre}}</p>
-            </div>
-            <div class="row row-cols-2 row-cols-md-6 g-4 p-3 justify-content-md-start">
-                \{{#each etapas}}
-                    <div class="col">
-                        <div class="card bg-primary-subtle h-100">
-                            <div class="row g-0 align-items-center h-100">
-                                <div class="col-3">
-                                    <p class="card-text fs-3 fw-bold text-center">\{{orden}}</p>
-                                </div>
-                                <div class="col-9">
-                                    <div class="card-body p-3 ps-0">
-                                        <p class="card-text">\{{area}}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+<script type="text/x-handlebars-template" id="info-stages-added">
+    <div class="modal-header">
+        <p class="modal-title fs-6">\{{#with proceso}}\{{proceso_nombre}}\{{/with}}</p>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-3 ps-md-1 ps-0 pe-0 d-flex">
+                    <div class="nav nav-pills w-100 flex-md-column flex-row justify-content-md-start justify-content-between" id="stages-pills-tab" role="tablist" aria-orientation="vertical">
+                        \{{#each etapasPosibles}}
+                            <button class="nav-link p-1 mb-md-2 mb-3 border border-primary position-relative \{{#equal @index 0}}active\{{/equal}}" id="stages-pills-stage\{{@index}}-tab" data-bs-toggle="pill" data-bs-target="#stages-pills-stage\{{@index}}" type="button" role="tab" aria-controls="stages-pills-stage\{{@index}}" aria-selected="true">
+                                Etapa \{{this}}
+                            </button>
+                        \{{/each}}
                     </div>
-                \{{else}}
-                    <div class="col-md-12">
-                        <div class="card bg-primary-subtle">
-                            <div class="card-body">
-                                <p class="card-text text-center">No existen etapas asignados a este proceso</p>
+                    <div class="vr mx-3 d-md-block d-none"></div>
+                </div>
+                <div class="col-md-9 ps-0 pe-md-1 pe-0">
+                    <div class="tab-content">
+                        \{{#each etapasPosibles}}
+                            <div class="tab-pane fade \{{#equal @index 0}}show active\{{/equal}}" id="stages-pills-stage\{{@index}}" role="tabpanel" aria-labelledby="stages-pills-stage\{{@index}}-tab" tabindex="0">
+                                <p class="fs-5 fw-bold text-center mb-0">Áreas</p>
+                                \{{#with ../proceso}}
+                                    \{{#each etapas}}
+                                        \{{#equalNR ../../this orden}}
+                                            <dl>
+                                                <dt>\{{area}}</dt>
+                                                <dd>\{{descripcion}}</dd>
+                                            </dl>
+                                        \{{/equalNR}}
+                                    \{{/each}}
+                                \{{/with}}
                             </div>
-                        </div>
+                        \{{/each}}
                     </div>
-                \{{/each}}
+                </div>
             </div>
-        \{{/with}}
+        </div>
     </div>
 </script>
 

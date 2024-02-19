@@ -173,55 +173,34 @@ $(document).ready(function(){
         },
     });
 
-    $('#processes-table tbody').on('click', '#btnExpandStages', function () {
-        const tr = $(this).closest('tr');
-        const row = processTable.row(tr);
+    $('.btnExpandStages').on('click', function(){
         const proccessId = $(this).val();
-        if (tr.hasClass('ProductsIsShowing')) {
-            row.child.hide();
-            tr.removeClass('ProductsIsShowing');
-            tr.find('button#btnExpandProducts').removeClass('active');
-        }
-        if (row.child.isShown()) {
-            $('div.processes-stages-slider', row.child()).slideUp(function () {
-                row.child.hide();
-                tr.removeClass('StagesIsShowing');
-            });
-        } else {
-            $.ajax({
-                type: 'POST',
-                url: '/processes/listStages',
-                headers: {'Content-Type': 'application/json'},
-                data: JSON.stringify({proccessId: proccessId}),
-                success: function(data){
-                    const sourceProcess = $('#processes-stages-expand').html();
-                    const templateProcess = Handlebars.compile(sourceProcess);
-                    const contextProcess = {
-                        proceso: data.proceso,
-                        etapas: data.etapas
-                    };
-                    const htmlProcess = templateProcess(contextProcess);
-                    row.child(htmlProcess, 'p-0' ).show();
-                    $('div.processes-stages-slider', row.child()).slideDown();
-                    tr.addClass('StagesIsShowing');
-                }
-            });
-        }
-    });
+        $.ajax({
+            type: 'POST',
+            url: '/processes/listStages',
+            headers: {'Content-Type': 'application/json'},
+            data: JSON.stringify({proccessId: proccessId}),
+            success: function (data){
+                const source = $('#info-stages-added').html();
+                const template = Handlebars.compile(source);
+                const context = {
+                    proceso: data.proceso,
+                    etapasPosibles: data.etapasPosibles
+                };
+                const html= template(context);
+                $('#info-stages-container').html(html);
+                $("#info-stages-modal").unbind().modal('show');
+            }
+        })
+    })
 
     $('#processes-table tbody').on('click', '#btnExpandProducts', function () {
         const tr = $(this).closest('tr');
         const row = processTable.row(tr);
         const processId = $(this).val();
-        if (tr.hasClass('StagesIsShowing')) {
-            row.child.hide();
-            tr.removeClass('StagesIsShowing');
-            tr.find('button#btnExpandStages').removeClass('active');
-        }
         if (row.child.isShown()) {
             $('div.processes-products-slider', row.child()).slideUp(function () {
                 row.child.hide();
-                tr.removeClass('ProductsIsShowing');
             });
         } else {
             $.ajax({
@@ -239,7 +218,6 @@ $(document).ready(function(){
                     const htmlProducts = templateProducts(contextProducts);
                     row.child(htmlProducts, 'p-0' ).show();
                     $('div.processes-products-slider', row.child()).slideDown();
-                    tr.addClass('ProductsIsShowing');
                 }
             });
         }
