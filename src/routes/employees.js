@@ -4,7 +4,7 @@ const { isLoggedIn } = require('../lib/auth');
 const router = express.Router();
 
 router.get('/', isLoggedIn, async (req, res) =>{
-    const employees = await pool.query('SELECT * FROM empleados');
+    const employees = await pool.query('SELECT * FROM empleados ORDER BY numeroNomina AND activo desc');
     const rol = await pool.query('SELECT * FROM roles');
     const area = await pool.query('SELECT * FROM areas');
     let activos = 0
@@ -69,7 +69,7 @@ router.post('/add', isLoggedIn, async (req, res)=>{
         const today = new Date();
         console.log(today);
         newEmployee = {
-            modificado_usuario_id: 1,
+            modificado_usuario_id: req.user.usuarioId,
             empleado_id: empleado[0].empleadoId,
             cambioRealizado: "Se ha creado el empleado",
             fechaCambio: today,
@@ -159,7 +159,7 @@ router.post('/edit/:id', isLoggedIn, async (req, res) =>{
     await pool.query('UPDATE empleados SET ? WHERE empleadoId = ?', [newEmployee, id]);
     const today = new Date();
     editEmployee = {
-        modificado_usuario_id: 1,
+        modificado_usuario_id: req.user.usuarioId,
         empleado_id: id,
         cambioRealizado: employee.descripcion,
         fechaCambio: today,
@@ -216,6 +216,7 @@ router.get('/history/:id', isLoggedIn, async (req, res)=>{
     const {id} = req.params;
     const rol = await pool.query('SELECT * FROM roles');
     const area = await pool.query('SELECT * FROM areas');
+    const users = await pool.query('SELECT * FROM usuarios');
     var employees = await pool.query('SELECT * FROM historialempleados WHERE empleado_id = ? ORDER BY cambioId DESC', [id]);
     const nombreComp = await pool.query('SELECT nombreComp FROM empleados WHERE empleadoId = ?', [id]);
     const total = employees.length;
@@ -223,7 +224,7 @@ router.get('/history/:id', isLoggedIn, async (req, res)=>{
         employees[i].hora = employees[i].fechaCambio.toLocaleTimeString('en-US');
         employees[i].fechaCambio = employees[i].fechaCambio.toLocaleDateString("es-MX", {weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'});
     };
-    res.render('../views/employees/history', {total, nombreComp: nombreComp[0].nombreComp, employees, rol, area});
+    res.render('../views/employees/history', {total, nombreComp: nombreComp[0].nombreComp, employees, rol, area, users});
 });
 
 router.get('/history/:id/view/:idHistory', isLoggedIn, async (req, res)=>{
@@ -249,7 +250,7 @@ router.get('/history/:id/view/:idHistory/restore', isLoggedIn, async (req, res)=
     const employeeAct = await pool.query('SELECT * FROM empleados WHERE empleadoId = ?', [id]);
     const today = new Date();
     const employee = {
-        modificado_usuario_id: 1, //Editar para ver cual es el usuario activo
+        modificado_usuario_id: req.user.usuarioId, 
         empleado_id: id,
         cambioRealizado: "Se restauro la version con id " + idHistory,
         fechaCambio: today,

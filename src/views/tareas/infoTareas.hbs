@@ -1,0 +1,152 @@
+<div class="row p-3" id="machine-title">
+    <h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-journals"></i> Tareas</h1>
+</div>
+<div class="row p-4 gy-4 justify-content-md-between">
+    <div class="btn-toolbar justify-content-md-start justify-content-center p-0" role="toolbar">
+        {{#with datos}}
+            <div class="btn-group mb-3 mb-md-0" role="group">
+                <a href="/tareas/historial/{{tareaId}}" class="btn btn-warning me-3 {{#equalOR 1 check terminada}} disabled {{/equalOR}} {{#equalNR activa 0}} disabled {{/equalNR}} {{#equal sucesion 1}} disabled {{/equal}}" role="button" aria-disabled="true"><i class="bi bi-arrow-repeat"></i> Regresar tarea</a>
+            </div>
+            <div class="btn-group" role="group">
+                <a class="btn btn-primary me-3 {{#equalOR 1 check terminada}} disabled {{/equalOR}} {{#equalNR activa 0}} disabled {{/equalNR}}" href="/tareas/enterado/{{tareaId}}" role="button"><i class="bi bi-file-earmark-arrow-down"></i> Aceptar</a>
+            </div>
+            <div class="btn-group" role="group">
+                <a class="btn btn-primary me-3 {{#equalNR terminada 1}} disabled {{/equalNR}} {{#equalOR 0 activa check}} disabled {{/equalOR}}" href="/tareas/{{tareaId}}" role="button"><i class="bi bi-file-earmark-arrow-down"></i> Terminar tarea</a>
+            </div>
+        {{/with}}
+    </div>
+</div>
+<div class="row p-4 pt-0 gy-4 justify-content-md-between">
+    <div class="col-md-5">
+        <div class="row">
+            <img src="/img/PIMSAlogo.png" alt="Logo PIMSA" class="img-fluid d-block mx-auto">
+        </div>
+        <div class="row mt-4">
+            <div class="row m-0 text-center bg-danger text-white">
+                <p class="fs-6 p-1 m-0">Información de la tarea</p>
+            </div>
+            <table class="table table-responsive-md align-middle table-light m-0">
+                <tbody>
+                    {{#with datos}}
+                        <tr>
+                            <th scope="row">Fecha:</th>
+                            <td>{{formatDate fechaGen}}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Proyecto:</th>
+                            <td colspan="3">{{proyecto}}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Solicitante:</th>
+                            <td colspan="3">{{solicitante}}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Empleado:</th>
+                            <td colspan="3">{{empleado}}</td>
+                        </tr>
+                    {{else}}
+                        <tr>
+                            <td colspan="4" class="text-center">No existe información sobre la cotización</td>
+                        </tr>
+                    {{/with}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="row">
+            <div class="row m-0 text-center bg-danger text-white">
+                <p class="fs-6 p-1 m-0">Información de la tarea</p>
+            </div>
+            <table class="table table-responsive-md align-middle table-light m-0">
+                <tbody>
+                    {{#with datos}}
+                        <tr>
+                            <th scope="row" class="col-md-3">Estatus:</th>
+                            {{#equalNR activa 1}}
+                                <td colspan="3">Actividad activa.</td>
+                            {{else}}
+                                {{#equalNR terminada 1}}
+                                    <td colspan="3">Actividad terminada.</td>
+                                {{else}}
+                                    <td colspan="3">Actividad en fase anterior.</td>
+                                {{/equalNR}}
+                            {{/equalNR}}
+                        </tr>
+                        <tr>
+                            <th scope="row">Nombre:</th>
+                            <td colspan="3">{{nombre}}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Acabados:</th>
+                            <td colspan="3">{{acabados}}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Archivo:</th>
+                            <td colspan="3">{{archivo}}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Unidad:</th>
+                            <td colspan="3">{{unidad}}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Cantidad:</th>
+                            <td colspan="3">{{cantidad}}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Largo:</th>
+                            <td>{{largo}}</td>
+                            <th scope="row">Ancho:</th>
+                            <td>{{ancho}}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Area:</th>
+                            <td colspan="3">{{area}}</td>
+                        </tr>
+                    {{else}}
+                        <td colspan="4" class="text-center">No existe información sobre la tarea</td>
+                    {{/with}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="row p-4 gy-4 pt-0 justify-content-md-between">
+    <div class="col-md-6 p-0">
+        {{#with datos}}
+            <p class="fs-6"><b>Observaciones:</b></p>
+            {{notes}}
+        {{else}}
+            <p class="fs-6"><b>Sin información sobre las observaciones</b></p>
+        {{/with}}
+    </div>
+    <div class="col-md-6 p-0">
+        <div class="row m-0 text-center bg-danger text-white">
+            <p class="fs-6 p-1 m-0">Información de las actividades</p>
+        </div>
+        <table class="table-responsive-md align-middle table-light w-100">
+            <tbody>
+                <tr>
+                    <th scope="col">Orden tarea:</th>
+                    <th scope="col">Area:</th>
+                    <th scope="col">Estatus:</th>
+                </tr>
+                {{#each tareas}}
+                    <tr>
+                        <td>{{sucesion}}</td>
+                        {{#each ../areas}}
+                            {{#equal areaId ../area_id}}<td>{{nombre}}</td>{{/equal}}
+                        {{/each}}
+                        <td>{{#equal terminada 1}} Terminada {{else}} {{#equal activa 1}} Activa {{else}} No activa {{/equal}} {{/equal}}</td>
+                    </tr>
+                {{else}}
+                    <tr>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td colspan="3">Sin informacion de las tareas.</td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,177 @@
+<div class="row p-3" id="machine-title">
+    <h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-card-checklist"></i> Monitor</h1>
+</div>
+<div class="row p-4">
+    <div class="table-responsive-xxl p-0">
+        <table class="stripe" id="orders-monitor-table">
+            <thead>
+                <tr>
+                    <th scope="col">No. Orden</th>
+                    <th scope="col">Fecha de generación</th>
+                    <th scope="col">Fecha de entrega</th>
+                    <th scope="col">Tareas</th>
+                    <th scope="col">Empleado</th>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                {{#each ordenes}}
+                    <tr>
+                        <th scope="row">
+                            <a class="icon-link icon-link-hover link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0); --bs-link-hover-color-rgb: 237, 10, 63;" href="orders/info/{{ordenId}}">
+                                <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
+                                OT-{{ordenId}}
+                            </a>
+                        </th>
+                        <td>{{formatDateShort fechaGen}}</td>
+                        {{#equal fechaEnt "-"}}
+                            <td class="text-danger">Sin asignar</td>
+                        {{else}}
+                            <td>{{formatDateOnlyDate fechaEnt}}</td>
+                        {{/equal}}
+                        <td>
+                            <div class="row row-cols-2 row-cols-md-3 g-3 justify-content-md-start">
+                                {{#each productos}}
+                                    <div class="col">
+                                        {{#equal ../tareasTerminadas ../totalTareas}}
+                                            <button class="btn btn-sm btn-outline-success w-100 btnShowTasks" id="btnShowTasks{{idTarea}}" value="{{idTarea}}" type="button">
+                                                <div class="row m-0">
+                                                    <div class="col-md-2 col-4 p-0">
+                                                        <i class="bi bi-file-earmark-text"></i>
+                                                    </div>
+                                                    <div class="col-md-10 col-8 p-0 text-start text-truncate">
+                                                        {{nombre}}
+                                                    </div>
+                                                </div>
+                                            </button>
+                                        {{else}}
+                                            <button class="btn btn-sm btn-outline-danger w-100 btnShowTasks" id="btnShowTasks{{idTarea}}" value="{{idTarea}}" type="button">
+                                                <div class="row m-0">
+                                                    <div class="col-md-2 col-4 p-0">
+                                                        <i class="bi bi-file-earmark-text"></i>
+                                                    </div>
+                                                    <div class="col-md-10 col-8 p-0 text-start text-truncate">
+                                                        {{nombre}}
+                                                    </div>
+                                                </div>
+                                            </button>
+                                        {{/equal}}
+                                    </div>
+                                {{/each}}
+                            </div>
+                        </td>
+                        <td>{{empleado}}</td>
+                    </tr>
+                {{else}}
+                    <tr>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td colspan="5">No existen órdenes registradas</td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{{!-- Modal tasks per product --}}
+<div class="modal fade" id="info-task-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="info-task-container">
+            {{!-- The task information will be added here --}}
+        </div>
+    </div>
+</div>
+
+{{!-- Templates --}}
+<script type="text/x-handlebars-template" id="info-task-added">
+    <div class="modal-header">
+        <p class="modal-title fs-6">\{{#with producto}}\{{productoNombre}}\{{/with}}</p>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-3 ps-md-1 ps-0 pe-0 d-flex">
+                    <div class="nav nav-pills w-100 flex-md-column flex-row justify-content-md-start justify-content-between" id="tasks-pills-tab" role="tablist" aria-orientation="vertical">
+                        \{{#each tareas}}
+                            <button class="nav-link p-1 mb-md-2 mb-3 border border-primary position-relative \{{#equal @index 0}}active\{{/equal}}" id="tasks-pills-task\{{@index}}-tab" data-bs-toggle="pill" data-bs-target="#tasks-pills-task\{{@index}}" type="button" role="tab" aria-controls="tasks-pills-task\{{@index}}" aria-selected="true">
+                                Tarea \{{tareaIndice}}
+                                \{{#if tareaTerminada}}
+                                    <span class="position-absolute top-0 start-100 translate-middle bg-success border border-light rounded-circle" style="padding: 5px;">
+                                        <span class="visually-hidden">Estatus</span>
+                                    </span>
+                                \{{else}}
+                                    \{{#if tareaActiva}}
+                                        \{{#if tareasCheck}}
+                                            <span class="position-absolute top-0 start-100 translate-middle bg-warning border border-light rounded-circle" style="padding: 5px;">
+                                                <span class="visually-hidden">Estatus</span>
+                                            </span>
+                                        \{{else}}
+                                            <span class="position-absolute top-0 start-100 translate-middle bg-danger border border-light rounded-circle" style="padding: 5px;">
+                                                <span class="visually-hidden">Estatus</span>
+                                            </span>
+                                        \{{/if}}
+                                    \{{else}}
+                                        \{{#if tareasCheck}}
+                                            <span class="position-absolute top-0 start-100 translate-middle bg-secondary border border-light rounded-circle" style="padding: 5px;">
+                                                <span class="visually-hidden">Estatus</span>
+                                            </span>
+                                        \{{else}}
+                                            <span class="position-absolute top-0 start-100 translate-middle bg-secondary border border-light rounded-circle" style="padding: 5px;">
+                                                <span class="visually-hidden">Estatus</span>
+                                            </span>
+                                        \{{/if}}
+                                    \{{/if}}
+                                \{{/if}}
+                            </button>
+                        \{{/each}}
+                    </div>
+                    <div class="vr mx-3 d-md-block d-none"></div>
+                </div>
+                <div class="col-md-9 ps-0 pe-md-1 pe-0">
+                    <div class="tab-content">
+                        \{{#each tareas}}
+                            <div class="tab-pane fade \{{#equal @index 0}}show active\{{/equal}}" id="tasks-pills-task\{{@index}}" role="tabpanel" aria-labelledby="tasks-pills-task\{{@index}}-tab" tabindex="0">
+                                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                                    <p class="m-0">
+                                        \{{#if tareaTerminada}}
+                                            <span class="badge text-bg-success py-1 px-2">Terminada</span>
+                                        \{{else}}
+                                            \{{#if tareaActiva}}
+                                                \{{#if tareasCheck}}
+                                                    <span class="badge text-bg-warning py-1 px-2">En proceso</span>
+                                                \{{else}}
+                                                    <span class="badge text-bg-danger py-1 px-2">En espera</span>
+                                                \{{/if}}
+                                            \{{else}}
+                                                \{{#if tareasCheck}}
+                                                    <span class="badge text-bg-secondary py-1 px-2">Inactiva</span>
+                                                \{{else}}
+                                                    <span class="badge text-bg-secondary py-1 px-2">Inactiva</span>
+                                                \{{/if}}
+                                            \{{/if}}
+                                        \{{/if}}
+                                    </p>
+                                    <p class="m-0">
+                                        <small>
+                                            <i class="bi bi-diagram-3"></i>
+                                            \{{tareasSincronas}}
+                                        </small>
+                                    </p>
+                                </div>
+                                <p class="text-center fw-bold fs-5">\{{tareaNombre}}</p>
+                                <p class="text-start"><span class="fw-bold">Area: </span>\{{areaNombre}}</p>
+                                <p class="text-start"><span class="fw-bold">Encargado: </span>\{{encargado}}</p>
+                                <p class="text-start"><span class="fw-bold">Máquina: </span>\{{maquinaNombre}}</p>
+                                <p class="text-start fw-bold mb-0">Notas: </p>
+                                <p class="text-start mt-0">\{{tareaNotas}}</p>
+                            </div>
+                        \{{/each}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
