@@ -66,6 +66,7 @@ app.use('/tareas', require('./routes/tareas'));
 app.use('/dashboard', require('./routes/dashboard'));
 app.use('/extask', require('./routes/extask'));
 app.use('/monitor', require('./routes/monitor'));
+app.use('/processes', require('./routes/processes'));
 
 // Public
 app.use(express.static(path.join(__dirname, 'public')));

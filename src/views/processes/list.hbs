@@ -1,0 +1,146 @@
+<div class="row p-3" id="machine-title">
+    <h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-bezier"></i> Procesos</h1>
+</div>
+<div class="row p-4">
+    <p class="fs-5 p-2 m-0" id="machine-add-title">Procesos registrados</p>
+</div>
+<div class="row px-4 pt-0 pb-4">
+    <div class="table-responsive-xxl p-0">
+        <table class="table table-striped" id="processes-table">
+            <thead>
+                <tr>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Descripción</th>
+                    <th scope="col">Áreas</th>
+                    <th scope="col">Productos</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each procesos}}
+                    <tr>
+                        <th scope="row">
+                            {{proceso_nombre}}
+                        </th>
+                        <td>
+                            {{proceso_descripcion}}
+                        </td>
+                        <td>
+                            <div class="row g-0">
+                                <div class="col-md-5 col-12">
+                                    <button class="btn btn-sm btn-outline-primary w-100 btnExpandStages" id="btnExpandStages" value="{{proceso_id}}" type="button" aria-pressed="true" aria-expanded="false">
+                                        <i class="bi bi-bezier2 float-start"></i>
+                                        {{total_areas}}
+                                    </button>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="row g-0">
+                                <div class="col-md-4 col-12">
+                                    <button class="btn btn-sm btn-outline-primary w-100" id="btnExpandProducts" value="{{proceso_id}}" type="button" data-bs-toggle="button" aria-pressed="true" aria-expanded="false">
+                                        <i class="bi bi-clipboard2 float-start"></i>
+                                        {{total_productos}}
+                                    </button>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="row g-0 justify-content-center">
+                                <div class="col-md-6 col-12">
+                                    <a href="/processes/edit/{{proceso_id}}" class="btn btn-sm btn-secondary w-100"><i class="bi bi-pencil-square"></i></a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {{else}}
+                    <tr>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td class="d-none"></td>
+                        <td colspan="4">No existen procesos registrados</td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{{!-- Modal stages per process --}}
+<div class="modal fade" id="info-stages-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="info-stages-container">
+            {{!-- The stages information will be added here --}}
+        </div>
+    </div>
+</div>
+
+{{!-- Templates --}}
+<script type="text/x-handlebars-template" id="info-stages-added">
+    <div class="modal-header">
+        <p class="modal-title fs-6">\{{#with proceso}}\{{proceso_nombre}}\{{/with}}</p>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-3 ps-md-1 ps-0 pe-0 d-flex">
+                    <div class="nav nav-pills w-100 flex-md-column flex-row justify-content-md-start justify-content-between" id="stages-pills-tab" role="tablist" aria-orientation="vertical">
+                        \{{#each etapasPosibles}}
+                            <button class="nav-link p-1 mb-md-2 mb-3 border border-primary position-relative \{{#equal @index 0}}active\{{/equal}}" id="stages-pills-stage\{{@index}}-tab" data-bs-toggle="pill" data-bs-target="#stages-pills-stage\{{@index}}" type="button" role="tab" aria-controls="stages-pills-stage\{{@index}}" aria-selected="true">
+                                Etapa \{{this}}
+                            </button>
+                        \{{/each}}
+                    </div>
+                    <div class="vr mx-3 d-md-block d-none"></div>
+                </div>
+                <div class="col-md-9 ps-0 pe-md-1 pe-0">
+                    <div class="tab-content">
+                        \{{#each etapasPosibles}}
+                            <div class="tab-pane fade \{{#equal @index 0}}show active\{{/equal}}" id="stages-pills-stage\{{@index}}" role="tabpanel" aria-labelledby="stages-pills-stage\{{@index}}-tab" tabindex="0">
+                                <p class="fs-5 fw-bold text-center mb-0">Áreas</p>
+                                \{{#with ../proceso}}
+                                    \{{#each etapas}}
+                                        \{{#equalNR ../../this orden}}
+                                            <dl>
+                                                <dt>\{{area}}</dt>
+                                                <dd>\{{descripcion}}</dd>
+                                            </dl>
+                                        \{{/equalNR}}
+                                    \{{/each}}
+                                \{{/with}}
+                            </div>
+                        \{{/each}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-handlebars-template" id="processes-products-expand">
+    <div class="processes-products-slider" style="display: none;">
+        <div class="row p-3 pb-0 m-0 text-center">
+            <p class="fs-5 fw-bold p-1 m-0">Productos asociados a\{{#with proceso}} \{{nombre}} \{{/with}}</p>
+        </div>
+        <div class="row row-cols-2 row-cols-md-5 g-4 p-3 justify-content-md-start">
+            \{{#each productos}}
+                <div class="col">
+                    <div class="card bg-primary-subtle">
+                        <div class="card-body">
+                            <p class="card-text"><i class="bi bi-clipboard2"></i> \{{producto_nombre}}</p>
+                        </div>
+                    </div>
+                </div>
+            \{{else}}
+                <div class="col-md-12">
+                    <div class="card bg-primary-subtle">
+                        <div class="card-body">
+                            <p class="card-text text-center">No existen productos asignados a este proceso</p>
+                        </div>
+                    </div>
+                </div>
+            \{{/each}}
+        </div>
+    </div>
+</script>
