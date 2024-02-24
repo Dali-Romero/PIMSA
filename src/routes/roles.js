@@ -5,13 +5,17 @@ const { isLoggedIn } = require('../lib/auth.js');
 const router = express.Router();
 
 router.get('/add', isLoggedIn, async (req, res)=>{
-    const permisos = await pool.query('SELECT * FROM Permisos');
-    res.render('roles/add', {permisos:permisos});
+    res.render('roles/add');
 })
 
 router.post('/add', isLoggedIn, async (req, res)=>{
     const body = req.body;
-    const permisos = req.body.permissions;
+    let permisos = req.body.permissions;
+
+    // checar si llego un solo permiso (convertir en arreglo en caso de no ser un arreglo)
+    if (!Array.isArray(permisos)) {
+        permisos = new Array(permisos);
+    }
 
     // guardar nuevo rol
     const nuevoRol = {
@@ -43,9 +47,9 @@ router.get('/', isLoggedIn, async (req, res)=>{
 
 router.post('/listPermissions', isLoggedIn, async (req, res)=>{
     const rolId = req.body.idRole;
-    const permisos = await pool.query('SELECT Permisos.descripcion, Permisos.permiso FROM ((Roles INNER JOIN PermisosRoles ON Roles.rolId = PermisosRoles.rol_id) INNER JOIN Permisos ON PermisosRoles.permiso_id = Permisos.permisoId) WHERE Roles.rolId = ?;', [rolId]);
     const rol = await pool.query('SELECT Roles.nombre FROM Roles WHERE Roles.rolId = ?;', [rolId]);
-    res.send({permisos:permisos, rol:rol[0]});
+    const permisos = await pool.query('SELECT Permisos.descripcion, Permisos.permiso FROM ((Roles INNER JOIN PermisosRoles ON Roles.rolId = PermisosRoles.rol_id) INNER JOIN Permisos ON PermisosRoles.permiso_id = Permisos.permisoId) WHERE Roles.rolId = ?;', [rolId]);
+    res.send({rol:rol[0], permisos:permisos});
 })
 
 router.post('/listAssignedUsers', isLoggedIn, async (req, res)=>{
@@ -58,14 +62,19 @@ router.post('/listAssignedUsers', isLoggedIn, async (req, res)=>{
 router.get('/edit/:id', isLoggedIn, async (req, res)=>{
     const {id} = req.params;
     const rol = await pool.query('SELECT * FROM Roles WHERE Roles.rolId = ?;', [id]);
-    const permisos = await pool.query('SELECT DISTINCT Permisos.*, IF(PermisosRoles.permiso_id IN (SELECT PermisosRoles.permiso_id AS permiso_id FROM PermisosRoles INNER JOIN Permisos ON PermisosRoles.permiso_id = Permisos.permisoId WHERE PermisosRoles.rol_id = ?), 1, 0) AS permiso_seleccionado FROM PermisosRoles LEFT JOIN Permisos ON PermisosRoles.permiso_id = Permisos.permisoId;', [id]);
+    const permisos = await pool.query('SELECT DISTINCT Permisos.*, IF(PermisosRoles.permiso_id IN (SELECT PermisosRoles.permiso_id AS permiso_id FROM PermisosRoles INNER JOIN Permisos ON PermisosRoles.permiso_id = Permisos.permisoId WHERE PermisosRoles.rol_id = ?), 1, 0) AS permiso_seleccionado FROM PermisosRoles RIGHT JOIN Permisos ON PermisosRoles.permiso_id = Permisos.permisoId ORDER BY Permisos.permisoId;', [id]);
     res.render('roles/edit', {rol:rol[0], permisos:permisos});
 })
 
 router.post('/edit/:id', isLoggedIn, async (req, res)=>{
     const {id} = req.params;
     const body = req.body;
-    const permisos = req.body.permissions;
+    let permisos = req.body.permissions;
+    
+    // checar si llego un solo permiso (convertir en arreglo en caso de no ser un arreglo)
+    if (!Array.isArray(permisos)) {
+        permisos = new Array(permisos);
+    }
 
     // actualizar rol
     const rol = {

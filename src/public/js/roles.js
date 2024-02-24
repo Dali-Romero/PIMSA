@@ -93,7 +93,14 @@ $(document).ready(function(){
         ],
         dom: '<"float-start pb-2"f><"button-add-role pb-2"B>', 
         fnInitComplete: function(){
-            $('div.button-add-role').html('<a href="/roles/add" class="btn btn-outline-success border-success border-2 float-end" role="button"><i class="bi bi-shield-lock"></i> Añadir rol</a>');
+            //$('div.button-add-role').html('<a href="/roles/add" class="btn btn-outline-success border-success border-2 float-end" role="button"><i class="bi bi-shield-lock"></i> Añadir rol</a>');
+            const source = $('#roles-permissions-test').html();
+            const template = Handlebars.compile(source);
+            const context = {
+                permiso: 1,
+            };
+            const html= template(context);
+            $('div.button-add-role').html(html);
         },
         language:{
             url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-MX.json',
@@ -172,27 +179,127 @@ $(document).ready(function(){
         }
     });
 
-    // ------------------------------- Add/Edit file -------------------------------
+    // ------------------------------- Add file -------------------------------
     // check/uncheck all permissions
     $('#selectAllRoles').on('change', function(){
         if ($(this).is(':checked')){
-            $('input[name="permissions"][type="checkbox"]').prop('checked', true);
-        }else{
-            $('input[name="permissions"][type="checkbox"]').prop('checked', false);
-        }
-    })
+            const permisos = $('input[name="permissions"][type="checkbox"]:not(input[name="permissions"][type="checkbox"][value="34"], input[name="permissions"][type="checkbox"][value="35"])');
+            permisos.prop('checked', true);
 
+            permisos.each(function(){
+                if ($(this).val() != 36 && $(this).val() != 37 && $(this).val() != 38) {
+                    $(this).parents().eq(2).children().eq(0).children().eq(0).html('<i class="bi bi-eye-fill" style="font-size: 14px;"></i> <i class="bi bi-plus-circle" style="font-size: 14px;"></i> <i class="bi bi-pencil-square" style="font-size: 14px;"></i>');
+                }
+            })
+
+            if ($('input[name="permissions"][type="checkbox"][value="34"]').is(':checked')) {
+                $('input[name="permissions"][type="checkbox"][value="35"]').prop('checked', false);
+            } else if ($('input[name="permissions"][type="checkbox"][value="35"]').is(':checked')) {
+                $('input[name="permissions"][type="checkbox"][value="34"]').prop('checked', false);
+            } else {
+                $('input[name="permissions"][type="checkbox"][value="34"]').parents().eq(2).children().eq(0).children().eq(0).text('E.D.V');
+                $('input[name="permissions"][type="checkbox"][value="34"]').prop('checked', true);
+            }
+
+        }else{
+            const permisos = $('input[name="permissions"][type="checkbox"]');
+            permisos.prop('checked', false);
+            
+            permisos.each(function(){
+                if ($(this).val() != 36 && $(this).val() != 37 && $(this).val() != 38) {
+                    $(this).parents().eq(2).children().eq(0).children().eq(0).text('');
+                }
+            })
+        }
+    });
+
+    // validate that a single task is marked
+    $('input[name="permissions"][type="checkbox"][value="34"]').on('click', function(){
+        if ($(this).is(':checked')) {
+            $('input[name="permissions"][type="checkbox"][value="35"]').prop('checked', false);
+        }
+    });
+
+    $('input[name="permissions"][type="checkbox"][value="35"]').on('click', function(){
+        if ($(this).is(':checked')) {
+            $('input[name="permissions"][type="checkbox"][value="34"]').prop('checked', false);
+        }
+    });
+
+    // include the nomenclature of permissions by section
+    $('input[name="permissions"][type="checkbox"]').on('click', function(){
+        if ($(this).val() != 36 && $(this).val() != 37 && $(this).val() != 38){
+            const permisos_seleccionados = $(this).parents().eq(2).children().eq(1).children().find('input[name="permissions"][type="checkbox"]:checked');
+            const permisos_span = $(this).parents().eq(2).children().eq(0).children().eq(0);
+            let permisos_nomenclatura = '';
+        
+            permisos_seleccionados.each(function(){
+                if ($(this).siblings().text() == 'Ver') {
+                    permisos_nomenclatura += '<i class="bi bi-eye-fill" style="font-size: 14px;"></i> ';
+                } else if ($(this).siblings().text() == 'Agregar') {
+                    permisos_nomenclatura += '<i class="bi bi-plus-circle" style="font-size: 14px;"></i> ';
+                } else if ($(this).siblings().text() == 'Editar') {
+                    permisos_nomenclatura += '<i class="bi bi-pencil-square" style="font-size: 14px;"></i>';
+                } else if ($(this).siblings().text() == 'Empleado de ventas') {
+                    permisos_nomenclatura += 'E.D.V';
+                } else if ($(this).siblings().text() == 'Empleado de área') {
+                    permisos_nomenclatura += 'E.D.A';
+                } else {
+                    permisos_nomenclatura += '';
+                }
+            })
+            
+            permisos_span.html(permisos_nomenclatura);
+        }
+    });
+
+    $('#cleanSpan').on('click', function(){
+        const permisos_seleccionados = $('input[name="permissions"][type="checkbox"]:not(input[name="permissions"][value="36"], input[name="permissions"][value="37"], input[name="permissions"][value="38"]):checked');
+        permisos_seleccionados.each(function(){
+            $(this).parents().eq(2).children().eq(0).children().eq(0).text('');
+        })
+    });
+
+    // validate add role form
+    validateRolesForm($('#addRoleForm'));
+
+    // ------------------------------- Edit file -------------------------------
     // validate if all permissions are selected
-    const num_permisos = $('#selectAllRoles').parents().eq(3).children().eq(2).children().length;
+    const num_permisos = $('input[name="permissions"][type="checkbox"]').length;
     const num_permisos_seleccionados = $('input[name="permissions"][type="checkbox"]:checked').length;
-    if(num_permisos_seleccionados === num_permisos){
+    if(num_permisos_seleccionados === (num_permisos - 1)){
         $('#selectAllRoles').prop('checked', true)
     }else{
         $('#selectAllRoles').prop('checked', false)
     }
 
-    // validate add role form
-    validateRolesForm($('#addRoleForm'));
+    // include the nomenclature of all permissions selected
+    const permisos_contenedores = $('div.dropdown-menu');
+    let permisos_nomenclatura = '';
+    let permisos = {};
+
+    permisos_contenedores.each(function(){
+        permisos = $(this).children().find('input[name="permissions"][type="checkbox"]:checked');
+        permisos.each(function(){
+            if ($(this).siblings().text() == 'Ver') {
+                permisos_nomenclatura += '<i class="bi bi-eye-fill" style="font-size: 14px;"></i> ';
+            } else if ($(this).siblings().text() == 'Agregar') {
+                permisos_nomenclatura += '<i class="bi bi-plus-circle" style="font-size: 14px;"></i> ';
+            } else if ($(this).siblings().text() == 'Editar') {
+                permisos_nomenclatura += '<i class="bi bi-pencil-square" style="font-size: 14px;"></i>';
+            } else if ($(this).siblings().text() == 'Empleado de ventas') {
+                permisos_nomenclatura += 'E.D.V';
+            } else if ($(this).siblings().text() == 'Empleado de área') {
+                permisos_nomenclatura += 'E.D.A';
+            } else {
+                permisos_nomenclatura += '';
+            }
+        })
+
+        $(this).parents().eq(0).children().eq(0).children().eq(0).html(permisos_nomenclatura);
+        permisos_nomenclatura = '';
+    })
+
 
     // validate edit role form
     validateRolesForm($('#editRoleForm'));

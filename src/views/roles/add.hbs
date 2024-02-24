@@ -66,19 +66,289 @@
                         <span id="invalid-feedback-permissions"></span>
                     </div>
                 </div>
-                <div class="row row-cols-2 row-cols-md-5 g-4 justify-content-md-start">
-                    {{#each permisos}}
-                        <div class="col">
-                            <div class="form-check p-0">
-                                <input type="checkbox" name="permissions" value="{{permisoId}}" id="{{permiso}}" class="form-check-input btn-check" autocomplete="off">
-                                <label for="{{permiso}}" class="form-check-label btn btn-sm btn-outline-primary w-100">{{descripcion}}</label>
+                <div class="row row-cols-2 row-cols-md-4 g-4 justify-content-md-start">
+                    <div class="col">
+                        <div class="dropdown">
+                            <button class="btn dropdown-toggle w-100 d-flex justify-content-between align-items-center border-2 border-dark position-relative" style="--bs-btn-active-color: #fff; --bs-btn-active-bg: #212529;" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                                Áreas
+                                <span class="position-absolute translate-middle badge rounded-pill bg-primary" style="top: -5%; left: 93%;"></span>
+                            </button>
+                            <div class="dropdown-menu p-2">
+                                <div class="form-check p-0">
+                                    <input type="checkbox" name="permissions" value="1" id="seeListAreas" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="seeListAreas" class="form-check-label btn btn-sm btn-outline-primary w-100">Ver</label>
+                                </div>
+                                <div class="form-check p-0 mt-2">
+                                    <input type="checkbox" name="permissions" value="2" id="addAreas" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="addAreas" class="form-check-label btn btn-sm btn-outline-primary w-100">Agregar</label>
+                                </div>
+                                <div class="form-check p-0 mt-2">
+                                    <input type="checkbox" name="permissions" value="3" id="editAreas" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="editAreas" class="form-check-label btn btn-sm btn-outline-primary w-100">Editar</label>
+                                </div>
                             </div>
                         </div>
-                    {{/each}}
+                    </div>
+                    <div class="col">
+                        <div class="dropdown">
+                            <button class="btn dropdown-toggle w-100 d-flex justify-content-between align-items-center border-2 border-dark position-relative" style="--bs-btn-active-color: #fff; --bs-btn-active-bg: #212529;" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                                Clientes
+                                <span class="position-absolute translate-middle badge rounded-pill bg-primary" style="top: -5%; left: 93%;"></span>
+                            </button>
+                            <div class="dropdown-menu p-2">
+                                <div class="form-check p-0">
+                                    <input type="checkbox" name="permissions" value="4" id="seeListClients" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="seeListClients" class="form-check-label btn btn-sm btn-outline-primary w-100">Ver</label>
+                                </div>
+                                <div class="form-check p-0 mt-2">
+                                    <input type="checkbox" name="permissions" value="5" id="addClients" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="addClients" class="form-check-label btn btn-sm btn-outline-primary w-100">Agregar</label>
+                                </div>
+                                <div class="form-check p-0 mt-2">
+                                    <input type="checkbox" name="permissions" value="6" id="editClients" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="editClients" class="form-check-label btn btn-sm btn-outline-primary w-100">Editar</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="dropdown">
+                            <button class="btn dropdown-toggle w-100 d-flex justify-content-between align-items-center border-2 border-dark position-relative" style="--bs-btn-active-color: #fff; --bs-btn-active-bg: #212529;" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                                Cotizaciones
+                                <span class="position-absolute translate-middle badge rounded-pill bg-primary" style="top: -5%; left: 93%;"></span>
+                            </button>
+                            <div class="dropdown-menu p-2">
+                                <div class="form-check p-0">
+                                    <input type="checkbox" name="permissions" value="7" id="seeListQuotations" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="seeListQuotations" class="form-check-label btn btn-sm btn-outline-primary w-100">Ver</label>
+                                </div>
+                                <div class="form-check p-0 mt-2">
+                                    <input type="checkbox" name="permissions" value="8" id="addQuotations" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="addQuotations" class="form-check-label btn btn-sm btn-outline-primary w-100">Agregar</label>
+                                </div>
+                                <div class="form-check p-0 mt-2">
+                                    <input type="checkbox" name="permissions" value="9" id="editQuotations" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="editQuotations" class="form-check-label btn btn-sm btn-outline-primary w-100">Editar</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="dropdown">
+                            <button class="btn dropdown-toggle w-100 d-flex justify-content-between align-items-center border-2 border-dark position-relative" style="--bs-btn-active-color: #fff; --bs-btn-active-bg: #212529;" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                                Empleados
+                                <span class="position-absolute translate-middle badge rounded-pill bg-primary" style="top: -5%; left: 93%;"></span>
+                            </button>
+                            <div class="dropdown-menu p-2">
+                                <div class="form-check p-0">
+                                    <input type="checkbox" name="permissions" value="10" id="seeListEmployees" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="seeListEmployees" class="form-check-label btn btn-sm btn-outline-primary w-100">Ver</label>
+                                </div>
+                                <div class="form-check p-0 mt-2">
+                                    <input type="checkbox" name="permissions" value="11" id="addEmployees" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="addEmployees" class="form-check-label btn btn-sm btn-outline-primary w-100">Agregar</label>
+                                </div>
+                                <div class="form-check p-0 mt-2">
+                                    <input type="checkbox" name="permissions" value="12" id="editEmployees" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="editEmployees" class="form-check-label btn btn-sm btn-outline-primary w-100">Editar</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="dropdown">
+                            <button class="btn dropdown-toggle w-100 d-flex justify-content-between align-items-center border-2 border-dark position-relative" style="--bs-btn-active-color: #fff; --bs-btn-active-bg: #212529;" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                                Grupos clientes
+                                <span class="position-absolute translate-middle badge rounded-pill bg-primary" style="top: -5%; left: 93%;"></span>
+                            </button>
+                            <div class="dropdown-menu p-2">
+                                <div class="form-check p-0">
+                                    <input type="checkbox" name="permissions" value="13" id="seeListClientsGroups" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="seeListClientsGroups" class="form-check-label btn btn-sm btn-outline-primary w-100">Ver</label>
+                                </div>
+                                <div class="form-check p-0 mt-2">
+                                    <input type="checkbox" name="permissions" value="14" id="addClientsGroups" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="addClientsGroups" class="form-check-label btn btn-sm btn-outline-primary w-100">Agregar</label>
+                                </div>
+                                <div class="form-check p-0 mt-2">
+                                    <input type="checkbox" name="permissions" value="15" id="editClientsGroups" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="editClientsGroups" class="form-check-label btn btn-sm btn-outline-primary w-100">Editar</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="dropdown">
+                            <button class="btn dropdown-toggle w-100 d-flex justify-content-between align-items-center border-2 border-dark position-relative" style="--bs-btn-active-color: #fff; --bs-btn-active-bg: #212529;" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                                Máquinas
+                                <span class="position-absolute translate-middle badge rounded-pill bg-primary" style="top: -5%; left: 93%;"></span>
+                            </button>
+                            <div class="dropdown-menu p-2">
+                                <div class="form-check p-0">
+                                    <input type="checkbox" name="permissions" value="16" id="seeListMachines" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="seeListMachines" class="form-check-label btn btn-sm btn-outline-primary w-100">Ver</label>
+                                </div>
+                                <div class="form-check p-0 mt-2">
+                                    <input type="checkbox" name="permissions" value="17" id="addMachines" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="addMachines" class="form-check-label btn btn-sm btn-outline-primary w-100">Agregar</label>
+                                </div>
+                                <div class="form-check p-0 mt-2">
+                                    <input type="checkbox" name="permissions" value="18" id="editMachines" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="editMachines" class="form-check-label btn btn-sm btn-outline-primary w-100">Editar</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="dropdown">
+                            <button class="btn dropdown-toggle w-100 d-flex justify-content-between align-items-center border-2 border-dark position-relative" style="--bs-btn-active-color: #fff; --bs-btn-active-bg: #212529;" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                                Órdenes
+                                <span class="position-absolute translate-middle badge rounded-pill bg-primary" style="top: -5%; left: 93%;"></span>
+                            </button>
+                            <div class="dropdown-menu p-2">
+                                <div class="form-check p-0">
+                                    <input type="checkbox" name="permissions" value="19" id="seeListOrders" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="seeListOrders" class="form-check-label btn btn-sm btn-outline-primary w-100">Ver</label>
+                                </div>
+                                <div class="form-check p-0 mt-2">
+                                    <input type="checkbox" name="permissions" value="20" id="addOrders" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="addOrders" class="form-check-label btn btn-sm btn-outline-primary w-100">Agregar</label>
+                                </div>
+                                <div class="form-check p-0 mt-2">
+                                    <input type="checkbox" name="permissions" value="21" id="editOrders" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="editOrders" class="form-check-label btn btn-sm btn-outline-primary w-100">Editar</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="dropdown">
+                            <button class="btn dropdown-toggle w-100 d-flex justify-content-between align-items-center border-2 border-dark position-relative" style="--bs-btn-active-color: #fff; --bs-btn-active-bg: #212529;" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                                Procesos
+                                <span class="position-absolute translate-middle badge rounded-pill bg-primary" style="top: -5%; left: 93%;"></span>
+                            </button>
+                            <div class="dropdown-menu p-2">
+                                <div class="form-check p-0">
+                                    <input type="checkbox" name="permissions" value="22" id="seeListProcesses" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="seeListProcesses" class="form-check-label btn btn-sm btn-outline-primary w-100">Ver</label>
+                                </div>
+                                <div class="form-check p-0 mt-2">
+                                    <input type="checkbox" name="permissions" value="23" id="addProcesses" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="addProcesses" class="form-check-label btn btn-sm btn-outline-primary w-100">Agregar</label>
+                                </div>
+                                <div class="form-check p-0 mt-2">
+                                    <input type="checkbox" name="permissions" value="24" id="editProcesses" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="editProcesses" class="form-check-label btn btn-sm btn-outline-primary w-100">Editar</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="dropdown">
+                            <button class="btn dropdown-toggle w-100 d-flex justify-content-between align-items-center border-2 border-dark position-relative" style="--bs-btn-active-color: #fff; --bs-btn-active-bg: #212529;" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                                Productos
+                                <span class="position-absolute translate-middle badge rounded-pill bg-primary" style="top: -5%; left: 93%;"></span>
+                            </button>
+                            <div class="dropdown-menu p-2">
+                                <div class="form-check p-0">
+                                    <input type="checkbox" name="permissions" value="25" id="seeListProducts" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="seeListProducts" class="form-check-label btn btn-sm btn-outline-primary w-100">Ver</label>
+                                </div>
+                                <div class="form-check p-0 mt-2">
+                                    <input type="checkbox" name="permissions" value="26" id="addProducts" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="addProducts" class="form-check-label btn btn-sm btn-outline-primary w-100">Agregar</label>
+                                </div>
+                                <div class="form-check p-0 mt-2">
+                                    <input type="checkbox" name="permissions" value="27" id="editProducts" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="editProducts" class="form-check-label btn btn-sm btn-outline-primary w-100">Editar</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="dropdown">
+                            <button class="btn dropdown-toggle w-100 d-flex justify-content-between align-items-center border-2 border-dark position-relative" style="--bs-btn-active-color: #fff; --bs-btn-active-bg: #212529;" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                                Roles
+                                <span class="position-absolute translate-middle badge rounded-pill bg-primary" style="top: -5%; left: 93%;"></span>
+                            </button>
+                            <div class="dropdown-menu p-2">
+                                <div class="form-check p-0">
+                                    <input type="checkbox" name="permissions" value="28" id="seeListRoles" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="seeListRoles" class="form-check-label btn btn-sm btn-outline-primary w-100">Ver</label>
+                                </div>
+                                <div class="form-check p-0 mt-2">
+                                    <input type="checkbox" name="permissions" value="29" id="addRoles" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="addRoles" class="form-check-label btn btn-sm btn-outline-primary w-100">Agregar</label>
+                                </div>
+                                <div class="form-check p-0 mt-2">
+                                    <input type="checkbox" name="permissions" value="30" id="editRoles" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="editRoles" class="form-check-label btn btn-sm btn-outline-primary w-100">Editar</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="dropdown">
+                            <button class="btn dropdown-toggle w-100 d-flex justify-content-between align-items-center border-2 border-dark position-relative" style="--bs-btn-active-color: #fff; --bs-btn-active-bg: #212529;" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                                Usuarios
+                                <span class="position-absolute translate-middle badge rounded-pill bg-primary" style="top: -5%; left: 93%;"></span>
+                            </button>
+                            <div class="dropdown-menu p-2">
+                                <div class="form-check p-0">
+                                    <input type="checkbox" name="permissions" value="31" id="seeListUsers" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="seeListUsers" class="form-check-label btn btn-sm btn-outline-primary w-100">Ver</label>
+                                </div>
+                                <div class="form-check p-0 mt-2">
+                                    <input type="checkbox" name="permissions" value="32" id="addUsers" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="addUsers" class="form-check-label btn btn-sm btn-outline-primary w-100">Agregar</label>
+                                </div>
+                                <div class="form-check p-0 mt-2">
+                                    <input type="checkbox" name="permissions" value="33" id="editUsers" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="editUsers" class="form-check-label btn btn-sm btn-outline-primary w-100">Editar</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="dropdown">
+                            <button class="btn dropdown-toggle w-100 d-flex justify-content-between align-items-center border-2 border-dark position-relative" style="--bs-btn-active-color: #fff; --bs-btn-active-bg: #212529;" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                                Tareas
+                                <span class="position-absolute translate-middle badge rounded-pill bg-primary" style="top: -5%; left: 93%;"></span>
+                            </button>
+                            <div class="dropdown-menu p-2">
+                                <div class="form-check p-0">
+                                    <input type="checkbox" name="permissions" value="34" id="tasksSalesExecutives" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="tasksSalesExecutives" class="form-check-label btn btn-sm btn-outline-primary w-100">Empleado de ventas</label>
+                                </div>
+                                <div class="form-check p-0 mt-2">
+                                    <input type="checkbox" name="permissions" value="35" id="tasksEmployees" class="form-check-input btn-check" autocomplete="off">
+                                    <label for="tasksEmployees" class="form-check-label btn btn-sm btn-outline-primary w-100">Empleado de área</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-check p-0">
+                            <input type="checkbox" name="permissions" value="36" id="collection" class="form-check-input btn-check" autocomplete="off">
+                            <label for="collection" class="form-check-label btn btn-outline-primary w-100 border-2">Cobranza</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-check p-0">
+                            <input type="checkbox" name="permissions" value="37" id="monitor" class="form-check-input btn-check" autocomplete="off">
+                            <label for="monitor" class="form-check-label btn btn-outline-primary w-100 border-2">Monitor</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-check p-0">
+                            <input type="checkbox" name="permissions" value="38" id="panel" class="form-check-input btn-check" autocomplete="off">
+                            <label for="panel" class="form-check-label btn btn-outline-primary w-100 border-2">Panel</label>
+                        </div>
+                    </div>
                 </div>
                 <div class="row my-4 m-0 justify-content-end">
                     <div class="col-md-auto p-0">
-                        <button class="btn btn-danger me-4" type="reset">Limpiar campos</button>
+                        <button class="btn btn-danger me-4" id="cleanSpan" type="reset">Limpiar campos</button>
                         <button class="btn btn-success" type="submit">Crear rol</button>
                     </div>
                 </div>
