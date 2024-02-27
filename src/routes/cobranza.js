@@ -25,6 +25,8 @@ router.post('/', isLoggedIn, async(req, res) =>{
     }
 
     const ordenes = await pool.query('SELECT * FROM cobranza WHERE cobranzaId IN (?)', [cobrar]);
+
+    console.log(ordenes);
     
     res.render('../views/cobranza/gestion', {ordenes});
 });

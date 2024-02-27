@@ -29,7 +29,7 @@
                             <tr>
                                 <th><input type="checkbox" value="{{cobranzaId}}" name="cobrar"></th>
                                 <th><a href="orders/info/{{orden_id}}">OR-{{orden_id}}</a></th>
-                                <th>{{fechaGen}}</th>
+                                <th>{{#formatDateEspanol fechaGen}} {{/formatDateEspanol}}</th>
                                 <th><a href="/clients/infoclient/{{clienteId}}">{{nombre}}</a></th>
                                 <th>${{total}}</th>
                                 <th>{{estatus}}</th>
@@ -78,7 +78,7 @@
                     {{#each ordenesNoListas}}
                         <tr>
                             <th><a href="orders/info/{{orden_id}}">OR-{{orden_id}}</a></th>
-                            <th>{{fechaGen}}</th>
+                            <th>{{#formatDateEspanol fechaGen}} {{/formatDateEspanol}}</th>
                             <th><a href="/clients/infoclient/{{clienteId}}">{{nombre}}</a></th>
                             <th>${{total}}</th>
                             <th>{{estatus}}</th>
