@@ -16,7 +16,7 @@
                         <div class="input-group">
                             <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-people-fill"></i></span>
                             <select name="forma" id="forma" class="form-select border-dark border-2">
-                                <option value="nada" {{#equalNR ordenes.0.tipoPago ""}} selected {{/equalNR}}>--Seleccionar--</option>
+                                <option value="" {{#equalNR ordenes.0.tipoPago ""}} selected {{/equalNR}}>--Seleccionar--</option>
                                 <option value="Credito" {{#equalNR ordenes.0.tipoPago "Credito"}} selected {{/equalNR}}>Credito</option>
                                 <option value="Contado" {{#equalNR ordenes.0.tipoPago "Contado"}} selected {{/equalNR}}>De contado</option>
                             </select>
@@ -27,8 +27,7 @@
                         <div class="input-group">
                             <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-text-left"></i></span>
                             <select name="pago" id="forma" class="form-select border-dark border-2">
-                                <option value="nada" {{#equalNR ordenes.0.estatusPago ""}} selected {{/equalNR}}>--Seleccionar--</option>
-                                <option value="Por cobrar" {{#equalNR ordenes.0.estatusPago "Por cobrar"}} selected {{/equalNR}}>Por cobrar</option>
+                                <option value="Por cobrar" {{#equalNR ordenes.0.estatusPago "Por cobrar"}} selected {{/equalNR}} {{#equalNR ordenes.0.estatusPago ""}} selected {{/equalNR}}>Por cobrar</option>
                                 <option value="Pagada" {{#equalNR ordenes.0.estatusPago "Pagada"}} selected {{/equalNR}}>Pagada</option>
                             </select>
                         </div>
