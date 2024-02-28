@@ -90,3 +90,15 @@ hbs.registerHelper('formatDateOnlyDate', function(date){
 hbs.registerHelper('timeago', function(timestamp){
     return format(timestamp, 'es_ES');
 });
+
+hbs.registerHelper('formatDateEspanol', function(date){
+    date = new Date(date);
+    fecha = date.toLocaleDateString('es-mx', {weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'});
+    return fecha;
+});
+
+hbs.registerHelper('formatDateString', function(date){
+    date = new Date(date);
+    fecha = date.toLocaleDateString('en-CA');
+    return fecha;
+});

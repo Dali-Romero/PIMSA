@@ -148,12 +148,20 @@ router.post('/terminar/:id', isLoggedIn, async(req, res) =>{
     };
     // Se actualiza cobranza
     if (restareas.length == 1){
-        var cobranza = await pool.query('SELECT actividadesCont, cobranzaId FROM cobranza WHERE orden_id = ?', [orden])
-        console.log(cobranza)
-        editTarea = {
-            actividadesCont: Number(cobranza[0].actividadesCont) + 1
-        };
-        await pool.query('UPDATE cobranza SET ? WHERE cobranzaId = ?', [editTarea, cobranza[0].cobranzaId])
+        var cobranza = await pool.query('SELECT actividadesCont, cobranzaId, actividadesTotal FROM cobranza WHERE orden_id = ?', [orden])
+
+        if (cobranza[0].actividadesCont == (cobranza[0].actividadesTotal + 1)){
+            editTarea = {
+                actividadesCont: Number(cobranza[0].actividadesCont) + 1,
+                estatus: 'Productos terminados.'
+            };
+        } else {
+            editTarea = {
+                actividadesCont: Number(cobranza[0].actividadesCont) + 1
+            };
+        }
+
+        await pool.query('UPDATE cobranza SET ? WHERE cobranzaId = ?', [editTarea, cobranza[0].cobranzaId]);
     }
     
     res.redirect('/tareas');
