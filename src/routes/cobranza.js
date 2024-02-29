@@ -5,12 +5,14 @@ const router = express.Router();
 
 router.get('/', isLoggedIn, async(req, res) =>{
     const ordenesListas = await pool.query("SELECT cobranza.*, ordenes.fechaGen, cotizaciones.total, clientes.nombre, clientes.clienteId FROM cobranza INNER JOIN ordenes ON ordenes.ordenId = cobranza.orden_id INNER JOIN cotizaciones ON cotizaciones.cotId = ordenes.cot_id INNER JOIN clientes ON cotizaciones.cliente_id = clientes.clienteId WHERE cobranza.actividadesTotal = cobranza.actividadesCont AND cobranza.estatus != 'Cobranza realizada'");
-    const ordenesNoListas = await pool.query("SELECT cobranza.*, ordenes.fechaGen, cotizaciones.total, clientes.nombre, clientes.clienteId FROM cobranza INNER JOIN ordenes ON ordenes.ordenId = cobranza.orden_id INNER JOIN cotizaciones ON cotizaciones.cotId = ordenes.cot_id INNER JOIN clientes ON cotizaciones.cliente_id = clientes.clienteId WHERE cobranza.actividadesTotal != cobranza.actividadesCont OR cobranza.estatus = 'Cobranza realizada'");
+    const ordenesNoListas = await pool.query("SELECT cobranza.*, ordenes.fechaGen, cotizaciones.total, clientes.nombre, clientes.clienteId FROM cobranza INNER JOIN ordenes ON ordenes.ordenId = cobranza.orden_id INNER JOIN cotizaciones ON cotizaciones.cotId = ordenes.cot_id INNER JOIN clientes ON cotizaciones.cliente_id = clientes.clienteId WHERE cobranza.actividadesTotal != cobranza.actividadesCont");
+    const ordenesTerminadas = await pool.query("SELECT cobranza.*, ordenes.fechaGen, cotizaciones.total, clientes.nombre, clientes.clienteId FROM cobranza INNER JOIN ordenes ON ordenes.ordenId = cobranza.orden_id INNER JOIN cotizaciones ON cotizaciones.cotId = ordenes.cot_id INNER JOIN clientes ON cotizaciones.cliente_id = clientes.clienteId WHERE cobranza.estatus = 'Cobranza realizada' AND cobranza.actividadesTotal = cobranza.actividadesCont");
 
     const conteoListas = ordenesListas.length;
     const conteoNoListas = ordenesNoListas.length;
+    const conteoTerminadas = ordenesTerminadas.length;
 
-    res.render('../views/cobranza/all', {ordenesListas, ordenesNoListas, conteoListas, conteoNoListas});
+    res.render('../views/cobranza/all', {ordenesListas, ordenesNoListas, ordenesTerminadas, conteoListas, conteoNoListas, conteoTerminadas});
 });
 
 router.post('/', isLoggedIn, async(req, res) =>{
