@@ -5,11 +5,11 @@
     <div class="row p-4">
         <div class="row justify-content-between p-0 m-0" id="machine-add-title">
             <div class="col-md-8 p-2">
-                <p class="fs-5 m-0">Ordenes preparadas: {{conteoListas}}</p>
+                <p class="fs-5 m-0"><button id="conteoListas" class="btn"><i class="bi bi-arrow-down-square" id="iconListas"></i></button>Ordenes preparadas: {{conteoListas}}</p>
             </div>
         </div>
     </div>
-    <div class="row p-4 pt-0">
+    <div class="row p-4 pt-0" id="Listas" style="display: none;">
         <form action="/cobranza" method="post">
             <div class="table-responsive-xxl p-0">
                 <table class="table table-striped align-middle text-center" id="tabla_tareas_listas">
@@ -58,11 +58,11 @@
     <div class="row p-4">
         <div class="row justify-content-between p-0 m-0" id="machine-add-title">
             <div class="col-md-8 p-2">
-                <p class="fs-5 m-0">Ordenes con actividades faltantes: {{conteoNoListas}}</p>
+                <p class="fs-5 m-0"><button id="conteoNoListas" class="btn"><i class="bi bi-arrow-down-square" id="iconNoListas"></i></button>Ordenes con actividades faltantes: {{conteoNoListas}}</p>
             </div>
         </div>
     </div>
-    <div class="row p-4 pt-0">
+    <div class="row p-4 pt-0" id="NoListas" style="display: none;">
         <div class="table-responsive-xxl p-0">
             <table class="table table-striped align-middle text-center" id="tabla_tareas_no_listas">
                 <thead>
@@ -76,6 +76,47 @@
                 </thead>
                 <tbody class="table-group-divider">
                     {{#each ordenesNoListas}}
+                        <tr>
+                            <th><a href="orders/info/{{orden_id}}">OR-{{orden_id}}</a></th>
+                            <th>{{#formatDateEspanol fechaGen}} {{/formatDateEspanol}}</th>
+                            <th><a href="/clients/infoclient/{{clienteId}}">{{nombre}}</a></th>
+                            <th>${{total}}</th>
+                            <th>{{estatus}}</th>
+                        </tr>
+                    {{else}}
+                        <tr>
+                            <td class="d-none"></td>
+                            <td class="d-none"></td>
+                            <td class="d-none"></td>
+                            <td class="d-none"></td>
+                            <td colspan="5">No hay tareas pendientes.</td>
+                        </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row p-4">
+        <div class="row justify-content-between p-0 m-0" id="machine-add-title">
+            <div class="col-md-8 p-2">
+                <p class="fs-5 m-0"><button id="conteoTerminadas" class="btn"><i class="bi bi-arrow-down-square" id="iconTerminadas"></i></button>Ordenes terminadas: {{conteoTerminadas}}</p>
+            </div>
+        </div>
+    </div>
+    <div class="row p-4 pt-0" id="Terminadas" style="display: none;">
+        <div class="table-responsive-xxl p-0">
+            <table class="table table-striped align-middle text-center" id="tabla_tareas_terminadas">
+                <thead>
+                    <tr>
+                        <th scope="col">No Orden</th>
+                        <th scope="col">Fecha de generacion</th>
+                        <th scope="col">Cliente</th>
+                        <th scope="col">Monto total</th>
+                        <th scope="col">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                    {{#each ordenesTerminadas}}
                         <tr>
                             <th><a href="orders/info/{{orden_id}}">OR-{{orden_id}}</a></th>
                             <th>{{#formatDateEspanol fechaGen}} {{/formatDateEspanol}}</th>
@@ -111,7 +152,7 @@
         language:{
             url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-MX.json',
         },
-    })
+    });
 
     var table = new DataTable('#tabla_tareas_no_listas', {
         paging: false,
@@ -125,5 +166,66 @@
         language:{
             url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-MX.json',
         },
+    });
+
+    var table = new DataTable('#tabla_tareas_terminadas', {
+        paging: false,
+        info: false,
+        padding: false,
+        order: [],
+        dom: '<"float-start pb-2"f><"button-add-machines"B><"button-add-machines-2 pb-2"B>',
+        columnDefs: [
+            {className: "dt-center", targets: "_all"}
+        ],
+        language:{
+            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-MX.json',
+        },
     })
+
+    document.addEventListener("DOMContentLoaded", function(){
+        var buttonListas = document.getElementById('conteoListas');
+        var listas = document.getElementById('Listas');
+        var iconListas = document.getElementById('iconListas');
+
+        var buttonNoListas = document.getElementById('conteoNoListas');
+        var noListas = document.getElementById('NoListas');
+        var iconNoListas = document.getElementById('iconNoListas');
+
+        var buttonTerminadas = document.getElementById('conteoTerminadas');
+        var terminadas = document.getElementById('Terminadas');
+        var iconTerminadas = document.getElementById('iconTerminadas')
+
+        buttonListas.addEventListener('click', function(){
+            iconListas.classList.toggle('bi-arrow-up-square');
+            iconListas.classList.toggle('bi-arrow-down-square');
+            if (listas.style.display === 'none'){
+                listas.style.display = 'block';
+            } else{
+                listas.style.display = 'none';
+            }
+        });
+
+        buttonNoListas.addEventListener('click', function(){
+            iconNoListas.classList.toggle('bi-arrow-up-square');
+            iconNoListas.classList.toggle('bi-arrow-down-square');
+            if (noListas.style.display === 'none'){
+                noListas.style.display = 'block';
+            } else{
+                noListas.style.display = 'none';
+            }
+        });
+
+        buttonTerminadas.addEventListener('click', function() {
+            iconTerminadas.classList.toggle('bi-arrow-up-square');
+            iconTerminadas.classList.toggle('bi-arrow-down-square');
+            if (terminadas.style.display === 'none'){
+                terminadas.style.display = 'block';
+            } else{
+                terminadas.style.display = 'none';
+            }
+        });
+        
+
+    });
+    
 </script>
