@@ -4,10 +4,10 @@ const { isLoggedIn, IsAuthorized } = require('../lib/auth');
 const router = express.Router();
 
 router.get('/', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, res) =>{
-    const area = req.user.rol_id; 
-    var tareasNuevas = await pool.query('SELECT * FROM tareas INNER JOIN ordenes ON tareas.orden_id = ordenes.ordenId INNER JOIN cotizaciones ON ordenes.cot_id = cotizaciones.cotId WHERE tareas.area_id = ' + area + ' AND tareas.terminada = false AND tareas.check = 0 AND tareas.activa = 1 ORDER BY ordenes.fechaGen');
-    var tareas = await pool.query('SELECT * FROM tareas INNER JOIN ordenes ON tareas.orden_id = ordenes.ordenId INNER JOIN cotizaciones ON ordenes.cot_id = cotizaciones.cotId WHERE tareas.area_id = ' + area + ' AND tareas.terminada = false AND tareas.check = 1 AND tareas.activa = 1 AND (tareas.notes NOT LIKE "Error:%" OR tareas.notes IS NULL) ORDER BY ordenes.fechaGen');
-    var tareasError = await pool.query('SELECT * FROM tareas INNER JOIN ordenes ON tareas.orden_id = ordenes.ordenId INNER JOIN cotizaciones ON ordenes.cot_id = cotizaciones.cotId WHERE tareas.area_id = ' + area + ' AND tareas.terminada = false AND tareas.check = 1 AND tareas.activa = 1 AND tareas.notes LIKE "Error:%" ORDER BY ordenes.fechaGen');
+    const rol = req.user.rol_id; 
+    var tareasNuevas = await pool.query('SELECT * FROM tareas INNER JOIN ordenes ON tareas.orden_id = ordenes.ordenId INNER JOIN cotizaciones ON ordenes.cot_id = cotizaciones.cotId INNER JOIN areasroles ON tareas.area_id = areasroles.area_id WHERE areasroles.rol_id = ' + rol + ' AND tareas.terminada = false AND tareas.check = 0 AND tareas.activa = 1 ORDER BY ordenes.fechaGen');
+    var tareas = await pool.query('SELECT * FROM tareas INNER JOIN ordenes ON tareas.orden_id = ordenes.ordenId INNER JOIN cotizaciones ON ordenes.cot_id = cotizaciones.cotId INNER JOIN areasroles ON tareas.area_id = areasroles.area_id WHERE areasroles.rol_id = ' + rol + ' AND tareas.terminada = false AND tareas.check = 1 AND tareas.activa = 1 AND (tareas.notes NOT LIKE "Error:%" OR tareas.notes IS NULL) ORDER BY ordenes.fechaGen');
+    var tareasError = await pool.query('SELECT * FROM tareas INNER JOIN ordenes ON tareas.orden_id = ordenes.ordenId INNER JOIN cotizaciones ON ordenes.cot_id = cotizaciones.cotId INNER JOIN areasroles ON tareas.area_id = areasroles.area_id WHERE areasroles.rol_id = ' + rol + ' AND tareas.terminada = false AND tareas.check = 1 AND tareas.activa = 1 AND tareas.notes LIKE "Error:%" ORDER BY ordenes.fechaGen');
     const conteoNuevos = tareasNuevas.length;
     const conteo = tareas.length + tareasError.length;
     for (var i= 0; i < tareasNuevas.length; i++){
@@ -27,10 +27,10 @@ router.get('/', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, res) =>{
 });
 
 router.get('/todas', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, res) =>{
-    const area = req.user.rol_id; 
-    var tareasNuevas = await pool.query('SELECT * FROM tareas INNER JOIN ordenes ON tareas.orden_id = ordenes.ordenId INNER JOIN cotizaciones ON ordenes.cot_id = cotizaciones.cotId WHERE tareas.area_id = ' + area + ' AND tareas.terminada = false AND tareas.check = 0 AND tareas.activa = 1 ORDER BY ordenes.fechaGen AND tareas.tareaId');
-    var tareas = await pool.query('SELECT tareas.*, ordenes.fechaGen, ordenes.fechaEnt FROM tareas INNER JOIN ordenes ON tareas.orden_id = ordenes.ordenId INNER JOIN cotizaciones ON ordenes.cot_id = cotizaciones.cotId WHERE tareas.area_id = ' + area + ' AND (tareas.notes NOT LIKE "Error:%" OR tareas.notes IS NULL) ORDER BY ordenes.fechaGen AND tareas.tareaId');
-    var tareasError = await pool.query('SELECT tareas.*, ordenes.fechaGen, ordenes.fechaEnt FROM tareas INNER JOIN ordenes ON tareas.orden_id = ordenes.ordenId INNER JOIN cotizaciones ON ordenes.cot_id = cotizaciones.cotId WHERE tareas.area_id = ' + area + ' AND tareas.notes LIKE "Error:%" ORDER BY ordenes.fechaGen AND tareas.tareaId')
+    const rol = req.user.rol_id; 
+    var tareasNuevas = await pool.query('SELECT * FROM tareas INNER JOIN ordenes ON tareas.orden_id = ordenes.ordenId INNER JOIN cotizaciones ON ordenes.cot_id = cotizaciones.cotId INNER JOIN areasroles ON tareas.area_id = areasroles.area_id WHERE areasroles.rol_id = ' + rol + ' AND tareas.terminada = false AND tareas.check = 0 AND tareas.activa = 1 ORDER BY ordenes.fechaGen AND tareas.tareaId');
+    var tareas = await pool.query('SELECT tareas.*, ordenes.fechaGen, ordenes.fechaEnt FROM tareas INNER JOIN ordenes ON tareas.orden_id = ordenes.ordenId INNER JOIN cotizaciones ON ordenes.cot_id = cotizaciones.cotId INNER JOIN areasroles ON tareas.area_id = areasroles.area_id WHERE areasroles.rol_id = ' + rol + ' AND (tareas.notes NOT LIKE "Error:%" OR tareas.notes IS NULL) ORDER BY ordenes.fechaGen AND tareas.tareaId');
+    var tareasError = await pool.query('SELECT tareas.*, ordenes.fechaGen, ordenes.fechaEnt FROM tareas INNER JOIN ordenes ON tareas.orden_id = ordenes.ordenId INNER JOIN cotizaciones ON ordenes.cot_id = cotizaciones.cotId INNER JOIN areasroles ON tareas.area_id = areasroles.area_id WHERE areasroles.rol_id = ' + rol + ' AND tareas.notes LIKE "Error:%" ORDER BY ordenes.fechaGen AND tareas.tareaId')
     const conteoNuevos = tareasNuevas.length;
     const conteo = tareas.length + tareasError.length;
     console.log(tareas)
@@ -52,8 +52,8 @@ router.get('/todas', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, res)
 });
 
 router.get('/historial', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, res) =>{
-    const area = req.user.rol_id; 
-    var tareas = await pool.query('SELECT * FROM tareas INNER JOIN ordenes ON tareas.orden_id = ordenes.ordenId INNER JOIN cotizaciones ON ordenes.cot_id = cotizaciones.cotId WHERE tareas.area_id = ' + area + ' AND tareas.terminada = true ORDER BY ordenes.fechaGen');
+    const rol = req.user.rol_id; 
+    var tareas = await pool.query('SELECT * FROM tareas INNER JOIN ordenes ON tareas.orden_id = ordenes.ordenId INNER JOIN cotizaciones ON ordenes.cot_id = cotizaciones.cotId INNER JOIN areasroles ON tareas.area_id = areasroles.area_id WHERE areasroles.rol_id = ' + rol + ' AND tareas.terminada = true ORDER BY ordenes.fechaGen');
     const conteo = tareas.length;
     for (var i= 0; i < tareas.length; i++){
         tareas[i].fechaGen = tareas[i].fechaGen.toLocaleDateString("es-MX", {weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'});
@@ -64,12 +64,11 @@ router.get('/historial', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, 
 });
 
 router.get('/historial/:id', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, res) =>{
-    const area = req.user.rol_id;
     const {id} = req.params;
     const machines = await pool.query('SELECT * FROM maquinas')
     const users = await pool.query('SELECT * FROM usuarios');
     const tareas = await pool.query('SELECT * FROM tareas INNER JOIN ordenes ON tareas.orden_id = ordenes.ordenId INNER JOIN cotizaciones ON ordenes.cot_id = cotizaciones.cotId WHERE tareas.tareaId = ?', [id]);
-    res.render('../views/tareas/regresarTareas', {tarea: tareas[0], users, area, machines});
+    res.render('../views/tareas/regresarTareas', {tarea: tareas[0], users, machines});
 });
 
 router.post('/restore/:id', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, res) =>{
@@ -108,12 +107,11 @@ router.get('/enterado/:id', isLoggedIn, IsAuthorized('tasksEmployees'), async(re
 });
 
 router.get('/:id', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, res) =>{
-    const area = req.user.rol_id;
     const {id} = req.params;
     const machines = await pool.query('SELECT * FROM maquinas')
     const users = await pool.query('SELECT * FROM usuarios');
     const tareas = await pool.query('SELECT * FROM tareas INNER JOIN ordenes ON tareas.orden_id = ordenes.ordenId INNER JOIN cotizaciones ON ordenes.cot_id = cotizaciones.cotId WHERE tareas.tareaId = ?', [id]);
-    res.render('../views/tareas/terminarTareas', {tarea: tareas[0], users, area, machines});
+    res.render('../views/tareas/terminarTareas', {tarea: tareas[0], users, machines});
 });
 
 router.post('/terminar/:id', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, res) =>{
