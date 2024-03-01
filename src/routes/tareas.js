@@ -1,9 +1,9 @@
 const express = require('express');
 const pool = require('../database');
-const { isLoggedIn } = require('../lib/auth');
+const { isLoggedIn, IsAuthorized } = require('../lib/auth');
 const router = express.Router();
 
-router.get('/', isLoggedIn, async(req, res) =>{
+router.get('/', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, res) =>{
     const area = req.user.rol_id; 
     var tareasNuevas = await pool.query('SELECT * FROM tareas INNER JOIN ordenes ON tareas.orden_id = ordenes.ordenId INNER JOIN cotizaciones ON ordenes.cot_id = cotizaciones.cotId WHERE tareas.area_id = ' + area + ' AND tareas.terminada = false AND tareas.check = 0 AND tareas.activa = 1 ORDER BY ordenes.fechaGen');
     var tareas = await pool.query('SELECT * FROM tareas INNER JOIN ordenes ON tareas.orden_id = ordenes.ordenId INNER JOIN cotizaciones ON ordenes.cot_id = cotizaciones.cotId WHERE tareas.area_id = ' + area + ' AND tareas.terminada = false AND tareas.check = 1 AND tareas.activa = 1 AND (tareas.notes NOT LIKE "Error:%" OR tareas.notes IS NULL) ORDER BY ordenes.fechaGen');
@@ -26,7 +26,7 @@ router.get('/', isLoggedIn, async(req, res) =>{
     res.render('../views/tareas/tareasActivas', {tareasNuevas, tareas, tareasError, conteoNuevos, conteo, users});
 });
 
-router.get('/todas', isLoggedIn, async(req, res) =>{
+router.get('/todas', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, res) =>{
     const area = req.user.rol_id; 
     var tareasNuevas = await pool.query('SELECT * FROM tareas INNER JOIN ordenes ON tareas.orden_id = ordenes.ordenId INNER JOIN cotizaciones ON ordenes.cot_id = cotizaciones.cotId WHERE tareas.area_id = ' + area + ' AND tareas.terminada = false AND tareas.check = 0 AND tareas.activa = 1 ORDER BY ordenes.fechaGen AND tareas.tareaId');
     var tareas = await pool.query('SELECT tareas.*, ordenes.fechaGen, ordenes.fechaEnt FROM tareas INNER JOIN ordenes ON tareas.orden_id = ordenes.ordenId INNER JOIN cotizaciones ON ordenes.cot_id = cotizaciones.cotId WHERE tareas.area_id = ' + area + ' AND (tareas.notes NOT LIKE "Error:%" OR tareas.notes IS NULL) ORDER BY ordenes.fechaGen AND tareas.tareaId');
@@ -51,7 +51,7 @@ router.get('/todas', isLoggedIn, async(req, res) =>{
     res.render('../views/tareas/todasTareas', {tareasNuevas, tareas, tareasError, conteoNuevos, conteo, users});
 });
 
-router.get('/historial', isLoggedIn, async(req, res) =>{
+router.get('/historial', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, res) =>{
     const area = req.user.rol_id; 
     var tareas = await pool.query('SELECT * FROM tareas INNER JOIN ordenes ON tareas.orden_id = ordenes.ordenId INNER JOIN cotizaciones ON ordenes.cot_id = cotizaciones.cotId WHERE tareas.area_id = ' + area + ' AND tareas.terminada = true ORDER BY ordenes.fechaGen');
     const conteo = tareas.length;
@@ -63,7 +63,7 @@ router.get('/historial', isLoggedIn, async(req, res) =>{
     res.render('../views/tareas/historialTareas', {tareas, conteo, users});
 });
 
-router.get('/historial/:id', isLoggedIn, async(req, res) =>{
+router.get('/historial/:id', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, res) =>{
     const area = req.user.rol_id;
     const {id} = req.params;
     const machines = await pool.query('SELECT * FROM maquinas')
@@ -72,7 +72,7 @@ router.get('/historial/:id', isLoggedIn, async(req, res) =>{
     res.render('../views/tareas/regresarTareas', {tarea: tareas[0], users, area, machines});
 });
 
-router.post('/restore/:id', isLoggedIn, async(req, res) =>{
+router.post('/restore/:id', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, res) =>{
     const {id} = req.params;
     const info = req.body;
     var tarea = await pool.query('SELECT * FROM tareas WHERE tareaId = ?', [id]);
@@ -97,7 +97,7 @@ router.post('/restore/:id', isLoggedIn, async(req, res) =>{
     res.redirect('/tareas'); 
 });
 
-router.get('/enterado/:id', isLoggedIn, async(req, res) =>{
+router.get('/enterado/:id', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, res) =>{
     var editTarea = {
         check: 1,
         usuario_id: req.user.usuarioId
@@ -107,7 +107,7 @@ router.get('/enterado/:id', isLoggedIn, async(req, res) =>{
     res.redirect('/tareas');
 });
 
-router.get('/:id', isLoggedIn, async(req, res) =>{
+router.get('/:id', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, res) =>{
     const area = req.user.rol_id;
     const {id} = req.params;
     const machines = await pool.query('SELECT * FROM maquinas')
@@ -116,7 +116,7 @@ router.get('/:id', isLoggedIn, async(req, res) =>{
     res.render('../views/tareas/terminarTareas', {tarea: tareas[0], users, area, machines});
 });
 
-router.post('/terminar/:id', isLoggedIn, async(req, res) =>{
+router.post('/terminar/:id', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, res) =>{
     const {id} = req.params;
     var ordenId = await pool.query('SELECT tareaorden_id, orden_id FROM tareas WHERE tareaId = ' + id);
     var orden = ordenId[0].orden_id
@@ -159,7 +159,7 @@ router.post('/terminar/:id', isLoggedIn, async(req, res) =>{
     res.redirect('/tareas');
 });
 
-router.get('/create/:id', isLoggedIn, async(req, res) =>{
+router.get('/create/:id', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, res) =>{
     const {id} = req.params;
     var productos = await pool.query('SELECT productoscotizados.producto_id, productoscotizados.prodCotizadoId FROM productoscotizados INNER JOIN ordenes ON ordenes.cot_id = productoscotizados.cot_id WHERE ordenes.ordenId = ?', [id]);
     console.log(productos);
@@ -223,7 +223,7 @@ router.get('/create/:id', isLoggedIn, async(req, res) =>{
     res.redirect('/tareas');
 });
 
-router.get('/info/:id', isLoggedIn, async(req, res) =>{
+router.get('/info/:id', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, res) =>{
     var {id} = req.params;
     var fueraCatalogo = await pool.query('SELECT tareasorden.fueracatalogo, tareasorden.cotizadoId FROM tareasorden INNER JOIN tareas ON tareas.tareaorden_id = tareasorden.tareaOrdenId WHERE tareas.tareaId = ?', [Number(id)]);
     if (fueraCatalogo[0].fueracatalogo){

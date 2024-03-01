@@ -1,12 +1,12 @@
 const express = require('express');
 const pool = require('../database.js');
 const XlsxPopulate = require('xlsx-populate');
-const { isLoggedIn } = require('../lib/auth.js');
+const { isLoggedIn, IsAuthorized } = require('../lib/auth.js');
 const { filterOthers, filterOthersOutCatalog } = require('../lib/helpers.js');
 
 const router = express.Router();
 
-router.get('/', isLoggedIn, async (req, res)=>{
+router.get('/', isLoggedIn, IsAuthorized('panel'), async (req, res)=>{
     // información para la tablas
     const cotizaciones = await pool.query('SELECT Cotizaciones.cotId, Cotizaciones.fecha, Cotizaciones.total, Cotizaciones.estatus, Clientes.clienteId, Clientes.nombre FROM (Cotizaciones INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId) ORDER BY Cotizaciones.fecha DESC LIMIT 15;');
     const ordenes = await pool.query('SELECT Ordenes.ordenId, Ordenes.fechaGen, Ordenes.terminada, Cotizaciones.total, Clientes.clienteId, Clientes.nombre FROM ((Ordenes INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId) INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId) ORDER BY Ordenes.fechaGen DESC LIMIT 15;');
@@ -46,7 +46,7 @@ router.get('/', isLoggedIn, async (req, res)=>{
     res.render('dashboard/dashboard', {cotizaciones: cotizaciones, ordenes: ordenes, tarjetas: tarjetas, filtroProductos: filtroProductos, filtroClientes: filtroClientes, filtroVendedores: filtroVendedores, tareas: tareas});
 })
 
-router.get('/graphs', isLoggedIn, async (req, res) =>{
+router.get('/graphs', isLoggedIn, IsAuthorized('panel'), async (req, res) =>{
     // informacion para las gráficas
     const infoG1 = await pool.query('SELECT areas.nombre AS nombre, COUNT(Empleados.empleadoId) AS total FROM ((Empleados INNER JOIN Areas ON Empleados.area_id = Areas.areaId) INNER JOIN Usuarios ON Empleados.empleadoId = Usuarios.empleado_id) WHERE Areas.activo = 1 AND usuarios.activo = 1 GROUP BY areas.nombre HAVING total > 0;');
     const infoG2 = await pool.query('SELECT estatus, COUNT(cotId) AS total FROM Cotizaciones WHERE MONTH(fecha) = MONTH(NOW()) AND YEAR(fecha) = YEAR(NOW()) GROUP BY MONTH(fecha), estatus;');
@@ -75,7 +75,7 @@ router.get('/graphs', isLoggedIn, async (req, res) =>{
     res.send({infoGraphs: infoGraphs});
 })
 
-router.post('/salesEmployeesFilter', isLoggedIn, async (req, res) => {
+router.post('/salesEmployeesFilter', isLoggedIn, IsAuthorized('panel'), async (req, res) => {
     const {dateFilter, unitFilter } = req.body;
     let infoFiltrada = {};
     if (dateFilter == 'global') {
@@ -117,7 +117,7 @@ router.post('/salesEmployeesFilter', isLoggedIn, async (req, res) => {
     res.send({infoFiltrada: infoFiltrada});
 });
 
-router.post('/clientsFilter', isLoggedIn, async (req, res) => {
+router.post('/clientsFilter', isLoggedIn, IsAuthorized('panel'), async (req, res) => {
     const {dateFilter } = req.body;
     let infoFiltrada = {};
     if(dateFilter === 'global'){
@@ -130,7 +130,7 @@ router.post('/clientsFilter', isLoggedIn, async (req, res) => {
     res.send({infoFiltrada: infoFiltrada});
 });
 
-router.post('/productsFilter', isLoggedIn, async (req, res) => {
+router.post('/productsFilter', isLoggedIn, IsAuthorized('panel'), async (req, res) => {
     const {dateFilter, unitFilter } = req.body;
     let infoFiltrada = {};
     if (dateFilter == 'global') {
@@ -173,7 +173,7 @@ router.post('/productsFilter', isLoggedIn, async (req, res) => {
     res.send({infoFiltrada: infoFiltrada});
 });
 
-router.post('/report', isLoggedIn, async (req, res) => {
+router.post('/report', isLoggedIn, IsAuthorized('reportes'), async (req, res) => {
     const body = req.body;
     let secciones = body.sectionsReport;
     let resultado = [];

@@ -1,31 +1,24 @@
 const express = require('express');
-const hbs = require('handlebars');
-const fs = require('fs');
-const {Stream} = require('stream');
-const path = require('path');
-const nodemailer = require('nodemailer');
 const pool = require('../database.js');
-const {moneda, dimensiones, createPdf} = require('../lib/helpers.js');
-const { isLoggedIn } = require('../lib/auth.js');
+const { isLoggedIn, IsAuthorized } = require('../lib/auth.js');
 require('../lib/handlebars.js');
 
 const router = express.Router();
 
-
-router.get('/', isLoggedIn, async (req, res)=>{
+router.get('/', isLoggedIn, IsAuthorized('tasksSalesExecutives'), async (req, res)=>{
     const cotizaciones = await pool.query('SELECT Cotizaciones.*, Clientes.clienteId, Clientes.nombre FROM (Cotizaciones INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId) WHERE Cotizaciones.estatus <> "Ordenada";');
     res.render('extask/list', {cotizaciones: cotizaciones});
 })
 
 
-router.get('/history', isLoggedIn, async (req, res)=>{
+router.get('/history', isLoggedIn, IsAuthorized('tasksSalesExecutives'), async (req, res)=>{
     const cotizaciones = await pool.query('SELECT Cotizaciones.*, Clientes.clienteId, Clientes.nombre FROM (Cotizaciones INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId) WHERE estatus = "Ordenada";');
     const usuario = await pool.query('SELECT * FROM Usuarios');
     const orden = await pool.query('SELECT Ordenes. *, Ordenes.cot_id FROM  Ordenes INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId'); 
     res.render('extask/history', {cotizaciones: cotizaciones, usuario: usuario, orden: orden});
 })
 
-router.post('/generateOrder/:id', async (req, res)=>{
+router.post('/generateOrder/:id', isLoggedIn, IsAuthorized('addOrders'), async (req, res)=>{
     const {id} = req.params;
     const body = req.body;
     const usruarioId = req.user.usuarioId;

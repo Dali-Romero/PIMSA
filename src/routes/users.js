@@ -1,11 +1,11 @@
 const express = require('express');
 const pool = require('../database');
-const { isLoggedIn } = require('../lib/auth');
+const { isLoggedIn, IsAuthorized } = require('../lib/auth');
 const bcrypt = require('bcryptjs');
 const router = express.Router();
 
 
-router.get('/', isLoggedIn, async (req, res) =>{
+router.get('/', isLoggedIn, IsAuthorized('seeListUsers'), async (req, res) =>{
     const users = await pool.query('SELECT * FROM usuarios');
     const roles = await pool.query('SELECT * FROM roles');
     const empleados = await pool.query('SELECT * FROM empleados');
@@ -21,13 +21,13 @@ router.get('/', isLoggedIn, async (req, res) =>{
     res.render('../views/users/allUsers', {users, roles, empleados, activos, inactivos});
 });
 
-router.get('/add', isLoggedIn, async (req, res) =>{
+router.get('/add', isLoggedIn, IsAuthorized('addUsers'), async (req, res) =>{
     const roles = await pool.query('SELECT * FROM roles WHERE activo = 1');
     const empleados = await pool.query('SELECT * FROM empleados');
     res.render('../views/users/newUser', {roles, empleados});
 });
 
-router.post('/add', isLoggedIn, async (req, res)=>{
+router.post('/add', isLoggedIn, IsAuthorized('addUsers'), async (req, res)=>{
     const user = req.body;
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(user.pass, salt);
@@ -54,7 +54,7 @@ router.post('/add', isLoggedIn, async (req, res)=>{
     }
 });
 
-router.get('/edit/:id', isLoggedIn, async(req, res) =>{
+router.get('/edit/:id', isLoggedIn, IsAuthorized('editUsers'), async(req, res) =>{
     const {id} = req.params;
     const users = await pool.query('SELECT * FROM usuarios WHERE usuarioId = ?', [id]);
     const roles = await pool.query('SELECT * FROM roles WHERE activo = 1');
@@ -62,7 +62,7 @@ router.get('/edit/:id', isLoggedIn, async(req, res) =>{
     res.render('../views/users/editUser', {user: users[0], roles, empleados});
 });
 
-router.post('/edit/:id', isLoggedIn, async(req, res) =>{
+router.post('/edit/:id', isLoggedIn, IsAuthorized('editUsers'), async(req, res) =>{
     const user = req.body;
     const {id} = req.params;
     var editUser;

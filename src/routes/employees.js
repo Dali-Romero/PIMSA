@@ -1,9 +1,9 @@
 const express = require('express');
 const pool = require('../database');
-const { isLoggedIn } = require('../lib/auth');
+const { isLoggedIn, IsAuthorized } = require('../lib/auth');
 const router = express.Router();
 
-router.get('/', isLoggedIn, async (req, res) =>{
+router.get('/', isLoggedIn, IsAuthorized('seeListEmployees'), async (req, res) =>{
     const employees = await pool.query('SELECT * FROM empleados ORDER BY numeroNomina AND activo desc');
     const rol = await pool.query('SELECT * FROM roles');
     const area = await pool.query('SELECT * FROM areas');
@@ -19,13 +19,13 @@ router.get('/', isLoggedIn, async (req, res) =>{
     res.render('../views/employees/allEmployees', {employees, rol, area, activos, inactivos});
 });
 
-router.get('/add', isLoggedIn, async (req, res) =>{
+router.get('/add', isLoggedIn, IsAuthorized('addEmployees'), async (req, res) =>{
     const rol = await pool.query('SELECT * FROM roles');
     const area = await pool.query('SELECT * FROM areas');
     res.render('../views/employees/newEmployee', {rol, area});
 });
 
-router.post('/add', isLoggedIn, async (req, res)=>{
+router.post('/add', isLoggedIn, IsAuthorized('addEmployees'), async (req, res)=>{
     const employee = req.body;
     const datos = await pool.query('SELECT * FROM empleados WHERE curp = ? OR rfc = ? OR nss = ? OR numeroNomina = ?', [employee.curp, employee.rfc, employee.nss, employee.nomina]);
     if (datos.length >= 1){
@@ -109,7 +109,7 @@ router.post('/add', isLoggedIn, async (req, res)=>{
     }
 });
 
-router.get('/edit/:id', isLoggedIn, async (req, res) =>{
+router.get('/edit/:id', isLoggedIn, IsAuthorized('editEmployees'), async (req, res) =>{
     const {id} = req.params;
     const rol = await pool.query('SELECT * FROM roles');
     const area = await pool.query('SELECT * FROM areas');
@@ -122,7 +122,7 @@ router.get('/edit/:id', isLoggedIn, async (req, res) =>{
     res.render('../views/employees/editEmployee', {employee: employees[0], rol, area});
 });
 
-router.post('/edit/:id', isLoggedIn, async (req, res) =>{
+router.post('/edit/:id', isLoggedIn, IsAuthorized('editEmployees'), async (req, res) =>{
     const {id} = req.params;
     const employee = req.body;
     var newEmployee = {
@@ -198,7 +198,7 @@ router.post('/edit/:id', isLoggedIn, async (req, res) =>{
     res.redirect('/employees/info/'+id);
 });
 
-router.get('/info/:id', isLoggedIn, async (req, res)=>{
+router.get('/info/:id', isLoggedIn, IsAuthorized('seeListEmployees'), async (req, res)=>{
     const {id} = req.params;
     const rol = await pool.query('SELECT * FROM roles');
     const area = await pool.query('SELECT * FROM areas');
@@ -212,7 +212,7 @@ router.get('/info/:id', isLoggedIn, async (req, res)=>{
     res.render('../views/employees/completeInfoEmployee', {employee: employees[0], rol, area, fechas});
 }); 
 
-router.get('/history/:id', isLoggedIn, async (req, res)=>{
+router.get('/history/:id', isLoggedIn, IsAuthorized('seeListEmployees'), async (req, res)=>{
     const {id} = req.params;
     const rol = await pool.query('SELECT * FROM roles');
     const area = await pool.query('SELECT * FROM areas');
@@ -227,7 +227,7 @@ router.get('/history/:id', isLoggedIn, async (req, res)=>{
     res.render('../views/employees/history', {total, nombreComp: nombreComp[0].nombreComp, employees, rol, area, users});
 });
 
-router.get('/history/:id/view/:idHistory', isLoggedIn, async (req, res)=>{
+router.get('/history/:id/view/:idHistory', isLoggedIn, IsAuthorized('seeListEmployees'), async (req, res)=>{
     const {id, idHistory} = req.params;
     const rol = await pool.query('SELECT * FROM roles');
     const area = await pool.query('SELECT * FROM areas');
@@ -244,7 +244,7 @@ router.get('/history/:id/view/:idHistory', isLoggedIn, async (req, res)=>{
     res.render('../views/employees/viewHistory', {employee: employees[0], fechas, rol, area, users});
 });
 
-router.get('/history/:id/view/:idHistory/restore', isLoggedIn, async (req, res)=>{
+router.get('/history/:id/view/:idHistory/restore', isLoggedIn, IsAuthorized('editEmployees'), async (req, res)=>{
     const {id, idHistory} = req.params;
     const employeeHistory = await pool.query('SELECT * FROM historialempleados WHERE empleado_id = ? AND cambioId = ?', [id, idHistory]);
     const employeeAct = await pool.query('SELECT * FROM empleados WHERE empleadoId = ?', [id]);

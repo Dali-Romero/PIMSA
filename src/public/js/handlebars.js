@@ -33,3 +33,16 @@ Handlebars.registerHelper('formatNumberMeasure', function(n){
         return Number(Number.parseFloat(n).toFixed(3));
     }
 });
+
+Handlebars.registerHelper('checkPermission', function (v1, v2, options){
+    const permissions = v1;
+    const allowed = permissions.find(function(object){
+        return object.permiso == v2;
+    });
+    
+    if (allowed) {
+        return options.fn(this);
+    } else {
+        return options.inverse(this);
+    }
+})

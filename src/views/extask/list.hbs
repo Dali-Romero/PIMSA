@@ -22,17 +22,37 @@
                 {{#each cotizaciones}}
                     <tr>
                         <th scope="row">
-                            <a class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover" href="/quotations/info/{{cotId}}">
-                                COT-{{cotId}}
-                            </a>
+                            {{#checkPermission ../user.permisos "seeListQuotations"}}
+                                <a class="icon-link icon-link-hover link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0); --bs-link-hover-color-rgb: 237, 10, 63;" href="quotations/info/{{cotId}}">
+                                    <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
+                                    COT-{{cotId}}
+                                </a>
+                            {{else}}
+                                <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Acceso denegado">
+                                    <a class="icon-link link-underline link-underline-opacity-0 pe-none" style="--bs-link-opacity: .80;">
+                                        <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
+                                        COT-{{cotId}}
+                                    </a>
+                                </span>
+                            {{/checkPermission}}
                         </th>
                         <td>{{formatDateShort fecha}}</td>
                         <td class="text-start">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <a  class="link-offset-2 link-offset-2-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover" href="/clients/editclient/{{clienteId}}">
-                                        {{nombre}}
-                                    </a>
+                                    {{#checkPermission ../user.permisos "seeListClients"}}
+                                        <a class="icon-link icon-link-hover link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0); --bs-link-hover-color-rgb: 237, 10, 63;" href="clients/infoClient/{{clienteId}}">
+                                            <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
+                                            {{nombre}}
+                                        </a>
+                                    {{else}}
+                                        <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Acceso denegado">
+                                            <a class="icon-link link-underline link-underline-opacity-0 pe-none" style="--bs-link-opacity: .80;">
+                                                <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
+                                                {{nombre}}
+                                            </a>
+                                        </span>
+                                    {{/checkPermission}}
                                 </div>
                             </div>
                         </td>
@@ -50,7 +70,15 @@
                             <td class="text-warning">En espera</td>
                         {{/equal}}
                         <td>{{empleado}}</td>
-                        <td><button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#modalGenerateOrder" {{#equalOR estatus "Cancelada" "Ordenada"}} disabled {{/equalOR}}><i class="bi bi-journal-check"></i> Generar orden</button></td>
+                        <td>
+                            {{#checkPermission ../user.permisos "addOrders"}}
+                                <button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#modalGenerateOrder" {{#equalOR estatus "Cancelada" "Ordenada"}} disabled {{/equalOR}}><i class="bi bi-journal-check"></i> Generar orden</button>
+                            {{else}}
+                                <span class="d-inline-block w-100" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Acceso denegado">
+                                    <button class="btn btn-success" type="button" tabindex="-1" aria-disabled="true" disabled><i class="bi bi-journal-check"></i> Generar orden</button>
+                                </span>
+                            {{/checkPermission}}
+                        </td>
                     </tr>
                 {{else}}
                     <tr>
@@ -67,7 +95,6 @@
         </table>
     </div>
 </div>
-
 
 {{!-- Modal assign areas to processes --}}
 <div class="modal fade" id="modalGenerateOrder" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">

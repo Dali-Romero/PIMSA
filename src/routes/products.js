@@ -1,20 +1,20 @@
 const express = require('express');
 const pool = require('../database');
-const { isLoggedIn } = require('../lib/auth');
+const { isLoggedIn, IsAuthorized } = require('../lib/auth');
 const router = express.Router();
 
-router.get('/', isLoggedIn, async (req, res) =>{
+router.get('/', isLoggedIn, IsAuthorized('seeListProducts'), async (req, res) =>{
     const products = await pool.query('SELECT * FROM productos');
     const procesos = await pool.query('SELECT * FROM procesos');
     res.render('../views/products/allProducts', {products, procesos});
 });
 
-router.get('/add', isLoggedIn, async (req, res) =>{
+router.get('/add', isLoggedIn, IsAuthorized('addProducts'), async (req, res) =>{
     const procesos = await pool.query('SELECT * FROM procesos');
     res.render('../views/products/addProduct', {procesos});
 });
 
-router.post('/add', isLoggedIn, async (req, res) =>{
+router.post('/add', isLoggedIn, IsAuthorized('addProducts'), async (req, res) =>{
     var product = req.body;
     if (product.descuento == 0){
         product.porcentaje = 0;
@@ -34,7 +34,7 @@ router.post('/add', isLoggedIn, async (req, res) =>{
 
 });
 
-router.get('/edit/:id', isLoggedIn, async (req, res) =>{
+router.get('/edit/:id', isLoggedIn, IsAuthorized('editProducts'), async (req, res) =>{
     const {id} = req.params;
     const product = await pool.query('SELECT * FROM productos WHERE productoId = ?', [id]);
     const editProduct = {
@@ -45,7 +45,7 @@ router.get('/edit/:id', isLoggedIn, async (req, res) =>{
 
 });
 
-router.post('/edit/:id', isLoggedIn, async (req, res) =>{
+router.post('/edit/:id', isLoggedIn, IsAuthorized('editProducts'), async (req, res) =>{
     const {id} = req.params;
     var product = req.body;
     if (product.descuento == 0){

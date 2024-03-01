@@ -6,18 +6,18 @@ const path = require('path');
 const nodemailer = require('nodemailer');
 const pool = require('../database.js');
 const {moneda, dimensiones, createPdf} = require('../lib/helpers.js');
-const { isLoggedIn } = require('../lib/auth.js');
+const { isLoggedIn, IsAuthorized } = require('../lib/auth.js');
 require('../lib/handlebars.js');
 
 const router = express.Router();
 
-router.get('/add', isLoggedIn, async (req, res)=>{
+router.get('/add', isLoggedIn, IsAuthorized('addQuotations'), async (req, res)=>{
     const productos = await pool.query('SELECT productoId, nombre FROM Productos ORDER BY nombre ASC;');
     const clientes = await pool.query('SELECT clienteId, nombre FROM Clientes ORDER BY nombre ASC;');
     res.render('quotations/add', {productos: productos, clientes: clientes});
 });
 
-router.post('/add', isLoggedIn, async (req, res)=>{
+router.post('/add', isLoggedIn, IsAuthorized('addQuotations'), async (req, res)=>{
     const cotizacion = req.body.data.cotizacion;
     const productos = req.body.data.productos;
     const newCot = {
@@ -179,12 +179,12 @@ router.post('/preview', isLoggedIn, async (req, res)=>{
     res.send({cotizacion:cot, cliente: cliente[0], productos: productosCotArray});
 })
 
-router.get('/', isLoggedIn, async (req, res)=>{
+router.get('/', isLoggedIn, IsAuthorized('seeListQuotations'), async (req, res)=>{
     const cotizaciones = await pool.query('SELECT Cotizaciones.*, Clientes.clienteId, Clientes.nombre FROM (Cotizaciones INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId);');
     res.render('quotations/list', {cotizaciones: cotizaciones});
 })
 
-router.get('/info/:id', isLoggedIn, async (req, res)=>{
+router.get('/info/:id', isLoggedIn, IsAuthorized('seeListQuotations'), async (req, res)=>{
     const {id} = req.params;
     const cotizacion = await pool.query('SELECT * FROM Cotizaciones WHERE cotId = ?', [id]);
     const cliente = await pool.query('SELECT * FROM (Cotizaciones INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId) WHERE Cotizaciones.cotId = ?;', [id]);
@@ -225,13 +225,13 @@ router.get('/info/:id', isLoggedIn, async (req, res)=>{
     res.render('quotations/info', {cotizacion: cotizacion[0], cliente: cliente[0], productos: productos, procesosEnCatalogo:procesosEnCatalogoArray, procesosFueraCatalogo:productosFueraCatalogo, areas:todas_areas, orden:orden_posible});
 })
 
-router.get('/cancel/:id', isLoggedIn, async (req, res)=>{
+router.get('/cancel/:id', isLoggedIn, IsAuthorized('editQuotations'), async (req, res)=>{
     const {id} = req.params;
     await pool.query('UPDATE Cotizaciones SET estatus = "Cancelada" WHERE cotId = ?', [id]);
     res.redirect('/quotations/info/' + id);
 })
 
-router.get('/edit/:id', isLoggedIn, async (req,res)=>{
+router.get('/edit/:id', isLoggedIn, IsAuthorized('editQuotations'), async (req,res)=>{
     const {id} = req.params;
     const cotizacion = await pool.query('SELECT * FROM Cotizaciones WHERE cotId = ?', [id]);
     const productos = await pool.query('SELECT productoId, nombre FROM Productos ORDER BY nombre ASC;');
@@ -253,7 +253,7 @@ router.get('/edit/:id', isLoggedIn, async (req,res)=>{
     res.render('quotations/edit', {cotizacion: cotizacion[0], clientes:clientes, cliente: cliente[0], productos: productos, productosCotizados: productosCotizados});
 })
 
-router.post('/edit/:id', async(req, res)=>{
+router.post('/edit/:id', isLoggedIn, IsAuthorized('editQuotations'), async(req, res)=>{
     const {id} = req.params;
     const cotizacion = req.body.data.cotizacion;
     const productos = req.body.data.productos;
@@ -334,7 +334,7 @@ router.post('/edit/:id', async(req, res)=>{
     res.send({url: '/quotations'});
 })
 
-router.post('/email/:id', isLoggedIn, async (req, res)=>{
+router.post('/email/:id', isLoggedIn, IsAuthorized('seeListQuotations'), async (req, res)=>{
     const {id} = req.params;
     const correoCliente = req.body.inputEmailClient;
     const usruarioId = req.user.usuarioId;
@@ -436,7 +436,7 @@ router.post('/email/:id', isLoggedIn, async (req, res)=>{
     }
 })
 
-router.get('/download/:id', isLoggedIn, async (req, res)=>{
+router.get('/download/:id', isLoggedIn, IsAuthorized('seeListQuotations'), async (req, res)=>{
     const {id} = req.params;
     const cotizacion = await pool.query('SELECT * FROM Cotizaciones WHERE cotId = ?', [id]);
     const cliente = await pool.query('SELECT * FROM (Cotizaciones INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId) WHERE Cotizaciones.cotId = ?;', [id]);
@@ -484,7 +484,7 @@ router.get('/download/:id', isLoggedIn, async (req, res)=>{
     readStream.pipe(res).on('error', function(e){console.error(e)});
 })
 
-router.post('/generateOrder/:id', async (req, res)=>{
+router.post('/generateOrder/:id', IsAuthorized('addOrders'), async (req, res)=>{
     const {id} = req.params;
     const body = req.body;
     const usruarioId = req.user.usuarioId;

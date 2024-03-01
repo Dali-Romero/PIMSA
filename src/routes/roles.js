@@ -41,7 +41,7 @@ router.post('/add', isLoggedIn, IsAuthorized('addRoles'), async (req, res)=>{
 router.get('/', isLoggedIn, IsAuthorized('seeListRoles'), async (req, res)=>{
     const roles = await pool.query('SELECT Roles.rolId, Roles.nombre, Roles.descripcion, Roles.activo, COUNT(Usuarios.rol_id) AS total_usuarios_rol, total_usuario_permisos.total_usuario_permisos FROM ((Roles LEFT JOIN Usuarios ON Roles.rolId = Usuarios.rol_id) LEFT JOIN (SELECT Roles.rolId AS rol_id, COUNT(PermisosRoles.permiso_id) AS total_usuario_permisos FROM Roles LEFT JOIN PermisosRoles ON Roles.rolId = PermisosRoles.rol_id GROUP BY Roles.rolId) AS total_usuario_permisos ON Roles.rolId = total_usuario_permisos.rol_id) GROUP BY Roles.rolId, Roles.nombre, Roles.descripcion, Roles.activo;');
     const total_roles = await pool.query('SELECT COUNT(rolId) AS total_roles FROM Roles;');
-    const total_permisos = await pool.query('SELECT COUNT(permisoId) AS total_permisos FROM Permisos;');
+    const total_permisos = await pool.query('SELECT COUNT(permisoId) - 1 AS total_permisos FROM Permisos;');
     res.render('roles/list', {roles:roles, total_roles:total_roles[0], total_permisos:total_permisos[0]});
 })
 
@@ -56,7 +56,7 @@ router.post('/listAssignedUsers', isLoggedIn, IsAuthorized('seeListRoles'), asyn
     const rolId = req.body.idRole;
     const rol = await pool.query('SELECT Roles.nombre FROM Roles WHERE Roles.rolId = ?;', [rolId]);
     const usuariosAsignados = await pool.query('SELECT Empleados.empleadoId, Empleados.nombreComp AS Empleado, Areas.areaId, Areas.nombre AS Area FROM (((Roles INNER JOIN Usuarios ON Roles.rolId = Usuarios.rol_id) INNER JOIN Empleados ON Usuarios.empleado_id = Empleados.empleadoId) INNER JOIN Areas ON Empleados.area_id = Areas.areaId) WHERE Roles.rolId = ?;', [rolId]);
-    res.send({rol:rol[0], usuariosAsignados:usuariosAsignados});
+    res.send({rol:rol[0], usuariosAsignados:usuariosAsignados, permisos: req.user.permisos});
 })
 
 router.get('/edit/:id', isLoggedIn, IsAuthorized('editRoles'), async (req, res)=>{

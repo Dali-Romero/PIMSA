@@ -7,10 +7,7 @@ $(document).ready(function(){
         info: false,
         padding: false,
         order: [[1, 'Desc'], [0, 'Desc']],
-        dom: '<"float-start pb-2"f>', 
-        columnDefs: [
-            {className: "dt-center", targets: "_all"},
-        ],
+        dom: '<"float-start pb-2"f>',
         language:{
             url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-MX.json',
         },
