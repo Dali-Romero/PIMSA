@@ -8,10 +8,19 @@
                 <div class="row">
                     <div class="col-7" style="margin-top: 0.4rem; margin-bottom: 0.4rem;">
                         <h6 class="card-subtitle">
-                            <a class="icon-link icon-link-hover link-body-emphasis link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0);" href="/employees">
-                                <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
-                                Empleados activos
-                            </a>
+                            {{#checkPermission user.permisos "seeListEmployees"}}
+                                <a class="icon-link icon-link-hover link-body-emphasis link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0);" href="/employees">
+                                    <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
+                                    Empleados activos
+                                </a>
+                            {{else}}
+                                <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Acceso denegado">
+                                    <a class="icon-link link-body-emphasis link-underline link-underline-opacity-0 pe-none" style="--bs-link-opacity: .80;">
+                                        <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
+                                        Empleados activos
+                                    </a>
+                                </span>
+                            {{/checkPermission}}
                         </h6>
                         <h3 class="card-title mb-0 mt-1">
                             {{#with tarjetas}}
@@ -58,10 +67,19 @@
                 <div class="row">
                     <div class="col-7 my-auto">
                         <h6 class="card-subtitle">
-                            <a class="icon-link icon-link-hover link-body-emphasis link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0);" href="/quotations">
-                                <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
-                                Cotizaciones
-                            </a>
+                            {{#checkPermission user.permisos "seeListQuotations"}}
+                                <a class="icon-link icon-link-hover link-body-emphasis link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0);" href="/quotations">
+                                    <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
+                                    Cotizaciones
+                                </a>
+                            {{else}}
+                                <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Acceso denegado">
+                                    <a class="icon-link link-body-emphasis link-underline link-underline-opacity-0 pe-none" style="--bs-link-opacity: .80;">
+                                        <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
+                                        Cotizaciones
+                                    </a>
+                                </span>
+                            {{/checkPermission}}
                         </h6>
                         <h3 class="card-title mb-0 mt-1">
                             {{#with tarjetas}}
@@ -110,10 +128,19 @@
                 <div class="row">
                     <div class="col-7 my-auto">
                         <h6 class="card-subtitle">
-                            <a class="icon-link icon-link-hover link-body-emphasis link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0);" href="/orders">
-                                <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
-                                Órdenes
-                            </a>
+                            {{#checkPermission user.permisos "seeListOrders"}}
+                                <a class="icon-link icon-link-hover link-body-emphasis link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0);" href="/orders">
+                                    <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
+                                    Órdenes
+                                </a>
+                            {{else}}
+                                <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Acceso denegado">
+                                    <a class="icon-link link-body-emphasis link-underline link-underline-opacity-0 pe-none" style="--bs-link-opacity: .80;">
+                                        <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
+                                        Órdenes
+                                    </a>
+                                </span>
+                            {{/checkPermission}}
                         </h6>
                         <h3 class="card-title mb-0 mt-1">
                             {{#with tarjetas}}
@@ -162,10 +189,19 @@
                 <div class="row">
                     <div class="col-6 my-auto">
                         <h6 class="card-subtitle">
-                            <a class="icon-link icon-link-hover link-body-emphasis link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0);" href="/collection">
-                                <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
-                                Ventas
-                            </a>
+                            {{#checkPermission user.permisos "collection"}}
+                                <a class="icon-link icon-link-hover link-body-emphasis link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0);" href="/collection">
+                                    <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
+                                    Ventas
+                                </a>
+                            {{else}}
+                                <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Acceso denegado">
+                                    <a class="icon-link link-body-emphasis link-underline link-underline-opacity-0 pe-none" style="--bs-link-opacity: .80;">
+                                        <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
+                                        Ventas
+                                    </a>
+                                </span>
+                            {{/checkPermission}}
                         </h6>
                         <h5 class="card-title mb-0 mt-2">
                             {{#with tarjetas}}
@@ -218,10 +254,19 @@
                         <div class="row justify-content-center">
                             <div class="col-12 col-md-8">
                                 <h5 class="card-title text-center text-md-start h-100">
-                                    <a class="icon-link icon-link-hover link-body-emphasis link-underline link-underline-opacity-0 h-100" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0);" href="/employees">
-                                        <i class="bi bi-box-arrow-in-up-right mb-1"></i>
-                                        Mejores vendedores
-                                    </a>
+                                    {{#checkPermission user.permisos "seeListEmployees"}}
+                                        <a class="icon-link icon-link-hover link-body-emphasis link-underline link-underline-opacity-0 h-100" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0);" href="/employees">
+                                            <i class="bi bi-box-arrow-in-up-right mb-1"></i>
+                                            Mejores vendedores
+                                        </a>
+                                    {{else}}
+                                        <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Acceso denegado">
+                                            <a class="icon-link link-body-emphasis link-underline link-underline-opacity-0 pe-none" style="--bs-link-opacity: .80;">
+                                                <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
+                                                Mejores vendedores
+                                            </a>
+                                        </span>
+                                    {{/checkPermission}}
                                 </h5>
                             </div>
                             <div class="col-7 col-md-4">
@@ -259,10 +304,19 @@
                         <div class="row justify-content-center">
                             <div class="col-12 col-md-8">
                                 <h5 class="card-title text-center text-md-start h-100">
-                                    <a class="icon-link icon-link-hover link-body-emphasis link-underline link-underline-opacity-0 h-100" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0);" href="/clients">
-                                        <i class="bi bi-box-arrow-in-up-right mb-1"></i>
-                                        Compradores
-                                    </a>
+                                    {{#checkPermission user.permisos "seeListClients"}}
+                                        <a class="icon-link icon-link-hover link-body-emphasis link-underline link-underline-opacity-0 h-100" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0);" href="/clients">
+                                            <i class="bi bi-box-arrow-in-up-right mb-1"></i>
+                                            Compradores
+                                        </a>
+                                    {{else}}
+                                        <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Acceso denegado">
+                                            <a class="icon-link link-body-emphasis link-underline link-underline-opacity-0 pe-none" style="--bs-link-opacity: .80;">
+                                                <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
+                                                Compradores
+                                            </a>
+                                        </span>
+                                    {{/checkPermission}}
                                 </h5>
                             </div>
                             <div class="col-7 col-md-4">
@@ -290,10 +344,19 @@
                         <div class="row justify-content-center justify-content-md-center">
                             <div class="col-12 col-md-8">
                                 <h5 class="card-title text-center text-md-start h-100">
-                                    <a class="icon-link icon-link-hover link-body-emphasis link-underline link-underline-opacity-0 h-100" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0);" href="/products">
-                                        <i class="bi bi-box-arrow-in-up-right mb-1"></i>
-                                        Productos más vendidos
-                                    </a>
+                                    {{#checkPermission user.permisos "seeListProducts"}}
+                                        <a class="icon-link icon-link-hover link-body-emphasis link-underline link-underline-opacity-0 h-100" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0);" href="/products">
+                                            <i class="bi bi-box-arrow-in-up-right mb-1"></i>
+                                            Productos más vendidos
+                                        </a>
+                                    {{else}}
+                                        <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Acceso denegado">
+                                            <a class="icon-link link-body-emphasis link-underline link-underline-opacity-0 pe-none" style="--bs-link-opacity: .80;">
+                                                <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
+                                                Productos más vendidos
+                                            </a>
+                                        </span>
+                                    {{/checkPermission}}
                                 </h5>
                             </div>
                             <div class="col-7 col-md-4 pb-md-0 pb-2">
@@ -354,17 +417,35 @@
                             {{#each cotizaciones}}
                                 <tr>
                                     <th scope="row">
-                                        <a class="icon-link icon-link-hover link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.125rem, 0); --bs-link-hover-color-rgb: 237, 10, 63;" href="quotations/info/{{cotId}}">
-                                            <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
-                                            COT-{{cotId}}
-                                        </a>
+                                        {{#checkPermission ../user.permisos "seeListQuotations"}}
+                                            <a class="icon-link icon-link-hover link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0); --bs-link-hover-color-rgb: 237, 10, 63;" href="quotations/info/{{cotId}}">
+                                                <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
+                                                COT-{{cotId}}
+                                            </a>
+                                        {{else}}
+                                            <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Acceso denegado">
+                                                <a class="icon-link link-underline link-underline-opacity-0 pe-none" style="--bs-link-opacity: .80;">
+                                                    <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
+                                                    COT-{{cotId}}
+                                                </a>
+                                            </span>
+                                        {{/checkPermission}}
                                     </th>
                                     <td>{{formatDateShort fecha}}</td>
                                     <td>
-                                        <a class="icon-link icon-link-hover link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.125rem, 0); --bs-link-hover-color-rgb: 237, 10, 63;" href="clients/infoclient/{{clienteId}}">
-                                            <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
-                                            {{nombre}}
-                                        </a>
+                                        {{#checkPermission ../user.permisos "seeListClients"}}
+                                            <a class="icon-link icon-link-hover link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0); --bs-link-hover-color-rgb: 237, 10, 63;" href="clients/infoclient/{{clienteId}}">
+                                                <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
+                                                {{nombre}}
+                                            </a>
+                                        {{else}}
+                                            <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Acceso denegado">
+                                                <a class="icon-link link-underline link-underline-opacity-0 pe-none" style="--bs-link-opacity: .80;">
+                                                    <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
+                                                    {{nombre}}
+                                                </a>
+                                            </span>
+                                        {{/checkPermission}}
                                     </td>
                                     <td>$ {{formatNumber total}}</td>
                                     {{#equal estatus "Generada"}}
@@ -411,17 +492,35 @@
                             {{#each ordenes}}
                                 <tr>
                                     <th scope="row">
-                                        <a class="icon-link icon-link-hover link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.125rem, 0); --bs-link-hover-color-rgb: 237, 10, 63;" href="orders/info/{{ordenId}}">
-                                            <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
-                                            OT-{{ordenId}}
-                                        </a>
+                                        {{#checkPermission ../user.permisos "seeListOrders"}}
+                                            <a class="icon-link icon-link-hover link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0); --bs-link-hover-color-rgb: 237, 10, 63;" href="orders/info/{{ordenId}}">
+                                                <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
+                                                OT-{{ordenId}}
+                                            </a>
+                                        {{else}}
+                                            <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Acceso denegado">
+                                                <a class="icon-link link-underline link-underline-opacity-0 pe-none" style="--bs-link-opacity: .80;">
+                                                    <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
+                                                    OT-{{ordenId}}
+                                                </a>
+                                            </span>
+                                        {{/checkPermission}}
                                     </th>
                                     <td>{{formatDateShort fechaGen}}</td>
                                     <td>
-                                        <a class="icon-link icon-link-hover link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.125rem, 0); --bs-link-hover-color-rgb: 237, 10, 63;" href="clients/infoclient/{{clienteId}}">
-                                            <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
-                                            {{nombre}}
-                                        </a>
+                                        {{#checkPermission ../user.permisos "seeListClients"}}
+                                            <a class="icon-link icon-link-hover link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0); --bs-link-hover-color-rgb: 237, 10, 63;" href="clients/infoclient/{{clienteId}}">
+                                                <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
+                                                {{nombre}}
+                                            </a>
+                                        {{else}}
+                                            <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Acceso denegado">
+                                                <a class="icon-link link-underline link-underline-opacity-0 pe-none" style="--bs-link-opacity: .80;">
+                                                    <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
+                                                    {{nombre}}
+                                                </a>
+                                            </span>
+                                        {{/checkPermission}}
                                     </td>
                                     <td>$ {{formatNumber total}}</td>
                                     {{#if terminada}}
@@ -538,7 +637,13 @@
                         </div>
                         <div class="row pt-4">
                             <div class="col-md-12 text-end">
-                                <button class="btn btn-success" type="submit">Descargar reporte</button>
+                                {{#checkPermission user.permisos "reportes"}}
+                                    <button class="btn btn-success" type="submit">Descargar reporte</button>
+                                {{else}}
+                                    <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Acceso denegado">
+                                        <button class="btn btn-success" type="submit" disabled>Descargar reporte</button>
+                                    </span>
+                                {{/checkPermission}}
                             </div>
                         </div>
                     </form>
@@ -552,10 +657,19 @@
                 <div class="row mb-3">
                     <div class="col-md-12">
                         <h5 class="text-center">
-                            <a class="icon-link icon-link-hover link-body-emphasis link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0);" href="/monitor">
-                                <i class="bi bi-box-arrow-in-up-right mb-1"></i>
-                                Órdenes en proceso
-                            </a>
+                            {{#checkPermission user.permisos "monitor"}}
+                                <a class="icon-link icon-link-hover link-body-emphasis link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0);" href="/monitor">
+                                    <i class="bi bi-box-arrow-in-up-right mb-1"></i>
+                                    Órdenes en proceso
+                                </a>
+                            {{else}}
+                                <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Acceso denegado">
+                                    <a class="icon-link link-body-emphasis link-underline link-underline-opacity-0 pe-none" style="--bs-link-opacity: .80;">
+                                        <i class="bi bi-box-arrow-in-up-right mb-1"></i>
+                                        Órdenes en proceso
+                                    </a>
+                                </span>
+                            {{/checkPermission}}
                         </h5>
                     </div>
                 </div>

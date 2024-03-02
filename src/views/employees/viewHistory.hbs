@@ -1,11 +1,28 @@
 <div class="container-fluid">
     <div class="row p-3" id="machine-title">
-        <a href="/employees" style="color: white; text-decoration: none;"><h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-person-vcard-fill"></i> empleados</h1></a>
+        {{#checkPermission user.permisos "seeListEmployees"}}
+            <a href="/employees" style="color: white; text-decoration: none;"><h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-person-vcard-fill"></i> empleados</h1></a>
+        {{else}}
+            <a style="color: white; text-decoration: none;"><h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-person-vcard-fill"></i> empleados</h1></a>
+        {{/checkPermission}}
     </div>
     <div class="row p-4">
         <p class="d-inline-flex gap-1">
-            <a href="/employees/history/{{employee.empleado_id}}" type="button" class="btn btn-secondary me-4"><i class="bi bi-box-arrow-left"></i> Regresar</a>
-            <a href="/employees/history/{{employee.empleado_id}}/view/{{employee.cambioId}}/restore" type="button" class="btn btn-success me-4"><i class="bi bi-arrow-clockwise"></i> Restaurar version</a>
+            {{#checkPermission user.permisos "seeListEmployees"}}
+                <a href="/employees/history/{{employee.empleado_id}}" type="button" class="btn btn-secondary me-4"><i class="bi bi-box-arrow-left"></i> Regresar</a>
+            {{else}}
+                <span class="d-inline-block me-4" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Acceso denegado">
+                    <a href="/employees/history/{{employee.empleado_id}}" class="btn btn-secondary disabled" role="button" tabindex="-1" aria-disabled="true"><i class="bi bi-box-arrow-left"></i> Regresar</a>
+                </span>
+            {{/checkPermission}}
+            
+            {{#checkPermission user.permisos "editEmployees"}}
+                <a href="/employees/history/{{employee.empleado_id}}/view/{{employee.cambioId}}/restore" type="button" class="btn btn-success me-4"><i class="bi bi-arrow-clockwise"></i> Restaurar version</a>
+            {{else}}
+                <span class="d-inline-block me-4" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Acceso denegado">
+                    <a href="/employees/history/{{employee.empleado_id}}/view/{{employee.cambioId}}/restore" class="btn btn-success disabled" role="button" tabindex="-1" aria-disabled="true"><i class="bi bi-arrow-clockwise"></i> Restaurar version</a>
+                </span>
+            {{/checkPermission}}
         </p>
         <div class="row justify-content-between p-0 m-0" id="machine-add-title">
             <div class="col-md-8 p-2">

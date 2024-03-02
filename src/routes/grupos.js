@@ -1,6 +1,6 @@
 const express = require('express');
 const pool = require('../database.js')
-const { isLoggedIn } = require('../lib/auth.js');
+const { isLoggedIn, IsAuthorized } = require('../lib/auth.js');
 
 const router = express.Router();
 
@@ -9,11 +9,11 @@ const router = express.Router();
     res.render('../views/grupos/addgroup');
 });*/
 
-router.get('/addgroup', async(req, res) =>{
+router.get('/addgroup', isLoggedIn, IsAuthorized('addClientsGroups'), async(req, res) =>{
     res.render('grupos/addgroup');
 });
 
-router.post('/addgroup', async (req, res)=>{
+router.post('/addgroup', isLoggedIn, IsAuthorized('addClientsGroups'), async (req, res)=>{
     const group = req.body;
     const newGroup = {
         nombre: group.namegroup,
@@ -24,18 +24,18 @@ router.post('/addgroup', async (req, res)=>{
     res.redirect('/grupos');
 });
 
-router.get('/', async (req, res)=>{
+router.get('/', isLoggedIn, IsAuthorized('seeListClientsGroups'), async (req, res)=>{
     const groups = await pool.query('SELECT * FROM Grupos');
     res.render('grupos/listgroup', {groups});
 });
 
-router.get('/editgroup/:id', async (req, res)=>{
+router.get('/editgroup/:id', isLoggedIn, IsAuthorized('editClientsGroups'), async (req, res)=>{
     const {id} = req.params;
     const group = await pool.query('SELECT * FROM Grupos WHERE grupoId = ?', [id]);
     res.render('grupos/editgroup', {group: group[0]});
 });
 
-router.post('/editgroup/:id', async (req, res)=>{
+router.post('/editgroup/:id', isLoggedIn, IsAuthorized('editClientsGroups'), async (req, res)=>{
     const {id} = req.params;
     const group = req.body;
     const newGroup = {

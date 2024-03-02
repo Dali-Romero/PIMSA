@@ -48,7 +48,13 @@
                         <td>
                             <div class="row g-0 justify-content-center">
                                 <div class="col-md-6 col-12">
-                                    <a href="/processes/edit/{{proceso_id}}" class="btn btn-sm btn-secondary w-100"><i class="bi bi-pencil-square"></i></a>
+                                    {{#checkPermission ../user.permisos "editProcesses"}}
+                                        <a href="/processes/edit/{{proceso_id}}" class="btn btn-sm btn-secondary w-100" role="button"><i class="bi bi-pencil-square"></i></a>
+                                    {{else}}
+                                        <span class="d-inline-block w-100" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Acceso denegado">
+                                            <a href="/processes/edit/{{proceso_id}}" class="btn btn-sm btn-secondary w-100 disabled" role="button" tabindex="-1" aria-disabled="true"><i class="bi bi-pencil-square"></i></a>
+                                        </span>
+                                    {{/checkPermission}}
                                 </div>
                             </div>
                         </td>
@@ -64,6 +70,17 @@
             </tbody>
         </table>
     </div>
+</div>
+
+{{!-- Button (add process) that will be added when the table is rendered --}}
+<div class="d-none" id="processes-add-button">
+    {{#checkPermission user.permisos "addProcesses"}}
+        <a href="/processes/add" class="btn btn-outline-success border-success border-2 float-md-end mb-3 mb-md-0" role="button"><i class="bi bi-bezier"></i> Añadir proceso</a>
+    {{else}}
+        <span class="d-inline-block float-md-end mb-3 mb-md-0" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Acceso denegado">
+            <a href="/processes/add" class="btn btn-outline-success border-success border-2 disabled" role="button" tabindex="-1" aria-disabled="true"><i class="bi bi-bezier"></i> Añadir proceso</a>
+        </span>
+    {{/checkPermission}}
 </div>
 
 {{!-- Modal stages per process --}}
@@ -126,17 +143,17 @@
         <div class="row row-cols-2 row-cols-md-5 g-4 p-3 justify-content-md-start">
             \{{#each productos}}
                 <div class="col">
-                    <div class="card bg-primary-subtle">
+                    <div class="card border-2" style="background-color: #f1f7fd; border-color: #75b2e5;">
                         <div class="card-body">
-                            <p class="card-text"><i class="bi bi-clipboard2"></i> \{{producto_nombre}}</p>
+                            <p class="card-text fw-medium"><i class="bi bi-clipboard2"></i> \{{producto_nombre}}</p>
                         </div>
                     </div>
                 </div>
             \{{else}}
                 <div class="col-md-12">
-                    <div class="card bg-primary-subtle">
+                    <div class="card border-2" style="background-color: #f1f7fd; border-color: #75b2e5;">
                         <div class="card-body">
-                            <p class="card-text text-center">No existen productos asignados a este proceso</p>
+                            <p class="card-text text-center fw-medium">No existen productos asignados a este proceso</p>
                         </div>
                     </div>
                 </div>

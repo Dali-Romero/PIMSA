@@ -91,6 +91,45 @@ hbs.registerHelper('timeago', function(timestamp){
     return format(timestamp, 'es_ES');
 });
 
+hbs.registerHelper('checkPermission', function (v1, v2, options){
+    const permissions = v1;
+    const allowed = permissions.find(function(object){
+        return object.permiso == v2;
+    });
+    
+    if (allowed) {
+        return options.fn(this);
+    } else {
+        return options.inverse(this);
+    }
+});
+
+hbs.registerHelper('checkPermissionOR', function (v1, v2, v3, options){
+    const permissions = v1;
+    const allowed = permissions.find(function(object){
+        return object.permiso == v2 || object.permiso == v3;
+    });
+    
+    if (allowed) {
+        return options.fn(this);
+    } else {
+        return options.inverse(this);
+    }
+})
+
+hbs.registerHelper('checkPermissionORThree', function (v1, v2, v3, v4, options){
+    const permissions = v1;
+    const allowed = permissions.find(function(object){
+        return object.permiso == v2 || object.permiso == v3 || object.permiso == v4;
+    });
+    
+    if (allowed) {
+        return options.fn(this);
+    } else {
+        return options.inverse(this);
+    }
+})
+
 hbs.registerHelper('formatDateEspanol', function(date){
     date = new Date(date);
     fecha = date.toLocaleDateString('es-mx', {weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'});

@@ -35,7 +35,13 @@
                         <td>
                             <div class="row g-0 justify-content-center">
                                 <div class="col-md-6 col-12">
-                                    <a href="/areas/edit/{{areaId}}" class="btn btn-sm btn-secondary w-100"><i class="bi bi-pencil-square"></i> Editar</a>
+                                    {{#checkPermission ../user.permisos "editAreas"}}
+                                        <a href="/areas/edit/{{areaId}}" class="btn btn-sm btn-secondary w-100" role="button"><i class="bi bi-pencil-square"></i> Editar</a>
+                                    {{else}}
+                                        <span class="d-inline-block w-100" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Acceso denegado">
+                                            <a href="/areas/edit/{{areaId}}" class="btn btn-sm btn-secondary w-100 disabled" tabindex="-1" role="button" aria-disabled="true"><i class="bi bi-pencil-square"></i> Editar</a>
+                                        </span>
+                                    {{/checkPermission}}
                                 </div>
                             </div>
                         </td>
@@ -52,4 +58,15 @@
             </tbody>
         </table>
     </div>
+</div>
+
+{{!-- Button (add area) that will be added when the table is rendered --}}
+<div class="d-none" id="areas-add-button">
+    {{#checkPermission user.permisos "addAreas"}}
+        <a href="/areas/add" class="btn btn-outline-success border-success border-2 float-md-end mb-3 mb-md-0" role="button"><i class="bi bi-patch-plus"></i> Añadir área</a>
+    {{else}}
+        <span class="d-inline-block float-md-end mb-3 mb-md-0" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Acceso denegado">
+            <a href="/areas/add" class="btn btn-outline-success border-success border-2 disabled" role="button" tabindex="-1" aria-disabled="true"><i class="bi bi-patch-plus"></i> Añadir área</a>
+        </span>
+    {{/checkPermission}}
 </div>

@@ -126,12 +126,17 @@ $(document).ready(function(){
         info: false,
         padding: false,
         order: [],
-        dom: '<"float-start pb-2"f><"button-add-machines pb-2"B>', 
+        dom: '<"row pb-2"<"col-12 col-md-6 order-last order-md-first"<"float-start"f>><"col-12 col-md-6 order-first order-md-last"<"button-add-machine"B>>><"row"<"col-sm-12"tr>>',
         columnDefs: [
-            {className: "dt-center", targets: "_all"},
+            {
+                "orderable": false,
+                "targets": 9
+            }
         ],
         fnInitComplete: function(){
-            $('div.button-add-machines').html('<a href="/machines/add" class="btn btn-outline-success border-success border-2 float-end" role="button"><i class="bi bi-patch-plus-fill"></i> Añadir máquina</a>');
+            // añadir boton para agregar roles
+            const addRolebtn = $('#machines-add-button').clone().removeClass('d-none');
+            $('div.button-add-machine').html(addRolebtn);
         },
         language:{
             url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-MX.json',
@@ -143,7 +148,9 @@ $(document).ready(function(){
         const row = table.row(tr);
         const idMachine = $(this).val();
         if (row.child.isShown()) {
-            row.child.hide();
+            $('div.machines-users-slider', row.child()).slideUp(function () {
+                row.child.hide();
+            });
         }else {
             $.ajax({
                 type: 'POST',
@@ -151,24 +158,21 @@ $(document).ready(function(){
                 headers: {'Content-Type': 'application/json'},
                 data: JSON.stringify({idMachine: idMachine}),
                 success: function(data){
-                    const sourceUsers = $('#machines-users-expand').html();
-                    const templateUsers = Handlebars.compile(sourceUsers);
-                    const contextUsers = {
-                        users: data
+                    const sourceAssignedUsers = $('#machines-users-expand').html();
+                    const templateAssignedUsers = Handlebars.compile(sourceAssignedUsers);
+                    const contextAssignedUsers = {
+                        machine: data.machine,
+                        assignedUsers: data.assignedUsers,
+                        permissions: data.permissions
                     };
-                    const htmlUsers = templateUsers(contextUsers.users);
-                    row.child(htmlUsers).show();
-                    const table_users = new DataTable('#users-table', {
-                        retrieve: true,
-                        paging: false,
-                        info: false,
-                        searching: false,
-                        padding: false,
-                        order: [], 
-                        language:{
-                            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-MX.json',
-                        },
-                    });
+                    const htmlAssignedUsers = templateAssignedUsers(contextAssignedUsers);
+                    row.child(htmlAssignedUsers, 'p-0' ).show();
+                    $('div.machines-users-slider', row.child()).slideDown();
+
+                    // crear tooltips para esta tabla
+                    if ($('#machines-table tbody span[data-bs-toggle="tooltip"]').is(':not(:empty)')){
+                        new bootstrap.Tooltip('#machines-table tbody', {selector: 'span[data-bs-toggle="tooltip"]'});
+                    }
                 }
             });
         }

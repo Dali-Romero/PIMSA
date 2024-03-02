@@ -1,15 +1,15 @@
 const express = require('express');
 const pool = require('../database.js');
-const { isLoggedIn } = require('../lib/auth');
+const { isLoggedIn, IsAuthorized } = require('../lib/auth');
 const router = express.Router()
 
-router.get('/addclient', async (req, res)=> {
+router.get('/addclient', isLoggedIn, IsAuthorized('addClients'), async (req, res)=> {
     const executive = await pool.query('SELECT * FROM Usuarios');
     const group = await pool.query('SELECT * FROM Grupos');
     res.render('clients/addclient', {group, executive});
 });
 
-router.post('/addclient', async (req, res)=>{
+router.post('/addclient', isLoggedIn, IsAuthorized('addClients'), async (req, res)=>{
     const resBody = req.body;
     if (resBody.descuento == 0 ){
         resBody.descuento = 0;
@@ -44,7 +44,7 @@ router.post('/addclient', async (req, res)=>{
     res.redirect('/clients');
 });
 
-router.get('/', isLoggedIn, async (req, res)=>{
+router.get('/', isLoggedIn, IsAuthorized('seeListClients'), async (req, res)=>{
     const executive = await pool.query('SELECT * FROM Usuarios');
     const group = await pool.query('SELECT * FROM Grupos');
     const clients = await pool.query('SELECT * FROM Clientes');
@@ -62,7 +62,7 @@ router.get('/', isLoggedIn, async (req, res)=>{
 
 
 
-router.get('/editclient/:id', isLoggedIn, async (req, res)=>{
+router.get('/editclient/:id', isLoggedIn, IsAuthorized('editClients'), async (req, res)=>{
     const {id} = req.params;
     const executive = await pool.query('SELECT * FROM Usuarios');
     const group = await pool.query('SELECT * FROM Grupos');
@@ -70,7 +70,7 @@ router.get('/editclient/:id', isLoggedIn, async (req, res)=>{
     res.render('../views/clients/editclient.hbs', {client: client[0], executive, group});
 });
 
-router.post('/editclient/:id', isLoggedIn, async(req, res)=>{
+router.post('/editclient/:id', isLoggedIn, IsAuthorized('editClients'), async(req, res)=>{
     const {id} = req.params;
     const resBody = req.body;
     if (resBody.descuento == 0 ){
@@ -137,7 +137,7 @@ router.post('/editclient/:id', isLoggedIn, async(req, res)=>{
 
 //clientes informacion completa
 
-router.get('/infoclient/:id', isLoggedIn, async(req, res)=>{
+router.get('/infoclient/:id', isLoggedIn, IsAuthorized('seeListClients'), async(req, res)=>{
     const {id} = req.params;
     const executive = await pool.query('SELECT * FROM Usuarios');
     const group = await pool.query('SELECT * FROM Grupos');

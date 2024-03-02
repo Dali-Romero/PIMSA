@@ -5,7 +5,8 @@ const router = express.Router();
 //const { isLoggedIn } = require('../lib/auth');
 
 router.get('/', isLoggedIn,  (req, res)=>{
-    res.render('../views/partials/navigations.hbs');
+    //res.render('../views/partials/navigations.hbs');
+    res.render('index')
 });
 
 module.exports = router;

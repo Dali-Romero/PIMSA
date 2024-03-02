@@ -4,9 +4,29 @@
 </div>
 <div class="row p-4">
     <p class="d-inline-flex gap-1">
-        <a href="/clients/" type="button" class="btn btn-secondary me-4"><i class="bi bi-box-arrow-left"></i> Regresar</a>
-        <a href="/quotations/add/{{clients.clienteId}}" type="button" class="btn btn-warning me-4"><i class="bi bi-cart4"></i> Cotizar</a>
-        <a href="/clients/editclient/{{client.clienteId}}" type="button" class="btn btn-info me-4"><i class="bi bi-pencil-square"></i> Editar</a>
+        {{#checkPermission user.permisos "seeListClients"}}
+            <a href="/clients/" type="button" class="btn btn-secondary me-4"><i class="bi bi-box-arrow-left"></i> Regresar</a>
+        {{else}}
+            <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Acceso denegado">
+                <a href="/clients/" class="btn btn-secondary me-4 disabled" role="button" tabindex="-1" aria-disabled="true"><i class="bi bi-box-arrow-left"></i> Regresar</a>
+            </span>
+        {{/checkPermission}}
+
+        {{#checkPermission user.permisos "addQuotations"}}
+            <a href="/quotations/add/{{clients.clienteId}}" type="button" class="btn btn-warning me-4"><i class="bi bi-cart4"></i> Cotizar</a>
+        {{else}}
+            <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Acceso denegado">
+                <a href="/quotations/add/{{clients.clienteId}}" class="btn btn-warning me-4 disabled" role="button" tabindex="-1" aria-disabled="true"><i class="bi bi-cart4"></i> Cotizar</a>
+            </span>
+        {{/checkPermission}}
+
+        {{#checkPermission user.permisos "editEmployees"}}
+            <a href="/clients/editclient/{{client.clienteId}}" type="button" class="btn btn-info me-4"><i class="bi bi-pencil-square"></i> Editar</a>
+        {{else}}
+            <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Acceso denegado">
+                <a href="/clients/editclient/{{client.clienteId}}" class="btn btn-info me-4 disabled" role="button" tabindex="-1" aria-disabled="true"><i class="bi bi-pencil-square"></i> Editar</a>
+            </span>
+        {{/checkPermission}}
     </p>
     <div class="row justify-content-between p-0 m-0" id="machine-add-title">
         <div class="col-md-8 p-2">

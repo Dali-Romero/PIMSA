@@ -54,7 +54,7 @@ table.dataTable.display tbody tr.even {
     background-color: #C3CDE6;
 }
 
-#offcanvas-body a:focus{
-    color: #d7b50d;
+.custom-tooltip {
+    --bs-tooltip-bg: #f8f9fa;
+    --bs-tooltip-color: #212529;
 }
-
