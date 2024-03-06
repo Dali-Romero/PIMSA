@@ -12,9 +12,9 @@
                     <th scope="col">No. Cotización</th>
                     <th scope="col">Fecha y hora</th>
                     <th scope="col">Cliente</th>
+                    <th scope="col">Proyecto</th>
                     <th scope="col">Monto total</th>
                     <th scope="col">Estatus</th>
-                    <th scope="col">Elaboró</th>
                     <th scope="col"></th>
                 </tr>
             </thead>
@@ -56,6 +56,7 @@
                                 </div>
                             </div>
                         </td>
+                        <td>{{proyecto}}</td>
                         <td>$ {{formatNumber total}}</td>
                         {{#equal estatus "Generada"}}
                             <td class="text-info">{{estatus}}</td>
@@ -69,15 +70,18 @@
                         {{#equal estatus "Espera"}}
                             <td class="text-warning">En espera</td>
                         {{/equal}}
-                        <td>{{empleado}}</td>
                         <td>
-                            {{#checkPermission ../user.permisos "addOrders"}}
-                                <button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#modalGenerateOrder" {{#equalOR estatus "Cancelada" "Ordenada"}} disabled {{/equalOR}}><i class="bi bi-journal-check"></i> Generar orden</button>
-                            {{else}}
-                                <span class="d-inline-block w-100" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Acceso denegado">
-                                    <button class="btn btn-success" type="button" tabindex="-1" aria-disabled="true" disabled><i class="bi bi-journal-check"></i> Generar orden</button>
-                                </span>
-                            {{/checkPermission}}
+                            <div class="row g-0 justify-content-center">
+                                <div class="col-md-10 col-12">
+                                    {{#checkPermission ../user.permisos "addOrders"}}
+                                        <button class="btn btn-sm btn-success w-100 createOrderExtasks" value="{{cotId}}" type="button" {{#equalOR estatus "Cancelada" "Ordenada"}} disabled {{/equalOR}}><i class="bi bi-journal-check"></i> Generar orden</button>
+                                    {{else}}
+                                        <span class="d-inline-block w-100" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Acceso denegado">
+                                            <button class="btn btn-sm btn-success w-100" type="button" tabindex="-1" aria-disabled="true" disabled><i class="bi bi-journal-check"></i> Generar orden</button>
+                                        </span>
+                                    {{/checkPermission}}
+                                </div>
+                            </div>
                         </td>
                     </tr>
                 {{else}}
@@ -96,146 +100,157 @@
     </div>
 </div>
 
+{{!-- Button (add role) that will be added when the table is rendered --}}
+<div class="d-none" id="extasks-history-button">
+    <a href="/extask/history" class="btn btn-outline-success border-success border-2 float-md-end mb-3 mb-md-0" role="button"><i class="bi bi-folder-check"></i> Ver historial</a>
+</div>
+
 {{!-- Modal assign areas to processes --}}
-<div class="modal fade" id="modalGenerateOrder" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<div class="modal fade" id="modalExtasksGenerateOrder" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content h-100">
             <div class="modal-header">
                 <p class="modal-title fs-5">Asignar áreas</p>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <div class="row m-0">
-                    <div class="col-md-6">
-                        <div class="row m-0 mb-3 text-center">
-                            <p class="fs-6 m-0">Productos en catálogo</p>
-                        </div>
-                        {{#each procesosEnCatalogo}}
-                        <div class="row m-0">
-                            <div class="card mb-4 p-0">
-                                <div class="card-header">
-                                    <p class="card-title m-0">{{producto}}</p>
-                                </div>
-                                <div class="card-body">
-                                    <p class="fs-6 mb-3"><b>Proceso:</b> {{proceso}}</p>
-                                    <p class="fs-6 mb-0">Áreas involucradas en este proceso:</p>
-                                    {{#each orden}}
-                                    <div class="input-group py-2">
-                                        <div class="row m-0 w-100">
-                                            <div class="col-2 p-0">
-                                                <select name="orderProcess{{@../index}}{{@index}}" id="orderProcess{{@../index}}{{@index}}" class="form-select form-select-sm border-dark border-2 border-end-0 rounded-end-0" disabled>
-                                                    <option value="{{this}}">{{this}}</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-10 p-0">
-                                                <select name="areaProcess{{@../index}}{{@index}}" id="areaProcess{{@../index}}{{@index}}" class="form-select form-select-sm border-dark border-2 rounded-start-0" disabled>
-                                                    <option value="{{lookup ../areas @index}}">{{lookup ../areas @index}}</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {{/each}}
-                                </div>
-                            </div>
-                        </div>
-                        {{else}}
-                        <div class="row m-0">
-                            <div class="card mb-3 p-0">
-                                <div class="card-body">
-                                    <p class="card-title m-0">No existen productos dentro de catálogo para esta cotización</p>
-                                </div>
-                            </div>
-                        </div>
-                        {{/each}}
-                    </div>
-                    <div class="col-md-6">
-                        <div class="row m-0 mb-3 text-center">
-                            <p class="fs-6 m-0">Productos fuera de catálogo</p>
-                        </div>
-                        <form action="/extask/generateOrder/{{#with cotizacion}}{{cotId}}{{/with}}" method="post" class="needs-validation" id="form-add-process" novalidate>
-                            {{#each procesosFueraCatalogo}}
-                            <div class="row m-0">
-                                <div class="card mb-4 p-0">
-                                    <div class="card-header">
-                                        <p class="card-title m-0">{{concepto}}</p>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row m-0 align-items-center">
-                                            <div class="col-9 p-0">
-                                                <p class="fs-6 mb-0">Seleccione las áreas con su respectivo orden:</p>
-                                            </div>
-                                            <div class="col-3 p-0 text-end">
-                                                <button class="btn btn-sm btn-outline-success border-success border-2 addArea" type="button"><i class="bi bi-plus-circle"></i> Área</button>
-                                            </div>
-                                        </div>
-                                        <div class="row p-0">
-                                            <span class="invalid-feedback-process-order"></span>
-                                        </div>
-                                        <div class="row m-0" id="cardsProcessContainer">
-                                            <div class="input-group p-0 py-3 has-validation">
-                                                <div class="row m-0 w-100">
-                                                    <div class="col-2 p-0">
-                                                        <select name="orderProcess{{@index}}" class="form-select form-select-sm border-dark border-2 border-end-0 rounded-end-0 orderProcess" required>
-                                                            {{#each ../orden}}
-                                                                <option value="{{this}}">{{this}}</option>
-                                                            {{/each}}
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-md-9 col-8 p-0">
-                                                        <select name="areaProcess{{@index}}" class="form-select form-select-sm border-dark border-2 rounded-start-0 areaProcess" required>
-                                                            {{#each ../areas}}
-                                                                <option value="{{areaId}}">{{nombre}}</option>
-                                                            {{/each}}
-                                                        </select>
-                                                        <div class="valid-feedback">
-                                                            ¡Perfecto!
-                                                        </div>
-                                                        <div class="invalid-feedback">
-                                                            <span class="invalid-feedback-process-area"></span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-1 col-2 pe-0 text-end d-none">
-                                                        <button class="btn btn-danger btn-sm remove-process-select" type="button"><i class="bi bi-trash3"></i></button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        {{else}}
-                        </form>
-                        <div class="row m-0">
-                            <div class="card mb-3 p-0">
-                                <div class="card-body">
-                                    <p class="card-title m-0">No existen productos fuera de catálogo para esta cotización</p>
-                                </div>
-                            </div>
-                        </div>
-                        {{/each}}
-                    </div>
-                </div>
+            <div class="modal-body" id="stagesProcess-extask-container">
+                {{!-- The stages of the process will be added here --}}
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Cerrar</button>
-                <button type="submit" form="form-add-process" class="btn btn-sm btn-success">Generar orden</button>
+                <button type="submit" form="form-add-process-extasks" class="btn btn-sm btn-success">Generar orden</button>
             </div>
         </div>
     </div>
 </div>
 
+{{!-- Templates --}}
+<script type="text/x-handlebars-template" id="stagesProcess-extask">
+    <div class="row m-0">
+        <div class="col-md-6">
+            <div class="row m-0 mb-3 text-center">
+                <p class="fs-6 m-0">Productos en catálogo</p>
+            </div>
+            \{{#each procesosEnCatalogo}}
+                <div class="row m-0">
+                    <div class="card mb-4 p-0">
+                        <div class="card-header">
+                            <p class="card-title m-0">\{{producto}}</p>
+                        </div>
+                        <div class="card-body">
+                            <p class="fs-6 mb-3"><b>Proceso:</b> \{{proceso}}</p>
+                            <p class="fs-6 mb-0">Áreas involucradas en este proceso:</p>
+                            \{{#each orden}}
+                            <div class="input-group py-2">
+                                <div class="row m-0 w-100">
+                                    <div class="col-2 p-0">
+                                        <select name="orderProcess\{{@../index}}\{{@index}}" id="orderProcess\{{@../index}}\{{@index}}" class="form-select form-select-sm border-dark border-2 border-end-0 rounded-end-0" disabled>
+                                            <option value="\{{this}}">\{{this}}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-10 p-0">
+                                        <select name="areaProcess\{{@../index}}\{{@index}}" id="areaProcess\{{@../index}}\{{@index}}" class="form-select form-select-sm border-dark border-2 rounded-start-0" disabled>
+                                            <option value="\{{lookup ../areas @index}}">\{{lookup ../areas @index}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            \{{/each}}
+                        </div>
+                    </div>
+                </div>
+            \{{else}}
+                <div class="row m-0">
+                    <div class="card mb-3 p-0">
+                        <div class="card-body">
+                            <p class="card-title m-0">No existen productos dentro de catálogo para esta cotización</p>
+                        </div>
+                    </div>
+                </div>
+            \{{/each}}
+        </div>
+        <div class="col-md-6">
+            <div class="row m-0 mb-3 text-center">
+                <p class="fs-6 m-0">Productos fuera de catálogo</p>
+            </div>
+            <form action="/extask/generateOrder/\{{#with cotizacion}}\{{this}}\{{/with}}" method="post" class="needs-validation" id="form-add-process-extasks" novalidate>
+                \{{#each productosFueraCatalogo}}
+                    <div class="row m-0">
+                        <div class="card mb-4 p-0">
+                            <div class="card-header">
+                                <p class="card-title m-0">\{{concepto}}</p>
+                            </div>
+                            <div class="card-body">
+                                <div class="row m-0 align-items-center">
+                                    <div class="col-9 p-0">
+                                        <p class="fs-6 mb-0">Seleccione las áreas con su respectivo orden:</p>
+                                    </div>
+                                    <div class="col-3 p-0 text-end">
+                                        <button class="btn btn-sm btn-outline-success border-success border-2 addAreaExtaks" type="button"><i class="bi bi-plus-circle"></i> Área</button>
+                                    </div>
+                                </div>
+                                <div class="row p-0">
+                                    <span class="invalid-feedback-process-order"></span>
+                                </div>
+                                <div class="row m-0" id="cardsProcessContainer">
+                                    <div class="input-group p-0 py-3 has-validation">
+                                        <div class="row m-0 w-100">
+                                            <div class="col-2 p-0">
+                                                <select name="orderProcess\{{@index}}" class="form-select form-select-sm border-dark border-2 border-end-0 rounded-end-0 orderProcess" required>
+                                                    \{{#each ../orden}}
+                                                        <option value="\{{this}}">\{{this}}</option>
+                                                    \{{/each}}
+                                                </select>
+                                            </div>
+                                            <div class="col-md-9 col-8 p-0">
+                                                <select name="areaProcess\{{@index}}" class="form-select form-select-sm border-dark border-2 rounded-start-0 areaProcess" required>
+                                                    \{{#each ../areas}}
+                                                        <option value="\{{areaId}}">\{{nombre}}</option>
+                                                    \{{/each}}
+                                                </select>
+                                                <div class="valid-feedback">
+                                                    ¡Perfecto!
+                                                </div>
+                                                <div class="invalid-feedback">
+                                                    <span class="invalid-feedback-process-area"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-1 col-2 pe-0 text-end d-none">
+                                                <button class="btn btn-danger btn-sm remove-process-select" type="button"><i class="bi bi-trash3"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                \{{else}}
+                    <div class="row m-0">
+                        <div class="card mb-3 p-0">
+                            <div class="card-body">
+                                <p class="card-title m-0">No existen productos fuera de catálogo para esta cotización</p>
+                            </div>
+                        </div>
+                    </div>
+                \{{/each}}
+            </form>
+        </div>
+    </div>
+</script>
+
 <script>
+    $.fn.dataTable.moment('DD/MM/YYYY, HH:mm');
     var table = new DataTable('#extask-table', {
         paging: false,
         info: false,
         padding: false,
-        order: [[1, 'Desc']],
-        dom: '<"float-start pb-2"f><"button-extask-table pb-2"B>', 
-        columnDefs: [
-            {className: "dt-center", targets: "_all"},
-        ],
+        order: [[1, 'Desc'], [0, 'Desc']],
+        columnDefs: [{"orderable": false, "targets": 6}],
+        dom: '<"row pb-2"<"col-12 col-md-6 order-last order-md-first"<"float-start"f>><"col-12 col-md-6 order-first order-md-last"<"button-history-extask"B>>><"row"<"col-sm-12"tr>>',
         fnInitComplete: function(){
-            $('div.button-extask-table').html('<a href="/extask/history/{{cotId}}" class="btn btn-outline-success border-success border-2 float-end" role="button"><i class="bi bi-folder-check"></i> Ver historial</a>');
+            // añadir boton para ver historial
+            const addRolebtn = $('#extasks-history-button').clone().removeClass('d-none');
+            $('div.button-history-extask').html(addRolebtn);
         },
         language:{
             url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-MX.json',
