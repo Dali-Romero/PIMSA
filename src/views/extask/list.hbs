@@ -64,11 +64,17 @@
                         {{#equal estatus "Cancelada"}}
                             <td class="text-danger">{{estatus}}</td>
                         {{/equal}}
+                        {{#equal estatus "Orden cancelada"}}
+                            <td class="text-danger">{{estatus}}</td>
+                        {{/equal}}
                         {{#equal estatus "Ordenada"}}
                             <td class="text-success">{{estatus}}</td>
                         {{/equal}}
-                        {{#equal estatus "Espera"}}
-                            <td class="text-warning">En espera</td>
+                        {{#equal estatus "Enviada"}}
+                            <td class="text-warning">{{estatus}}</td>
+                        {{/equal}}
+                        {{#equal estatus "Recotizada"}}
+                            <td class="text-warning">{{estatus}}</td>
                         {{/equal}}
                         <td>
                             <div class="row g-0 justify-content-center">
@@ -100,7 +106,18 @@
     </div>
 </div>
 
-{{!-- Button (add role) that will be added when the table is rendered --}}
+{{!-- Button (add quotations) that will be added when the table is rendered --}}
+<div class="d-none" id="extasks-add-quotations-button">
+    {{#checkPermission user.permisos "addQuotations"}}
+        <a href="/quotations/add" class="btn btn-outline-success border-success border-2 float-md-end mb-3 mb-md-0 me-0 me-md-4" role="button"><i class="bi bi-bag-plus"></i> Cotizar</a>
+    {{else}}
+        <span class="d-inline-block float-md-end mb-3 mb-md-0 me-0 me-md-4" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Acceso denegado">
+            <a href="/quotations/add" class="btn btn-outline-success border-success border-2 disabled" role="button" tabindex="-1" aria-disabled="true"><i class="bi bi-bag-plus"></i> Cotizar</a>
+        </span>
+    {{/checkPermission}}
+</div>
+
+{{!-- Button (see history) that will be added when the table is rendered --}}
 <div class="d-none" id="extasks-history-button">
     <a href="/extask/history" class="btn btn-outline-success border-success border-2 float-md-end mb-3 mb-md-0" role="button"><i class="bi bi-folder-check"></i> Ver historial</a>
 </div>
@@ -246,11 +263,15 @@
         padding: false,
         order: [[1, 'Desc'], [0, 'Desc']],
         columnDefs: [{"orderable": false, "targets": 6}],
-        dom: '<"row pb-2"<"col-12 col-md-6 order-last order-md-first"<"float-start"f>><"col-12 col-md-6 order-first order-md-last"<"button-history-extask"B>>><"row"<"col-sm-12"tr>>',
+        dom: '<"row pb-2"<"col-12 col-md-6 order-last order-md-first"<"float-start"f>><"col-12 col-md-6 order-first order-md-last"<"button-history-extask"B><"button-add-quotation-extasks"B>>><"row"<"col-sm-12"tr>>',
         fnInitComplete: function(){
+            // añadir boton para ver agregar cotizaciones
+            const addQuotationbtn = $('#extasks-add-quotations-button').clone().removeClass('d-none');
+            $('div.button-add-quotation-extasks').html(addQuotationbtn);
+
             // añadir boton para ver historial
             const addRolebtn = $('#extasks-history-button').clone().removeClass('d-none');
-            $('div.button-history-extask').html(addRolebtn);
+            $('div.button-history-extask').append(addRolebtn);
         },
         language:{
             url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-MX.json',

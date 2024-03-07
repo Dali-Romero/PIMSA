@@ -111,7 +111,7 @@ router.post('/generateOrder/:id', isLoggedIn, IsAuthorized('addOrders'), async (
     await pool.query('UPDATE Cotizaciones SET estatus = "Ordenada" WHERE cotId = ?', [id]);
 
     req.flash('success', 'La orden <b>OT-'+ordenId.insertId+'</b> ha sido creada correctamente');
-    res.redirect('/orders');
+    res.redirect('/extask');
 })
 
 module.exports = router;

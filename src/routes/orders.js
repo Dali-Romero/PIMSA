@@ -10,15 +10,15 @@ const { isLoggedIn, IsAuthorized } = require('../lib/auth.js');
 const router = express.Router();
 
 router.get('/', isLoggedIn, IsAuthorized('seeListOrders'), async (req, res)=>{
-    const ordenes = await pool.query('SELECT Ordenes.ordenId, fechaGen, IF(DATE(Ordenes.fechaGen) = Ordenes.fechaEnt, "-", Ordenes.fechaEnt) AS fechaEnt, Empleados.nombreComp, Ordenes.terminada FROM ((Ordenes INNER JOIN Usuarios ON Ordenes.usuario_id = Usuarios.usuarioId) INNER JOIN Empleados ON Usuarios.empleado_id = Empleados.empleadoId);');
+    const ordenes = await pool.query('SELECT Ordenes.ordenId, fechaGen, IF(DATE(Ordenes.fechaEnt) = DATE("2001-01-01"), "-", Ordenes.fechaEnt) AS fechaEnt, Empleados.nombreComp, Ordenes.terminada, Ordenes.estatus FROM ((Ordenes INNER JOIN Usuarios ON Ordenes.usuario_id = Usuarios.usuarioId) INNER JOIN Empleados ON Usuarios.empleado_id = Empleados.empleadoId);');
     res.render('orders/list', {ordenes: ordenes});
 });
 
 router.get('/info/:id', isLoggedIn, IsAuthorized('seeListOrders'), async (req, res)=>{
     const {id} = req.params;
-    const cotizacion = await pool.query('SELECT Ordenes.ordenId, Ordenes.fechaGen, IF(DATE(Ordenes.fechaGen) = Ordenes.fechaEnt, "-", Ordenes.fechaEnt) AS fechaEnt, Ordenes.cot_id, Ordenes.terminada, Cotizaciones.cotId, Cotizaciones.fecha, Cotizaciones.cliente_id, Cotizaciones.proyecto, Cotizaciones.observaciones, Cotizaciones.porcentajeDescuento, Cotizaciones.solicitante, Cotizaciones.empleado, Cotizaciones.estatus, Cotizaciones.totalBruto, Cotizaciones.descuento AS descuento_cotizacion, Cotizaciones.subtotal, Cotizaciones.iva, Cotizaciones.total, Clientes.*, Empleados.nombreComp FROM ((((Ordenes INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId) INNER JOIN Usuarios ON Ordenes.usuario_id = Usuarios.usuarioId) INNER JOIN Empleados ON Usuarios.empleado_id = Empleados.empleadoId) INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId) WHERE ordenId = ?;', [id]);
-    const productosEnCatalogo = await pool.query('SELECT ProductosCotizados.*, Productos.nombre, Productos.unidad, Procesos.procesoId AS procesoId, Procesos.nombre AS procesoNombre, GROUP_CONCAT(ProcesosOrdenes.orden ORDER BY ProcesosOrdenes.orden ASC) AS ordenAreas, GROUP_CONCAT(Areas.nombre ORDER BY ProcesosOrdenes.orden ASC) AS areas FROM ((((((Ordenes INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId) INNER JOIN ProductosCotizados ON Cotizaciones.cotId = ProductosCotizados.cot_id) INNER JOIN Productos ON ProductosCotizados.producto_id = Productos.productoId) INNER JOIN Procesos ON Productos.proceso_id = Procesos.procesoId) INNER JOIN ProcesosOrdenes ON Procesos.procesoId = ProcesosOrdenes.proceso_id) INNER JOIN Areas ON ProcesosOrdenes.area_id = Areas.areaId) WHERE Ordenes.ordenId = ? GROUP BY prodCotizadoId;', [id]);
-    const productosFueraCatalogo = await pool.query('SELECT FueraCatalogoCotizados.*, Procesos.procesoId AS procesoId, Procesos.nombre AS procesoNombre, GROUP_CONCAT(ProcesosOrdenes.orden ORDER BY ProcesosOrdenes.orden ASC) AS ordenAreas, GROUP_CONCAT(Areas.nombre ORDER BY ProcesosOrdenes.orden ASC) AS areas FROM (((((Ordenes INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId) INNER JOIN FueraCatalogoCotizados ON Cotizaciones.cotId = FueraCatalogoCotizados.cot_id) INNER JOIN Procesos ON FueraCatalogoCotizados.proceso_id = Procesos.procesoId) INNER JOIN ProcesosOrdenes ON Procesos.procesoId = ProcesosOrdenes.proceso_id) INNER JOIN Areas ON ProcesosOrdenes.area_id = Areas.areaId) WHERE Ordenes.ordenId = ? GROUP BY fueraCotizadoId;', [id]);
+    const cotizacion = await pool.query('SELECT Ordenes.ordenId, Ordenes.fechaGen, IF(DATE(Ordenes.fechaEnt) = DATE("2001-01-01"), "-", Ordenes.fechaEnt) AS fechaEnt, Ordenes.cot_id, Ordenes.terminada, Ordenes.estatus AS estatusOrden, Cotizaciones.cotId, Cotizaciones.fecha, Cotizaciones.cliente_id, Cotizaciones.proyecto, Cotizaciones.observaciones, Cotizaciones.porcentajeDescuento, Cotizaciones.solicitante, Cotizaciones.empleado, Cotizaciones.estatus, Cotizaciones.totalBruto, Cotizaciones.descuento AS descuento_cotizacion, Cotizaciones.subtotal, Cotizaciones.iva, Cotizaciones.total, Clientes.*, Empleados.nombreComp FROM ((((Ordenes INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId) INNER JOIN Usuarios ON Ordenes.usuario_id = Usuarios.usuarioId) INNER JOIN Empleados ON Usuarios.empleado_id = Empleados.empleadoId) INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId) WHERE ordenId = ?;', [id]);
+    const productosEnCatalogo = await pool.query('SELECT ProductosCotizados.*, Productos.nombre, Productos.unidad, Procesos.procesoId AS procesoId, Procesos.nombre AS procesoNombre, GROUP_CONCAT(ProcesosOrdenes.orden ORDER BY ProcesosOrdenes.orden ASC, Areas.nombre ASC) AS ordenAreas, GROUP_CONCAT(Areas.nombre ORDER BY ProcesosOrdenes.orden ASC, Areas.nombre ASC) AS areas FROM ((((((Ordenes INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId) INNER JOIN ProductosCotizados ON Cotizaciones.cotId = ProductosCotizados.cot_id) INNER JOIN Productos ON ProductosCotizados.producto_id = Productos.productoId) INNER JOIN Procesos ON Productos.proceso_id = Procesos.procesoId) INNER JOIN ProcesosOrdenes ON Procesos.procesoId = ProcesosOrdenes.proceso_id) INNER JOIN Areas ON ProcesosOrdenes.area_id = Areas.areaId) WHERE Ordenes.ordenId = ? GROUP BY prodCotizadoId;', [id]);
+    const productosFueraCatalogo = await pool.query('SELECT FueraCatalogoCotizados.*, Procesos.procesoId AS procesoId, Procesos.nombre AS procesoNombre, GROUP_CONCAT(ProcesosOrdenes.orden ORDER BY ProcesosOrdenes.orden ASC, Areas.nombre ASC) AS ordenAreas, GROUP_CONCAT(Areas.nombre ORDER BY ProcesosOrdenes.orden ASC, Areas.nombre ASC) AS areas FROM (((((Ordenes INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId) INNER JOIN FueraCatalogoCotizados ON Cotizaciones.cotId = FueraCatalogoCotizados.cot_id) INNER JOIN Procesos ON FueraCatalogoCotizados.proceso_id = Procesos.procesoId) INNER JOIN ProcesosOrdenes ON Procesos.procesoId = ProcesosOrdenes.proceso_id) INNER JOIN Areas ON ProcesosOrdenes.area_id = Areas.areaId) WHERE Ordenes.ordenId = ? GROUP BY fueraCotizadoId;', [id]);
     const productos = productosEnCatalogo.concat(productosFueraCatalogo);
     
     // separar las areas y su orden
@@ -26,9 +26,27 @@ router.get('/info/:id', isLoggedIn, IsAuthorized('seeListOrders'), async (req, r
         producto.ordenAreas = producto.ordenAreas.split(',');
         producto.areas = producto.areas.split(',');
     });
+
+    // fecha minima de entrega
+    date = new Date();
+    fechaMin = date.toLocaleDateString('en-CA', {year: 'numeric', month: 'numeric', day: 'numeric'});
     
-    res.render('orders/info', {cotizacion: cotizacion[0], productos: productos});
+    res.render('orders/info', {cotizacion: cotizacion[0], productos: productos, fechaMinima: fechaMin});
 });
+
+router.get('/cancel/:id', isLoggedIn, IsAuthorized('editOrders'), async (req, res)=> {
+    const {id} = req.params;
+    const cotId = await pool.query('SELECT Cotizaciones.cotId FROM Ordenes INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId WHERE Ordenes.ordenId = ?;', [id]);
+
+    // actualizar estatus de la orden
+    await pool.query('UPDATE Ordenes SET estatus = "Cancelada" WHERE ordenId = ?;', [id]);
+    
+    // actualizar estatus de la cotización
+    await pool.query('UPDATE Cotizaciones SET estatus = "Orden cancelada" WHERE cotId = ?;', [cotId[0].cotId]);
+
+    req.flash('success', 'La orden <b>OT-'+id+'</b> ha sido cancelada correctamente');
+    res.redirect('/orders');
+})
 
 router.get('/download/:id', isLoggedIn, IsAuthorized('seeListOrders'), async (req, res)=>{
     const {id} = req.params;
@@ -125,7 +143,6 @@ router.post('/revalue/:id', isLoggedIn, IsAuthorized('editOrders'), async (req, 
         newProducto = [];
     });
 
-
     // agregar nuevos productos cotizados
     if (todosProductos.length > 0){
         for await (const producto of productos) {
@@ -136,6 +153,9 @@ router.post('/revalue/:id', isLoggedIn, IsAuthorized('editOrders'), async (req, 
             }
         }
     }
+
+    // actualizar estatus de la orden
+    await pool.query('UPDATE Ordenes SET estatus = "Revaluada" WHERE ordenId = ?;', [id]);
 
     req.flash('success', 'La orden <b>OT-'+id+'</b> ha sido revaluada correctamente');
     res.send({url: '/orders'});
@@ -215,6 +235,17 @@ router.post('/preview', isLoggedIn, async (req, res)=>{
     }
 
     res.send({cotizacion:cot, cliente: cliente[0], productos: productosCotArray});
+})
+
+router.post('/addDeadline/:id', isLoggedIn, IsAuthorized('editOrders'), async (req, res) => {
+    const {id} = req.params;
+    const fechaEnt = req.body.deadline;
+    
+    // actualizar fecha de entrega en la orden
+    await pool.query('UPDATE Ordenes SET fechaEnt = ?, estatus = "En proceso" WHERE ordenId = ?;', [fechaEnt, id]);
+
+    // redirigir a crear tareas
+    res.redirect('/tareas/create/'+id);
 })
 
 module.exports = router;

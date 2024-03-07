@@ -231,8 +231,13 @@ router.get('/info/:id', isLoggedIn, IsAuthorized('seeListQuotations'), async (re
 
 router.get('/cancel/:id', isLoggedIn, IsAuthorized('editQuotations'), async (req, res)=>{
     const {id} = req.params;
+
+    // actualizar estatus de la cotizacion
     await pool.query('UPDATE Cotizaciones SET estatus = "Cancelada" WHERE cotId = ?', [id]);
-    res.redirect('/quotations/info/' + id);
+
+    req.flash('success', 'La cotización <b>COT-'+id+'</b> ha sido cancelada correctamente');
+    res.redirect('/quotations');
+    //res.redirect('/quotations/info/' + id);
 })
 
 router.get('/edit/:id', isLoggedIn, IsAuthorized('editQuotations'), async (req,res)=>{
@@ -271,7 +276,7 @@ router.post('/edit/:id', isLoggedIn, IsAuthorized('editQuotations'), async(req, 
         porcentajeDescuento: Number(cotizacion.porcentajeDescuento),
         solicitante: cotizacion.solicitante,
         empleado: cotizacion.empleado,
-        estatus: cotizacion.estatus,
+        estatus: "Recotizada",
         totalBruto: cotizacion.totalBruto,
         descuento: cotizacion.descuento,
         subtotal: cotizacion.subtotal,
@@ -534,7 +539,8 @@ router.post('/generateOrder/:id', IsAuthorized('addOrders'), async (req, res)=>{
         fechaEnt: fechaEnt,
         cot_id: Number(id),
         usuario_id: usruarioId,
-        terminada: 0
+        terminada: 0,
+        estatus: "Generada"
     }
     const resultadoOrden = await pool.query('INSERT INTO Ordenes SET ?;', [newOrden]);
 

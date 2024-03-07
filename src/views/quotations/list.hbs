@@ -78,10 +78,16 @@
                         {{#equal estatus "Cancelada"}}
                             <td class="text-danger">{{estatus}}</td>
                         {{/equal}}
+                        {{#equal estatus "Orden cancelada"}}
+                            <td class="text-danger">{{estatus}}</td>
+                        {{/equal}}
                         {{#equal estatus "Ordenada"}}
                             <td class="text-success">{{estatus}}</td>
                         {{/equal}}
                         {{#equal estatus "Enviada"}}
+                            <td class="text-warning">{{estatus}}</td>
+                        {{/equal}}
+                        {{#equal estatus "Recotizada"}}
                             <td class="text-warning">{{estatus}}</td>
                         {{/equal}}
                         <td>{{empleado}}</td>

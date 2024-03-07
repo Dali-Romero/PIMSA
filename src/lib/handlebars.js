@@ -50,6 +50,14 @@ hbs.registerHelper('equalOR', function(v1, v2, v3, options){
     }
 });
 
+hbs.registerHelper('equalORThree', function(v1, v2, v3, v4, options){
+    if (v1 === v2 || v1 === v3 || v1 === v4){
+        return options.fn(this);
+    } else{
+        return options.inverse(this);
+    }
+});
+
 hbs.registerHelper('formatNumber', function(n){
     let num = Number.parseFloat(n).toFixed(2);
     num = Number(num).toLocaleString(undefined, {minimumFractionDigits: 2});
@@ -82,8 +90,9 @@ hbs.registerHelper('formatDateShort', function(date){
 });
 
 hbs.registerHelper('formatDateOnlyDate', function(date){
-    date = new Date(date);
-    fecha = date.toLocaleDateString('es-mx', {year: 'numeric', month: '2-digit', day: '2-digit'});
+    dateUtc = new Date(date);
+    dateGtm600 = new Date(dateUtc.getTime() - dateUtc.getTimezoneOffset() * -60000);
+    fecha = dateGtm600.toLocaleDateString('es-mx', {year: 'numeric', month: '2-digit', day: '2-digit'});
     return fecha;
 });
 

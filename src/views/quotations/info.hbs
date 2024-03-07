@@ -6,7 +6,7 @@
         {{#with cotizacion}}
             {{#checkPermission ../user.permisos "editQuotations"}}
                 <div class="btn-group mb-3 mb-md-0" role="group">
-                    <button class="btn btn-danger me-3" id="cancel-quotation" type="button" {{#equalOR estatus "Cancelada" "Ordenada"}} disabled {{/equalOR}}><i class="bi bi-x-octagon"></i> Cancelar</button>
+                    <button class="btn btn-danger me-3" id="cancel-quotation" type="button" {{#equalORThree estatus "Cancelada" "Ordenada" "Orden cancelada"}} disabled {{/equalORThree}}><i class="bi bi-x-octagon"></i> Cancelar</button>
                 </div>
             {{else}}
                 <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Acceso denegado">
@@ -18,7 +18,7 @@
 
             {{#checkPermission ../user.permisos "editQuotations"}}
                 <div class="btn-group mb-3 mb-md-0" role="group">
-                    <a href="/quotations/edit/{{cotId}}" class="btn btn-warning me-3 {{#equal estatus 'Ordenada'}} disabled {{/equal}}" role="button" aria-disabled="true"><i class="bi bi-arrow-repeat"></i> Recotizar</a>
+                    <a href="/quotations/edit/{{cotId}}" class="btn btn-warning me-3 {{#equalOR estatus 'Ordenada' 'Orden cancelada'}} disabled {{/equalOR}}" role="button" aria-disabled="true"><i class="bi bi-arrow-repeat"></i> Recotizar</a>
                 </div>
             {{else}}
                 <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Acceso denegado">
@@ -31,7 +31,7 @@
             <div class="btn-group mb-3 mb-md-0" role="group">
                 <div class="dropdown">
                     {{#checkPermission ../user.permisos "editQuotations"}}
-                        <button type="button" class="btn btn-info dropdown-toggle me-3" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside" {{#equalOR estatus "Cancelada" "Ordenada"}} disabled {{/equalOR}}>
+                        <button type="button" class="btn btn-info dropdown-toggle me-3" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside" {{#equalORThree estatus "Cancelada" "Ordenada" "Orden cancelada"}} disabled {{/equalORThree}}>
                             <i class="bi bi-envelope-at"></i>
                             Enviar
                         </button>
@@ -91,7 +91,7 @@
 
             {{#checkPermission ../user.permisos "addOrders"}}
                 <div class="btn-group" role="group">
-                    <button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#modalGenerateOrder" {{#equalOR estatus "Cancelada" "Ordenada"}} disabled {{/equalOR}}><i class="bi bi-journal-check"></i> Generar orden</button>
+                    <button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#modalGenerateOrder" {{#equalORThree estatus "Cancelada" "Ordenada" "Orden cancelada"}} disabled {{/equalORThree}}><i class="bi bi-journal-check"></i> Generar orden</button>
                 </div>
             {{else}}
                 <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Acceso denegado">

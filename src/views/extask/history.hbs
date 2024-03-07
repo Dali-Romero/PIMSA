@@ -94,15 +94,13 @@
     </div>
 </div>
 
-
-
 <script>
     $.fn.dataTable.moment('DD/MM/YYYY, HH:mm');
     new DataTable('#hist-table', {
         paging: false,
         info: false,
         padding: false,
-        order: [[1, 'Desc'], [0, 'Desc']],
+        order: [[2, 'Desc']],
         dom: '<"float-start pb-2"f>', 
         language:{
             url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-MX.json',

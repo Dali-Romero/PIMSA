@@ -1,7 +1,7 @@
 // function to validate the revalue
 function validateOrderRevalueForm(form, url){
     let validated = false;
-    form.on('submit', (event)=>{
+    form.on('submit', function (event){
         // avoid default form behavior
         event.preventDefault();
         event.stopPropagation();
@@ -153,6 +153,49 @@ function validateOrderRevalueForm(form, url){
     });
 }
 
+function validateSendProductionForm (form){
+    let validated = false;
+    form.on('submit', function (event) {
+        // Adjust deadline's date
+        const dateToday = new Date().setHours(0, 0, 0, 0);
+
+        //adjust entered date
+        let deadlineDate =new Date($('#deadline').val());
+        deadlineDate = new Date(deadlineDate.getTime() - deadlineDate.getTimezoneOffset() * -60000).setHours(0,0,0,0);
+
+        // dateline field validation
+        const deadline = $('#deadline');
+        const invalidFeedbackDeadLine = $('#invalid-feedback-deadline');
+        deadline.removeClass('border-dark');
+        if (deadline.val().length === 0) {
+            deadline.removeClass('is-valid');
+            deadline.addClass('is-invalid');
+            invalidFeedbackDeadLine.text('Por favor, agregue una fecha');
+        } else if (deadlineDate < dateToday) {
+            deadline.removeClass('is-valid');
+            deadline.addClass('is-invalid');
+            invalidFeedbackDeadLine.text('La fecha de entrega debe ser mayor o igual al día de hoy');
+        } else {
+            deadline.removeClass('is-invalid');
+            deadline.addClass('is-valid');
+        };
+
+        // Checking the validations
+        const nonValidatedFields = $('.is-invalid');
+        if (nonValidatedFields.length !== 0){
+            validated = false;
+        }else{
+            validated = true;
+        }
+
+        // avoid default form behavior if is not valid
+        if(!validated){
+            event.preventDefault();
+            event.stopPropagation();
+        }
+    })
+}
+
 $(document).ready(function(){
     // ------------------------------- list file -------------------------------
     // list quotations table
@@ -181,6 +224,15 @@ $(document).ready(function(){
         $('#revaluenumdiscount').val('0.00');
     });
 
+    // show cancel quotation warning
+    $('#cancel-order').on('click', function(){
+        const toast = new bootstrap.Toast($('#cancel-order-toast'), {});
+        toast.show();
+    })
+
     // quoter validation
     validateOrderRevalueForm($('#form-revalue-quotation'), $('#form-revalue-quotation').attr('action'));
+
+    // deadline validation
+    validateSendProductionForm($('#add-deadline-order-form'));
 });
