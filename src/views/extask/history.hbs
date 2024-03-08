@@ -14,21 +14,36 @@
         <table class="table table-striped align-middle" id="hist-table">
             <thead>
                 <tr>
+                    <th scope="col">No. Orden</th>
                     <th scope="col">No. Cotización</th>
                     <th scope="col">Fecha y hora</th>
                     <th scope="col">Cliente</th>
+                    <th scope="col">Proyecto</th>
                     <th scope="col">Monto total</th>
                     <th scope="col">Estatus</th>
-                    <th scope="col">Elaboró</th>
-                    <th scope="col"></th>
                 </tr>
             </thead>
             <tbody class="table-group-divider">
                 {{#each cotizaciones}}
                     <tr>
                         <th scope="row">
+                            {{#checkPermission ../user.permisos "seeListOrders"}}
+                                <a class="icon-link icon-link-hover link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0); --bs-link-hover-color-rgb: 237, 10, 63;" href="/orders/info/{{ordenId}}">
+                                    <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
+                                    OT-{{ordenId}}
+                                </a>
+                            {{else}}
+                                <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Acceso denegado">
+                                    <a class="icon-link link-underline link-underline-opacity-0 pe-none" style="--bs-link-opacity: .80;">
+                                        <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
+                                        OT-{{ordenId}}
+                                    </a>
+                                </span>
+                            {{/checkPermission}}
+                        </th>
+                        <th scope="row">
                             {{#checkPermission ../user.permisos "seeListQuotations"}}
-                                <a class="icon-link icon-link-hover link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0); --bs-link-hover-color-rgb: 237, 10, 63;" href="quotations/info/{{cotId}}">
+                                <a class="icon-link icon-link-hover link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0); --bs-link-hover-color-rgb: 237, 10, 63;" href="/quotations/info/{{cotId}}">
                                     <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
                                     COT-{{cotId}}
                                 </a>
@@ -42,45 +57,26 @@
                             {{/checkPermission}}
                         </th>
                         <td>{{formatDateShort fecha}}</td>
-                        <td class="text-start">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    {{#checkPermission ../user.permisos "seeListClients"}}
-                                        <a class="icon-link icon-link-hover link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0); --bs-link-hover-color-rgb: 237, 10, 63;" href="clients/infoClient/{{clienteId}}">
-                                            <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
-                                            {{nombre}}
-                                        </a>
-                                    {{else}}
-                                        <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Acceso denegado">
-                                            <a class="icon-link link-underline link-underline-opacity-0 pe-none" style="--bs-link-opacity: .80;">
-                                                <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
-                                                {{nombre}}
-                                            </a>
-                                        </span>
-                                    {{/checkPermission}}
-                                </div>
-                            </div>
-                        </td>
-                        <td>$ {{formatNumber total}}</td>
-                        {{#equal estatus "Ordenada"}}
-                            <td class="text-success">{{estatus}}</td>
-                        {{/equal}}
-                        <td>{{empleado}}</td>
-                        <th scope="row">
-                            {{#checkPermission ../user.permisos "seeListOrders"}}
-                                <a class="icon-link icon-link-hover link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0); --bs-link-hover-color-rgb: 237, 10, 63;" href="orders/info/{{ordenId}}">
+                        <td>
+                            {{#checkPermission ../user.permisos "seeListClients"}}
+                                <a class="icon-link icon-link-hover link-underline link-underline-opacity-0" style="--bs-icon-link-transform: translate3d(0, -.15rem, 0); --bs-link-hover-color-rgb: 237, 10, 63;" href="/clients/infoClient/{{clienteId}}">
                                     <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
-                                    OT-{{ordenId}}
+                                    {{nombre}}
                                 </a>
                             {{else}}
                                 <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Acceso denegado">
                                     <a class="icon-link link-underline link-underline-opacity-0 pe-none" style="--bs-link-opacity: .80;">
                                         <i class="bi bi-box-arrow-in-up-right mb-auto"></i>
-                                        OT-{{ordenId}}
+                                        {{nombre}}
                                     </a>
                                 </span>
                             {{/checkPermission}}
-                        </th>
+                        </td>
+                        <td>{{proyecto}}</td>
+                        <td>$ {{formatNumber total}}</td>
+                        {{#equal estatus "Ordenada"}}
+                            <td class="text-success">{{estatus}}</td>
+                        {{/equal}}
                     </tr>
                 {{else}}
                     <tr>
@@ -98,19 +94,14 @@
     </div>
 </div>
 
-
-
 <script>
+    $.fn.dataTable.moment('DD/MM/YYYY, HH:mm');
     new DataTable('#hist-table', {
         paging: false,
         info: false,
         padding: false,
-        order: [[1, 'Desc']],
-        dom: '<"float-start pb-2"f><"button-add-quotation pb-2"B>', 
-        columnDefs: [
-            {className: "dt-center", targets: "_all"},
-        ],
-        
+        order: [[2, 'Desc']],
+        dom: '<"float-start pb-2"f>', 
         language:{
             url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-MX.json',
         },

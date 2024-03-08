@@ -20,6 +20,8 @@ router.get('/add', isLoggedIn, IsAuthorized('addQuotations'), async (req, res)=>
 router.post('/add', isLoggedIn, IsAuthorized('addQuotations'), async (req, res)=>{
     const cotizacion = req.body.data.cotizacion;
     const productos = req.body.data.productos;
+    const usuarioId = req.user.usuarioId;
+
     const newCot = {
         fecha: cotizacion.fecha,
         cliente_id: cotizacion.cliente_id,
@@ -28,6 +30,7 @@ router.post('/add', isLoggedIn, IsAuthorized('addQuotations'), async (req, res)=
         porcentajeDescuento: Number(cotizacion.porcentajeDescuento),
         solicitante: cotizacion.solicitante,
         empleado: cotizacion.empleado,
+        usuario_id: usuarioId,
         estatus: cotizacion.estatus,
         totalBruto: cotizacion.totalBruto,
         descuento: cotizacion.descuento,
@@ -35,6 +38,7 @@ router.post('/add', isLoggedIn, IsAuthorized('addQuotations'), async (req, res)=
         iva: cotizacion.iva,
         total: cotizacion.total
     };
+
     const {insertId} = await pool.query('INSERT INTO Cotizaciones SET ?;', [newCot]);
     let productosEnCatalogo = [];
     let ProductosFueraCatalogo = [];
@@ -105,10 +109,10 @@ router.post('/preview', isLoggedIn, async (req, res)=>{
     const clienteId = body.clientid;
     const empleado = await pool.query('SELECT Empleados.nombreComp FROM (Empleados INNER JOIN Usuarios ON Empleados.empleadoId = Usuarios.empleado_id) WHERE Usuarios.usuarioId = ?;', [usruarioId]);
     const cliente = await pool.query('SELECT * FROM Clientes WHERE clienteId = ?;', [clienteId]);
-    const date = new Date();
 
     // formatos de fecha
-    fecha = date.toLocaleDateString('en-CA', {year: 'numeric', month: 'numeric', day: 'numeric', hour:'numeric', minute: 'numeric', hour12: false});
+    const date = new Date();
+    fecha = date.toLocaleDateString('en-CA', {year: 'numeric', month: 'numeric', day: 'numeric', hour:'numeric', minute: 'numeric', hourCycle: 'h23'});
 
     // obtener informacion de los productos 
     let i = 0;
@@ -227,8 +231,13 @@ router.get('/info/:id', isLoggedIn, IsAuthorized('seeListQuotations'), async (re
 
 router.get('/cancel/:id', isLoggedIn, IsAuthorized('editQuotations'), async (req, res)=>{
     const {id} = req.params;
+
+    // actualizar estatus de la cotizacion
     await pool.query('UPDATE Cotizaciones SET estatus = "Cancelada" WHERE cotId = ?', [id]);
-    res.redirect('/quotations/info/' + id);
+
+    req.flash('success', 'La cotización <b>COT-'+id+'</b> ha sido cancelada correctamente');
+    res.redirect('/quotations');
+    //res.redirect('/quotations/info/' + id);
 })
 
 router.get('/edit/:id', isLoggedIn, IsAuthorized('editQuotations'), async (req,res)=>{
@@ -267,7 +276,7 @@ router.post('/edit/:id', isLoggedIn, IsAuthorized('editQuotations'), async(req, 
         porcentajeDescuento: Number(cotizacion.porcentajeDescuento),
         solicitante: cotizacion.solicitante,
         empleado: cotizacion.empleado,
-        estatus: cotizacion.estatus,
+        estatus: "Recotizada",
         totalBruto: cotizacion.totalBruto,
         descuento: cotizacion.descuento,
         subtotal: cotizacion.subtotal,
@@ -506,45 +515,32 @@ router.post('/generateOrder/:id', IsAuthorized('addOrders'), async (req, res)=>{
         }
         procesosArray.push(procesos);
 
-        // generar nuevo proceso para cada producto fuera de catalogo
-        let newProcesos = [];
-        procesosArray.forEach((element, i) => {
-            newProcesos.push([
-                'Personalizado'
-            ])
-        });
-
-        // almacenar n procesos personalizados
-        const resultadoProcesos = await pool.query('INSERT INTO Procesos (nombre) VALUES ?;', [newProcesos]);
-
         // almacenar los procesos en los productos fuera de catalogo
-        productosFueraCatalogoId.forEach(async (productoId, i) => {
-            await pool.query('UPDATE FueraCatalogoCotizados SET proceso_id = ? WHERE fueraCotizadoId = ?', [resultadoProcesos.insertId + i, Number(productoId.fueraCotizadoId)]);
-        });
-
-        // organizar los procesos para su almacenamiento
-        let procesosOrden = [];
-        procesosArray.forEach((producto, i) => {
-            for (let j = 0; j < producto.orderProcess.length; j++) {
-                procesosOrden.push([Number(producto.areaProcess[j]), resultadoProcesos.insertId + i, Number(producto.orderProcess[j])]);
+        let procesoId = {};
+        for (let i = 0; i < productosFueraCatalogoId.length; i++) {
+            procesoId = await pool.query('INSERT INTO Procesos (nombre) VALUES ("Personalizado");');
+            await pool.query('UPDATE FueraCatalogoCotizados SET proceso_id = ? WHERE fueraCotizadoId = ?', [procesoId.insertId, Number(productosFueraCatalogoId[i].fueraCotizadoId)]);
+            for (let j = 0; j < procesosArray[i].orderProcess.length; j++) {
+                await pool.query('INSERT INTO ProcesosOrdenes (area_id, proceso_id, orden) VALUES (?, ?, ?);', [Number(procesosArray[i].areaProcess[j]), procesoId.insertId, Number(procesosArray[i].orderProcess[j])]);
             }
-        });
-
-        // almacenar los procesos en procesosOrdenes
-        await pool.query('INSERT INTO ProcesosOrdenes (area_id, proceso_id, orden) VALUES ?;', [procesosOrden]);
+            procesoId = {};
+        }
     }
 
     // crear orden
     const date = new Date();
-    fechaGen = date.toLocaleDateString('en-CA', {year: 'numeric', month: 'numeric', day: 'numeric', hour:'numeric', minute: 'numeric', hour12: false});
-    fechaEnt = date.toLocaleDateString('en-CA', {year: 'numeric', month: 'numeric', day: 'numeric'});
+    fechaGen = date.toLocaleDateString('en-CA', {year: 'numeric', month: 'numeric', day: 'numeric', hour:'numeric', minute: 'numeric', hourCycle: 'h23'});
+    
+    const deadline = new Date('2001-01-02');
+    fechaEnt = deadline.toLocaleDateString('en-CA', {year: 'numeric', month: 'numeric', day: 'numeric'});
 
     const newOrden = {
         fechaGen: fechaGen,
         fechaEnt: fechaEnt,
         cot_id: Number(id),
         usuario_id: usruarioId,
-        terminada: 0
+        terminada: 0,
+        estatus: "Generada"
     }
     const resultadoOrden = await pool.query('INSERT INTO Ordenes SET ?;', [newOrden]);
 
@@ -552,7 +548,8 @@ router.post('/generateOrder/:id', IsAuthorized('addOrders'), async (req, res)=>{
     await pool.query('UPDATE Cotizaciones SET estatus = "Ordenada" WHERE cotId = ?', [id]);
 
     req.flash('success', 'La orden <b>OT-'+resultadoOrden.insertId+'</b> ha sido creada correctamente');
-    res.redirect('/tareas/create/'+resultadoOrden.insertId);
+    res.redirect('/orders');
+    //res.redirect('/tareas/create/'+resultadoOrden.insertId);
 })
 
 module.exports = router; 

@@ -165,7 +165,7 @@ router.post('/terminar/:id', isLoggedIn, IsAuthorized('tasksEmployees'), async(r
     res.redirect('/tareas');
 });
 
-router.get('/create/:id', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, res) =>{
+router.get('/create/:id', isLoggedIn, async(req, res) =>{
     const {id} = req.params;
     var productos = await pool.query('SELECT productoscotizados.producto_id, productoscotizados.prodCotizadoId FROM productoscotizados INNER JOIN ordenes ON ordenes.cot_id = productoscotizados.cot_id WHERE ordenes.ordenId = ?', [id]);
     console.log(productos);
@@ -226,7 +226,9 @@ router.get('/create/:id', isLoggedIn, IsAuthorized('tasksEmployees'), async(req,
     };
     await pool.query('INSERT INTO cobranza SET ?', [tareaCobr]);
 
-    res.redirect('/tareas');
+    //res.redirect('/tareas');
+    req.flash('success', 'La orden <b>OT-'+id+'</b> ha sido enviada a producción');
+    res.redirect('/orders');
 });
 
 router.get('/info/:id', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, res) =>{

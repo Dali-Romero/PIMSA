@@ -2,26 +2,55 @@
     <h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-journal-bookmark-fill"></i> Órdenes</h1>
 </div>
 <div class="row p-4 gy-4 justify-content-md-between">
-    <div class="btn-toolbar justify-content-md-start justify-content-center p-0" role="toolbar">
+    <div class="btn-toolbar justify-content-start flex-md-row flex-column p-0" role="toolbar">
         {{#with cotizacion}}
-            <div class="btn-group" role="group">
-                <button class="btn btn-danger me-3" id="cancel-quotation" type="button" {{#equal estatus "Cancelada"}} disabled {{/equal}}><i class="bi bi-x-octagon"></i> Cancelar</button>
-            </div>
-            {{#checkPermission ../user.permisos "seeListOrders"}}
+            {{#checkPermission ../user.permisos "editOrders"}}
                 <div class="btn-group" role="group">
-                    <a href="/orders/download/{{ordenId}}" class="btn btn-primary me-3" role="button"><i class="bi bi-file-earmark-arrow-down"></i> Descargar PDF</a>
+                    <button class="btn btn-danger me-0 me-md-3 mb-3 mb-md-0" id="cancel-order" type="button" {{#equalOR estatusOrden "Cancelada" "En proceso"}} disabled {{/equalOR}}><i class="bi bi-x-octagon"></i> Cancelar</button>
                 </div>
             {{else}}
                 <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Acceso denegado">
-                    <div class="btn-group" role="group">
-                        <a href="/orders/download/{{ordenId}}" class="btn btn-primary me-3 disabled" role="button" tabindex="-1" aria-disabled="true"><i class="bi bi-file-earmark-arrow-down"></i> Descargar PDF</a>
+                    <div class="btn-group w-100" role="group">
+                        <button class="btn btn-danger me-0 me-md-3 mb-3 mb-md-0" id="cancel-order" type="button" disabled><i class="bi bi-x-octagon"></i> Cancelar</button>
                     </div>
                 </span>
             {{/checkPermission}}
 
-            <div class="btn-group mt-3 mt-md-0" role="group">
-                <button class="btn btn-success" type="button" {{#equal estatus "Cancelada"}} disabled {{/equal}}><i class="bi bi-journal-check"></i> Enviar a produccion</button>
-            </div>
+            {{#checkPermission ../user.permisos "editOrders"}}
+                <div class="btn-group" role="group">
+                    <a href="/orders/revalue/{{ordenId}}" class="btn btn-warning me-0 me-md-3 mb-3 mb-md-0 {{#equal estatusOrden "Cancelada"}} disabled {{/equal}}" role="button" {{#equal estatusOrden "Cancelada"}} tabindex="-1" aria-disabled="true" {{/equal}}><i class="bi bi-currency-exchange"></i> Revaluar</a>
+                </div>
+            {{else}}
+                <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Acceso denegado">
+                    <div class="btn-group w-100" role="group">
+                        <a href="/orders/revalue/{{cotId}}" class="btn btn-warning me-0 me-md-3 mb-3 mb-md-0 disabled" role="button" tabindex="-1" aria-disabled="true"><i class="bi bi-currency-exchange"></i> Revaluar</a>
+                    </div>
+                </span>
+            {{/checkPermission}}
+
+            {{#checkPermission ../user.permisos "seeListOrders"}}
+                <div class="btn-group" role="group">
+                    <a href="/orders/download/{{ordenId}}" class="btn btn-primary me-0 me-md-3 mb-3 mb-md-0" role="button"><i class="bi bi-file-earmark-arrow-down"></i> Descargar PDF</a>
+                </div>
+            {{else}}
+                <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Acceso denegado">
+                    <div class="btn-group w-100" role="group">
+                        <a href="/orders/download/{{ordenId}}" class="btn btn-primary me-0 me-md-3 mb-3 mb-md-0 disabled" role="button" tabindex="-1" aria-disabled="true"><i class="bi bi-file-earmark-arrow-down"></i> Descargar PDF</a>
+                    </div>
+                </span>
+            {{/checkPermission}}
+
+            {{#checkPermission ../user.permisos "editOrders"}}
+                <div class="btn-group" role="group">
+                    <button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#orders-add-deadline" {{#equalOR estatusOrden "Cancelada" "En proceso"}} disabled {{/equalOR}}><i class="bi bi-journal-check"></i> Enviar a producción</button>
+                </div>
+            {{else}}
+                <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Acceso denegado">
+                    <div class="btn-group w-100" role="group">
+                        <button class="btn btn-success" type="button" disabled><i class="bi bi-journal-check"></i> Enviar a producción</button>
+                    </div>
+                </span>
+            {{/checkPermission}}
         {{/with}}
     </div>
 </div>
@@ -34,7 +63,7 @@
             <div class="row m-0 text-center bg-danger text-white">
                 <p class="fs-6 p-1 m-0">Información de la orden</p>
             </div>
-            <table class="table table-responsive-md align-middle table-light m-0">
+            <table class="table  align-middle table-light m-0">
                 <tbody>
                     {{#with cotizacion}}
                         <tr>
@@ -44,7 +73,7 @@
                             {{#if terminada}}
                                 <td>Terminada</td>
                             {{else}}
-                                <td>En proceso</td>
+                                <td>{{estatusOrden}}</td>
                             {{/if}}
                         </tr>
                         <tr>
@@ -144,7 +173,7 @@
     </div>
     {{#each productos}}
     <div class="row m-0 p-0">
-        <div class="card mt-4 px-0 rounded-0 border border-2">
+        <div class="card {{#equal @index 0}}mt-0{{else}}mt-4{{/equal}} px-0 rounded-0 border border-2">
             <div class="card-body p-0">
                 <div class="row mx-0 px-0">
                     <div class="col-md-1">
@@ -310,5 +339,62 @@
         {{else}}
             <td class="2">No existe información sobre la cotización</td>
         {{/with}}
+    </div>
+</div>
+
+{{!-- Toast cancel confirmation --}}
+<div class="toast-container top-0 start-50 translate-middle-x mt-2">
+    <div id="cancel-order-toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
+        <div class="toast-header text-bg-warning" data-bs-theme="light">
+            <i class="bi bi-exclamation-circle me-2"></i>
+            <strong class="me-auto">Advertencia</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body bg-light">
+            ¿Desea cancelar esta orden?
+            <div class="mt-2 pt-2 border-top">
+                <div class="row justify-content-end">
+                    <div class="col-md-auto">
+                        <button type="button" class="btn btn-danger btn-sm me-2" data-bs-dismiss="toast">Rechazar</button>
+                        <a class="btn btn-success btn-sm" href="/orders/cancel/{{#with cotizacion}}{{ordenId}}{{/with}}" role="button">Aceptar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{!-- Modal send to production --}}
+<div class="modal fade" id="orders-add-deadline" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h1 class="modal-title fs-5">Enviar a producción</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="/orders/addDeadline/{{#with cotizacion}}{{ordenId}}{{/with}}" method="post" class="needs-validation" id="add-deadline-order-form" novalidate>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <label for="deadline" class="form-label">Fecha de entrega:</label>
+                            <div class="input-group has-validation">
+                                <span class="input-group-text border-dark border-2 border-end-0"><i class="bi bi-calendar2-event"></i></span>
+                                <input type="date" name="deadline" id="deadline" class="form-control border-dark border-2 rounded-end" min="{{#with fechaMinima}}{{this}}{{/with}}" required>
+                                <div class="valid-feedback">
+                                    ¡Perfecto!
+                                </div>
+                                <div class="invalid-feedback">
+                                    <span id="invalid-feedback-deadline"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer py-2">
+                <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Cerrar</button>
+                <button type="submit" form="add-deadline-order-form" class="btn btn-sm btn-success">Enviar</button>
+            </div>
+        </div>
     </div>
 </div>

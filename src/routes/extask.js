@@ -6,24 +6,62 @@ require('../lib/handlebars.js');
 const router = express.Router();
 
 router.get('/', isLoggedIn, IsAuthorized('tasksSalesExecutives'), async (req, res)=>{
+    //const usuarioId = req.user.usuarioId;
+    //const cotizaciones = await pool.query('SELECT Cotizaciones.*, Clientes.clienteId, Clientes.nombre FROM Cotizaciones INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId INNER JOIN Usuarios ON Cotizaciones.usuario_id = Usuarios.usuarioId WHERE Cotizaciones.estatus <> "Ordenada" AND Usuarios.usuarioId = ?;', [usuarioId]);
     const cotizaciones = await pool.query('SELECT Cotizaciones.*, Clientes.clienteId, Clientes.nombre FROM (Cotizaciones INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId) WHERE Cotizaciones.estatus <> "Ordenada";');
     res.render('extask/list', {cotizaciones: cotizaciones});
 })
 
-
 router.get('/history', isLoggedIn, IsAuthorized('tasksSalesExecutives'), async (req, res)=>{
-    const cotizaciones = await pool.query('SELECT Cotizaciones.*, Clientes.clienteId, Clientes.nombre FROM (Cotizaciones INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId) WHERE estatus = "Ordenada";');
-    const usuario = await pool.query('SELECT * FROM Usuarios');
-    const orden = await pool.query('SELECT Ordenes. *, Ordenes.cot_id FROM  Ordenes INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId'); 
-    res.render('extask/history', {cotizaciones: cotizaciones, usuario: usuario, orden: orden});
+    //const usuarioId = req.user.usuarioId;
+    // const cotizaciones = await pool.query('SELECT Cotizaciones.*, Ordenes.ordenId, Clientes.clienteId, Clientes.nombre FROM Ordenes INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId INNER JOIN Usuarios ON Cotizaciones.usuario_id = Usuarios.usuarioId WHERE Cotizaciones.estatus = "Ordenada" AND Usuarios.usuarioId = ?;', [usuarioId]);
+    const cotizaciones = await pool.query('SELECT Cotizaciones.*, Ordenes.ordenId, Clientes.clienteId, Clientes.nombre FROM Ordenes INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId WHERE Cotizaciones.estatus = "Ordenada";');
+    res.render('extask/history', {cotizaciones: cotizaciones});
+})
+
+router.post('/listStagesProcess', isLoggedIn, IsAuthorized('tasksSalesExecutives'), async (req, res) => {
+    const cotId = req.body.cotId;
+
+    // informacion para generar orden (procesos)
+    const productosFueraCatalogo = await pool.query('SELECT FueraCatalogoCotizados.* FROM Cotizaciones INNER JOIN FueraCatalogoCotizados ON Cotizaciones.cotId = FueraCatalogoCotizados.cot_id WHERE Cotizaciones.cotId = ?;', [cotId]);
+    const procesosEnCatalogo = await pool.query('SELECT ProductosCotizados.prodCotizadoId AS prodCotizadoId, Productos.nombre AS producto_nombre, Procesos.procesoId AS procesoId, Procesos.nombre AS proceso_nombre, GROUP_CONCAT(ProcesosOrdenes.orden ORDER BY ProcesosOrdenes.orden ASC) AS orden_areas, GROUP_CONCAT(Areas.nombre ORDER BY ProcesosOrdenes.orden ASC) AS areas FROM (((((Cotizaciones INNER JOIN ProductosCotizados ON Cotizaciones.cotId = ProductosCotizados.cot_id) INNER JOIN Productos ON ProductosCotizados.producto_id = Productos.productoId) INNER JOIN Procesos ON Productos.proceso_id = Procesos.procesoId) INNER JOIN ProcesosOrdenes ON Procesos.procesoId = ProcesosOrdenes.proceso_id) INNER JOIN Areas ON ProcesosOrdenes.area_id = Areas.areaId) WHERE Cotizaciones.cotId = ? GROUP BY prodCotizadoId;', [cotId]);
+    const todas_areas = await pool.query('SELECT areaId, nombre FROM Areas');
+
+    // formatear procesos (generar un arreglo con las areas para cada objeto)
+    let procesosEnCatalogoArray = [];
+    let procesoFormateado = {};
+    let areas = [];
+    let orden = [];
+    procesosEnCatalogo.forEach(proceso => {
+        orden = proceso.orden_areas.split(',');
+        areas = proceso.areas.split(',');
+        procesoFormateado = {
+            producto: proceso.producto_nombre,
+            procesoId: proceso.procesoId,
+            proceso: proceso.proceso_nombre,
+            orden: orden,
+            areas: areas
+        }
+        procesosEnCatalogoArray.push(procesoFormateado);
+        areas = [];
+        orden = [];
+    });
+
+    // generar arreglo con una seriem de acuerdo al numero de areas (orden del proceso)
+    let orden_posible = [];
+    todas_areas.forEach((_, i) => {
+        orden_posible.push(i+1);
+    });
+
+    res.send({procesosEnCatalogo: procesosEnCatalogoArray, productosFueraCatalogo: productosFueraCatalogo, orden: orden_posible, areas: todas_areas,})
 })
 
 router.post('/generateOrder/:id', isLoggedIn, IsAuthorized('addOrders'), async (req, res)=>{
     const {id} = req.params;
     const body = req.body;
     const usruarioId = req.user.usuarioId;
-    const productosFueraCatalogoId = await pool.query('SELECT FueraCatalogoCotizados.fueraCotizadoId FROM (Cotizaciones INNER JOIN FueraCatalogoCotizados ON Cotizaciones.cotId = FueraCatalogoCotizados.cot_id) WHERE Cotizaciones.cotId = ?;', [id]);
-
+    const productosFueraCatalogoId = await pool.query('SELECT FueraCatalogoCotizados.fueraCotizadoId FROM Cotizaciones INNER JOIN FueraCatalogoCotizados ON Cotizaciones.cotId = FueraCatalogoCotizados.cot_id WHERE Cotizaciones.cotId = ?;', [id]);
+    
     if(productosFueraCatalogoId.length > 0){
         // separar los procesos dependiendo de los productos
         let j = 0;
@@ -40,38 +78,25 @@ router.post('/generateOrder/:id', isLoggedIn, IsAuthorized('addOrders'), async (
         }
         procesosArray.push(procesos);
 
-        // generar nuevo proceso para cada producto fuera de catalogo
-        let newProcesos = [];
-        procesosArray.forEach((element, i) => {
-            newProcesos.push([
-                'Personalizado'
-            ])
-        });
-
-        // almacenar n procesos personalizados
-        const resultadoProcesos = await pool.query('INSERT INTO Procesos (nombre) VALUES ?;', [newProcesos]);
 
         // almacenar los procesos en los productos fuera de catalogo
-        productosFueraCatalogoId.forEach(async (productoId, i) => {
-            await pool.query('UPDATE FueraCatalogoCotizados SET proceso_id = ? WHERE fueraCotizadoId = ?', [resultadoProcesos.insertId + i, Number(productoId.fueraCotizadoId)]);
-        });
-
-        // organizar los procesos para su almacenamiento
-        let procesosOrden = [];
-        procesosArray.forEach((producto, i) => {
-            for (let j = 0; j < producto.orderProcess.length; j++) {
-                procesosOrden.push([Number(producto.areaProcess[j]), resultadoProcesos.insertId + i, Number(producto.orderProcess[j])]);
+        let procesoId = {};
+        for (let i = 0; i < productosFueraCatalogoId.length; i++) {
+            procesoId = await pool.query('INSERT INTO Procesos (nombre) VALUES ("Personalizado");');
+            await pool.query('UPDATE FueraCatalogoCotizados SET proceso_id = ? WHERE fueraCotizadoId = ?', [procesoId.insertId, Number(productosFueraCatalogoId[i].fueraCotizadoId)]);
+            for (let j = 0; j < procesosArray[i].orderProcess.length; j++) {
+                await pool.query('INSERT INTO ProcesosOrdenes (area_id, proceso_id, orden) VALUES (?, ?, ?);', [Number(procesosArray[i].areaProcess[j]), procesoId.insertId, Number(procesosArray[i].orderProcess[j])]);
             }
-        });
-
-        // almacenar los procesos en procesosOrdenes
-        await pool.query('INSERT INTO ProcesosOrdenes (area_id, proceso_id, orden) VALUES ?;', [procesosOrden]);
+            procesoId = {};
+        }
     }
 
     // crear orden
     const date = new Date();
-    fechaGen = date.toLocaleDateString('en-CA', {year: 'numeric', month: 'numeric', day: 'numeric', hour:'numeric', minute: 'numeric', hour12: false});
-    fechaEnt = date.toLocaleDateString('en-CA', {year: 'numeric', month: 'numeric', day: 'numeric'});
+    fechaGen = date.toLocaleDateString('en-CA', {year: 'numeric', month: 'numeric', day: 'numeric', hour:'numeric', minute: 'numeric', hourCycle: 'h23'});
+    
+    const deadline = new Date('2001-01-02');
+    fechaEnt = deadline.toLocaleDateString('en-CA', {year: 'numeric', month: 'numeric', day: 'numeric'});
 
     const newOrden = {
         fechaGen: fechaGen,
@@ -80,13 +105,13 @@ router.post('/generateOrder/:id', isLoggedIn, IsAuthorized('addOrders'), async (
         usuario_id: usruarioId,
         terminada: 0
     }
-    const resultadoOrden = await pool.query('INSERT INTO Ordenes SET ?;', [newOrden]);
+    const ordenId = await pool.query('INSERT INTO Ordenes SET ?;', [newOrden]);
 
     // asignar estatus de ordenada a la cotizacion
     await pool.query('UPDATE Cotizaciones SET estatus = "Ordenada" WHERE cotId = ?', [id]);
 
-    req.flash('success', 'La orden <b>OT-'+resultadoOrden.insertId+'</b> ha sido creada correctamente');
-    res.redirect('/tareas/create/'+resultadoOrden.insertId);
+    req.flash('success', 'La orden <b>OT-'+ordenId.insertId+'</b> ha sido creada correctamente');
+    res.redirect('/extask');
 })
 
 module.exports = router;
