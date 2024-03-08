@@ -5,13 +5,13 @@
     <p class="fs-5 p-2 m-0" id="machine-add-title">Terminar tarea.</p>
 </div>
 <div class="row px-3">
-    <form action="/tareas/terminar/{{tarea.tareaId}}" method="post" class="needs-validation" id="form-edit-product" novalidate>
+    <form action="/tareas/terminar/{{tarea.tareaId}}" method="post" class="needs-validation" id="form-finish-tareas" novalidate>
         <div class="row mb-4 gy-4 justify-content-md-between">
             <div class="col-md-4">
                 <label for="nombreTarea" class="form-label">Nombre: {{tarea.nombre}}</label>
             </div>
         </div>
-        <div class="row mb-4 gy-4 justify-content-md-between">
+        <div class="row mb-4 gy-4 justify-content-md-between"> 
             <div class="col-md-4">
                 <label for="nombreProducto" class="form-label">Producto: {{tarea.proyecto}}</label>
             </div>
@@ -22,6 +22,7 @@
                 <div class="input-group has-validation">
                     <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-arrow-down-up"></i></span>
                     <select name="maquina" id="maquina" class="form-select border-dark border-2">
+                        <option value=0>No aplica</option>
                         {{#each machines}}
                             <option value={{maquinaId}} {{#equal ../tarea.maquina_id maquinaId}} selected {{/equal}}>{{nombre}}</option>
                         {{/each}}
@@ -29,7 +30,7 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <label for="impresor" class="form-label">Impresor:</label>
+                <label for="impresor" class="form-label">Empleado:</label>
                 <div class="input-group has-validation">
                     <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-arrow-down-up"></i></span>
                     <select name="usuario" id="usuario" class="form-select border-dark border-2">
@@ -43,6 +44,9 @@
             <div class="col-md-4 has-validation">
                 <label for="notas" class="form-label">Notas (o observaciones):</label>
                 <textarea id="descripcion" name="descripcion" class="form-control border-dark border-2">{{tarea.notes}}</textarea>
+                <div class="invalid-feedback">
+                    <span id="invalid-feedback-descripcion"></span>
+                </div>
             </div>
         </div>
         <div class="row mb-4 gy-4 justify-content-md-between">

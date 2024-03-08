@@ -6,7 +6,7 @@
         <p class="fs-5 p-2 m-0" id="group-add-title">Gestionar cobranza</p>
     </div>
     <div class="row px-3 mx-2">
-        <form action="/cobranza/terminar" method="post">
+        <form action="/cobranza/terminar" method="post" class="needs-validation" id="form-finish-cobranza" novalidate>
             {{#each ordenes}}<input type="hidden" name="id_cobranza" value="{{cobranzaId}}"> {{/each}}
             <div class="row mb-4 gy-4 justify-content-md-between">
                 <h3>{{#each ordenes}}Orden OR-{{orden_id}} {{/each}} | Gestionar</h3>
