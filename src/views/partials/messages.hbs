@@ -1,6 +1,6 @@
 {{#if success}}
 <div class="toast-container top-0 start-50 translate-middle-x mt-2">
-    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div id="successToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="toast-header text-bg-success" data-bs-theme="dark">
             <i class="bi bi-check-circle-fill me-2"></i>
             <strong class="me-auto">Operación exitosa</strong>
@@ -19,14 +19,14 @@
     </div>
 </div>
 <script>
-    const toast = new bootstrap.Toast(document.getElementById('liveToast'), {});
+    const toast = new bootstrap.Toast($('#successToast'), {});
     toast.show();
 </script>
 {{/if}}
 
 {{#if error}}
 <div class="toast-container top-0 start-50 translate-middle-x mt-2">
-    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div id="errorToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="toast-header text-bg-danger" data-bs-theme="dark">
             <i class="bi bi-check-circle-fill me-2"></i>
             <strong class="me-auto">Operación fallida</strong>
@@ -45,7 +45,30 @@
     </div>
 </div>
 <script>
-    const toast = new bootstrap.Toast(document.getElementById('liveToast'), {});
+    const toast = new bootstrap.Toast($('#errorToast'), {});
     toast.show();
 </script>
+{{/if}}
+
+{{#if validationErrors}}
+    <div class="toast-container top-0 start-50 translate-middle-x mt-2">
+        <div id="validationErrorsToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header text-bg-danger" data-bs-theme="dark">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                <strong class="me-auto">Inconvenientes con el servidor</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body bg-light p-0">
+                <ol class="list-group list-group-flush list-group-numbered">
+                    {{#each validationErrors}}
+                        <li class="list-group-item bg-light">{{{msg}}}</li>
+                    {{/each}}
+                </ol>
+            </div>
+        </div>
+    </div>
+    <script>
+        const toast = new bootstrap.Toast($('#validationErrorsToast'), {});
+        toast.show();
+    </script>
 {{/if}}

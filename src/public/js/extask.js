@@ -195,6 +195,9 @@ $(document).ready(function(){
 
                 // validate validate assignment of areas (processes)
                 validateExtasksProcessesForm($('#form-add-process-extasks'));
+            },
+            error: function(){
+                window.location.reload();
             }
         })
     })
