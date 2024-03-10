@@ -10,18 +10,6 @@ router.get('/', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, res) =>{
     var tareasError = await pool.query('SELECT * FROM tareas INNER JOIN ordenes ON tareas.orden_id = ordenes.ordenId INNER JOIN cotizaciones ON ordenes.cot_id = cotizaciones.cotId INNER JOIN areasroles ON tareas.area_id = areasroles.area_id WHERE areasroles.rol_id = ' + rol + ' AND tareas.terminada = false AND tareas.check = 1 AND tareas.activa = 1 AND tareas.notes LIKE "Error:%" ORDER BY ordenes.fechaGen');
     const conteoNuevos = tareasNuevas.length;
     const conteo = tareas.length + tareasError.length;
-    for (var i= 0; i < tareasNuevas.length; i++){
-        tareasNuevas[i].fechaGen = tareasNuevas[i].fechaGen.toLocaleDateString("es-MX", {weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'});
-        tareasNuevas[i].fechaEnt = tareasNuevas[i].fechaEnt.toLocaleDateString("es-MX", {weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'});
-    }
-    for (var i= 0; i < tareas.length; i++){
-        tareas[i].fechaGen = tareas[i].fechaGen.toLocaleDateString("es-MX", {weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'});
-        tareas[i].fechaEnt = tareas[i].fechaEnt.toLocaleDateString("es-MX", {weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'});
-    }
-    for (var i= 0; i < tareasError.length; i++){
-        tareasError[i].fechaGen = tareasError[i].fechaGen.toLocaleDateString("es-MX", {weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'});
-        tareasError[i].fechaEnt = tareasError[i].fechaEnt.toLocaleDateString("es-MX", {weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'});
-    }
     const users = await pool.query('SELECT * FROM usuarios');
     res.render('../views/tareas/tareasActivas', {tareasNuevas, tareas, tareasError, conteoNuevos, conteo, users});
 });
@@ -35,18 +23,6 @@ router.get('/todas', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, res)
     const conteo = tareas.length + tareasError.length;
     console.log(tareas)
     console.log(tareasError)
-    for (var i= 0; i < tareasNuevas.length; i++){
-        tareasNuevas[i].fechaGen = tareasNuevas[i].fechaGen.toLocaleDateString("es-MX", {weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'});
-        tareasNuevas[i].fechaEnt = tareasNuevas[i].fechaEnt.toLocaleDateString("es-MX", {weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'});
-    }
-    for (var i= 0; i < tareas.length; i++){
-        tareas[i].fechaGen = tareas[i].fechaGen.toLocaleDateString("es-MX", {weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'});
-        tareas[i].fechaEnt = tareas[i].fechaEnt.toLocaleDateString("es-MX", {weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'});
-    }
-    for (var i= 0; i < tareasError.length; i++){
-        tareasError[i].fechaGen = tareasError[i].fechaGen.toLocaleDateString("es-MX", {weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'});
-        tareasError[i].fechaEnt = tareasError[i].fechaEnt.toLocaleDateString("es-MX", {weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'});
-    }
     const users = await pool.query('SELECT * FROM usuarios');
     res.render('../views/tareas/todasTareas', {tareasNuevas, tareas, tareasError, conteoNuevos, conteo, users});
 });
@@ -55,10 +31,6 @@ router.get('/historial', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, 
     const rol = req.user.rol_id; 
     var tareas = await pool.query('SELECT * FROM tareas INNER JOIN ordenes ON tareas.orden_id = ordenes.ordenId INNER JOIN cotizaciones ON ordenes.cot_id = cotizaciones.cotId INNER JOIN areasroles ON tareas.area_id = areasroles.area_id WHERE areasroles.rol_id = ' + rol + ' AND tareas.terminada = true ORDER BY ordenes.fechaGen');
     const conteo = tareas.length;
-    for (var i= 0; i < tareas.length; i++){
-        tareas[i].fechaGen = tareas[i].fechaGen.toLocaleDateString("es-MX", {weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'});
-        tareas[i].fechaEnt = tareas[i].fechaEnt.toLocaleDateString("es-MX", {weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'});
-    }
     const users = await pool.query('SELECT * FROM usuarios');
     res.render('../views/tareas/historialTareas', {tareas, conteo, users});
 });
