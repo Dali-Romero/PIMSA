@@ -180,4 +180,24 @@ module.exports = {
             .matches(/^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/).withMessage('El correo no tiene el formato requerido.'),
         ]
     },
+
+// --------------------------------------------------- Archivo products.js ----------------------------------------------------
+    validateProducts(){
+        return [
+            body('nombre')
+            .exists().withMessage("El nombre de producto no esta lleno")
+            .trim().notEmpty().withMessage("El nombre de producto no puede estar vacio")
+            .isLength({min: 1, max: 30}).withMessage('El nombre debe tener entre 1 y 30 caracteres.'),
+
+            body('precio')
+            .exists().withMessage('El precio del producto esta vacio')
+            .trim().notEmpty().withMessage('El precio del producto no puede estar vacio')
+            .matches(/^\d+(\.\d+)?$/).withMessage('El precio debe contener solo digitos'),
+
+            body('descripcion')
+            .exists().withMessage('La descripcion del producto no esta lleno')
+            .trim().notEmpty().withMessage('La descripcion del producto no puede estar vacio')
+            .isLength({min: 1, max: 100}).withMessage('La descripcion debe tener entre 1 y 100 caracteres'),
+        ]
+    },
 }
