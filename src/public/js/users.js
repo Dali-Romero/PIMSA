@@ -1,4 +1,4 @@
-function validarForm(form){
+function validarFormUsers(form){
     let validated = false;
     form.on('submit', (event)=>{
         //Validacion de nombre
@@ -95,6 +95,6 @@ function validarForm(form){
 }
 
 $(document).ready(function(){
-    validarForm($('#form-add-user'));
-    validarForm($('#form-edit-user'));
+    validarFormUsers($('#form-add-user'));
+    validarFormUsers($('#form-edit-user'));
 });

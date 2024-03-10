@@ -121,4 +121,63 @@ module.exports = {
             .if(body('*').not().isArray()).isInt().withMessage('Parece que el nombre del área o el orden no es correcto.')
         ]
     },
+
+// ---------------------------------------------- Archivo usuario.js --------------------------------------------------
+    // middleware para validar el formulario de crear usuarios
+    validateCreateUser(){
+        return [
+            body('nombre')
+            .exists().withMessage('El nombre no esta lleno.')
+            .trim().notEmpty().withMessage('El nombre esta vacio.')
+            .not().matches(/[^a-zA-ZÀ-ÿ0-9\sñÑ]/).withMessage('El nombre del usuario debe contener únicamente letras.')
+            .isLength({min: 1, max: 25}).withMessage('El nombre del usuario debe contener entre 1 y 25 caracteres.'),
+
+            body('apellido')
+            .exists().withMessage('El apellido no esta lleno.')
+            .trim().notEmpty().withMessage('El apellido esta vacio.')
+            .not().matches(/[^a-zA-ZÀ-ÿ0-9\sñÑ]/).withMessage('El apellido del usuario debe contener únicamente letras.')
+            .isLength({min: 1, max: 25}).withMessage('El apellido del usuario debe contener entre 1 y 25 caracteres.'),
+
+            body('correo')
+            .exists().withMessage('El correo no esta lleno.')
+            .trim().notEmpty().withMessage('El correo esta vacio.')
+            .matches(/^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/).withMessage('El correo no tiene el formato requerido.'),
+
+            body('pass')
+            .exists().withMessage('La contraseña no puede estar vacia')
+            .trim().notEmpty().withMessage('La contraseña no puede estar vacia'),
+
+            body('confirmPass')
+            .exists().withMessage('La confirmacion de contraseña no puede estar vacia')
+            .trim().notEmpty().withMessage('La confirmacion de contraseña no puede estar vacia')
+            .custom( (value, { req }) =>{
+                if (value != req.body.pass){
+                    throw new Error('Las contraseñas no coinciden');
+                } 
+                return true;
+            }),
+        ]
+    },
+
+    // middleware para validar el formulario de editar usuarios
+    validateEditUser(){
+        return [
+            body('nombre')
+            .exists().withMessage('El nombre no esta lleno.')
+            .trim().notEmpty().withMessage('El nombre esta vacio.')
+            .not().matches(/[^a-zA-ZÀ-ÿ0-9\sñÑ]/).withMessage('El nombre del usuario debe contener únicamente letras.')
+            .isLength({min: 1, max: 25}).withMessage('El nombre del usuario debe contener entre 1 y 25 caracteres.'),
+
+            body('apellido')
+            .exists().withMessage('El apellido no esta lleno.')
+            .trim().notEmpty().withMessage('El apellido esta vacio.')
+            .not().matches(/[^a-zA-ZÀ-ÿ0-9\sñÑ]/).withMessage('El apellido del usuario debe contener únicamente letras.')
+            .isLength({min: 1, max: 25}).withMessage('El apellido del usuario debe contener entre 1 y 25 caracteres.'),
+
+            body('correo')
+            .exists().withMessage('El correo no esta lleno.')
+            .trim().notEmpty().withMessage('El correo esta vacio.')
+            .matches(/^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/).withMessage('El correo no tiene el formato requerido.'),
+        ]
+    },
 }
