@@ -1,10 +1,10 @@
-function validarForm(form){
+function validarFormTareas(form){
     let validated = false;
     form.on('submit', (event)=>{
         // Validacion de maquinas
         const maquinasInput = $('#maquina');
         maquinasInput.removeClass('border-dark');
-        maquinasInput.addClass('is-valid');
+        maquinasInput.addClass('is-valid'); 
 
         // Validacion de usuarios
         const empleadosInput = $('#usuario');
@@ -38,6 +38,6 @@ function validarForm(form){
 }
 
 $(document).ready(function(){
-    validarForm($('#form-return-tareas'));
-    validarForm($('#form-finish-tareas'));
+    validarFormTareas($('#form-return-tareas'));
+    validarFormTareas($('#form-finish-tareas'));
 });

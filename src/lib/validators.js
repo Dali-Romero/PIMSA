@@ -182,6 +182,7 @@ module.exports = {
     },
 
 // --------------------------------------------------- Archivo products.js ----------------------------------------------------
+    // middleware para validar el formulario de crear/editar productos
     validateProducts(){
         return [
             body('nombre')
@@ -200,4 +201,17 @@ module.exports = {
             .isLength({min: 1, max: 100}).withMessage('La descripcion debe tener entre 1 y 100 caracteres'),
         ]
     },
+
+// --------------------------------------------------- Archivo tareas.js --------------------------------------------------------
+    // middleware para validar el formulario de terminar / regresar tareas
+    validateTareas(){
+        return[
+            body('descripcion')
+            .exists().withMessage("La descripcion no esta llena")
+            .trim().notEmpty().withMessage('La descripcion no puede estar vacia'),
+
+            body('*')
+            .trim().notEmpty().withMessage('La maquina o el usuario tienen valores vacios'),
+        ]
+    }
 }

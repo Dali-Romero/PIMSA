@@ -2,6 +2,8 @@ const express = require('express');
 const pool = require('../database');
 const { isLoggedIn, IsAuthorized } = require('../lib/auth');
 const router = express.Router();
+const { validateTareas } = require('../lib/validators');
+const { validationResult } = require('express-validator');
 
 router.get('/', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, res) =>{
     const rol = req.user.rol_id; 
@@ -43,29 +45,40 @@ router.get('/historial/:id', isLoggedIn, IsAuthorized('tasksEmployees'), async(r
     res.render('../views/tareas/regresarTareas', {tarea: tareas[0], users, machines});
 });
 
-router.post('/restore/:id', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, res) =>{
+router.post('/restore/:id', isLoggedIn, IsAuthorized('tasksEmployees'), validateTareas(), async(req, res) =>{
+    // Validacion de los campos enviados
+    const resultadosValidacion = validationResult(req);
+    const resultadosValidacionArray = resultadosValidacion.array({onlyFirstError: true});
     const {id} = req.params;
-    const info = req.body;
-    var tarea = await pool.query('SELECT * FROM tareas WHERE tareaId = ?', [id]);
-    tarea = tarea[0]
-    var update = {
-        activa: 0,
-        check: 0
-    };
-    const tarAnt = await pool.query('SELECT * FROM tareas WHERE tareaorden_id = ? AND sucesion = ?', [tarea.tareaorden_id, Number(tarea.sucesion) - 1]);
-    await pool.query('UPDATE tareas SET ? WHERE tareaId = ?', [update, id]);
-    tarAnt.forEach(async function(anterior) {
-        update = {
-            activa: 1,
-            check: 0,
-            terminada: 0,
-            notes: "Error: " + info.descripcion,
-            maquina_id: info.maquina,
-            usuario_id: info.usuario
+
+    // En caso de no existir errores almacenar el registro
+    if (resultadosValidacion.isEmpty()){
+        const info = req.body;
+        var tarea = await pool.query('SELECT * FROM tareas WHERE tareaId = ?', [id]);
+        tarea = tarea[0]
+        var update = {
+            activa: 0,
+            check: 0
         };
-        await pool.query('UPDATE tareas SET ? WHERE tareaId = ?', [update, anterior.tareaId]);
-    });
-    res.redirect('/tareas'); 
+        const tarAnt = await pool.query('SELECT * FROM tareas WHERE tareaorden_id = ? AND sucesion = ?', [tarea.tareaorden_id, Number(tarea.sucesion) - 1]);
+        await pool.query('UPDATE tareas SET ? WHERE tareaId = ?', [update, id]);
+        tarAnt.forEach(async function(anterior) {
+            update = {
+                activa: 1,
+                check: 0,
+                terminada: 0,
+                notes: "Error: " + info.descripcion,
+                maquina_id: info.maquina,
+                usuario_id: info.usuario
+            };
+            await pool.query('UPDATE tareas SET ? WHERE tareaId = ?', [update, anterior.tareaId]);
+        });
+        res.redirect('/tareas'); 
+
+    } else{
+        req.flash('validationErrors', resultadosValidacionArray);
+        res.redirect('/tareas/restore/'+id);
+    }
 });
 
 router.get('/enterado/:id', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, res) =>{
@@ -86,55 +99,66 @@ router.get('/:id', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, res) =
     res.render('../views/tareas/terminarTareas', {tarea: tareas[0], users, machines});
 });
 
-router.post('/terminar/:id', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, res) =>{
+router.post('/terminar/:id', isLoggedIn, IsAuthorized('tasksEmployees'), validateTareas(), async(req, res) =>{
+    // Validacion de los campos enviados
+    const resultadosValidacion = validationResult(req);
+    const resultadosValidacionArray = resultadosValidacion.array({onlyFirstError: true});
     const {id} = req.params;
-    var ordenId = await pool.query('SELECT tareaorden_id, orden_id FROM tareas WHERE tareaId = ' + id);
-    var orden = ordenId[0].orden_id
-    ordenId = ordenId[0].tareaorden_id;
-    const restareas = await pool.query('SELECT * FROM tareas WHERE tareaorden_id = ' + ordenId + ' AND terminada = False ORDER BY sucesion');
-    const tarea = req.body;
-    var editTarea = {
-        maquina_id: tarea.maquina,
-        usuario_id: tarea.usuario,
-        notes: tarea.descripcion
-    };
-    await pool.query('UPDATE tareas SET ? WHERE tareaorden_id = ? AND terminada = 0', [editTarea, ordenId])
-    editTarea = {
-        terminada: 1,
-        activa: 0
-    };
-    await pool.query('UPDATE tareas SET ? WHERE tareaId = ?', [editTarea, id]);
-    editTarea = {
-        activa: 1
-    };
-    if (restareas.length > 1){
-        if (restareas.length > 2){
-            if (restareas[1].sucesion == restareas[2].sucesion){
-                // Si dos tareas tienen la misma sucesion se activan dos tareas
-                await pool.query('UPDATE tareas SET ? WHERE tareaId = ?', [editTarea, restareas[2].tareaId]);
+
+    // En caso de no existir errores almacenar el registro
+    if (resultadosValidacion.isEmpty()){
+        var ordenId = await pool.query('SELECT tareaorden_id, orden_id FROM tareas WHERE tareaId = ' + id);
+        var orden = ordenId[0].orden_id
+        ordenId = ordenId[0].tareaorden_id;
+        const restareas = await pool.query('SELECT * FROM tareas WHERE tareaorden_id = ' + ordenId + ' AND terminada = False ORDER BY sucesion');
+        const tarea = req.body;
+        console.log(tarea);
+        var editTarea = {
+            maquina_id: tarea.maquina,
+            usuario_id: tarea.usuario,
+            notes: tarea.descripcion
+        };
+        await pool.query('UPDATE tareas SET ? WHERE tareaorden_id = ? AND terminada = 0', [editTarea, ordenId])
+        editTarea = {
+            terminada: 1,
+            activa: 0
+        };
+        await pool.query('UPDATE tareas SET ? WHERE tareaId = ?', [editTarea, id]);
+        editTarea = {
+            activa: 1
+        };
+        if (restareas.length > 1){
+            if (restareas.length > 2){
+                if (restareas[1].sucesion == restareas[2].sucesion){
+                    // Si dos tareas tienen la misma sucesion se activan dos tareas
+                    await pool.query('UPDATE tareas SET ? WHERE tareaId = ?', [editTarea, restareas[2].tareaId]);
+                }
             }
-        }
-        await pool.query('UPDATE tareas SET ? WHERE tareaId = ?', [editTarea, restareas[1].tareaId]);
-    };
-    // Se actualiza cobranza
-    if (restareas.length == 1){
-        var cobranza = await pool.query('SELECT actividadesCont, cobranzaId, actividadesTotal FROM cobranza WHERE orden_id = ?', [orden])
+            await pool.query('UPDATE tareas SET ? WHERE tareaId = ?', [editTarea, restareas[1].tareaId]);
+        };
+        // Se actualiza cobranza
+        if (restareas.length == 1){
+            var cobranza = await pool.query('SELECT actividadesCont, cobranzaId, actividadesTotal FROM cobranza WHERE orden_id = ?', [orden])
 
-        if (cobranza[0].actividadesCont == (cobranza[0].actividadesTotal + 1)){
-            editTarea = {
-                actividadesCont: Number(cobranza[0].actividadesCont) + 1,
-                estatus: 'Productos terminados.'
-            };
-        } else {
-            editTarea = {
-                actividadesCont: Number(cobranza[0].actividadesCont) + 1
-            };
-        }
+            if (cobranza[0].actividadesCont == (cobranza[0].actividadesTotal + 1)){
+                editTarea = {
+                    actividadesCont: Number(cobranza[0].actividadesCont) + 1,
+                    estatus: 'Productos terminados.'
+                };
+            } else {
+                editTarea = {
+                    actividadesCont: Number(cobranza[0].actividadesCont) + 1
+                };
+            }
 
-        await pool.query('UPDATE cobranza SET ? WHERE cobranzaId = ?', [editTarea, cobranza[0].cobranzaId]);
-    }
+            await pool.query('UPDATE cobranza SET ? WHERE cobranzaId = ?', [editTarea, cobranza[0].cobranzaId]);
+        }
     
-    res.redirect('/tareas');
+        res.redirect('/tareas');
+    } else{
+        req.flash('validationErrors', resultadosValidacionArray);
+        res.redirect('/tareas/'+id);
+    }
 });
 
 router.get('/create/:id', isLoggedIn, async(req, res) =>{
@@ -169,7 +193,7 @@ router.get('/create/:id', isLoggedIn, async(req, res) =>{
     });
 
     // Se crean las tareas para los productos fuera de catalogo
-    productosfuera.forEach(async function(producto) {
+    productosfuera.forEach(async function(producto) { 
         contador += 1;
         var ordenProceso = await pool.query('SELECT * FROM procesosordenes INNER JOIN fueracatalogocotizados ON fueracatalogocotizados.proceso_id = procesosordenes.proceso_id WHERE procesosordenes.proceso_id = ?', [producto.proceso_id]);
         var tareas = [];
