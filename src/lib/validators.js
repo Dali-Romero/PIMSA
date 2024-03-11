@@ -748,4 +748,193 @@ module.exports = {
             .matches(/^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/).withMessage('El correo no tiene el formato requerido.'),
         ]
     },
+
+// --------------------------------------------------- Archivo products.js ----------------------------------------------------
+    // middleware para validar el formulario de crear/editar productos
+    validateProducts(){
+        return [
+            body('nombre')
+            .exists().withMessage("El nombre de producto no esta lleno")
+            .trim().notEmpty().withMessage("El nombre de producto no puede estar vacio")
+            .isLength({min: 1, max: 30}).withMessage('El nombre debe tener entre 1 y 30 caracteres.'),
+
+            body('precio')
+            .exists().withMessage('El precio del producto esta vacio')
+            .trim().notEmpty().withMessage('El precio del producto no puede estar vacio')
+            .matches(/^\d+(\.\d+)?$/).withMessage('El precio debe contener solo digitos'),
+
+            body('descripcion')
+            .exists().withMessage('La descripcion del producto no esta lleno')
+            .trim().notEmpty().withMessage('La descripcion del producto no puede estar vacio')
+            .isLength({min: 1, max: 100}).withMessage('La descripcion debe tener entre 1 y 100 caracteres'),
+        ]
+    },
+
+// --------------------------------------------------- Archivo tareas.js --------------------------------------------------------
+    // middleware para validar el formulario de terminar / regresar tareas
+    validateTareas(){
+        return[
+            body('descripcion')
+            .exists().withMessage("La descripcion no esta llena")
+            .trim().notEmpty().withMessage('La descripcion no puede estar vacia'),
+
+            body('*')
+            .trim().notEmpty().withMessage('La maquina o el usuario tienen valores vacios'),
+        ]
+    },
+
+// -------------------------------------------------- Archivo cobranza.js ------------------------------------------------------
+    // middleware para validar el formulario de gestion de cobranza
+    validateCobranza(){
+        return[
+            body('id_cobranza')
+            .exists().withMessage('Se intento hacer cobranza a ninguna orden.')
+            .trim().notEmpty().withMessage('No se puede hacer cobranza a 0 ordenes.'),
+
+            body('forma')
+            .exists().withMessage('No se puede poner forma de pago vacia.')
+            .trim().notEmpty().withMessage('No se puede poner forma de pago vacia.')
+            .custom( value =>{
+                if (value == "none"){
+                    throw new Error('No se puede usar la opcion --Seleccionar-- en forma de pago');
+                } 
+                return true;
+            }),
+
+            body('pago')
+            .exists().withMessage('No se puede poner el estatus de pago como vacio.')
+            .trim().notEmpty().withMessage('No se puede poner el estatus de pago como vacio.'),
+
+            body('fecLiq')
+            .exists().withMessage('La fecha de liquidacion esta vacia.')
+            .trim().notEmpty().withMessage('Debe elegir una fecha de liquidacion.'),
+        ]
+    },
+
+// ----------------------------------------------------- Archivo employees.js --------------------------------------------------
+    // middleware para validar el formulario de creacion de empleados
+    validateCreateEmployees(){
+        return[
+            body('nombre')
+            .exists().withMessage('Parece que el nombre esta vacio.')
+            .trim().notEmpty().withMessage('El nombre no puede estar vacio.')
+            .not().matches(/[^a-zA-ZÀ-ÿ0-9\sñÑ]/).withMessage('El nombre solo puede contener letras.'),
+
+            body('lugNacimiento')
+            .exists().withMessage('Parece que el lugar de nacimiento esta vacio')
+            .trim().notEmpty().withMessage('El lugar de nacimiento no puede estar vacio'),
+
+            body('fecNacimiento')
+            .exists().withMessage('Parece que la fecha de nacimiento esta vacia')
+            .trim().notEmpty().withMessage('La fecha de nacimiento no puede estar vacia'),
+
+            body('edad')
+            .exists().withMessage('Parece que la edad esta vacia')
+            .trim().notEmpty().withMessage('La edad no puede estar vacia')
+            .matches(/^\d+(\.\d+)?$/).withMessage('La edad debe contener solo numeros'),
+
+            body('numeroTelefono')
+            .exists().withMessage('El numero de telefono parece estar vacia')
+            .trim().notEmpty().withMessage('El numero de telefono no puede estar vacio')
+            .matches(/^\d+(\.\d+)?$/).withMessage('El numero de telefono debe contener solo numeros')
+            .isLength({min:10, max:10}).withMessage('El numero debe tener exactamente 10 caracteres'),
+
+            body('correo')
+            .exists().withMessage('El correo electronico parece estar vacio')
+            .trim().notEmpty().withMessage('El correo electronico no puede estar vacio')
+            .matches(/^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/).withMessage('El correo no tiene el formato requerido.'),
+
+            body('emerNombre')
+            .exists().withMessage('El nombre del contacto de emergencia parece estar vacio')
+            .trim().notEmpty().withMessage('El nombre del contacto de emergencia no puede estar vacio')
+            .not().matches(/[^a-zA-ZÀ-ÿ0-9\sñÑ]/).withMessage('El nombre del contacto de emergencia solo puede contener letras'),
+
+            body('emerTel')
+            .exists().withMessage('El telefono del contacto de emergencia parece estar vacio')
+            .trim().notEmpty().withMessage('El telefono del contacto de emergencia no puede estar vacio')
+            .matches(/^\d+(\.\d+)?$/).withMessage('El telefono del contacto de emergencia debe contener solo numeros')
+            .isLength({min:10, max:10}).withMessage('El telefono del contacto de emergencia debe tener exactamente 10 caracteres'),
+
+            body('curp')
+            .exists().withMessage('La CURP parece estar vacia')
+            .trim().notEmpty().withMessage('La CURP no puede estar vacia')
+            .isLength({min:18, max:18}).withMessage('La CURP debe tener exactamente 18 caracteres'),
+
+            body('rfc')
+            .exists().withMessage('El RFC parece estar vacio')
+            .trim().notEmpty().withMessage('El RFC no puede estar vacio')
+            .isLength({min:12, max:13}).withMessage('El RFC debe tener entre 12 y 13 caracteres'),
+
+            body('nss')
+            .exists().withMessage('El NSS parece estar vacio')
+            .trim().notEmpty().withMessage('El NSS no puede estar vacio')
+            .isLength({min:11, max:11}).withMessage('El NSS debe contener exactamente 11 caracteres'),
+
+            body('nomina')
+            .exists().withMessage('El numero de nomina parece estar vacio')
+            .trim().notEmpty().withMessage('El numero de nomina no puede estar vacio'),
+
+            body('salario')
+            .exists().withMessage('El salario parece estar vacio')
+            .trim().notEmpty().withMessage('El salario no puede estar vacio')
+            .matches(/^\d+(\.\d+)?$/).withMessage('El salario solo puede estar conformado por numeros'),
+
+            body('fecIngreso')
+            .exists().withMessage('La fecha de ingreso parece estar vacia')
+            .trim().notEmpty().withMessage('La fecha de ingreso no puede estar vacia'),
+
+            body('anosLaborales')
+            .exists().withMessage('Los años laborales parecen estar vacios')
+            .trim().notEmpty().withMessage('Los años laborales no pueden estar vacios')
+            .matches(/^\d+(\.\d+)?$/).withMessage('Los años laborales solo pueden estar conformados por numeros'),
+
+            body('patronal')
+            .exists().withMessage('El registro patronal parece estar vacio')
+            .trim().notEmpty().withMessage('El registro patronal no puede estar vacio'),
+
+            body('estatus')
+            .exists().withMessage('El estatus del empleado parece estar vacio')
+            .trim().notEmpty().withMessage('El estatus del empleado no puede estar vacio'),
+
+            body('tipoContrato')
+            .exists().withMessage('El tipo de contrato parece estar vacio')
+            .trim().notEmpty().withMessage('El tipo de contrato no puede estar vacio'),
+
+            body('fecInContrato')
+            .exists().withMessage('La fecha de inicio de contrato parece estar vacia')
+            .trim().notEmpty().withMessage('La fecha de inicio de contrato no puede estar vacia'),
+
+            body('fecFinContrato')
+            .exists().withMessage('La fecha de fin de contrato parece estar vacia')
+            .trim().notEmpty().withMessage('La fecha de fin de contrato no puede estar vacia'),
+
+            body('edit')
+            .exists().withMessage('No existe informacion de si es editado o nuevo')
+            .custom( (value, req) =>{
+                if (value == 0){
+                    if (!req.body.codPost.exists || !req.body.codPost.notEmpty){
+                        throw new Error('El codigo postal esta vacio.');
+                    }
+                    if (!req.body.colonia.exists || !req.body.colonia.notEmpty){
+                        throw new Error('La colonia esta vacia.');
+                    }
+                    if (!req.body.calle.exists || !req.body.calle.notEmpty){
+                        throw new Error('La calle esta vacia.');
+                    }
+                    if (!req.body.numExt.exists || !req.body.numExt.notEmpty){
+                        throw new Error('El numero exterior no puede estar vacio.');
+                    }
+                } else{
+                    if (!req.body.domicilio.exists || !req.body.domicilio.notEmpty){
+                        throw new Error('El domicilio no puede estar vacio.');
+                    }
+                    if (!req.body.descripcion.exists || !req.body.descripcion.notEmpty){
+                        throw new Error('La descripcion del cambio no puede estar vacio.');
+                    }
+                }
+
+                return true;
+            }),
+        ]
+    },
 }
