@@ -910,27 +910,32 @@ module.exports = {
 
             body('edit')
             .exists().withMessage('No existe informacion de si es editado o nuevo')
-            .custom( (value, req) =>{
+            .custom( (value, { req }) =>{
+                const errors = []
                 if (value == 0){
-                    if (!req.body.codPost.exists || !req.body.codPost.notEmpty){
-                        throw new Error('El codigo postal esta vacio.');
+                    if (typeof req.body.codPost === 'undefined' || req.body.codPost === null || req.body.codPost.trim() === ''){
+                        errors.push('El codigo postal esta vacio.');
                     }
-                    if (!req.body.colonia.exists || !req.body.colonia.notEmpty){
-                        throw new Error('La colonia esta vacia.');
+                    if (typeof req.body.colonia === 'undefined' || req.body.colonia === null || req.body.colonia.trim() === ''){
+                        errors.push('La colonia esta vacia.');
                     }
-                    if (!req.body.calle.exists || !req.body.calle.notEmpty){
-                        throw new Error('La calle esta vacia.');
+                    if (typeof req.body.calle === 'undefined' || req.body.calle === null || req.body.calle.trim() === ''){
+                        errors.push('La calle esta vacia.');
                     }
-                    if (!req.body.numExt.exists || !req.body.numExt.notEmpty){
-                        throw new Error('El numero exterior no puede estar vacio.');
+                    if (typeof req.body.numExt === 'undefined' || req.body.numExt === null || req.body.numExt.trim() === ''){
+                        errors.push('El numero exterior no puede estar vacio.');
                     }
                 } else{
-                    if (!req.body.domicilio.exists || !req.body.domicilio.notEmpty){
-                        throw new Error('El domicilio no puede estar vacio.');
+                    if (typeof req.body.domicilio === 'undefined' || req.body.domicilio === null || req.body.domicilio.trim() === ''){
+                        errors.push('El domicilio no puede estar vacio.');
                     }
-                    if (!req.body.descripcion.exists || !req.body.descripcion.notEmpty){
-                        throw new Error('La descripcion del cambio no puede estar vacio.');
+                    if (typeof req.body.descripcion === 'undefined' || req.body.descripcion === null || req.body.descripcion.trim() === ''){
+                        errors.push('La descripcion del cambio no puede estar vacio.');
                     }
+                }
+                
+                if (errors.length > 0){
+                    throw new Error(errors.join('\n'));
                 }
 
                 return true;
