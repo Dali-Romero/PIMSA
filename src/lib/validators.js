@@ -213,5 +213,33 @@ module.exports = {
             body('*')
             .trim().notEmpty().withMessage('La maquina o el usuario tienen valores vacios'),
         ]
-    }
+    },
+
+// -------------------------------------------------- Archivo cobranza.js ------------------------------------------------------
+    // middleware para validar el formulario de gestion de cobranza
+    validateCobranza(){
+        return[
+            body('id_cobranza')
+            .exists().withMessage('Se intento hacer cobranza a ninguna orden.')
+            .trim().notEmpty().withMessage('No se puede hacer cobranza a 0 ordenes.'),
+
+            body('forma')
+            .exists().withMessage('No se puede poner forma de pago vacia.')
+            .trim().notEmpty().withMessage('No se puede poner forma de pago vacia.')
+            .custom( value =>{
+                if (value == "none"){
+                    throw new Error('No se puede usar la opcion --Seleccionar-- en forma de pago');
+                } 
+                return true;
+            }),
+
+            body('pago')
+            .exists().withMessage('No se puede poner el estatus de pago como vacio.')
+            .trim().notEmpty().withMessage('No se puede poner el estatus de pago como vacio.'),
+
+            body('fecLiq')
+            .exists().withMessage('La fecha de liquidacion esta vacia.')
+            .trim().notEmpty().withMessage('Debe elegir una fecha de liquidacion.'),
+        ]
+    },
 }

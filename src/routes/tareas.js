@@ -23,8 +23,6 @@ router.get('/todas', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, res)
     var tareasError = await pool.query('SELECT tareas.*, ordenes.fechaGen, ordenes.fechaEnt FROM tareas INNER JOIN ordenes ON tareas.orden_id = ordenes.ordenId INNER JOIN cotizaciones ON ordenes.cot_id = cotizaciones.cotId INNER JOIN areasroles ON tareas.area_id = areasroles.area_id WHERE areasroles.rol_id = ' + rol + ' AND tareas.notes LIKE "Error:%" ORDER BY ordenes.fechaGen AND tareas.tareaId')
     const conteoNuevos = tareasNuevas.length;
     const conteo = tareas.length + tareasError.length;
-    console.log(tareas)
-    console.log(tareasError)
     const users = await pool.query('SELECT * FROM usuarios');
     res.render('../views/tareas/todasTareas', {tareasNuevas, tareas, tareasError, conteoNuevos, conteo, users});
 });
@@ -112,7 +110,6 @@ router.post('/terminar/:id', isLoggedIn, IsAuthorized('tasksEmployees'), validat
         ordenId = ordenId[0].tareaorden_id;
         const restareas = await pool.query('SELECT * FROM tareas WHERE tareaorden_id = ' + ordenId + ' AND terminada = False ORDER BY sucesion');
         const tarea = req.body;
-        console.log(tarea);
         var editTarea = {
             maquina_id: tarea.maquina,
             usuario_id: tarea.usuario,
@@ -164,7 +161,6 @@ router.post('/terminar/:id', isLoggedIn, IsAuthorized('tasksEmployees'), validat
 router.get('/create/:id', isLoggedIn, async(req, res) =>{
     const {id} = req.params;
     var productos = await pool.query('SELECT productoscotizados.producto_id, productoscotizados.prodCotizadoId FROM productoscotizados INNER JOIN ordenes ON ordenes.cot_id = productoscotizados.cot_id WHERE ordenes.ordenId = ?', [id]);
-    console.log(productos);
     var productosfuera = await pool.query('SELECT fueracatalogocotizados.* FROM fueracatalogocotizados INNER JOIN ordenes ON ordenes.cot_id = fueracatalogocotizados.cot_id WHERE ordenes.ordenId = ?', [id]);
     console.log(productosfuera);
     var contador = 0
@@ -173,7 +169,6 @@ router.get('/create/:id', isLoggedIn, async(req, res) =>{
     productos.forEach(async function(producto) {
         contador += 1;
         var ordenProceso = await pool.query('SELECT * FROM procesosordenes INNER JOIN productos ON productos.proceso_id = procesosordenes.proceso_id WHERE productos.productoId = ?', [producto.producto_id]);
-        console.log(ordenProceso);
         var tareas = []; 
         var tareasOrden = {
             orden_id: id,
@@ -189,7 +184,6 @@ router.get('/create/:id', isLoggedIn, async(req, res) =>{
             }
         }
         var res = await pool.query('INSERT INTO Tareas (nombre, orden_id, area_id, terminada, tareas.check, activa, sucesion, tareaorden_id) VALUES ?;', [tareas]);
-        console.log(res);
     });
 
     // Se crean las tareas para los productos fuera de catalogo
@@ -211,7 +205,6 @@ router.get('/create/:id', isLoggedIn, async(req, res) =>{
             }
         }
         var res = await pool.query('INSERT INTO Tareas (nombre, orden_id, area_id, terminada, tareas.check, activa, sucesion, tareaorden_id) VALUES ?;', [tareas]);
-        console.log(res);
     });
 
     // Se crea la tarea de cobranza

@@ -1,4 +1,4 @@
-function validarForm(form){
+function validarFormCobranza(form){
     let validated = false;
     form.on('submit', (event)=>{
         // Comprobamos Forma de pago
@@ -9,7 +9,7 @@ function validarForm(form){
             formaPago.addClass('is-invalid');
             $('#invalid-feedback-forma-pago').text('Por favor, seleccione una opcion valida.');
         } else{
-            formaPago.removeClass('is-invalid');
+            formaPago.removeClass('is-invalid'); 
             formaPago.addClass('is-valid');
         }
 
@@ -50,5 +50,5 @@ function validarForm(form){
 }
 
 $(document).ready(function(){
-    validarForm($('#form-finish-cobranza'));
+    validarFormCobranza($('#form-finish-cobranza'));
 });

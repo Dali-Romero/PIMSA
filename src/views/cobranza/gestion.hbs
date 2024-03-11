@@ -13,7 +13,7 @@
                 <div class="col-md-4">
                     <div class="row mb-4">
                         <label for="forma" class="form-label">Forma de pago:</label>
-                        <div class="input-group">
+                        <div class="input-group has-validation">
                             <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-people-fill"></i></span>
                             <select name="forma" id="forma" class="form-select border-dark border-2">
                                 <option value="none" {{#equalNR ordenes.0.tipoPago ""}} selected {{/equalNR}}>--Seleccionar--</option>
@@ -27,7 +27,7 @@
                     </div>
                     <div class="row mb-4">
                         <label for="pago" class="form-label">Estatus pago:</label>
-                        <div class="input-group">
+                        <div class="input-group has-validation">
                             <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-text-left"></i></span>
                             <select name="pago" id="pago" class="form-select border-dark border-2">
                                 <option value="Por cobrar" {{#equalNR ordenes.0.estatusPago "Por cobrar"}} selected {{/equalNR}} {{#equalNR ordenes.0.estatusPago ""}} selected {{/equalNR}}>Por cobrar</option>
@@ -37,7 +37,7 @@
                     </div>
                     <div class="row mb-4">
                         <label for="fecha" class="form-label">Fecha liquidacion:</label>
-                        <div class="input-group">
+                        <div class="input-group has-validation">
                             <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-calendar-event"></i></span>
                             <input type="date" name="fecLiq" id="fecLiq" class="fecNac form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{#formatDateString ordenes.0.fechaPago}}{{/formatDateString}}>
                         </div>
