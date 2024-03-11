@@ -39,8 +39,8 @@
                                 {{/checkPermission}}
                             </th>
                             <th><a href="/tareas/info/{{tareaId}}">{{tareaId}}</a></th>
-                            <th>{{fechaGen}}</th>
-                            <th>{{fechaEnt}}</th>
+                            <th>{{#formatDateEspanol fechaGen}} {{/formatDateEspanol}}</th>
+                            <th>{{#formatDateEspanol fechaEnt}} {{/formatDateEspanol}}</th>
                             <th>{{proyecto}}</th>
                             {{#each ../users}}
                                 {{#equal usuarioId ../usuario_id}} <th>{{nombre}} {{apellido}}</th> {{/equal}}

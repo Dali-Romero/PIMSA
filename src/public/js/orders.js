@@ -143,12 +143,17 @@ function validateOrderRevalueForm(form, url){
                             data: JSON.stringify({data: formData}),
                             success: function (data) {
                                 window.location.replace(data.url);
+                            },
+                            error: function(){
+                                window.location.reload();
                             }
                         })
                     })
+                },
+                error: function(){
+                    window.location.reload();
                 }
             })
-            
         }
     });
 }

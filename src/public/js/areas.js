@@ -2,7 +2,7 @@ function validateForm(form){
     let validated = false;
     form.on('submit', function(event){
         const patternNameArea = /[^a-zA-ZÀ-ÿ0-9\sñÑ]/;
-        const nameArea = $('areaname');
+        const nameArea = $('#areaname');
         const invalidFeedbackNameArea = $('#invalid-feedback-areaname');
         nameArea.removeClass('border-dark');
         if (nameArea.val().length === 0) {

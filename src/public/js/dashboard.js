@@ -637,6 +637,9 @@ $(document).ready(function(){
                                 chart5.data.datasets[0].label = 'm²';
                             }
                             chart5.update();
+                        },
+                        error: function(){
+                            window.location.reload();
                         }
                     })
                 })
@@ -662,6 +665,9 @@ $(document).ready(function(){
                                 chart5.data.datasets[0].label = 'm²';
                             }
                             chart5.update();
+                        },
+                        error: function(){
+                            window.location.reload();
                         }
                     })
                 });
@@ -678,6 +684,9 @@ $(document).ready(function(){
                             chart6.data.labels = info.infoFiltrada.map(function(cliente){return cliente.categoria});
                             chart6.data.datasets[0].data = info.infoFiltrada.map(function(cliente){return cliente.compras});
                             chart6.update();
+                        },
+                        error: function(){
+                            window.location.reload();
                         }
                     })
                 })
@@ -694,6 +703,9 @@ $(document).ready(function(){
                         success: function(info){
                             chart7.data.datasets[0].data = info.infoFiltrada;
                             chart7.update();
+                        },
+                        error: function(){
+                            window.location.reload();
                         }
                     })
                 })
@@ -709,6 +721,9 @@ $(document).ready(function(){
                         success: function(info){
                             chart7.data.datasets[0].data = info.infoFiltrada;
                             chart7.update();
+                        },
+                        error: function(){
+                            window.location.reload();
                         }
                     })
                 });
