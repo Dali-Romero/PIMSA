@@ -5,13 +5,13 @@
     <p class="fs-5 p-2 m-0" id="machine-add-title">Editar usuario.</p>
 </div>
 <div class="row px-3">
-    <form action="/users/edit/{{user.usuarioId}}" method="post" class="needs-validation" id="form-edit-user" novalidate>
+    <form action="/users/edit/{{users.usuarioId}}" method="post" class="needs-validation" id="form-edit-user" novalidate>
         <div class="row mb-4 gy-4 justify-content-md-between">
             <div class="col-md-4">
                 <label for="nombreUsuario" class="form-label">Nombre:</label>
                 <div class="input-group has-validation">
                     <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-person-fill"></i></span>
-                    <input type="text" name="nombre" id="nombre" class="form-control border-dark border-2" aria-describedby="basic-addon1" autofocus value={{user.nombre}}>
+                    <input type="text" name="nombre" id="nombre" class="form-control border-dark border-2" aria-describedby="basic-addon1" autofocus value={{users.nombre}}>
                     <div class="invalid-feedback">
                         <span id="invalid-feedback-nombre"></span>
                     </div>
@@ -21,7 +21,7 @@
                 <label for="correoElectronico" class="form-label">Correo electronico:</label>
                 <div class="input-group has-validation">
                     <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-at"></i></span>
-                    <input type="text" name="correo" id="correo" class="form-control border-dark border-2" aria-describedby="basic-addon1" value={{user.correoElec}}>
+                    <input type="text" name="correo" id="correo" class="form-control border-dark border-2" aria-describedby="basic-addon1" value={{users.correoElec}}>
                     <div class="invalid-feedback">
                         <span id="invalid-feedback-correo"></span>
                     </div>
@@ -33,7 +33,7 @@
                 <label for="apellido" class="form-label">Apellido:</label>
                 <div class="input-group has-validation">
                     <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-person-fill"></i></span>
-                    <input type="text" name="apellido" id="apellido" class="form-control border-dark border-2" aria-describedby="basic-addon1" value={{user.apellido}}>
+                    <input type="text" name="apellido" id="apellido" class="form-control border-dark border-2" aria-describedby="basic-addon1" value={{users.apellido}}>
                     <div class="invalid-feedback">
                         <span id="invalid-feedback-apellido"></span>
                     </div>
@@ -57,7 +57,7 @@
                 <div class="input-group has-validation">
                     <select name="rol" id="rol" class="form-select border-dark border-2">   
                         {{#each roles}}
-                            <option value={{rolId}}  {{#equal rolId ../user.rol_id}} selected {{/equal}} >{{nombre}}</option>
+                            <option value={{rolId}}  {{#equal rolId ../users.rol_id}} selected {{/equal}} >{{nombre}}</option>
                         {{/each}}
                     </select>
                 </div>
@@ -79,11 +79,11 @@
                 <label for="status" class="form-label">Estatus:</label>
                 <div class="row row-cols-2 justify-content-md-start">
                     <div class="col-md-4 d-grid">
-                        <input type="radio" name="status" id="statusop1" class="btn-check" value="1" autocomplete="off" {{#equal user.activo 1}} checked {{/equal}}>
+                        <input type="radio" name="status" id="statusop1" class="btn-check" value="1" autocomplete="off" {{#equal users.activo 1}} checked {{/equal}}>
                         <label for="statusop1" class="btn btn-outline-success border-success border-2">Activo</label>
                     </div>
                     <div class="col-md-4 d-grid">
-                        <input type="radio" name="status" id="statusop2" class="btn-check" value="0" autocomplete="off" {{#equal user.activo 0}} checked {{/equal}}>
+                        <input type="radio" name="status" id="statusop2" class="btn-check" value="0" autocomplete="off" {{#equal users.activo 0}} checked {{/equal}}>
                         <label for="statusop2" class="btn btn-outline-danger border-danger border-2">Inactivo</label>
                     </div>
                 </div>
@@ -93,7 +93,7 @@
                 <div class="input-group has-validation">
                     <select name="empleado" id="empleado" class="form-select border-dark border-2">   
                         {{#each empleados}}
-                            <option value={{empleadoId}} {{#equal empleadoId ../user.empleado_id}} selected {{/equal}}>{{nombreComp}}</option>
+                            <option value={{empleadoId}} {{#equal empleadoId ../users.empleado_id}} selected {{/equal}}>{{nombreComp}}</option>
                         {{/each}}
                     </select>
                 </div>

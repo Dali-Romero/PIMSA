@@ -121,6 +121,127 @@ module.exports = {
             .if(body('*').not().isArray()).isInt().withMessage('Parece que el nombre del área o el orden no es correcto.')
         ]
     },
+
+// ---------------------------------------------- Archivo usuario.js --------------------------------------------------
+    // middleware para validar el formulario de crear usuarios
+    validateCreateUser(){
+        return [
+            body('nombre')
+            .exists().withMessage('El nombre no esta lleno.')
+            .trim().notEmpty().withMessage('El nombre esta vacio.')
+            .not().matches(/[^a-zA-ZÀ-ÿ0-9\sñÑ]/).withMessage('El nombre del usuario debe contener únicamente letras.')
+            .isLength({min: 1, max: 25}).withMessage('El nombre del usuario debe contener entre 1 y 25 caracteres.'),
+
+            body('apellido')
+            .exists().withMessage('El apellido no esta lleno.')
+            .trim().notEmpty().withMessage('El apellido esta vacio.')
+            .not().matches(/[^a-zA-ZÀ-ÿ0-9\sñÑ]/).withMessage('El apellido del usuario debe contener únicamente letras.')
+            .isLength({min: 1, max: 25}).withMessage('El apellido del usuario debe contener entre 1 y 25 caracteres.'),
+
+            body('correo')
+            .exists().withMessage('El correo no esta lleno.')
+            .trim().notEmpty().withMessage('El correo esta vacio.')
+            .matches(/^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/).withMessage('El correo no tiene el formato requerido.'),
+
+            body('pass')
+            .exists().withMessage('La contraseña no puede estar vacia')
+            .trim().notEmpty().withMessage('La contraseña no puede estar vacia'),
+
+            body('confirmPass')
+            .exists().withMessage('La confirmacion de contraseña no puede estar vacia')
+            .trim().notEmpty().withMessage('La confirmacion de contraseña no puede estar vacia')
+            .custom( (value, { req }) =>{
+                if (value != req.body.pass){
+                    throw new Error('Las contraseñas no coinciden');
+                } 
+                return true;
+            }),
+        ]
+    },
+
+    // middleware para validar el formulario de editar usuarios
+    validateEditUser(){
+        return [
+            body('nombre')
+            .exists().withMessage('El nombre no esta lleno.')
+            .trim().notEmpty().withMessage('El nombre esta vacio.')
+            .not().matches(/[^a-zA-ZÀ-ÿ0-9\sñÑ]/).withMessage('El nombre del usuario debe contener únicamente letras.')
+            .isLength({min: 1, max: 25}).withMessage('El nombre del usuario debe contener entre 1 y 25 caracteres.'),
+
+            body('apellido')
+            .exists().withMessage('El apellido no esta lleno.')
+            .trim().notEmpty().withMessage('El apellido esta vacio.')
+            .not().matches(/[^a-zA-ZÀ-ÿ0-9\sñÑ]/).withMessage('El apellido del usuario debe contener únicamente letras.')
+            .isLength({min: 1, max: 25}).withMessage('El apellido del usuario debe contener entre 1 y 25 caracteres.'),
+
+            body('correo')
+            .exists().withMessage('El correo no esta lleno.')
+            .trim().notEmpty().withMessage('El correo esta vacio.')
+            .matches(/^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/).withMessage('El correo no tiene el formato requerido.'),
+        ]
+    },
+
+// --------------------------------------------------- Archivo products.js ----------------------------------------------------
+    // middleware para validar el formulario de crear/editar productos
+    validateProducts(){
+        return [
+            body('nombre')
+            .exists().withMessage("El nombre de producto no esta lleno")
+            .trim().notEmpty().withMessage("El nombre de producto no puede estar vacio")
+            .isLength({min: 1, max: 30}).withMessage('El nombre debe tener entre 1 y 30 caracteres.'),
+
+            body('precio')
+            .exists().withMessage('El precio del producto esta vacio')
+            .trim().notEmpty().withMessage('El precio del producto no puede estar vacio')
+            .matches(/^\d+(\.\d+)?$/).withMessage('El precio debe contener solo digitos'),
+
+            body('descripcion')
+            .exists().withMessage('La descripcion del producto no esta lleno')
+            .trim().notEmpty().withMessage('La descripcion del producto no puede estar vacio')
+            .isLength({min: 1, max: 100}).withMessage('La descripcion debe tener entre 1 y 100 caracteres'),
+        ]
+    },
+
+// --------------------------------------------------- Archivo tareas.js --------------------------------------------------------
+    // middleware para validar el formulario de terminar / regresar tareas
+    validateTareas(){
+        return[
+            body('descripcion')
+            .exists().withMessage("La descripcion no esta llena")
+            .trim().notEmpty().withMessage('La descripcion no puede estar vacia'),
+
+            body('*')
+            .trim().notEmpty().withMessage('La maquina o el usuario tienen valores vacios'),
+        ]
+    },
+
+// -------------------------------------------------- Archivo cobranza.js ------------------------------------------------------
+    // middleware para validar el formulario de gestion de cobranza
+    validateCobranza(){
+        return[
+            body('id_cobranza')
+            .exists().withMessage('Se intento hacer cobranza a ninguna orden.')
+            .trim().notEmpty().withMessage('No se puede hacer cobranza a 0 ordenes.'),
+
+            body('forma')
+            .exists().withMessage('No se puede poner forma de pago vacia.')
+            .trim().notEmpty().withMessage('No se puede poner forma de pago vacia.')
+            .custom( value =>{
+                if (value == "none"){
+                    throw new Error('No se puede usar la opcion --Seleccionar-- en forma de pago');
+                } 
+                return true;
+            }),
+
+            body('pago')
+            .exists().withMessage('No se puede poner el estatus de pago como vacio.')
+            .trim().notEmpty().withMessage('No se puede poner el estatus de pago como vacio.'),
+
+            body('fecLiq')
+            .exists().withMessage('La fecha de liquidacion esta vacia.')
+            .trim().notEmpty().withMessage('Debe elegir una fecha de liquidacion.'),
+        ]
+    },
 // ------------------------------------------------ Archivo machines.js ------------------------------------------------
     // middleware para validar el formulario de agregar/editar máquinas
     validateMachines(){

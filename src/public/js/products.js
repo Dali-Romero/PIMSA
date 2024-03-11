@@ -1,4 +1,4 @@
-function validarForm(form){
+function validarFormProducts(form){
     let validated = false;
     form.on('submit', (event)=>{
         //Validacion del nombre
@@ -85,6 +85,6 @@ function validarForm(form){
 }
 
 $(document).ready(function(){
-    validarForm($('#form-add-product'));
-    validarForm($('#form-edit-product'));
+    validarFormProducts($('#form-add-product'));
+    validarFormProducts($('#form-edit-product'));
 });
