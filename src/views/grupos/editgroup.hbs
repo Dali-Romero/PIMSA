@@ -7,21 +7,33 @@
 </div>
 
 <div class="row px-3 mx-2">
-    <form action="/grupos/editgroup/{{group.grupoId}}" method="post">
+    <form action="/grupos/editgroup/{{group.grupoId}}" class="need-validation" method="post" id="form-edit-group"  novalidate>
         <div class="row mb-4 gy-4 justify-content-md-between">
             <div class="col-md-4">
                 <label for="namegroup" class="form-label">Nombre del grupo:</label>
-                <div class="input-group">
+                <div class="input-group has-validation">
                     <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-people-fill"></i></span>
-                    <input type="text" name="namegroup" value="{{group.nombre}}" id="namegroup" class="form-control border-dark border-2" aria-describedby="basic-addon1">
+                    <input type="text" name="namegroup" value="{{group.nombre}}" id="namegroup" class="form-control border-dark border-2" aria-describedby="basic-addon1" required>
+                    <div class="valid-feedback">
+                        ¡Perfecto!
+                    </div>
+                    <div class="invalid-feedback">
+                        <span id="invalid-feedback-namegroup"></span>
+                    </div>
                 </div>
             </div>
             <div class="row mb-4 gy-4 justify-content-md-between">
                 <div class="col-md-4">
                     <label for="description" class="form-label">Descripción:</label>
-                    <div class="input-group">
+                    <div class="input-group has-validation">
                         <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-text-left"></i></span>
-                        <input type="text" name="description" value="{{group.descripcion}}" id="description" class="form-control-lg border-dark border-2" aria-describedby="basic-addon1" >
+                        <input type="text" name="description" value="{{group.descripcion}}" id="description" class="form-control-lg border-dark border-2" aria-describedby="basic-addon1" required>
+                        <div class="valid-feedback">
+                            ¡Perfecto!
+                        </div>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-description"></span>
+                        </div>
                     </div>
                 </div>
             </div>
