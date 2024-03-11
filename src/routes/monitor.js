@@ -1,6 +1,8 @@
 const express = require('express');
 const pool = require('../database.js');
+const { validationResult } = require('express-validator');
 const { isLoggedIn, IsAuthorized } = require('../lib/auth.js');
+const { validateMonitorInfotasks } = require('../lib/validators.js');
 
 const router = express.Router();
 
@@ -54,39 +56,50 @@ router.get('/', isLoggedIn, IsAuthorized('monitor'), async (req, res) => {
     res.render('monitor/monitor', {ordenes: ordenesEstructuradas});
 })
 
-router.post('/infoTask', isLoggedIn, IsAuthorized('monitor'), async (req, res) => {
-    const idTarea = req.body.taskId;
-    const productoNombre = await pool.query('SELECT DISTINCT ProductosJuntos.productoNombre FROM Tareas INNER JOIN tareasorden ON Tareas.tareaorden_id = tareasorden.tareaOrdenId INNER JOIN Ordenes ON tareasorden.orden_id = Ordenes.ordenId INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId INNER JOIN ((SELECT Ordenes.ordenId AS orden_id, Productos.productoId AS productoId, Productos.nombre AS productoNombre, 0 AS fueraCatalogo FROM Ordenes INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId INNER JOIN ProductosCotizados ON Cotizaciones.cotId = ProductosCotizados.cot_id INNER JOIN Productos ON ProductosCotizados.producto_id = Productos.productoId) UNION ALL (SELECT Ordenes.ordenId AS orden_id, FueraCatalogoCotizados.fueraCotizadoId AS productoId, FueraCatalogoCotizados.concepto AS productoNombre, 1 AS fueraCatalogo FROM Ordenes INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId INNER JOIN FueraCatalogoCotizados ON Cotizaciones.cotId = FueraCatalogoCotizados.cot_id)) AS ProductosJuntos ON Ordenes.ordenId = ProductosJuntos.orden_id AND tareasorden.fueracatalogo = ProductosJuntos.fueraCatalogo AND tareasorden.cotizadoId = ProductosJuntos.productoId WHERE tareasorden.tareaOrdenId = ?;', [idTarea]);
-    const tareas = await pool.query('SELECT IFNULL(CONCAT(Usuarios.nombre, " ", Usuarios.apellido), "Sin asignar") AS encargado, IFNULL(Areas.nombre, "Sin asignar") AS areaNombre, IFNULL(Maquinas.nombre, "Sin asignar") AS maquinaNombre, Tareas.terminada AS tareaTerminada, Tareas.nombre AS tareaNombre, Tareas.check AS tareaCheck, Tareas.activa AS tareaActiva, Tareas.sucesion AS tareaSucesion, IFNULL(Tareas.notes, "Sin notas") AS tareaNotas FROM tareasorden INNER JOIN Tareas ON tareasorden.tareaOrdenId = Tareas.tareaorden_id LEFT JOIN Usuarios ON Tareas.usuario_id = Usuarios.usuarioId LEFT JOIN Areas ON Tareas.area_id = Areas.areaId LEFT JOIN Maquinas ON Tareas.maquina_id = Maquinas.maquinaId WHERE tareasorden.tareaOrdenId = ?;', [idTarea]);
-    
-    // añadir un indice a las tareas (enumerarlas)
-    tareas.forEach((tarea, i) => {
-        tarea.tareaIndice = i + 1;
-    })
+router.post('/infoTask', isLoggedIn, IsAuthorized('monitor'), validateMonitorInfotasks(), async (req, res) => {
+    // validacion de los campos enviados
+    const resultadosValidacion = validationResult(req);
+    const resultadosValidacionArray = resultadosValidacion.array({onlyFirstError: true});
 
-    // obtener las tareas que se realizan de forma asincrona por tarea (buscar repetidos)
-    let tareasRepetidas = '';
-    for (let i = 0; i < tareas.length; i++) {
-        let tareaSucesion = tareas[i].tareaSucesion;
-        for (let j = 0; j < tareas.length; j++) {
-            if(tareas[j].tareaSucesion === tareaSucesion && j !== i){
-                tareasRepetidas += `Tarea ${tareas[j].tareaIndice}, `
+    // En caso de no extistir errores almacenar el registro
+    if (resultadosValidacion.isEmpty()) {
+        const idTarea = req.body.taskId;
+        const productoNombre = await pool.query('SELECT DISTINCT ProductosJuntos.productoNombre FROM Tareas INNER JOIN tareasorden ON Tareas.tareaorden_id = tareasorden.tareaOrdenId INNER JOIN Ordenes ON tareasorden.orden_id = Ordenes.ordenId INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId INNER JOIN ((SELECT Ordenes.ordenId AS orden_id, Productos.productoId AS productoId, Productos.nombre AS productoNombre, 0 AS fueraCatalogo FROM Ordenes INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId INNER JOIN ProductosCotizados ON Cotizaciones.cotId = ProductosCotizados.cot_id INNER JOIN Productos ON ProductosCotizados.producto_id = Productos.productoId) UNION ALL (SELECT Ordenes.ordenId AS orden_id, FueraCatalogoCotizados.fueraCotizadoId AS productoId, FueraCatalogoCotizados.concepto AS productoNombre, 1 AS fueraCatalogo FROM Ordenes INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId INNER JOIN FueraCatalogoCotizados ON Cotizaciones.cotId = FueraCatalogoCotizados.cot_id)) AS ProductosJuntos ON Ordenes.ordenId = ProductosJuntos.orden_id AND tareasorden.fueracatalogo = ProductosJuntos.fueraCatalogo AND tareasorden.cotizadoId = ProductosJuntos.productoId WHERE tareasorden.tareaOrdenId = ?;', [idTarea]);
+        const tareas = await pool.query('SELECT IFNULL(CONCAT(Usuarios.nombre, " ", Usuarios.apellido), "Sin asignar") AS encargado, IFNULL(Areas.nombre, "Sin asignar") AS areaNombre, IFNULL(Maquinas.nombre, "Sin asignar") AS maquinaNombre, Tareas.terminada AS tareaTerminada, Tareas.nombre AS tareaNombre, Tareas.check AS tareaCheck, Tareas.activa AS tareaActiva, Tareas.sucesion AS tareaSucesion, IFNULL(Tareas.notes, "Sin notas") AS tareaNotas FROM tareasorden INNER JOIN Tareas ON tareasorden.tareaOrdenId = Tareas.tareaorden_id LEFT JOIN Usuarios ON Tareas.usuario_id = Usuarios.usuarioId LEFT JOIN Areas ON Tareas.area_id = Areas.areaId LEFT JOIN Maquinas ON Tareas.maquina_id = Maquinas.maquinaId WHERE tareasorden.tareaOrdenId = ?;', [idTarea]);
+        
+        // añadir un indice a las tareas (enumerarlas)
+        tareas.forEach((tarea, i) => {
+            tarea.tareaIndice = i + 1;
+        })
+
+        // obtener las tareas que se realizan de forma asincrona por tarea (buscar repetidos)
+        let tareasRepetidas = '';
+        for (let i = 0; i < tareas.length; i++) {
+            let tareaSucesion = tareas[i].tareaSucesion;
+            for (let j = 0; j < tareas.length; j++) {
+                if(tareas[j].tareaSucesion === tareaSucesion && j !== i){
+                    tareasRepetidas += `Tarea ${tareas[j].tareaIndice}, `
+                }
+            }
+            if(tareasRepetidas.length > 0){
+                tareas[i].tareasSincronas = tareasRepetidas;
+                tareasRepetidas = '';
+            } else{
+                tareas[i].tareasSincronas = 'Asíncrona';
             }
         }
-        if(tareasRepetidas.length > 0){
-            tareas[i].tareasSincronas = tareasRepetidas;
-            tareasRepetidas = '';
-        } else{
-            tareas[i].tareasSincronas = 'Asíncrona';
-        }
+
+        // eliminar ultima coma y espacio en blanco
+        tareas.forEach(tarea => {
+            tarea.tareasSincronas = tarea.tareasSincronas.replace(/,\s$/, '')
+        });
+
+        res.send({producto: productoNombre[0], tareas: tareas});
+    } else {
+        // notificar errores de la validacion
+        req.flash('validationErrors', resultadosValidacionArray);
+        res.sendStatus(500);
     }
-
-    // eliminar ultima coma y espacio en blanco
-    tareas.forEach(tarea => {
-        tarea.tareasSincronas = tarea.tareasSincronas.replace(/,\s$/, '')
-    });
-
-    res.send({producto: productoNombre[0], tareas: tareas});
 })
 
 module.exports = router;

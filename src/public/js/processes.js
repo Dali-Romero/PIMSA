@@ -175,12 +175,12 @@ $(document).ready(function(){
     });
 
     $('.btnExpandStages').on('click', function(){
-        const proccessId = $(this).val();
+        const processId = $(this).val();
         $.ajax({
             type: 'POST',
             url: '/processes/listStages',
             headers: {'Content-Type': 'application/json'},
-            data: JSON.stringify({proccessId: proccessId}),
+            data: JSON.stringify({processId: processId}),
             success: function (data){
                 const source = $('#info-stages-added').html();
                 const template = Handlebars.compile(source);
@@ -191,6 +191,9 @@ $(document).ready(function(){
                 const html= template(context);
                 $('#info-stages-container').html(html);
                 $("#info-stages-modal").unbind().modal('show');
+            },
+            error: function(){
+                window.location.reload();
             }
         })
     })
@@ -219,6 +222,9 @@ $(document).ready(function(){
                     const htmlProducts = templateProducts(contextProducts);
                     row.child(htmlProducts, 'p-0' ).show();
                     $('div.processes-products-slider', row.child()).slideDown();
+                },
+                error: function(){
+                    window.location.reload();
                 }
             });
         }
@@ -247,7 +253,7 @@ $(document).ready(function(){
     })
 
     // validate add role form
-    validateProcessForm($('#addProcessForm'));
+    //validateProcessForm($('#addProcessForm'));
 
     // ------------------------------- Edit file -------------------------------
     $('.remove-process-select').on('click', function(e){
@@ -260,5 +266,5 @@ $(document).ready(function(){
     })
 
     // validate add role form
-    validateProcessForm($('#editProcessForm'));
+    //validateProcessForm($('#editProcessForm'));
 })

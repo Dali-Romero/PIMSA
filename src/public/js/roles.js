@@ -139,6 +139,9 @@ $(document).ready(function(){
                     if ($('#roles-table tbody span[data-bs-toggle="tooltip"]').is(':not(:empty)')){
                         new bootstrap.Tooltip('#roles-table tbody', {selector: 'span[data-bs-toggle="tooltip"]'});
                     }
+                },
+                error: function(){
+                    window.location.reload();
                 }
             });
         }
@@ -175,6 +178,9 @@ $(document).ready(function(){
                     row.child(htmlPermissions, 'p-0' ).show();
                     $('div.roles-permissions-slider', row.child()).slideDown();
                     tr.addClass('PermissionsIsShowing');
+                },
+                error: function(){
+                    window.location.reload();
                 }
             });
         }
@@ -305,7 +311,6 @@ $(document).ready(function(){
         $(this).parents().eq(0).children().eq(0).children().eq(0).html(permisos_nomenclatura);
         permisos_nomenclatura = '';
     })
-
 
     // validate edit role form
     validateRolesForm($('#editRoleForm'));
