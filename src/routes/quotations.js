@@ -13,7 +13,7 @@ const router = express.Router();
 
 router.get('/add', isLoggedIn, IsAuthorized('addQuotations'), async (req, res)=>{
     const productos = await pool.query('SELECT productoId, nombre FROM Productos ORDER BY nombre ASC;');
-    const clientes = await pool.query('SELECT clienteId, nombre FROM Clientes ORDER BY nombre ASC;');
+    const clientes = await pool.query('SELECT clienteId, nombre FROM Clientes WHERE activo = 1 ORDER BY nombre ASC;');
     res.render('quotations/add', {productos: productos, clientes: clientes});
 });
 
@@ -244,7 +244,7 @@ router.get('/edit/:id', isLoggedIn, IsAuthorized('editQuotations'), async (req,r
     const {id} = req.params;
     const cotizacion = await pool.query('SELECT * FROM Cotizaciones WHERE cotId = ?', [id]);
     const productos = await pool.query('SELECT productoId, nombre FROM Productos ORDER BY nombre ASC;');
-    const clientes = await pool.query('SELECT clienteId, nombre FROM Clientes ORDER BY nombre ASC;');
+    const clientes = await pool.query('SELECT clienteId, nombre FROM Clientes WHERE activo = 1 ORDER BY nombre ASC;');
     const cliente = await pool.query('SELECT clienteId FROM (Cotizaciones INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId) WHERE Cotizaciones.cotId = ?;', [id]);
     const productosEnCatalogo = await pool.query('SELECT ProductosCotizados.*, Productos.nombre, Productos.unidad FROM ((Cotizaciones INNER JOIN ProductosCotizados ON Cotizaciones.cotId = ProductosCotizados.cot_id) INNER JOIN Productos ON ProductosCotizados.producto_id = Productos.productoId) WHERE Cotizaciones.cotId = ?;', [id]);
     const productosFueraCatalogo = await pool.query('SELECT FueraCatalogoCotizados.* FROM (Cotizaciones INNER JOIN FueraCatalogoCotizados ON Cotizaciones.cotId = FueraCatalogoCotizados.cot_id) WHERE Cotizaciones.cotId = ?;', [id]);
