@@ -190,11 +190,13 @@ router.get('/', isLoggedIn, IsAuthorized('seeListQuotations'), async (req, res)=
 
 router.get('/info/:id', isLoggedIn, IsAuthorized('seeListQuotations'), async (req, res)=>{
     const {id} = req.params;
-    const cotizacion = await pool.query('SELECT * FROM Cotizaciones WHERE cotId = ?', [id]);
-    const cliente = await pool.query('SELECT * FROM (Cotizaciones INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId) WHERE Cotizaciones.cotId = ?;', [id]);
+    const cotizacion = await pool.query('SELECT Cotizaciones.cotId, Cotizaciones.fecha, Cotizaciones.cliente_id, Cotizaciones.proyecto, Cotizaciones.observaciones, Cotizaciones.porcentajeDescuento, Cotizaciones.solicitante, Cotizaciones.empleado, Cotizaciones.estatus, Cotizaciones.totalBruto, Cotizaciones.descuento AS descuento_cotizacion, Cotizaciones.subtotal, Cotizaciones.iva, Cotizaciones.total, Clientes.*, Empleados.nombreComp FROM Cotizaciones INNER JOIN Usuarios ON Cotizaciones.usuario_id = Usuarios.usuarioId INNER JOIN Empleados ON Usuarios.empleado_id = Empleados.empleadoId INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId WHERE Cotizaciones.cotId = ?;', [id]);
     const productosEnCatalogo = await pool.query('SELECT ProductosCotizados.*, Productos.nombre, Productos.unidad FROM ((Cotizaciones INNER JOIN ProductosCotizados ON Cotizaciones.cotId = ProductosCotizados.cot_id) INNER JOIN Productos ON ProductosCotizados.producto_id = Productos.productoId) WHERE Cotizaciones.cotId = ?;', [id]);
     const productosFueraCatalogo = await pool.query('SELECT FueraCatalogoCotizados.* FROM (Cotizaciones INNER JOIN FueraCatalogoCotizados ON Cotizaciones.cotId = FueraCatalogoCotizados.cot_id) WHERE Cotizaciones.cotId = ?;', [id]);
     const productos = productosEnCatalogo.concat(productosFueraCatalogo);
+
+    // verificar se existe una orden para esta cotizacion
+    const permitidoCancelar = await pool.query('SELECT IFNULL((SELECT IF(COUNT(Ordenes.ordenId) IS NOT NULL, 0, 1) FROM Cotizaciones INNER JOIN Ordenes ON Cotizaciones.cotId = Ordenes.cot_id WHERE Cotizaciones.cotId = ? GROUP BY Ordenes.ordenId), 1) AS permitidoCancelar;', [id]);
 
     // informacion para generar orden (procesos)    
     const procesosEnCatalogo = await pool.query('SELECT ProductosCotizados.prodCotizadoId AS prodCotizadoId, Productos.nombre AS producto_nombre, Procesos.procesoId AS procesoId, Procesos.nombre AS proceso_nombre, GROUP_CONCAT(ProcesosOrdenes.orden ORDER BY ProcesosOrdenes.orden ASC) AS orden_areas, GROUP_CONCAT(Areas.nombre ORDER BY ProcesosOrdenes.orden ASC) AS areas FROM (((((Cotizaciones INNER JOIN ProductosCotizados ON Cotizaciones.cotId = ProductosCotizados.cot_id) INNER JOIN Productos ON ProductosCotizados.producto_id = Productos.productoId) INNER JOIN Procesos ON Productos.proceso_id = Procesos.procesoId) INNER JOIN ProcesosOrdenes ON Procesos.procesoId = ProcesosOrdenes.proceso_id) INNER JOIN Areas ON ProcesosOrdenes.area_id = Areas.areaId) WHERE Cotizaciones.cotId = ? GROUP BY prodCotizadoId;', [id]);
@@ -226,7 +228,7 @@ router.get('/info/:id', isLoggedIn, IsAuthorized('seeListQuotations'), async (re
         orden_posible.push(i+1);
     });
 
-    res.render('quotations/info', {cotizacion: cotizacion[0], cliente: cliente[0], productos: productos, procesosEnCatalogo:procesosEnCatalogoArray, procesosFueraCatalogo:productosFueraCatalogo, areas:todas_areas, orden:orden_posible});
+    res.render('quotations/info', {cotizacion: cotizacion[0], permitidoCancelar: permitidoCancelar[0], productos: productos, procesosEnCatalogo:procesosEnCatalogoArray, procesosFueraCatalogo:productosFueraCatalogo, areas:todas_areas, orden:orden_posible});
 })
 
 router.get('/cancel/:id', isLoggedIn, IsAuthorized('editQuotations'), async (req, res)=>{
