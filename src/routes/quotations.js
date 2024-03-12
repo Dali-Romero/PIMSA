@@ -93,7 +93,7 @@ router.post('/add', isLoggedIn, IsAuthorized('addQuotations'), async (req, res)=
 
 router.post('/listProducts', isLoggedIn, async (req, res)=>{
     const productoId = req.body.idProduct;
-    const producto = await pool.query('SELECT productoId, nombre, unidad, precio FROM Productos WHERE productoId = ?;', [productoId]);
+    const producto = await pool.query('SELECT productoId, nombre, unidad, porcentaje AS descuento, precio - ROUND((porcentaje * precio) / 100, 2)  AS precio FROM Productos WHERE productoId = ?;', [productoId]);
     res.send({producto: producto[0]});
 })
 
