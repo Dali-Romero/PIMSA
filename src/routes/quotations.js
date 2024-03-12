@@ -549,7 +549,6 @@ router.post('/generateOrder/:id', IsAuthorized('addOrders'), async (req, res)=>{
 
     req.flash('success', 'La orden <b>OT-'+resultadoOrden.insertId+'</b> ha sido creada correctamente');
     res.redirect('/orders');
-    //res.redirect('/tareas/create/'+resultadoOrden.insertId);
 })
 
 module.exports = router; 
