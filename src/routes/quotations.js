@@ -152,7 +152,7 @@ router.post('/preview', isLoggedIn, async (req, res)=>{
             producto.amount = moneda(producto.priceach * producto.quantityproduct);
         }else{
             producto.measure = dimensiones(producto.lengthproduct * producto.widthproduct);
-            producto.priceach = moneda(producto.measure * producto.priceproduct);
+            producto.priceach = moneda(producto.priceproduct);
             producto.amount = moneda(producto.priceproduct * producto.quantityproduct);
         }
         bruto = bruto + producto.amount;
