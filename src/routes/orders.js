@@ -22,6 +22,9 @@ router.get('/info/:id', isLoggedIn, IsAuthorized('seeListOrders'), async (req, r
     const productosEnCatalogo = await pool.query('SELECT ProductosCotizados.*, Productos.nombre, Productos.unidad, Procesos.procesoId AS procesoId, Procesos.nombre AS procesoNombre, GROUP_CONCAT(ProcesosOrdenes.orden ORDER BY ProcesosOrdenes.orden ASC, Areas.nombre ASC) AS ordenAreas, GROUP_CONCAT(Areas.nombre ORDER BY ProcesosOrdenes.orden ASC, Areas.nombre ASC) AS areas FROM ((((((Ordenes INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId) INNER JOIN ProductosCotizados ON Cotizaciones.cotId = ProductosCotizados.cot_id) INNER JOIN Productos ON ProductosCotizados.producto_id = Productos.productoId) INNER JOIN Procesos ON Productos.proceso_id = Procesos.procesoId) INNER JOIN ProcesosOrdenes ON Procesos.procesoId = ProcesosOrdenes.proceso_id) INNER JOIN Areas ON ProcesosOrdenes.area_id = Areas.areaId) WHERE Ordenes.ordenId = ? GROUP BY prodCotizadoId;', [id]);
     const productosFueraCatalogo = await pool.query('SELECT FueraCatalogoCotizados.*, Procesos.procesoId AS procesoId, Procesos.nombre AS procesoNombre, GROUP_CONCAT(ProcesosOrdenes.orden ORDER BY ProcesosOrdenes.orden ASC, Areas.nombre ASC) AS ordenAreas, GROUP_CONCAT(Areas.nombre ORDER BY ProcesosOrdenes.orden ASC, Areas.nombre ASC) AS areas FROM (((((Ordenes INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId) INNER JOIN FueraCatalogoCotizados ON Cotizaciones.cotId = FueraCatalogoCotizados.cot_id) INNER JOIN Procesos ON FueraCatalogoCotizados.proceso_id = Procesos.procesoId) INNER JOIN ProcesosOrdenes ON Procesos.procesoId = ProcesosOrdenes.proceso_id) INNER JOIN Areas ON ProcesosOrdenes.area_id = Areas.areaId) WHERE Ordenes.ordenId = ? GROUP BY fueraCotizadoId;', [id]);
     const productos = productosEnCatalogo.concat(productosFueraCatalogo);
+
+    // verificar se existen tareas para esta cotizacion
+    const permitidoCancelar = await pool.query('SELECT IFNULL((SELECT IF(COUNT(Tareas.tareaId) IS NOT NULL, 0, 1) FROM Tareas INNER JOIN tareasorden ON Tareas.tareaorden_id = tareasorden.tareaOrdenId INNER JOIN Ordenes ON tareasorden.orden_id = Ordenes.ordenId WHERE Ordenes.ordenId = ? GROUP BY Ordenes.ordenId), 1) AS permitidoCancelar;', [id]);
     
     // separar las areas y su orden
     productos.forEach(producto => {
@@ -33,7 +36,7 @@ router.get('/info/:id', isLoggedIn, IsAuthorized('seeListOrders'), async (req, r
     date = new Date();
     fechaMin = date.toLocaleDateString('en-CA', {year: 'numeric', month: 'numeric', day: 'numeric'});
     
-    res.render('orders/info', {cotizacion: cotizacion[0], productos: productos, fechaMinima: fechaMin});
+    res.render('orders/info', {cotizacion: cotizacion[0], productos: productos, permitidoCancelar: permitidoCancelar[0], fechaMinima: fechaMin});
 });
 
 router.get('/cancel/:id', isLoggedIn, IsAuthorized('editOrders'), async (req, res)=> {
@@ -213,22 +216,22 @@ router.post('/preview', isLoggedIn, validateOrdersPreview(), async (req, res)=>{
             productosCot[key.replace(/[0-9]/g, '')] = valoresProductos[j];
             j++;
         }
-        productosCotArray.push(productosCot);
+    productosCotArray.push(productosCot);
 
-        // calculos de la cotizacion
-        let bruto = 0;
-        let subtotal = 0;
-        let descuento = 0;
-        let iva = 0;
-        productosCotArray.forEach(producto => {
-            if(producto.revalueunitproduct === 'Mt'){
-                producto.revaluemeasure = dimensiones(producto.revaluelengthproduct * producto.revaluewidthproduct);
-                producto.revaluepriceach = moneda(producto.revaluemeasure * producto.revaluepriceproduct);
-                producto.revalueamount = moneda(producto.revaluepriceach * producto.revaluequantityproduct);
-            }else{
-                producto.revaluemeasure = dimensiones(producto.revaluelengthproduct * producto.revaluewidthproduct);
-                producto.revaluepriceach = moneda(producto.revaluemeasure * producto.revaluepriceproduct);
-                producto.revalueamount = moneda(producto.revaluepriceproduct * producto.revaluequantityproduct);
+    // calculos de la cotizacion
+    let bruto = 0;
+    let subtotal = 0;
+    let descuento = 0;
+    let iva = 0;
+    productosCotArray.forEach(producto => {
+        if(producto.revalueunitproduct === 'Mt'){
+            producto.revaluemeasure = dimensiones(producto.revaluelengthproduct * producto.revaluewidthproduct);
+            producto.revaluepriceach = moneda(producto.revaluemeasure * producto.revaluepriceproduct);
+            producto.revalueamount = moneda(producto.revaluepriceach * producto.revaluequantityproduct);
+        }else{
+            producto.revaluemeasure = dimensiones(producto.revaluelengthproduct * producto.revaluewidthproduct);
+            producto.revaluepriceach = moneda(producto.revaluepriceproduct);
+            producto.revalueamount = moneda(producto.revaluepriceproduct * producto.revaluequantityproduct);
             }
             bruto = bruto + producto.revalueamount;
             bruto = moneda(bruto);

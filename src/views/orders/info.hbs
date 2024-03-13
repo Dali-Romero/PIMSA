@@ -6,7 +6,7 @@
         {{#with cotizacion}}
             {{#checkPermission ../user.permisos "editOrders"}}
                 <div class="btn-group" role="group">
-                    <button class="btn btn-danger me-0 me-md-3 mb-3 mb-md-0" id="cancel-order" type="button" {{#equalOR estatusOrden "Cancelada" "En proceso"}} disabled {{/equalOR}}><i class="bi bi-x-octagon"></i> Cancelar</button>
+                    <button class="btn btn-danger me-0 me-md-3 mb-3 mb-md-0" id="cancel-order" type="button" {{#with ../permitidoCancelar}} {{#if permitidoCancelar}} {{#equalOR ../estatusOrden "Cancelada" "En proceso"}} disabled {{/equalOR}} {{else}} disabled {{/if}} {{/with}}><i class="bi bi-x-octagon"></i> Cancelar</button>
                 </div>
             {{else}}
                 <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Acceso denegado">
@@ -42,7 +42,7 @@
 
             {{#checkPermission ../user.permisos "editOrders"}}
                 <div class="btn-group" role="group">
-                    <button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#orders-add-deadline" {{#equalOR estatusOrden "Cancelada" "En proceso"}} disabled {{/equalOR}}><i class="bi bi-journal-check"></i> Enviar a producción</button>
+                    <button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#orders-add-deadline" {{#with ../permitidoCancelar}} {{#if permitidoCancelar}} {{#equalOR ../estatusOrden "Cancelada" "En proceso"}} disabled {{/equalOR}} {{else}} disabled {{/if}} {{/with}}><i class="bi bi-journal-check"></i> Enviar a producción</button>
                 </div>
             {{else}}
                 <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Acceso denegado">
@@ -57,56 +57,78 @@
 <div class="row p-4 pt-0 gy-4 justify-content-md-between">
     <div class="col-md-5">
         <div class="row">
-            <img src="/img/PIMSAlogo.png" alt="Logo PIMSA" class="img-fluid d-block mx-auto" style="width: 67vh;">
+            <img src="/img/PIMSAlogo.png" alt="Logo PIMSA" class="img-fluid d-block mx-auto" style="width: 70vh;">
         </div>
         <div class="row mt-3">
             <div class="row m-0 text-center bg-danger text-white">
                 <p class="fs-6 p-1 m-0">Información de la orden</p>
             </div>
-            <table class="table  align-middle table-light m-0">
-                <tbody>
-                    {{#with cotizacion}}
-                        <tr>
-                            <th scope="row">No. orden:</th>
-                            <td>OT-{{ordenId}}</td>
-                            <th scope="row">Estatus:</th>
-                            {{#if terminada}}
-                                <td>Terminada</td>
-                            {{else}}
-                                <td>{{estatusOrden}}</td>
-                            {{/if}}
-                        </tr>
-                        <tr>
-                            <th scope="row">Cotización asociada:</th>
-                            <td colspan="3">COT-{{cotId}}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Fecha de generación:</th>
-                            <td colspan="3">{{formatDate fechaGen}}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Fecha de entrega:</th>
+            {{#with cotizacion}}
+                <div class="row row-cols-2 row-cols-md-4 p-0 m-0 bg-light">
+                    <div class="col py-2 fw-bold border-bottom border-2">
+                        No. orden:
+                    </div>
+                    <div class="col py-2 border-bottom border-2">
+                        OT-{{ordenId}}
+                    </div>
+                    <div class="col py-2 fw-bold border-bottom border-2">
+                        Estatus:
+                    </div>
+                    <div class="col py-2 border-bottom border-2">
+                        {{estatusOrden}}
+                    </div>
+                </div>
+                <div class="row p-0 m-0 bg-light">
+                    <div class="col-6 col-md-4 py-2 d-flex align-items-center fw-bold border-bottom border-2">
+                        Cotización asociada:
+                    </div>
+                    <div class="col-6 col-md-8 py-2 d-flex align-items-center border-bottom border-2">
+                        COT-{{cotId}}
+                    </div>
+                </div>
+                <div class="row p-0 m-0 bg-light">
+                    <div class="col-6 col-md-4 py-2 d-flex align-items-center fw-bold border-bottom border-2">
+                        Fecha de generación:
+                    </div>
+                    <div class="col-6 col-md-8 py-2 d-flex align-items-center border-bottom border-2">
+                        {{formatDate fechaGen}}
+                    </div>
+                </div>
+                <div class="row p-0 m-0 bg-light">
+                    <div class="col-6 col-md-4 py-2 d-flex align-items-center fw-bold border-bottom border-2">
+                        Fecha de entrega:
+                    </div>
+                    <div class="col-6 col-md-8 py-2 d-flex align-items-center border-bottom border-2">
                         {{#equal fechaEnt "-"}}
-                            <td colspan="3">Sin asignar</td>
+                            Sin asignar
                         {{else}}
-                            <td colspan="3">{{formatDateOnlyDate fechaEnt}}</td>
+                            {{formatDateOnlyDate fechaEnt}}
                         {{/equal}}
-                        </tr>
-                        <tr>
-                            <th scope="row">Proyecto:</th>
-                            <td colspan="3">{{proyecto}}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Empleado:</th>
-                            <td colspan="3">{{nombreComp}}</td>
-                        </tr>
-                    {{else}}
-                        <tr>
-                            <td colspan="4" class="text-center">No existe información sobre la cotización</td>
-                        </tr>
-                    {{/with}}
-                </tbody>
-            </table>
+                    </div>
+                </div>
+                <div class="row p-0 m-0 bg-light">
+                    <div class="col-6 col-md-4 py-2 d-flex align-items-center fw-bold border-bottom border-2">
+                        Proyecto:
+                    </div>
+                    <div class="col-6 col-md-8 py-2 d-flex align-items-center border-bottom border-2">
+                        {{proyecto}}
+                    </div>
+                </div>
+                <div class="row p-0 m-0 bg-light">
+                    <div class="col-6 col-md-4 py-2 d-flex align-items-center fw-bold border-bottom border-2">
+                        Empleado:
+                    </div>
+                    <div class="col-6 col-md-8 py-2 d-flex align-items-center border-bottom border-2">
+                        {{nombreComp}}
+                    </div>
+                </div>
+            {{else}}
+                <div class="row p-0 m-0 bg-light">
+                    <div class="col-12 py-2 d-flex align-items-center justify-content-center fw-bold border-bottom border-2">
+                        No existe información sobre esta orden
+                    </div>
+                </div>
+            {{/with}}
         </div>
     </div>
     <div class="col-md-6">
@@ -114,56 +136,104 @@
             <div class="row m-0 text-center bg-danger text-white">
                 <p class="fs-6 p-1 m-0">Información del cliente</p>
             </div>
-            <table class="table table-responsive-md align-middle table-light m-0">
-                <tbody>
-                    {{#with cotizacion}}
-                        <tr>
-                            <th scope="row">Solicitante:</th>
-                            <td colspan="3">{{solicitante}}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row" class="col-md-3">Cliente:</th>
-                            <td colspan="3">{{nombre}}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Empresa:</th>
-                            <td colspan="3">{{razonSocial}}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">RFC:</th>
-                            <td colspan="3">{{rfc}}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Estado:</th>
-                            <td>{{domEstado}}</td>
-                            <th scope="row" class="col-md-2">Municipio:</th>
-                            <td>{{domCiudad}}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Colonia:</th>
-                            <td>{{domColonia}}</td>
-                            <th scope="row">Código postal:</th>
-                            <td>{{domCp}}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Calle:</th>
-                            <td>{{domCalle}}</td>
-                            <th scope="row">Número:</th>
-                            <td>{{domNumEx}} {{#if domNumIn}}Int {{domNumIn}}{{/if}}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Teléfono:</th>
-                            <td colspan="3">{{#if telefonoExt}}Ext {{telefonoExt}}{{/if}} {{telefono}}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Correo electrónico:</th>
-                            <td colspan="3">{{correoElec}}</td>
-                        </tr>
-                    {{else}}
-                        <td colspan="4" class="text-center">No existe información sobre el cliente</td>
-                    {{/with}}
-                </tbody>
-            </table>
+            {{#with cotizacion}}
+                <div class="row p-0 m-0 bg-light">
+                    <div class="col-6 col-md-3 py-2 d-flex align-items-center fw-bold border-bottom border-2">
+                        Solicitante:
+                    </div>
+                    <div class="col-6 col-md-9 py-2 d-flex align-items-center border-bottom border-2">
+                        {{solicitante}}
+                    </div>
+                </div>
+                <div class="row p-0 m-0 bg-light">
+                    <div class="col-6 col-md-3 py-2 d-flex align-items-center fw-bold border-bottom border-2">
+                        Cliente:
+                    </div>
+                    <div class="col-6 col-md-9 py-2 d-flex align-items-center border-bottom border-2">
+                        {{nombre}}
+                    </div>
+                </div>
+                <div class="row p-0 m-0 bg-light">
+                    <div class="col-6 col-md-3 py-2 d-flex align-items-center fw-bold border-bottom border-2">
+                        Empresa:
+                    </div>
+                    <div class="col-6 col-md-9 py-2 d-flex align-items-center border-bottom border-2">
+                        {{razonSocial}}
+                    </div>
+                </div>
+                <div class="row p-0 m-0 bg-light">
+                    <div class="col-6 col-md-3 py-2 d-flex align-items-center fw-bold border-bottom border-2">
+                        RFC:
+                    </div>
+                    <div class="col-6 col-md-9 py-2 d-flex align-items-center border-bottom border-2">
+                        {{rfc}}
+                    </div>
+                </div>
+                <div class="row row-cols-2 row-cols-md-4 p-0 m-0 bg-light">
+                    <div class="col py-2 fw-bold border-bottom border-2">
+                        Estado:
+                    </div>
+                    <div class="col py-2 border-bottom border-2">
+                        {{domEstado}}
+                    </div>
+                    <div class="col py-2 fw-bold border-bottom border-2">
+                        Municipio:
+                    </div>
+                    <div class="col py-2 border-bottom border-2">
+                        {{domCiudad}}
+                    </div>
+                </div>
+                <div class="row row-cols-2 row-cols-md-4 p-0 m-0 bg-light">
+                    <div class="col py-2 fw-bold border-bottom border-2">
+                        Colonia:
+                    </div>
+                    <div class="col py-2 border-bottom border-2">
+                        {{domColonia}}
+                    </div>
+                    <div class="col py-2 fw-bold border-bottom border-2">
+                        Código postal:
+                    </div>
+                    <div class="col py-2 border-bottom border-2">
+                        {{domCp}}
+                    </div>
+                </div>
+                <div class="row row-cols-2 row-cols-md-4 p-0 m-0 bg-light">
+                    <div class="col py-2 fw-bold border-bottom border-2">
+                        Calle:
+                    </div>
+                    <div class="col py-2 border-bottom border-2">
+                        {{domCalle}}
+                    </div>
+                    <div class="col py-2 fw-bold border-bottom border-2">
+                        Número:
+                    </div>
+                    <div class="col py-2 border-bottom border-2">
+                        {{domNumEx}} {{#if domNumIn}}Int {{domNumIn}}{{/if}}
+                    </div>
+                </div>
+                <div class="row p-0 m-0 bg-light">
+                    <div class="col-6 col-md-3 py-2 d-flex align-items-center fw-bold border-bottom border-2">
+                        Teléfono:
+                    </div>
+                    <div class="col-6 col-md-9 py-2 d-flex align-items-center border-bottom border-2">
+                        {{#if telefonoExt}}Ext {{telefonoExt}}{{/if}} {{telefono}}
+                    </div>
+                </div>
+                <div class="row p-0 m-0 bg-light">
+                    <div class="col-6 col-md-3 py-2 d-flex align-items-center fw-bold border-bottom border-2">
+                        Correo electrónico:
+                    </div>
+                    <div class="col-6 col-md-9 py-2 d-flex align-items-center border-bottom border-2 text-break">
+                        {{correoElec}}
+                    </div>
+                </div>
+            {{else}}
+                <div class="row p-0 m-0 bg-light">
+                    <div class="col-12 py-2 d-flex align-items-center justify-content-center fw-bold border-bottom border-2">
+                        No existe información sobre este cliente
+                    </div>
+                </div>
+            {{/with}}
         </div>
     </div>
 </div>

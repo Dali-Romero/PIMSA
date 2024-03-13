@@ -2,100 +2,104 @@
     <h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-journals"></i> Cotizaciones</h1>
 </div>
 <div class="row p-4 gy-4 justify-content-md-between">
-    <div class="btn-toolbar justify-content-md-start justify-content-center p-0" role="toolbar">
+    <div class="btn-toolbar justify-content-start flex-md-row flex-column p-0" role="toolbar">
         {{#with cotizacion}}
             {{#checkPermission ../user.permisos "editQuotations"}}
-                <div class="btn-group mb-3 mb-md-0" role="group">
-                    <button class="btn btn-danger me-3" id="cancel-quotation" type="button" {{#equalORThree estatus "Cancelada" "Ordenada" "Orden cancelada"}} disabled {{/equalORThree}}><i class="bi bi-x-octagon"></i> Cancelar</button>
+                <div class="btn-group" role="group">
+                    <button class="btn btn-danger me-0 me-md-3 mb-3 mb-md-0" id="cancel-quotation" type="button" {{#with ../permitidoCancelar}} {{#if permitidoCancelar}} {{#equalORThree ../estatus "Cancelada" "Ordenada" "Orden cancelada"}} disabled {{/equalORThree}} {{else}} disabled {{/if}} {{/with}}><i class="bi bi-x-octagon"></i> Cancelar</button>
                 </div>
             {{else}}
                 <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Acceso denegado">
-                    <div class="btn-group mb-3 mb-md-0" role="group">
-                        <button class="btn btn-danger me-3" id="cancel-quotation" type="button" disabled><i class="bi bi-x-octagon"></i> Cancelar</button>
+                    <div class="btn-group w-100" role="group">
+                        <button class="btn btn-danger me-0 me-md-3 mb-3 mb-md-0" id="cancel-quotation" type="button" disabled><i class="bi bi-x-octagon"></i> Cancelar</button>
                     </div>
                 </span>
             {{/checkPermission}}
 
             {{#checkPermission ../user.permisos "editQuotations"}}
-                <div class="btn-group mb-3 mb-md-0" role="group">
-                    <a href="/quotations/edit/{{cotId}}" class="btn btn-warning me-3 {{#equalOR estatus 'Ordenada' 'Orden cancelada'}} disabled {{/equalOR}}" role="button" aria-disabled="true"><i class="bi bi-arrow-repeat"></i> Recotizar</a>
+                <div class="btn-group" role="group">
+                    <a href="/quotations/edit/{{cotId}}" class="btn btn-warning me-0 me-md-3 mb-3 mb-md-0 {{#with ../permitidoCancelar}} {{#if permitidoCancelar}} {{#equalOR ../estatus 'Ordenada' 'Orden cancelada'}} disabled {{/equalOR}} {{else}} disabled {{/if}} {{/with}}" role="button" aria-disabled="true"><i class="bi bi-arrow-repeat"></i> Recotizar</a>
                 </div>
             {{else}}
                 <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Acceso denegado">
-                    <div class="btn-group mb-3 mb-md-0" role="group">
-                        <a href="/quotations/edit/{{cotId}}" class="btn btn-warning me-3 disabled" role="button" tabindex="-1" aria-disabled="true"><i class="bi bi-arrow-repeat"></i> Recotizar</a>
+                    <div class="btn-group w-100" role="group">
+                        <a href="/quotations/edit/{{cotId}}" class="btn btn-warning me-0 me-md-3 mb-3 mb-md-0 disabled" role="button" tabindex="-1" aria-disabled="true"><i class="bi bi-arrow-repeat"></i> Recotizar</a>
                     </div>
                 </span>
             {{/checkPermission}}
 
-            <div class="btn-group mb-3 mb-md-0" role="group">
-                <div class="dropdown">
-                    {{#checkPermission ../user.permisos "editQuotations"}}
-                        <button type="button" class="btn btn-info dropdown-toggle me-3" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside" {{#equalORThree estatus "Cancelada" "Ordenada" "Orden cancelada"}} disabled {{/equalORThree}}>
+            {{#checkPermission ../user.permisos "editQuotations"}}
+                <div class="btn-group" role="group">
+                    <div class="dropdown me-0 me-md-3 mb-3 mb-md-0 w-100">
+                        <button type="button" class="btn btn-info dropdown-toggle w-100" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside" {{#equalOR estatus "Cancelada" "Orden cancelada"}} disabled {{/equalOR}}>
                             <i class="bi bi-envelope-at"></i>
                             Enviar
                         </button>
-                    {{else}}
-                        <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Acceso denegado">
-                            <button type="button" class="btn btn-info dropdown-toggle me-3" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside" disabled>
+                        <form action="/quotations/email/{{cotId}}" method="post" id="emailClientForm" class="dropdown-menu p-3 needs-validation" style="width: 300px" novalidate>
+                            <div class="row mb-3 m-0">
+                                <div class="col-6 p-0">
+                                    <div class="form-check p-0 text-start">
+                                        <input type="radio" name="checkEmail" id="checkClient" class="btn-check" autocomplete="off" checked>
+                                        <label for="checkClient" class="btn btn-outline-primary btn-sm border-2">Cliente</label>
+                                    </div>
+                                </div>
+                                <div class="col-6 p-0">
+                                    <div class="form-check p-0 text-end">
+                                        <input type="radio" name="checkEmail" id="checkAnother" class="btn-check" autocomplete="off">
+                                        <label for="checkAnother" class="btn btn-outline-primary btn-sm border-2">Otro</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-4 m-0">
+                                <label for="inputEmailClient" class="form-label p-0">Correo electrónico:</label>
+                                <input type="email" name="inputEmailClient" id="inputEmailClient" class="form-control border border-black border-2" value="{{correoElec}}" required>
+                                <div class="valid-feedback">
+                                    ¡Perfecto!
+                                </div>
+                                <div class="invalid-feedback">
+                                    <span class="invalid-feedback-emailClient"></span>
+                                </div>
+                            </div>
+                            <div class="row m-0 justify-content-end text-end">
+                                <div class="col-4 p-0">
+                                    <button type="submit" class="btn btn-success">Enviar</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            {{else}}
+                <div class="btn-group" role="group">
+                    <div class="dropdown me-0 me-md-3 mb-3 mb-md-0 w-100">
+                        <span class="d-inline-block w-100" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Acceso denegado">
+                            <button type="button" class="btn btn-info dropdown-toggle w-100" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside" disabled>
                                 <i class="bi bi-envelope-at"></i>
                                 Enviar
                             </button>
                         </span>
-                    {{/checkPermission}}
-                    <form action="/quotations/email/{{cotId}}" method="post" id="emailClientForm" class="dropdown-menu p-3 needs-validation" style="width: 300px" novalidate>
-                        <div class="row mb-3 m-0">
-                            <div class="col-6 p-0">
-                                <div class="form-check p-0 text-start">
-                                    <input type="radio" name="checkEmail" id="checkClient" class="btn-check" autocomplete="off" checked>
-                                    <label for="checkClient" class="btn btn-outline-primary btn-sm border-2">Cliente</label>
-                                </div>
-                            </div>
-                            <div class="col-6 p-0">
-                                <div class="form-check p-0 text-end">
-                                    <input type="radio" name="checkEmail" id="checkAnother" class="btn-check" autocomplete="off">
-                                    <label for="checkAnother" class="btn btn-outline-primary btn-sm border-2">Otro</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-4 m-0">
-                            <label for="inputEmailClient" class="form-label p-0">Correo electrónico:</label>
-                            <input type="email" name="inputEmailClient" id="inputEmailClient" class="form-control border border-black border-2" value="{{#with ../cliente}}{{correoElec}}{{/with}}" required>
-                            <div class="valid-feedback">
-                                ¡Perfecto!
-                            </div>
-                            <div class="invalid-feedback">
-                                <span class="invalid-feedback-emailClient"></span>
-                            </div>
-                        </div>
-                        <div class="row m-0 justify-content-end text-end">
-                            <div class="col-4 p-0">
-                                <button type="submit" class="btn btn-success">Enviar</button>
-                            </div>
-                        </div>
-                    </form>
+                    </div>
                 </div>
-            </div>
+            {{/checkPermission}}
 
             {{#checkPermission ../user.permisos "editQuotations"}}
                 <div class="btn-group" role="group">
-                    <a href="/quotations/download/{{cotId}}" class="btn btn-primary me-3" role="button"><i class="bi bi-file-earmark-arrow-down"></i> Descargar PDF</a>
+                    <a href="/quotations/download/{{cotId}}" class="btn btn-primary me-0 me-md-3 mb-3 mb-md-0" role="button"><i class="bi bi-file-earmark-arrow-down"></i> Descargar PDF</a>
                 </div>
             {{else}}
                 <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Acceso denegado">
-                    <div class="btn-group mb-3 mb-md-0" role="group">
-                        <a href="/quotations/download/{{cotId}}" class="btn btn-primary me-3 disabled" role="button" tabindex="-1" aria-disabled="true"><i class="bi bi-file-earmark-arrow-down"></i> Descargar PDF</a>
+                    <div class="btn-group w-100" role="group">
+                        <a href="/quotations/download/{{cotId}}" class="btn btn-primary me-0 me-md-3 mb-3 mb-md-0 disabled" role="button" tabindex="-1" aria-disabled="true"><i class="bi bi-file-earmark-arrow-down"></i> Descargar PDF</a>
                     </div>
                 </span>
             {{/checkPermission}}
 
             {{#checkPermission ../user.permisos "addOrders"}}
                 <div class="btn-group" role="group">
-                    <button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#modalGenerateOrder" {{#equalORThree estatus "Cancelada" "Ordenada" "Orden cancelada"}} disabled {{/equalORThree}}><i class="bi bi-journal-check"></i> Generar orden</button>
+                    <button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#modalGenerateOrder" {{#with ../permitidoCancelar}} {{#if permitidoCancelar}} {{#equalORThree ../estatus "Cancelada" "Ordenada" "Orden cancelada"}} disabled {{/equalORThree}} {{else}} disabled {{/if}} {{/with}}><i class="bi bi-journal-check"></i> Generar orden</button>
                 </div>
             {{else}}
                 <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Acceso denegado">
-                    <div class="btn-group" role="group">
+                    <div class="btn-group w-100" role="group">
                         <button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#modalGenerateOrder" disabled><i class="bi bi-journal-check"></i> Generar orden</button>
                     </div>
                 </span>
@@ -106,40 +110,60 @@
 <div class="row p-4 pt-0 gy-4 justify-content-md-between">
     <div class="col-md-5">
         <div class="row">
-            <img src="/img/PIMSAlogo.png" alt="Logo PIMSA" class="img-fluid d-block mx-auto">
+            <img src="/img/PIMSAlogo.png" alt="Logo PIMSA" class="img-fluid d-block mx-auto" style="width: 81vh;">
         </div>
-        <div class="row mt-4">
+        <div class="row mt-3 pt-4">
             <div class="row m-0 text-center bg-danger text-white">
                 <p class="fs-6 p-1 m-0">Información de la cotización</p>
             </div>
-            <table class="table table-responsive-md align-middle table-light m-0">
-                <tbody>
-                    {{#with cotizacion}}
-                        <tr>
-                            <th scope="row">Fecha:</th>
-                            <td>{{formatDate fecha}}</td>
-                            <th scope="row">Estatus:</th>
-                            <td>{{estatus}}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Proyecto:</th>
-                            <td colspan="3">{{proyecto}}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Solicitante:</th>
-                            <td colspan="3">{{solicitante}}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Empleado:</th>
-                            <td colspan="3">{{empleado}}</td>
-                        </tr>
-                    {{else}}
-                        <tr>
-                            <td colspan="4" class="text-center">No existe información sobre la cotización</td>
-                        </tr>
-                    {{/with}}
-                </tbody>
-            </table>
+            {{#with cotizacion}}
+                <div class="row p-0 m-0 bg-light">
+                    <div class="col-6 col-md-4 py-2 d-flex align-items-center fw-bold border-bottom border-2">
+                        No. cotización:
+                    </div>
+                    <div class="col-6 col-md-8 py-2 d-flex align-items-center border-bottom border-2">
+                        COT-{{cotId}}
+                    </div>
+                </div>
+                <div class="row p-0 m-0 bg-light">
+                    <div class="col-6 col-md-4 py-2 d-flex align-items-center fw-bold border-bottom border-2">
+                        Estatus:
+                    </div>
+                    <div class="col-6 col-md-8 py-2 d-flex align-items-center border-bottom border-2">
+                        {{estatus}}
+                    </div>
+                </div>
+                <div class="row p-0 m-0 bg-light">
+                    <div class="col-6 col-md-4 py-2 d-flex align-items-center fw-bold border-bottom border-2">
+                        Fecha de generación:
+                    </div>
+                    <div class="col-6 col-md-8 py-2 d-flex align-items-center border-bottom border-2">
+                        {{formatDate fecha}}
+                    </div>
+                </div>
+                <div class="row p-0 m-0 bg-light">
+                    <div class="col-6 col-md-4 py-2 d-flex align-items-center fw-bold border-bottom border-2">
+                        Proyecto:
+                    </div>
+                    <div class="col-6 col-md-8 py-2 d-flex align-items-center border-bottom border-2">
+                        {{proyecto}}
+                    </div>
+                </div>
+                <div class="row p-0 m-0 bg-light">
+                    <div class="col-6 col-md-4 py-2 d-flex align-items-center fw-bold border-bottom border-2">
+                        Empleado:
+                    </div>
+                    <div class="col-6 col-md-8 py-2 d-flex align-items-center border-bottom border-2">
+                        {{nombreComp}}
+                    </div>
+                </div>
+            {{else}}
+                <div class="row p-0 m-0 bg-light">
+                    <div class="col-12 py-2 d-flex align-items-center justify-content-center fw-bold border-bottom border-2">
+                        No existe información sobre esta cotización
+                    </div>
+                </div>
+            {{/with}}
         </div>
     </div>
     <div class="col-md-6">
@@ -147,52 +171,104 @@
             <div class="row m-0 text-center bg-danger text-white">
                 <p class="fs-6 p-1 m-0">Información del cliente</p>
             </div>
-            <table class="table table-responsive-md align-middle table-light m-0">
-                <tbody>
-                    {{#with cliente}}
-                        <tr>
-                            <th scope="row" class="col-md-3">Cliente:</th>
-                            <td colspan="3">{{nombre}}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Empresa:</th>
-                            <td colspan="3">{{razonSocial}}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">RFC:</th>
-                            <td colspan="3">{{rfc}}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Estado:</th>
-                            <td>{{domEstado}}</td>
-                            <th scope="row" class="col-md-2">Municipio:</th>
-                            <td>{{domCiudad}}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Colonia:</th>
-                            <td>{{domColonia}}</td>
-                            <th scope="row">Código postal:</th>
-                            <td>{{domCp}}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Calle:</th>
-                            <td>{{domCalle}}</td>
-                            <th scope="row">Número:</th>
-                            <td>{{domNumEx}} {{#if domNumIn}}Int {{domNumIn}}{{/if}}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Teléfono:</th>
-                            <td colspan="3">{{#if telefonoExt}}Ext {{telefonoExt}}{{/if}} {{telefono}}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Correo electrónico:</th>
-                            <td colspan="3">{{correoElec}}</td>
-                        </tr>
-                    {{else}}
-                        <td colspan="4" class="text-center">No existe información sobre el cliente</td>
-                    {{/with}}
-                </tbody>
-            </table>
+            {{#with cotizacion}}
+                <div class="row p-0 m-0 bg-light">
+                    <div class="col-6 col-md-3 py-2 d-flex align-items-center fw-bold border-bottom border-2">
+                        Solicitante:
+                    </div>
+                    <div class="col-6 col-md-9 py-2 d-flex align-items-center border-bottom border-2">
+                        {{solicitante}}
+                    </div>
+                </div>
+                <div class="row p-0 m-0 bg-light">
+                    <div class="col-6 col-md-3 py-2 d-flex align-items-center fw-bold border-bottom border-2">
+                        Cliente:
+                    </div>
+                    <div class="col-6 col-md-9 py-2 d-flex align-items-center border-bottom border-2">
+                        {{nombre}}
+                    </div>
+                </div>
+                <div class="row p-0 m-0 bg-light">
+                    <div class="col-6 col-md-3 py-2 d-flex align-items-center fw-bold border-bottom border-2">
+                        Empresa:
+                    </div>
+                    <div class="col-6 col-md-9 py-2 d-flex align-items-center border-bottom border-2">
+                        {{razonSocial}}
+                    </div>
+                </div>
+                <div class="row p-0 m-0 bg-light">
+                    <div class="col-6 col-md-3 py-2 d-flex align-items-center fw-bold border-bottom border-2">
+                        RFC:
+                    </div>
+                    <div class="col-6 col-md-9 py-2 d-flex align-items-center border-bottom border-2">
+                        {{rfc}}
+                    </div>
+                </div>
+                <div class="row row-cols-2 row-cols-md-4 p-0 m-0 bg-light">
+                    <div class="col py-2 fw-bold border-bottom border-2">
+                        Estado:
+                    </div>
+                    <div class="col py-2 border-bottom border-2">
+                        {{domEstado}}
+                    </div>
+                    <div class="col py-2 fw-bold border-bottom border-2">
+                        Municipio:
+                    </div>
+                    <div class="col py-2 border-bottom border-2">
+                        {{domCiudad}}
+                    </div>
+                </div>
+                <div class="row row-cols-2 row-cols-md-4 p-0 m-0 bg-light">
+                    <div class="col py-2 fw-bold border-bottom border-2">
+                        Colonia:
+                    </div>
+                    <div class="col py-2 border-bottom border-2">
+                        {{domColonia}}
+                    </div>
+                    <div class="col py-2 fw-bold border-bottom border-2">
+                        Código postal:
+                    </div>
+                    <div class="col py-2 border-bottom border-2">
+                        {{domCp}}
+                    </div>
+                </div>
+                <div class="row row-cols-2 row-cols-md-4 p-0 m-0 bg-light">
+                    <div class="col py-2 fw-bold border-bottom border-2">
+                        Calle:
+                    </div>
+                    <div class="col py-2 border-bottom border-2">
+                        {{domCalle}}
+                    </div>
+                    <div class="col py-2 fw-bold border-bottom border-2">
+                        Número:
+                    </div>
+                    <div class="col py-2 border-bottom border-2">
+                        {{domNumEx}} {{#if domNumIn}}Int {{domNumIn}}{{/if}}
+                    </div>
+                </div>
+                <div class="row p-0 m-0 bg-light">
+                    <div class="col-6 col-md-3 py-2 d-flex align-items-center fw-bold border-bottom border-2">
+                        Teléfono:
+                    </div>
+                    <div class="col-6 col-md-9 py-2 d-flex align-items-center border-bottom border-2">
+                        {{#if telefonoExt}}Ext {{telefonoExt}}{{/if}} {{telefono}}
+                    </div>
+                </div>
+                <div class="row p-0 m-0 bg-light">
+                    <div class="col-6 col-md-3 py-2 d-flex align-items-center fw-bold border-bottom border-2">
+                        Correo electrónico:
+                    </div>
+                    <div class="col-6 col-md-9 py-2 d-flex align-items-center border-bottom border-2 text-break">
+                        {{correoElec}}
+                    </div>
+                </div>
+            {{else}}
+                <div class="row p-0 m-0 bg-light">
+                    <div class="col-12 py-2 d-flex align-items-center justify-content-center fw-bold border-bottom border-2">
+                        No existe información sobre este cliente
+                    </div>
+                </div>
+            {{/with}}
         </div>
     </div>
 </div>
@@ -200,29 +276,29 @@
     <div class="row m-0 text-center bg-danger text-white">
         <p class="fs-6 p-1 m-0">Información de los productos</p>
     </div>
-    <div class="table-responsive overflow-y-auto p-0">
-        <table class="table table-responsive-md align-middle table-light">
-            <thead>
-                <tr>
-                    <th scope="col" class="text-center">Cantidad</th>
-                    <th scope="col">Producto</th>
-                    <th scope="col">Precio por unidad</th>
-                    <th scope="col">Dimensiones</th>
-                    <th scope="col">Precio c/u</th>
-                    <th scope="col">Monto</th>
-                </tr>
-            </thead>
-            <tbody>
-                {{#each productos}}
-                    {{#equal unidad "Mt"}}
-                        <tr>
-                            <th scope="row" class="text-center">{{cantidad}}</th>
-                            <td>
+    {{#each productos}}
+        <div class="row m-0 p-0">
+            <div class="card {{#equal @index 0}}mt-0{{else}}mt-4{{/equal}} px-0 rounded-0 border border-2">
+                <div class="card-body p-0">
+                    <div class="row mx-0 px-0">
+                        <div class="col-md-1">
+                            <div class="row py-2 bg-body-tertiary border-bottom border-1">
+                                <p class="fs-6 p-0 m-0 text-center fw-bold">Cantidad</p>
+                            </div>
+                            <div class="row py-2 my-4">
+                                <p class="fs-6 p-0 m-0 text-center">{{cantidad}}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row py-2 bg-body-tertiary border-bottom border-1">
+                                <p class="fs-6 p-0 m-0 text-center fw-bold">Producto</p>
+                            </div>
+                            <div class="row py-2">
                                 <div class="row mb-2 mb-md-0">
                                     <div class="col-md-3">
                                         <b>Producto:</b> 
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-9">
                                         {{#if nombre}}
                                             {{nombre}}
                                         {{else}}
@@ -234,7 +310,7 @@
                                     <div class="col-md-3">
                                         <b>Acabados:</b>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-9 ">
                                         {{acabados}}
                                     </div>
                                 </div>
@@ -242,70 +318,72 @@
                                     <div class="col-md-3">
                                         <b>Archivo:</b>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-9">
                                         {{archivo}}
                                     </div>
                                 </div>
-                            </td>
-                            <td>$ {{formatNumber precio}} (x {{unidad}}²)</td>
-                            <td>
-                                <div class="row m-0">
-                                    {{formatNumberMeasure area}} mts²
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="row py-2 bg-body-tertiary border-bottom border-1">
+                                <p class="fs-6 p-0 m-0 text-center fw-bold">Precio por unidad</p>
+                            </div>
+                            <div class="row py-2 my-4">
+                                {{#equal unidad "Mt"}}
+                                    <p class="fs-6 p-0 m-0 text-center">$ {{formatNumber precio}} (x {{unidad}}²)</p>
+                                {{else}}
+                                    <p class="fs-6 p-0 m-0 text-center">$ {{formatNumber precio}} (x {{unidad}})</p>
+                                {{/equal}}
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="row py-2 bg-body-tertiary border-bottom border-1">
+                                <p class="fs-6 p-0 m-0 text-center fw-bold">Dimensiones</p>
+                            </div>
+                            {{#equal unidad "Mt"}}
+                                <div class="row py-2 my-2">
+                                    <p class="fs-6 p-0 m-0 text-center">{{formatNumberMeasure area}} mts²</p>
+                                    <p class="fs-6 p-0 m-0 text-center">(L) {{formatNumberMeasure largo}} mts x (A) {{formatNumberMeasure ancho}} mts</p>
                                 </div>
-                                <div class="row m-0">
-                                    (L) {{formatNumberMeasure largo}} mts x (A) {{formatNumberMeasure ancho}} mts
+                            {{else}}
+                                <div class="row py-2 my-4">
+                                    <p class="fs-6 p-0 m-0 text-center">No aplica</p>
                                 </div>
-                            </td>
-                            <td>$ {{formatNumber precioCadaUno}}</td>
-                            <td>$ {{formatNumber monto}}</td>
-                        </tr>
-                    {{else}}
-                        <tr>
-                            <th scope="row" class="text-center">{{cantidad}}</th>
-                            <td>
-                                <div class="row mb-2 mb-md-0">
-                                    <div class="col-md-3">
-                                        <b>Producto:</b> 
-                                    </div>
-                                    <div class="col-md-6">
-                                        {{#if nombre}}
-                                            {{nombre}}
-                                        {{else}}
-                                            {{concepto}}
-                                        {{/if}}
-                                    </div>
-                                </div>
-                                <div class="row mb-2 mb-md-0">
-                                    <div class="col-md-3">
-                                        <b>Acabados:</b>
-                                    </div>
-                                    <div class="col-md-6">
-                                        {{acabados}}
-                                    </div>
-                                </div>
-                                <div class="row mb-2 mb-md-0">
-                                    <div class="col-md-3">
-                                        <b>Archivo:</b>
-                                    </div>
-                                    <div class="col-md-6">
-                                        {{archivo}}
-                                    </div>
-                                </div>
-                            </td>
-                            <td>$ {{formatNumber precio}} (x {{unidad}})</td>
-                            <td>No aplica</td>
-                            <td>$ {{formatNumber precio}}</td>
-                            <td>$ {{formatNumber monto}}</td>
-                        </tr>
-                    {{/equal}}
-                {{else}}
-                    <tr>
-                        <td colspan="6" class="text-center">No existen productos cotizados</td>
-                    </tr>
-                {{/each}}
-            </tbody>
-        </table>
-    </div>
+                            {{/equal}}
+                        </div>
+                        <div class="col-md-1">
+                            <div class="row py-2 bg-body-tertiary border-bottom border-1">
+                                <p class="fs-6 p-0 m-0 text-center fw-bold">Precio c/u</p>
+                            </div>
+                            <div class="row py-2 my-4">
+                                {{#equal unidad "Mt"}}
+                                    <p class="fs-6 p-0 m-0 text-center">$ {{formatNumber precioCadaUno}}</p>
+                                {{else}}
+                                    <p class="fs-6 p-0 m-0 text-center">$ {{formatNumber precio}}</p>
+                                {{/equal}}
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="row py-2 bg-body-tertiary border-bottom border-1">
+                                <p class="fs-6 p-0 m-0 text-center fw-bold">Monto</p>
+                            </div>
+                            <div class="row py-2 my-4">
+                                <p class="fs-6 p-0 m-0 text-center">$ {{formatNumber monto}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {{else}}
+        <div class="row m-0 p-0">
+            <div class="card mt-4 px-0 rounded-0 border border-2">
+                <div class="card-body">
+                    <p class="fs-6 p-0 m-0 text-center fw-bold">No existen productos ordenados</p>
+                </div>
+            </div>
+        </div>
+    {{/each}}
 </div>
 <div class="row p-4 gy-4 pt-0 justify-content-md-between">
     <div class="col-md-8 p-0">

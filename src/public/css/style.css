@@ -22,10 +22,6 @@ body{
 
 }
 
-#table-users-add{
-    height: 175px; /*10.9375 rem*/
-}
-
 #group-title{
     color: white;
     background: var(--z);

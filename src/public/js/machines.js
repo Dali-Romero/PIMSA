@@ -1,114 +1,199 @@
-function validarForm(form){
+function validarMachinesForm(form){
     let validated = false;
     form.on('submit', (event)=>{
         // Validacion del numero de serie
+        const patternserialNumber = /[^a-zA-ZÀ-ÿ0-9\sñÑ]/;
         const serialNumberInput = $('#serialnumber');
+        const invalidFeedbackSerialNumber = $('#invalid-feedback-serialnumber');
         serialNumberInput.removeClass('border-dark');
-        if (serialNumberInput.val().length == 0) {
+        if (serialNumberInput.val().length === 0) {
             serialNumberInput.removeClass('is-valid');
             serialNumberInput.addClass('is-invalid');
-            $('#invalid-feedback-serialnumber').text('Por favor, agregue un número de serie');
-        }else{
+            invalidFeedbackSerialNumber.text('Por favor, agregue un número de serie');
+        } else if (patternserialNumber.test(serialNumberInput.val())){
+            serialNumberInput.removeClass('is-valid');
+            serialNumberInput.addClass('is-invalid');
+            invalidFeedbackSerialNumber.text('El número de serie debe contener únicamente número o letras');
+        }else if (serialNumberInput.val().length < 1 || serialNumberInput.val().length > 20){
+            serialNumberInput.removeClass('is-valid');
+            serialNumberInput.addClass('is-invalid');
+            invalidFeedbackSerialNumber.text('El número de serie debe contener entre 1 y 20 caracteres');
+        } else{
             serialNumberInput.removeClass('is-invalid');
             serialNumberInput.addClass('is-valid');
         };
         
         // Validacion de la marca
+        const patternBrand = /[^a-zA-ZÀ-ÿ0-9\sñÑ]/;
         const brandInput = $('#brand');
+        const invalidFeedbackBrand = $('#invalid-feedback-brand');
         brandInput.removeClass('border-dark');
-        if (brandInput.val().length == 0) {
+        if (brandInput.val().length === 0) {
             brandInput.removeClass('is-valid');
             brandInput.addClass('is-invalid');
-            $('#invalid-feedback-brand').text('Por favor, agregue una marca');
-        }else{
+            invalidFeedbackBrand.text('Por favor, agregue una marca');
+        } else if (patternBrand.test(brandInput.val())){
+            brandInput.removeClass('is-valid');
+            brandInput.addClass('is-invalid');
+            invalidFeedbackBrand.text('La marca debe contener únicamente número o letras');
+        }else if (brandInput.val().length < 1 || brandInput.val().length > 20){
+            brandInput.removeClass('is-valid');
+            brandInput.addClass('is-invalid');
+            invalidFeedbackBrand.text('La marca debe contener entre 1 y 20 caracteres');
+        } else{
             brandInput.removeClass('is-invalid');
             brandInput.addClass('is-valid');
         };
 
         // Validacion del nombre
-        const nameInput = $('#name');
-        nameInput.removeClass('border-dark');
-        if (nameInput.val().length == 0) {
-            nameInput.removeClass('is-valid');
-            nameInput.addClass('is-invalid');
-            $('#invalid-feedback-name').text('Por favor, agregue un nombre');
-        }else{
-            nameInput.removeClass('is-invalid');
-            nameInput.addClass('is-valid');
+        const patternNameMachine = /[^a-zA-ZÀ-ÿ0-9\sñÑ]/;
+        const nameMachineInput = $('#name');
+        const invalidFeedbackNameMachine =  $('#invalid-feedback-name');
+        if (nameMachineInput.val().length === 0) {
+            nameMachineInput.removeClass('is-valid');
+            nameMachineInput.addClass('is-invalid');
+            invalidFeedbackNameMachine.text('Por favor, agregue un nombre');
+        } else if (patternNameMachine.test(nameMachineInput.val())){
+            nameMachineInput.removeClass('is-valid');
+            nameMachineInput.addClass('is-invalid');
+            invalidFeedbackNameMachine.text('El nombre debe contener únicamente número o letras');
+        }else if (nameMachineInput.val().length < 1 || nameMachineInput.val().length > 25){
+            nameMachineInput.removeClass('is-valid');
+            nameMachineInput.addClass('is-invalid');
+            invalidFeedbackNameMachine.text('El nombre debe contener entre 1 y 25 caracteres');
+        } else{
+            nameMachineInput.removeClass('is-invalid');
+            nameMachineInput.addClass('is-valid');
         };
 
-        // Validacion del tipo de cabezal
-        const headTypeInput = $('#headtype');
-        headTypeInput.removeClass('border-dark');
-        headTypeInput.addClass('is-valid');
+        // validacion del tipo de tinta
+        const inkTypeSelect = $('#inktype');
+        inkTypeSelect.removeClass('border-dark');
+        if (inkTypeSelect.val().length === 0){
+            inkTypeSelect.removeClass('is-valid');
+            inkTypeSelect.addClass('is-invalid');
+        }else{
+            inkTypeSelect.removeClass('is-invalid');
+            inkTypeSelect.addClass('is-valid');
+        };
+
+        // validacion del tipo de cabezal
+        const headTypeSelect = $('#headtype');
+        headTypeSelect.removeClass('border-dark');
+        if (headTypeSelect.val().length === 0){
+            headTypeSelect.removeClass('is-valid');
+            headTypeSelect.addClass('is-invalid');
+        }else{
+            headTypeSelect.removeClass('is-invalid');
+            headTypeSelect.addClass('is-valid');
+        }
 
         // Validacion del numero de cabezales
+        const patternHeadNum = /[^0-9]/;
         const headNumInput = $('#headnum');
+        const invalidFeedbackHeadNum =  $('#invalid-feedback-headnum');
         headNumInput.removeClass('border-dark');
-        if (headNumInput.val().length == 0) {
+        if (headNumInput.val().length === 0) {
             headNumInput.removeClass('is-valid');
             headNumInput.addClass('is-invalid');
-            $('#invalid-feedback-headnum').text('Por favor, agregue un número de cabezales.');
+            invalidFeedbackHeadNum.text('Por favor, agregue un número de cabezales');
+        }else if(patternHeadNum.test(headNumInput.val())){
+            headNumInput.removeClass('is-valid');
+            headNumInput.addClass('is-invalid');
+            invalidFeedbackHeadNum.text('El número de cabezales solo debe contener números enteros');
+        }else if (headNumInput.val() < 1 || headNumInput.val() > 99){
+            headNumInput.removeClass('is-valid');
+            headNumInput.addClass('is-invalid');
+            invalidFeedbackHeadNum.text('El número de cabezales debe ser mayor a 1 y menor a 100');
         }else{
-            if (headNumInput.val() >0 && headNumInput.val()<11){
-                headNumInput.removeClass('is-invalid');
-                headNumInput.addClass('is-valid');
-            }else{
-                headNumInput.removeClass('is-valid');
-                headNumInput.addClass('is-invalid');
-                $('#invalid-feedback-headnum').text('El número de cabezales debe ser mayor a 0 y menor a 11.');
-            }
+            headNumInput.removeClass('is-invalid');
+            headNumInput.addClass('is-valid');
         };
 
         // Validacion de la velocidad
+        const patternSpeed = /^\d+(\.\d{1,3})?$/;
         const speedInput = $('#speed');
+        const invalidFeedbackSpeed =  $('#invalid-feedback-speed');
         speedInput.removeClass('border-dark');
-        if (speedInput.val().length == 0) {
+        if (speedInput.val().length === 0) {
             speedInput.removeClass('is-valid');
             speedInput.addClass('is-invalid');
-            $('#invalid-feedback-speed').text('Por favor, agregue una velocidad.');
+            invalidFeedbackSpeed.text('Por favor, agregue una velocidad');
+        }else if (!patternSpeed.test(speedInput.val())){
+            speedInput.removeClass('is-valid');
+            speedInput.addClass('is-invalid');
+            invalidFeedbackSpeed.text('La velocidad solo debe contener números (máximo 3 decimales)');
+        }else if (speedInput.val() < 1){
+            speedInput.removeClass('is-valid');
+            speedInput.addClass('is-invalid');
+            invalidFeedbackSpeed.text('La velocidad debe ser mayor a 0');
         }else{
-            if (speedInput.val() >0){
-                speedInput.removeClass('is-invalid');
-                speedInput.addClass('is-valid');
-            }else{
-                speedInput.removeClass('is-valid');
-                speedInput.addClass('is-invalid');
-                $('#invalid-feedback-speed').text('La velocidad debe ser mayor a 0.');
-            }
+            speedInput.removeClass('is-invalid');
+            speedInput.addClass('is-valid');
         };
 
-        // Velocidad del tipo de tinta
-        const inkTypeInput = $('#inktype');
-        inkTypeInput.removeClass('border-dark');
-        inkTypeInput.addClass('is-valid');
-
         // Validacion de la extension del contacto del tecnico
-        const extensionInput = $('#extension');
-        extensionInput.removeClass('border-dark');
-        extensionInput.addClass('is-valid');
+        const patternContactExtension = /^[0-9]{1,10}$/;
+        const contactExtensionInput = $('#extension');
+        const invalidFeedbackContactExtension =  $('#invalid-feedback-extension');
+        const validFeedbackContactExtension =  $('#valid-feedback-extension');
+        contactExtensionInput.removeClass('border-dark');
+        if (contactExtensionInput.val().length > 0) {
+            if (!patternContactExtension.test(contactExtensionInput.val())){
+                contactExtensionInput.removeClass('is-valid');
+                contactExtensionInput.addClass('is-invalid');
+                invalidFeedbackContactExtension.text('La extensión debe contener únicamente números (entre 1 y 10 dígitos)');
+            } else{
+                contactExtensionInput.removeClass('is-invalid');
+                contactExtensionInput.addClass('is-valid');
+                validFeedbackContactExtension.text('¡Perfecto!');
+            };
+        } else {
+            contactExtensionInput.removeClass('is-invalid');
+            contactExtensionInput.addClass('is-valid');
+            validFeedbackContactExtension.text('Este campo es opcional');
+        }
 
-        // Validacion del numero telefonico del tecnico
-        const techContactInput = $('#techcontact')
+        // validacion del numero telefonico del tecnico
+        const patterntechContact= /^[0-9]{10}$/;
+        const techContactInput = $('#techcontact');
+        const invalidFeedbacktechContact =  $('#invalid-feedback-techcontact')
         techContactInput.removeClass('border-dark');
         if (techContactInput.val().length === 0) {
             techContactInput.removeClass('is-valid');
             techContactInput.addClass('is-invalid');
-            $('#invalid-feedback-techcontact').text('Por favor, agregue un número de contacto para el técnico');
-        }else{
-            if(techContactInput.val().length !== 10){
-                techContactInput.removeClass('is-valid');
-                techContactInput.addClass('is-invalid');
-                $('#invalid-feedback-techcontact').text('El número de contacto debe tener 10 dígitos');
-            }else{
-                techContactInput.removeClass('is-invalid');
-                techContactInput.addClass('is-valid');
-            }
+            invalidFeedbacktechContact.text('Por favor, agregue un número de contacto para el técnico');
+        } else if (!patterntechContact.test(techContactInput.val())){
+            techContactInput.removeClass('is-valid');
+            techContactInput.addClass('is-invalid');
+            invalidFeedbacktechContact.text('La número de contacto debe contener únicamente números (10 dígitos)');
+        } else {
+            techContactInput.removeClass('is-invalid');
+            techContactInput.addClass('is-valid');
         };
 
+        // validacion de los usuarios seleccionados
+        const allowedUser = $('input[name="allowedUser"][type="checkbox"]:checked');
+        const invalidFeedbackAllowedUser = $('#invalid-feedback-allowedUser');
+        if (allowedUser.length === 0){
+            invalidFeedbackAllowedUser.removeClass('is-valid');
+            invalidFeedbackAllowedUser.addClass('is-invalid');
+            invalidFeedbackAllowedUser.removeClass('text-success');
+            invalidFeedbackAllowedUser.addClass('text-danger');
+            invalidFeedbackAllowedUser.text('Por favor, seleccione un usuario');
+        }else{
+            invalidFeedbackAllowedUser.removeClass('is-invalid');
+            invalidFeedbackAllowedUser.addClass('is-valid');
+            invalidFeedbackAllowedUser.removeClass('text-danger');
+            invalidFeedbackAllowedUser.addClass('text-success');
+            invalidFeedbackAllowedUser.text('¡Perfecto!');
+        }
+
         // Comprobacion de las validaciones
-        const nonvalidatedFields = $('.is-invalid');
-        if (nonvalidatedFields.length === 0){
+        const nonValidatedFields = $('.is-invalid');
+        if (nonValidatedFields.length !== 0){
+            validated = false;
+        }else{
             validated = true;
         }
 
@@ -121,6 +206,7 @@ function validarForm(form){
 }
 
 $(document).ready(function(){
+    // ------------------------------- List file -------------------------------
     var table = new DataTable('#machines-table', {
         paging: false,
         info: false,
@@ -181,6 +267,30 @@ $(document).ready(function(){
         }
     });
 
-    validarForm($('#form-add-machine'));
-    validarForm($('#form-edit-machine'));
+    // ------------------------------- Add file -------------------------------
+    // active row when check
+    $('#table-users-add').on('click', 'tbody tr', function() {
+        $(this).toggleClass('table-active');
+        const checkBox = $(this).find('input[name="allowedUser"]');
+        if (checkBox.is(':checked')) {
+            checkBox.prop('checked', false);
+        } else {
+            checkBox.prop('checked', true);
+        }
+    });
+
+    // // validate add machine form
+    validarMachinesForm($('#form-add-machine'));
+
+    // ------------------------------- Edit file -------------------------------
+    // active rows cheked
+    const checkBox =$('input[name="allowedUser"]:checked');
+    checkBox.each(function(){
+        $(this).parents().eq(2).addClass('table-active');
+    })
+
+    console.log(checkBox)
+
+    // validate edit machine form
+    validarMachinesForm($('#form-edit-machine'));
 });

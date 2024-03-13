@@ -14,6 +14,14 @@ Handlebars.registerHelper('equalNR', function(v1, v2, options){
     }
 });
 
+Handlebars.registerHelper('greaterThan', function(v1, v2, options){
+    if (Number(v1) > Number(v2)){
+        return options.fn(this);
+    } else{
+        return options.inverse(this);
+    }
+});
+
 Handlebars.registerHelper('formatNumber', function(v1, options){
     let num = Number.parseFloat(v1).toFixed(2);
     num = Number(num).toLocaleString();

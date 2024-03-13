@@ -283,10 +283,10 @@ function validateQuotationsForm(form, url){
                 $(this).removeClass('is-valid');
                 $(this).addClass('is-invalid');
                 $(this).siblings().eq(2).text('El precio solo debe contener números');
-            }else if (!($(this).val() > 0 && $(this).val() <= 10000)){
+            }else if (!($(this).val() >= 0 && $(this).val() <= 10000)){
                 $(this).removeClass('is-valid');
                 $(this).addClass('is-invalid');
-                $(this).siblings().eq(2).text('El precio debe ser mayor a 0 y menor a 10,000');
+                $(this).siblings().eq(2).text('El precio debe ser mayor o igual a 0 y menor a 10,000');
             }else{
                 $(this).removeClass('is-invalid');
                 $(this).addClass('is-valid');
@@ -696,6 +696,20 @@ $(document).ready(function(){
                             productsCounter--;
                         });
                     });
+
+                    // crear todas las tooltips de los descuentos
+                    if ($('span[data-bs-toggle="tooltip"].productDiscount').is(':not(:empty)')){
+                        new bootstrap.Tooltip('body', {selector: 'span[data-bs-toggle="tooltip"].productDiscount'});
+                    }
+
+                    $('.priceoutproduct').on('change', function(){
+                        // ocultar badge con el simbolo de porcentaje
+                        $(this).parents().eq(0).children().eq(0).children().eq(1).addClass('d-none');
+
+                        // deshabilitar tooltip de información sobre el descuento
+                        const tooltip = bootstrap.Tooltip.getInstance($(this).parents().eq(0).children().eq(0))
+                        tooltip.disable();
+                    })
                 },
                 error: function(){
                     window.location.reload();
