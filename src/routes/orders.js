@@ -4,8 +4,10 @@ const fs = require('fs');
 const {Stream} = require('stream');
 const path = require('path');
 const pool = require('../database.js');
+const { validationResult } = require('express-validator');
 const { dimensiones, moneda, createPdf } = require('../lib/helpers.js');
 const { isLoggedIn, IsAuthorized } = require('../lib/auth.js');
+const { validateOrdersRevalue, validateOrdersPreview, validateOrdersDeadline } = require('../lib/validators.js');
 
 const router = express.Router();
 
@@ -110,91 +112,110 @@ router.get('/revalue/:id', isLoggedIn, IsAuthorized('editOrders'), async (req, r
     res.render('orders/revalue', {cotizacion: cotizacion[0], productos: productos});
 })
 
-router.post('/revalue/:id', isLoggedIn, IsAuthorized('editOrders'), async (req, res)=> {
+router.post('/revalue/:id', isLoggedIn, IsAuthorized('editOrders'), validateOrdersRevalue(), async (req, res)=> {
     const {id} = req.params;
-    const cotizacion = req.body.data.cotizacion;
-    const productos = req.body.data.productos;
+    
+    // validacion de los campos enviados
+    const resultadosValidacion = validationResult(req);
+    const resultadosValidacionArray = resultadosValidacion.array({onlyFirstError: true});
 
-    // obtener id de la cotizacion relacionada con esta orden
-    const cotId = await pool.query('SELECT Cotizaciones.cotId AS cotId FROM Ordenes INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId WHERE Ordenes.ordenId = ?;', [id]);
+    // En caso de no extistir errores almacenar el registro
+    if (resultadosValidacion.isEmpty()) {
+        const cotizacion = req.body.data.cotizacion;
+        const productos = req.body.data.productos;
 
-    // ordenar cotizacion
-    const newCot = {
-        porcentajeDescuento: Number(cotizacion.porcentajeDescuento),
-        totalBruto: cotizacion.totalBruto,
-        descuento: cotizacion.descuento,
-        subtotal: cotizacion.subtotal,
-        iva: cotizacion.iva,
-        total: cotizacion.total
-    };
+        // obtener id de la cotizacion relacionada con esta orden
+        const cotId = await pool.query('SELECT Cotizaciones.cotId AS cotId FROM Ordenes INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId WHERE Ordenes.ordenId = ?;', [id]);
 
-    // actualizar cotizacion
-    await pool.query('UPDATE Cotizaciones SET ? WHERE cotId = ?', [newCot, cotId[0].cotId]);
+        // ordenar cotizacion
+        const newCot = {
+            observaciones: cotizacion.observaciones,
+            porcentajeDescuento: Number(cotizacion.porcentajeDescuento),
+            totalBruto: cotizacion.totalBruto,
+            descuento: cotizacion.descuento,
+            subtotal: cotizacion.subtotal,
+            iva: cotizacion.iva,
+            total: cotizacion.total
+        };
 
-    // ordenar productos
-    let todosProductos = []
-    let newProducto = [];
-    productos.forEach(producto => {
-        newProducto = [
-            Number(producto.revalueproductId),
-            Number(producto.revaluepriceproduct),
-            producto.revaluepriceach,
-            producto.revalueamount,
-            producto.revalueisoutcatalog
-        ]
-        todosProductos.push(newProducto);
-        newProducto = [];
-    });
+        // actualizar cotizacion
+        await pool.query('UPDATE Cotizaciones SET ? WHERE cotId = ?', [newCot, cotId[0].cotId]);
 
-    // agregar nuevos productos cotizados
-    if (todosProductos.length > 0){
-        for await (const producto of productos) {
-            if (producto.revalueisoutcatalog == '0') {
-                await pool.query('UPDATE ProductosCotizados SET  precio = ?, precioCadaUno = ?, monto = ? WHERE prodCotizadoId = ?;', [producto.revaluepriceproduct, producto.revaluepriceach, producto.revalueamount, producto.revalueproductId]);
-            } else {
-                await pool.query('UPDATE FueraCatalogoCotizados SET precio = ?, precioCadaUno = ?, monto = ? WHERE fueraCotizadoId = ?;', [producto.revaluepriceproduct, producto.revaluepriceach, producto.revalueamount, producto.revalueproductId]);
+        // ordenar productos
+        let todosProductos = []
+        let newProducto = [];
+        productos.forEach(producto => {
+            newProducto = [
+                Number(producto.revalueproductId),
+                Number(producto.revaluepriceproduct),
+                producto.revaluepriceach,
+                producto.revalueamount,
+                producto.revalueisoutcatalog
+            ]
+            todosProductos.push(newProducto);
+            newProducto = [];
+        });
+
+        // agregar nuevos productos cotizados
+        if (todosProductos.length > 0){
+            for await (const producto of productos) {
+                if (producto.revalueisoutcatalog == '0') {
+                    await pool.query('UPDATE ProductosCotizados SET  precio = ?, precioCadaUno = ?, monto = ? WHERE prodCotizadoId = ?;', [producto.revaluepriceproduct, producto.revaluepriceach, producto.revalueamount, producto.revalueproductId]);
+                } else {
+                    await pool.query('UPDATE FueraCatalogoCotizados SET precio = ?, precioCadaUno = ?, monto = ? WHERE fueraCotizadoId = ?;', [producto.revaluepriceproduct, producto.revaluepriceach, producto.revalueamount, producto.revalueproductId]);
+                }
             }
         }
+
+        // actualizar estatus de la orden
+        await pool.query('UPDATE Ordenes SET estatus = "Revaluada" WHERE ordenId = ?;', [id]);
+
+        req.flash('success', 'La orden <b>OT-'+id+'</b> ha sido revaluada correctamente');
+        res.send({url: '/orders'});
+    } else {
+        // notificar errores de la validacion
+        req.flash('validationErrors', resultadosValidacionArray);
+        res.sendStatus(500);
     }
-
-    // actualizar estatus de la orden
-    await pool.query('UPDATE Ordenes SET estatus = "Revaluada" WHERE ordenId = ?;', [id]);
-
-    req.flash('success', 'La orden <b>OT-'+id+'</b> ha sido revaluada correctamente');
-    res.send({url: '/orders'});
 })
 
-router.post('/preview', isLoggedIn, async (req, res)=>{
-    const body = req.body.inputs;
-    const orderId = body.revalueorderid;
-    const cotizacion = await pool.query('SELECT Cotizaciones.* FROM Ordenes INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId WHERE Ordenes.ordenId = ?;', [orderId]);
-    const empleado = await pool.query('SELECT Cotizaciones.empleado FROM Ordenes INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId WHERE Ordenes.ordenId = ?;', [orderId]);
-    const cliente = await pool.query('SELECT Clientes.* FROM Ordenes INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId WHERE Ordenes.ordenId = ?;', [orderId]);
+router.post('/preview', isLoggedIn, validateOrdersPreview(), async (req, res)=>{
+    // validacion de los campos enviados
+    const resultadosValidacion = validationResult(req);
+    const resultadosValidacionArray = resultadosValidacion.array({onlyFirstError: true});
 
-    // obtener informacion de los productos 
-    let i = 0;
-    const productos = {};
-    const valoresBody = Object.values(body);
-    for (const key in body) {
-        if (i>4) {
-            productos[key] = valoresBody[i];
-        }
-        i++;
-    }
+    // En caso de no extistir errores almacenar el registro
+    if (resultadosValidacion.isEmpty()) {
+        const body = req.body.inputs;
+        const orderId = body.revalueorderid;
+        const cotizacion = await pool.query('SELECT Cotizaciones.* FROM Ordenes INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId WHERE Ordenes.ordenId = ?;', [orderId]);
+        const empleado = await pool.query('SELECT Cotizaciones.empleado FROM Ordenes INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId WHERE Ordenes.ordenId = ?;', [orderId]);
+        const cliente = await pool.query('SELECT Clientes.* FROM Ordenes INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId WHERE Ordenes.ordenId = ?;', [orderId]);
 
-    // crear un arreglo con todos los productos
-    let j = 0;
-    let productosCot = {};
-    let productosCotArray = [];
-    const valoresProductos = Object.values(productos);
-    for (const key in productos) {
-        if (j !==0 && j%10 === 0) {
-            productosCotArray.push(productosCot);
-            productosCot = {};
+        // obtener informacion de los productos 
+        let i = 0;
+        const productos = {};
+        const valoresBody = Object.values(body);
+        for (const key in body) {
+            if (i>4) {
+                productos[key] = valoresBody[i];
+            }
+            i++;
         }
-        productosCot[key.replace(/[0-9]/g, '')] = valoresProductos[j];
-        j++;
-    }
+
+        // crear un arreglo con todos los productos
+        let j = 0;
+        let productosCot = {};
+        let productosCotArray = [];
+        const valoresProductos = Object.values(productos);
+        for (const key in productos) {
+            if (j !==0 && j%10 === 0) {
+                productosCotArray.push(productosCot);
+                productosCot = {};
+            }
+            productosCot[key.replace(/[0-9]/g, '')] = valoresProductos[j];
+            j++;
+        }
     productosCotArray.push(productosCot);
 
     // calculos de la cotizacion
@@ -211,44 +232,61 @@ router.post('/preview', isLoggedIn, async (req, res)=>{
             producto.revaluemeasure = dimensiones(producto.revaluelengthproduct * producto.revaluewidthproduct);
             producto.revaluepriceach = moneda(producto.revaluepriceproduct);
             producto.revalueamount = moneda(producto.revaluepriceproduct * producto.revaluequantityproduct);
+            }
+            bruto = bruto + producto.revalueamount;
+            bruto = moneda(bruto);
+        });
+        descuento = moneda((body.revaluenumdiscount*bruto)/100);
+        subtotal = moneda(bruto-descuento);
+        iva = moneda((16*subtotal)/100);
+        total = moneda(subtotal + iva);
+
+        // ajustar cotizacion
+        const cot = {
+            fecha: cotizacion[0].fecha,
+            cliente_id: cotizacion[0].cliente_id,
+            solicitante: cotizacion[0].solicitante,
+            proyecto: cotizacion[0].proyecto,
+            observaciones: cotizacion[0].observaciones,
+            empleado: empleado[0].empleado,
+            estatus: cotizacion[0].estatus,
+            totalBruto: bruto,
+            porcentajeDescuento: body.revaluenumdiscount,
+            descuento: descuento,
+            subtotal: subtotal,
+            iva: iva,
+            total:total
         }
-        bruto = bruto + producto.revalueamount;
-        bruto = moneda(bruto);
-    });
-    descuento = moneda((body.revaluenumdiscount*bruto)/100);
-    subtotal = moneda(bruto-descuento);
-    iva = moneda((16*subtotal)/100);
-    total = moneda(subtotal + iva);
 
-    // ajustar cotizacion
-    const cot = {
-        fecha: cotizacion[0].fecha,
-        cliente_id: cotizacion[0].cliente_id,
-        solicitante: cotizacion[0].solicitante,
-        proyecto: cotizacion[0].proyecto,
-        observaciones: cotizacion[0].observaciones,
-        empleado: empleado[0].empleado,
-        estatus: cotizacion[0].estatus,
-        totalBruto: bruto,
-        porcentajeDescuento: body.revaluenumdiscount,
-        descuento: descuento,
-        subtotal: subtotal,
-        iva: iva,
-        total:total
+        res.send({cotizacion:cot, cliente: cliente[0], productos: productosCotArray});
+    } else {
+        // notificar errores de la validacion
+        req.flash('validationErrors', resultadosValidacionArray);
+        res.sendStatus(500);
     }
-
-    res.send({cotizacion:cot, cliente: cliente[0], productos: productosCotArray});
 })
 
-router.post('/addDeadline/:id', isLoggedIn, IsAuthorized('editOrders'), async (req, res) => {
+router.post('/addDeadline/:id', isLoggedIn, IsAuthorized('editOrders'), validateOrdersDeadline(), async (req, res) => {
     const {id} = req.params;
-    const fechaEnt = req.body.deadline;
-    
-    // actualizar fecha de entrega en la orden
-    await pool.query('UPDATE Ordenes SET fechaEnt = ?, estatus = "En proceso" WHERE ordenId = ?;', [fechaEnt, id]);
 
-    // redirigir a crear tareas
-    res.redirect('/tareas/create/'+id);
+    // validacion de los campos enviados
+    const resultadosValidacion = validationResult(req);
+    const resultadosValidacionArray = resultadosValidacion.array({onlyFirstError: true});
+
+    // En caso de no extistir errores almacenar el registro
+    if (resultadosValidacion.isEmpty()) {
+        const fechaEnt = req.body.deadline;
+        
+        // actualizar fecha de entrega en la orden
+        await pool.query('UPDATE Ordenes SET fechaEnt = ?, estatus = "En proceso" WHERE ordenId = ?;', [fechaEnt, id]);
+
+        // redirigir a crear tareas
+        res.redirect('/tareas/create/'+id);
+    } else {
+        // notificar errores de la validacion
+        req.flash('validationErrors', resultadosValidacionArray);
+        res.redirect('/orders/info/'+id);
+    }
 })
 
 module.exports = router;

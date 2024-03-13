@@ -392,12 +392,14 @@ function validateQuotationsForm(form, url){
                             data: JSON.stringify({data: formData}),
                             success: function (data) {
                                 window.location.replace(data.url);
+                            },
+                            error: function(){
+                                window.location.reload();
                             }
                         })
                     })
                 }
             })
-            
         }
     });
 }
@@ -708,6 +710,9 @@ $(document).ready(function(){
                         const tooltip = bootstrap.Tooltip.getInstance($(this).parents().eq(0).children().eq(0))
                         tooltip.disable();
                     })
+                },
+                error: function(){
+                    window.location.reload();
                 }
             })
         }
@@ -802,6 +807,9 @@ $(document).ready(function(){
                 data: JSON.stringify({clientid: clientid}),
                 success: function(data){
                     maxClientDiscount = data.descuento.descuento;
+                },
+                error: function(){
+                    window.location.reload();
                 }
             })
         }
@@ -868,6 +876,9 @@ $(document).ready(function(){
                 data: JSON.stringify({clientid: clientid}),
                 success: function(data){
                     maxClientDiscount = data.descuento.descuento;
+                },
+                error: function(){
+                    window.location.reload();
                 }
             })
         }

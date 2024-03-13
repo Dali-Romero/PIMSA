@@ -1,4 +1,4 @@
-function validarForm(form){
+function validarFormEmployees(form){
     let validated = false;
     form.on('submit', (event)=>{
         //Empezamos las validaciones, son un putero asi que sientate y disfruta el viaje
@@ -399,6 +399,6 @@ function validarForm(form){
 }
 
 $(document).ready(function(){
-    validarForm($('#form-add-employee'));
-    validarForm($('#form-edit-employee'));
+    validarFormEmployees($('#form-add-employee'));
+    validarFormEmployees($('#form-edit-employee'));
 });

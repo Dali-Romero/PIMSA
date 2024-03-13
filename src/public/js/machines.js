@@ -259,6 +259,9 @@ $(document).ready(function(){
                     if ($('#machines-table tbody span[data-bs-toggle="tooltip"]').is(':not(:empty)')){
                         new bootstrap.Tooltip('#machines-table tbody', {selector: 'span[data-bs-toggle="tooltip"]'});
                     }
+                },
+                error: function(){
+                    window.location.reload();
                 }
             });
         }

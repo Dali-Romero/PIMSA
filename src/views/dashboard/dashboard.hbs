@@ -454,11 +454,17 @@
                                     {{#equal estatus "Cancelada"}}
                                         <td class="text-danger">{{estatus}}</td>
                                     {{/equal}}
+                                    {{#equal estatus "Orden cancelada"}}
+                                        <td class="text-danger">{{estatus}}</td>
+                                    {{/equal}}
                                     {{#equal estatus "Ordenada"}}
                                         <td class="text-success">{{estatus}}</td>
                                     {{/equal}}
-                                    {{#equal estatus "Espera"}}
-                                        <td class="text-warning">En espera</td>
+                                    {{#equal estatus "Enviada"}}
+                                        <td class="text-warning">{{estatus}}</td>
+                                    {{/equal}}
+                                    {{#equal estatus "Recotizada"}}
+                                        <td class="text-warning">{{estatus}}</td>
                                     {{/equal}}
                                 </tr>
                             {{else}}
@@ -526,7 +532,18 @@
                                     {{#if terminada}}
                                         <td class="text-success">Terminada</td>
                                     {{else}}
-                                        <td class="text-danger">En proceso</td>
+                                        {{#equal estatus "Generada"}}
+                                            <td class="text-info">{{estatus}}</td>
+                                        {{/equal}}
+                                        {{#equal estatus "Cancelada"}}
+                                            <td class="text-danger">{{estatus}}</td>
+                                        {{/equal}}
+                                        {{#equal estatus "Revaluada"}}
+                                            <td class="text-warning">{{estatus}}</td>
+                                        {{/equal}}
+                                        {{#equal estatus "En proceso"}}
+                                            <td class="text-warning">{{estatus}}</td>
+                                        {{/equal}}
                                     {{/if}}
                                 </tr>
                             {{else}}

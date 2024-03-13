@@ -5,8 +5,10 @@ const {Stream} = require('stream');
 const path = require('path');
 const nodemailer = require('nodemailer');
 const pool = require('../database.js');
+const { validationResult } = require('express-validator');
 const {moneda, dimensiones, createPdf} = require('../lib/helpers.js');
 const { isLoggedIn, IsAuthorized } = require('../lib/auth.js');
+const { validateQuotations, validateQuotationsInfoProduct, validateQuotationsDiscountClient, validateQuotationsEmialClient, validateExtaskCreateOrder } = require('../lib/validators.js');
 require('../lib/handlebars.js');
 
 const router = express.Router();
@@ -17,90 +19,123 @@ router.get('/add', isLoggedIn, IsAuthorized('addQuotations'), async (req, res)=>
     res.render('quotations/add', {productos: productos, clientes: clientes});
 });
 
-router.post('/add', isLoggedIn, IsAuthorized('addQuotations'), async (req, res)=>{
-    const cotizacion = req.body.data.cotizacion;
-    const productos = req.body.data.productos;
-    const usuarioId = req.user.usuarioId;
+router.post('/add', isLoggedIn, IsAuthorized('addQuotations'), validateQuotations(), async (req, res)=>{
+    // validacion de los campos enviados
+    const resultadosValidacion = validationResult(req);
+    const resultadosValidacionArray = resultadosValidacion.array({onlyFirstError: true});
 
-    const newCot = {
-        fecha: cotizacion.fecha,
-        cliente_id: cotizacion.cliente_id,
-        proyecto: cotizacion.proyecto,
-        observaciones: cotizacion.observaciones,
-        porcentajeDescuento: Number(cotizacion.porcentajeDescuento),
-        solicitante: cotizacion.solicitante,
-        empleado: cotizacion.empleado,
-        usuario_id: usuarioId,
-        estatus: cotizacion.estatus,
-        totalBruto: cotizacion.totalBruto,
-        descuento: cotizacion.descuento,
-        subtotal: cotizacion.subtotal,
-        iva: cotizacion.iva,
-        total: cotizacion.total
-    };
+    // En caso de no extistir errores almacenar el registro
+    if (resultadosValidacion.isEmpty()) {
+        const cotizacion = req.body.data.cotizacion;
+        const productos = req.body.data.productos;
+        const usuarioId = req.user.usuarioId;
 
-    const {insertId} = await pool.query('INSERT INTO Cotizaciones SET ?;', [newCot]);
-    let productosEnCatalogo = [];
-    let ProductosFueraCatalogo = [];
-    let newProducto = [];
-    productos.forEach(producto => {
-        if(producto.isoutcatalog === '0'){
-            newProducto = [
-                Number(insertId),
-                producto.quantityproduct,
-                producto.productId,
-                producto.coatingproduct,
-                producto.fileproduct,
-                Number(producto.lengthproduct),
-                Number(producto.widthproduct),
-                producto.measure,
-                producto.priceach,
-                producto.amount,
-                Number(producto.priceproduct)
-            ]
-            productosEnCatalogo.push(newProducto);
-            newProducto = [];
-        }else{
-            newProducto = [
-                Number(insertId),
-                Number(producto.quantityproduct),
-                producto.nameproduct,
-                producto.coatingproduct,
-                producto.fileproduct,
-                Number(producto.priceproduct),
-                producto.unitproduct,
-                Number(producto.lengthproduct),
-                Number(producto.widthproduct),
-                producto.measure,
-                producto.priceach,
-                producto.amount
-            ]
-            ProductosFueraCatalogo.push(newProducto);
-            newProducto = [];
+        const newCot = {
+            fecha: cotizacion.fecha,
+            cliente_id: cotizacion.cliente_id,
+            proyecto: cotizacion.proyecto,
+            observaciones: cotizacion.observaciones,
+            porcentajeDescuento: Number(cotizacion.porcentajeDescuento),
+            solicitante: cotizacion.solicitante,
+            empleado: cotizacion.empleado,
+            usuario_id: usuarioId,
+            estatus: cotizacion.estatus,
+            totalBruto: cotizacion.totalBruto,
+            descuento: cotizacion.descuento,
+            subtotal: cotizacion.subtotal,
+            iva: cotizacion.iva,
+            total: cotizacion.total
+        };
+
+        const {insertId} = await pool.query('INSERT INTO Cotizaciones SET ?;', [newCot]);
+        let productosEnCatalogo = [];
+        let ProductosFueraCatalogo = [];
+        let newProducto = [];
+        productos.forEach(producto => {
+            if(producto.isoutcatalog === '0'){
+                newProducto = [
+                    Number(insertId),
+                    producto.quantityproduct,
+                    producto.productId,
+                    producto.coatingproduct,
+                    producto.fileproduct,
+                    Number(producto.lengthproduct),
+                    Number(producto.widthproduct),
+                    producto.measure,
+                    producto.priceach,
+                    producto.amount,
+                    Number(producto.priceproduct)
+                ]
+                productosEnCatalogo.push(newProducto);
+                newProducto = [];
+            }else{
+                newProducto = [
+                    Number(insertId),
+                    Number(producto.quantityproduct),
+                    producto.nameproduct,
+                    producto.coatingproduct,
+                    producto.fileproduct,
+                    Number(producto.priceproduct),
+                    producto.unitproduct,
+                    Number(producto.lengthproduct),
+                    Number(producto.widthproduct),
+                    producto.measure,
+                    producto.priceach,
+                    producto.amount
+                ]
+                ProductosFueraCatalogo.push(newProducto);
+                newProducto = [];
+            }
+        });
+
+        if (productosEnCatalogo.length > 0){
+            await pool.query('INSERT INTO ProductosCotizados (cot_id, cantidad, producto_id, acabados, archivo, largo, ancho, area, precioCadaUno, monto, precio) VALUES ?;', [productosEnCatalogo]);
         }
-    });
+        if (ProductosFueraCatalogo.length > 0){
+            await pool.query('INSERT INTO FueraCatalogoCotizados (cot_id, cantidad, concepto, acabados, archivo, precio, unidad, largo, ancho, area, precioCadaUno, monto) VALUES ?;', [ProductosFueraCatalogo]);
+        }
 
-    if (productosEnCatalogo.length > 0){
-        await pool.query('INSERT INTO ProductosCotizados (cot_id, cantidad, producto_id, acabados, archivo, largo, ancho, area, precioCadaUno, monto, precio) VALUES ?;', [productosEnCatalogo]);
+        req.flash('success', 'La cotización <b>COT-'+insertId+'</b> ha sido creada correctamente');
+        res.send({url: '/quotations'});
+    } else {
+        // notificar errores de la validacion
+        req.flash('validationErrors', resultadosValidacionArray);
+        res.sendStatus(500);
     }
-    if (ProductosFueraCatalogo.length > 0){
-        await pool.query('INSERT INTO FueraCatalogoCotizados (cot_id, cantidad, concepto, acabados, archivo, precio, unidad, largo, ancho, area, precioCadaUno, monto) VALUES ?;', [ProductosFueraCatalogo]);
-    }
-
-    req.flash('success', 'La cotización <b>COT-'+insertId+'</b> ha sido creada correctamente');
-    res.send({url: '/quotations'});
 })
 
-router.post('/listProducts', isLoggedIn, async (req, res)=>{
-    const productoId = req.body.idProduct;
-    const producto = await pool.query('SELECT productoId, nombre, unidad, porcentaje AS descuento, precio - ROUND((porcentaje * precio) / 100, 2)  AS precio FROM Productos WHERE productoId = ?;', [productoId]);
-    res.send({producto: producto[0]});
+router.post('/listProducts', isLoggedIn, validateQuotationsInfoProduct(), async (req, res)=>{
+    // validacion de los campos enviados
+    const resultadosValidacion = validationResult(req);
+    const resultadosValidacionArray = resultadosValidacion.array({onlyFirstError: true});
+
+    // En caso de no extistir errores almacenar el registro
+    if (resultadosValidacion.isEmpty()) {
+        const productoId = req.body.idProduct;
+        const producto = await pool.query('SELECT productoId, nombre, unidad, porcentaje AS descuento, precio - ROUND((porcentaje * precio) / 100, 2)  AS precio FROM Productos WHERE productoId = ?;', [productoId]);
+        res.send({producto: producto[0]});
+    } else {
+        // notificar errores de la validacion
+        req.flash('validationErrors', resultadosValidacionArray);
+        res.sendStatus(500);
+    }
 })
 
-router.post('/discountClient', isLoggedIn, async (req, res)=>{
-    const clienteId = req.body.clientid;
-    const descuento = await pool.query('SELECT descuento FROM Clientes WHERE clienteId = ?;', [clienteId]);
-    res.send({descuento: descuento[0]});
+router.post('/discountClient', isLoggedIn, validateQuotationsDiscountClient(), async (req, res)=>{
+    // validacion de los campos enviados
+    const resultadosValidacion = validationResult(req);
+    const resultadosValidacionArray = resultadosValidacion.array({onlyFirstError: true});
+
+    // En caso de no extistir errores almacenar el registro
+    if (resultadosValidacion.isEmpty()) {
+        const clienteId = req.body.clientid;
+        const descuento = await pool.query('SELECT descuento FROM Clientes WHERE clienteId = ?;', [clienteId]);
+        res.send({descuento: descuento[0]});
+    } else {
+        // notificar errores de la validacion
+        req.flash('validationErrors', resultadosValidacionArray);
+        res.sendStatus(500);
+    }
 })
 
 router.post('/preview', isLoggedIn, async (req, res)=>{
@@ -264,185 +299,209 @@ router.get('/edit/:id', isLoggedIn, IsAuthorized('editQuotations'), async (req,r
     res.render('quotations/edit', {cotizacion: cotizacion[0], clientes:clientes, cliente: cliente[0], productos: productos, productosCotizados: productosCotizados});
 })
 
-router.post('/edit/:id', isLoggedIn, IsAuthorized('editQuotations'), async(req, res)=>{
+router.post('/edit/:id', isLoggedIn, IsAuthorized('editQuotations'), validateQuotations(), async(req, res)=>{
     const {id} = req.params;
-    const cotizacion = req.body.data.cotizacion;
-    const productos = req.body.data.productos;
 
-    // ordenar cotizacion
-    const newCot = {
-        fecha: cotizacion.fecha,
-        cliente_id: cotizacion.cliente_id,
-        proyecto: cotizacion.proyecto,
-        observaciones: cotizacion.observaciones,
-        porcentajeDescuento: Number(cotizacion.porcentajeDescuento),
-        solicitante: cotizacion.solicitante,
-        empleado: cotizacion.empleado,
-        estatus: "Recotizada",
-        totalBruto: cotizacion.totalBruto,
-        descuento: cotizacion.descuento,
-        subtotal: cotizacion.subtotal,
-        iva: cotizacion.iva,
-        total: cotizacion.total
-    };
+    // validacion de los campos enviados
+    const resultadosValidacion = validationResult(req);
+    const resultadosValidacionArray = resultadosValidacion.array({onlyFirstError: true});
 
-    // actualizar cotizacion
-    await pool.query('UPDATE Cotizaciones SET ? WHERE cotId = ?', [newCot, id]);
+    // En caso de no extistir errores almacenar el registro
+    if (resultadosValidacion.isEmpty()) {
+        const cotizacion = req.body.data.cotizacion;
+        const productos = req.body.data.productos;
 
-    // eliminar productos cotizados
-    await pool.query('DELETE FROM ProductosCotizados WHERE cot_id = ?', [id]);
-    await pool.query('DELETE FROM FueraCatalogoCotizados WHERE cot_id = ?', [id]);
+        // ordenar cotizacion
+        const newCot = {
+            fecha: cotizacion.fecha,
+            cliente_id: cotizacion.cliente_id,
+            proyecto: cotizacion.proyecto,
+            observaciones: cotizacion.observaciones,
+            porcentajeDescuento: Number(cotizacion.porcentajeDescuento),
+            solicitante: cotizacion.solicitante,
+            empleado: cotizacion.empleado,
+            estatus: "Recotizada",
+            totalBruto: cotizacion.totalBruto,
+            descuento: cotizacion.descuento,
+            subtotal: cotizacion.subtotal,
+            iva: cotizacion.iva,
+            total: cotizacion.total
+        };
 
-    // ordenar productos
-    let productosEnCatalogo = [];
-    let ProductosFueraCatalogo = [];
-    let newProducto = [];
-    productos.forEach(producto => {
-        if(producto.isoutcatalog === '0'){
-            newProducto = [
-                Number(id),
-                producto.quantityproduct,
-                producto.productId,
-                producto.coatingproduct,
-                producto.fileproduct,
-                Number(producto.lengthproduct),
-                Number(producto.widthproduct),
-                producto.measure,
-                producto.priceach,
-                producto.amount,
-                Number(producto.priceproduct)
-            ]
-            productosEnCatalogo.push(newProducto);
-            newProducto = [];
-        }else{
-            newProducto = [
-                Number(id),
-                Number(producto.quantityproduct),
-                producto.nameproduct,
-                producto.coatingproduct,
-                producto.fileproduct,
-                Number(producto.priceproduct),
-                producto.unitproduct,
-                Number(producto.lengthproduct),
-                Number(producto.widthproduct),
-                producto.measure,
-                producto.priceach,
-                producto.amount
-            ]
-            ProductosFueraCatalogo.push(newProducto);
-            newProducto = [];
+        // actualizar cotizacion
+        await pool.query('UPDATE Cotizaciones SET ? WHERE cotId = ?', [newCot, id]);
+
+        // eliminar productos cotizados
+        await pool.query('DELETE FROM ProductosCotizados WHERE cot_id = ?', [id]);
+        await pool.query('DELETE FROM FueraCatalogoCotizados WHERE cot_id = ?', [id]);
+
+        // ordenar productos
+        let productosEnCatalogo = [];
+        let ProductosFueraCatalogo = [];
+        let newProducto = [];
+        productos.forEach(producto => {
+            if(producto.isoutcatalog === '0'){
+                newProducto = [
+                    Number(id),
+                    producto.quantityproduct,
+                    producto.productId,
+                    producto.coatingproduct,
+                    producto.fileproduct,
+                    Number(producto.lengthproduct),
+                    Number(producto.widthproduct),
+                    producto.measure,
+                    producto.priceach,
+                    producto.amount,
+                    Number(producto.priceproduct)
+                ]
+                productosEnCatalogo.push(newProducto);
+                newProducto = [];
+            }else{
+                newProducto = [
+                    Number(id),
+                    Number(producto.quantityproduct),
+                    producto.nameproduct,
+                    producto.coatingproduct,
+                    producto.fileproduct,
+                    Number(producto.priceproduct),
+                    producto.unitproduct,
+                    Number(producto.lengthproduct),
+                    Number(producto.widthproduct),
+                    producto.measure,
+                    producto.priceach,
+                    producto.amount
+                ]
+                ProductosFueraCatalogo.push(newProducto);
+                newProducto = [];
+            }
+        });
+
+        // agregar nuevos productos cotizados
+        if (productosEnCatalogo.length > 0){
+            await pool.query('INSERT INTO ProductosCotizados (cot_id, cantidad, producto_id, acabados, archivo, largo, ancho, area, precioCadaUno, monto, precio) VALUES ?;', [productosEnCatalogo]);
         }
-    });
-
-    // agregar nuevos productos cotizados
-    if (productosEnCatalogo.length > 0){
-        await pool.query('INSERT INTO ProductosCotizados (cot_id, cantidad, producto_id, acabados, archivo, largo, ancho, area, precioCadaUno, monto, precio) VALUES ?;', [productosEnCatalogo]);
+        if (ProductosFueraCatalogo.length > 0){
+            await pool.query('INSERT INTO FueraCatalogoCotizados (cot_id, cantidad, concepto, acabados, archivo, precio, unidad, largo, ancho, area, precioCadaUno, monto) VALUES ?;', [ProductosFueraCatalogo]);
+        }
+        req.flash('success', 'La cotización <b>COT-'+id+'</b> ha sido editada correctamente');
+        res.send({url: '/quotations'});
+    } else {
+        // notificar errores de la validacion
+        req.flash('validationErrors', resultadosValidacionArray);
+        res.sendStatus(500);
     }
-    if (ProductosFueraCatalogo.length > 0){
-        await pool.query('INSERT INTO FueraCatalogoCotizados (cot_id, cantidad, concepto, acabados, archivo, precio, unidad, largo, ancho, area, precioCadaUno, monto) VALUES ?;', [ProductosFueraCatalogo]);
-    }
-    req.flash('success', 'La cotización <b>COT-'+id+'</b> ha sido editada correctamente');
-    res.send({url: '/quotations'});
 })
 
-router.post('/email/:id', isLoggedIn, IsAuthorized('seeListQuotations'), async (req, res)=>{
+router.post('/email/:id', isLoggedIn, IsAuthorized('seeListQuotations'), validateQuotationsEmialClient(), async (req, res)=>{
     const {id} = req.params;
-    const correoCliente = req.body.inputEmailClient;
-    const usruarioId = req.user.usuarioId;
 
-    // obtener datos para generar el pdf de la cotizacion
-    const cotizacion = await pool.query('SELECT * FROM Cotizaciones WHERE cotId = ?', [id]);
-    const cliente = await pool.query('SELECT * FROM (Cotizaciones INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId) WHERE Cotizaciones.cotId = ?;', [id]);
-    const productosEnCatalogo = await pool.query('SELECT ProductosCotizados.*, Productos.nombre, Productos.unidad FROM ((Cotizaciones INNER JOIN ProductosCotizados ON Cotizaciones.cotId = ProductosCotizados.cot_id) INNER JOIN Productos ON ProductosCotizados.producto_id = Productos.productoId) WHERE Cotizaciones.cotId = ?;', [id]);
-    const productosFueraCatalogo = await pool.query('SELECT FueraCatalogoCotizados.* FROM (Cotizaciones INNER JOIN FueraCatalogoCotizados ON Cotizaciones.cotId = FueraCatalogoCotizados.cot_id) WHERE Cotizaciones.cotId = ?;', [id]);
-    const productos = productosEnCatalogo.concat(productosFueraCatalogo);
+    // validacion de los campos enviados
+    const resultadosValidacion = validationResult(req);
+    const resultadosValidacionArray = resultadosValidacion.array({onlyFirstError: true});
 
-    // obtener datos de contacto del empleado
-    const empleado = await pool.query('SELECT Empleados.nombreComp, Empleados.correoElec, Empleados.numeroCelu FROM (Empleados INNER JOIN Usuarios ON Empleados.empleadoId = Usuarios.empleado_id) WHERE Usuarios.usuarioId = ?;', [usruarioId]);
+    // En caso de no extistir errores almacenar el registro
+    if (resultadosValidacion.isEmpty()) {
+        const correoCliente = req.body.inputEmailClient;
+        const usruarioId = req.user.usuarioId;
 
-    // leer imagen del logo
-    const bitMap = fs.readFileSync(path.join(process.cwd(), 'src', 'public', 'img', 'PIMSAlogo.png'));
-    const buffer = Buffer.from(bitMap).toString('base64');
-    const imgSrc = `data:image/png;base64,${buffer}`;
+        // obtener datos para generar el pdf de la cotizacion
+        const cotizacion = await pool.query('SELECT * FROM Cotizaciones WHERE cotId = ?', [id]);
+        const cliente = await pool.query('SELECT * FROM (Cotizaciones INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId) WHERE Cotizaciones.cotId = ?;', [id]);
+        const productosEnCatalogo = await pool.query('SELECT ProductosCotizados.*, Productos.nombre, Productos.unidad FROM ((Cotizaciones INNER JOIN ProductosCotizados ON Cotizaciones.cotId = ProductosCotizados.cot_id) INNER JOIN Productos ON ProductosCotizados.producto_id = Productos.productoId) WHERE Cotizaciones.cotId = ?;', [id]);
+        const productosFueraCatalogo = await pool.query('SELECT FueraCatalogoCotizados.* FROM (Cotizaciones INNER JOIN FueraCatalogoCotizados ON Cotizaciones.cotId = FueraCatalogoCotizados.cot_id) WHERE Cotizaciones.cotId = ?;', [id]);
+        const productos = productosEnCatalogo.concat(productosFueraCatalogo);
 
-    // generar pdf de la cotizacion
-    const sourcePdf = fs.readFileSync(path.join(process.cwd(), 'src', 'views', 'quotations', 'pdfTemplate.hbs'), 'utf8');
-    const templatePdf = hbs.compile(sourcePdf);
-    const contextPdf = {
-        pimsaLogo: imgSrc,
-        cotizacion: cotizacion[0],
-        cliente: cliente[0],
-        productos: productos
-    };
-    const htmlPdf = templatePdf(contextPdf);
-    const readStream = Stream.PassThrough();
-    const options = {
-        format: 'Letter',
-        margin: {
-            top: "30px",
-            bottom: "30px",
-            left: "20px",
-            right: "20px"
-        },
-        printBackground: true,
-        scale: 0.75,
-    };
-    const pdf = await createPdf(htmlPdf, options);
-    readStream.end(pdf);
+        // obtener datos de contacto del empleado
+        const empleado = await pool.query('SELECT Empleados.nombreComp, Empleados.correoElec, Empleados.numeroCelu FROM (Empleados INNER JOIN Usuarios ON Empleados.empleadoId = Usuarios.empleado_id) WHERE Usuarios.usuarioId = ?;', [usruarioId]);
 
-    // compilar template del correo
-    const fechaEmail = new Date().toLocaleDateString('es-mx', {year: 'numeric', month: 'numeric', day: 'numeric'});
-    const sourceEmail = fs.readFileSync(path.join(process.cwd(), 'src', 'views', 'quotations', 'emailTemplate.hbs'), 'utf8');
-    const templateEmail = hbs.compile(sourceEmail);
-    const contextEmail = {
-        fecha: new Date().toLocaleDateString('es-mx', {year: 'numeric', month: 'long', day: 'numeric'}),
-        solicitante: cotizacion[0].solicitante,
-        empleado: empleado[0],
-    };
-    const htmlEmail = templateEmail(contextEmail);
+        // leer imagen del logo
+        const bitMap = fs.readFileSync(path.join(process.cwd(), 'src', 'public', 'img', 'PIMSAlogo.png'));
+        const buffer = Buffer.from(bitMap).toString('base64');
+        const imgSrc = `data:image/png;base64,${buffer}`;
 
-    // crear servicio para enviar email
-    const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: 'hagantyr@gmail.com',
-            pass: 'ollzhyjewlbpnaye'
+        // generar pdf de la cotizacion
+        const sourcePdf = fs.readFileSync(path.join(process.cwd(), 'src', 'views', 'quotations', 'pdfTemplate.hbs'), 'utf8');
+        const templatePdf = hbs.compile(sourcePdf);
+        const contextPdf = {
+            pimsaLogo: imgSrc,
+            cotizacion: cotizacion[0],
+            cliente: cliente[0],
+            productos: productos
+        };
+        const htmlPdf = templatePdf(contextPdf);
+        const readStream = Stream.PassThrough();
+        const options = {
+            format: 'Letter',
+            margin: {
+                top: "30px",
+                bottom: "30px",
+                left: "20px",
+                right: "20px"
+            },
+            printBackground: true,
+            scale: 0.75,
+        };
+        const pdf = await createPdf(htmlPdf, options);
+        readStream.end(pdf);
+
+        // compilar template del correo
+        const fechaEmail = new Date().toLocaleDateString('es-mx', {year: 'numeric', month: 'numeric', day: 'numeric'});
+        const sourceEmail = fs.readFileSync(path.join(process.cwd(), 'src', 'views', 'quotations', 'emailTemplate.hbs'), 'utf8');
+        const templateEmail = hbs.compile(sourceEmail);
+        const contextEmail = {
+            fecha: new Date().toLocaleDateString('es-mx', {year: 'numeric', month: 'long', day: 'numeric'}),
+            solicitante: cotizacion[0].solicitante,
+            empleado: empleado[0],
+        };
+        const htmlEmail = templateEmail(contextEmail);
+
+        // crear servicio para enviar email
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: 'hagantyr@gmail.com',
+                pass: 'ollzhyjewlbpnaye'
+            }
+        });
+
+        // opciones del email
+        const mailOptions = {
+            from: 'hagantyr@gmail.com',
+            to: correoCliente,
+            subject: 'PIMSA Cotización',
+            html: htmlEmail,
+            attachments: [{
+                filename: `Cotizacion_${fechaEmail}.pdf`,
+                content: pdf,
+                contentType: 'application/pdf'
+            },{
+                filename: 'PIMSAlogo.png',
+                path: path.join(process.cwd(), 'src', 'public', 'img', 'PIMSAlogo.png'),
+                cid: 'logoPimsa'
+            },{
+                filename: 'facebook.png',
+                path: path.join(process.cwd(), 'src', 'public', 'img', 'facebook.png'),
+                cid: 'logoFacebook'
+            },{
+                filename: 'instagram.png',
+                path: path.join(process.cwd(), 'src', 'public', 'img', 'instagram.png'),
+                cid: 'logoInstagram'
+            }]
         }
-    });
 
-    // opciones del email
-    const mailOptions = {
-        from: 'hagantyr@gmail.com',
-        to: correoCliente,
-        subject: 'PIMSA Cotización',
-        html: htmlEmail,
-        attachments: [{
-            filename: `Cotizacion_${fechaEmail}.pdf`,
-            content: pdf,
-            contentType: 'application/pdf'
-        },{
-            filename: 'PIMSAlogo.png',
-            path: path.join(process.cwd(), 'src', 'public', 'img', 'PIMSAlogo.png'),
-            cid: 'logoPimsa'
-        },{
-            filename: 'facebook.png',
-            path: path.join(process.cwd(), 'src', 'public', 'img', 'facebook.png'),
-            cid: 'logoFacebook'
-        },{
-            filename: 'instagram.png',
-            path: path.join(process.cwd(), 'src', 'public', 'img', 'instagram.png'),
-            cid: 'logoInstagram'
-        }]
-    }
-
-    // enviar email
-    try {
-        await transporter.sendMail(mailOptions);
-        await pool.query('UPDATE Cotizaciones SET estatus = "Enviada" WHERE cotId = ?', [id]);
-        req.flash('success', 'El correo electrónico a <b>'+correoCliente+'</b> ha sido enviado correctamente');
-        res.redirect('/quotations/info/' + id);
-    } catch (error) {
-        req.flash('error', 'Ha ocurrido un error al momento de enviar el correo electrónico a <b>'+correoCliente+'</b>');
+        // enviar email
+        try {
+            await transporter.sendMail(mailOptions);
+            await pool.query('UPDATE Cotizaciones SET estatus = "Enviada" WHERE cotId = ?', [id]);
+            req.flash('success', 'El correo electrónico a <b>'+correoCliente+'</b> ha sido enviado correctamente');
+            res.redirect('/quotations/info/' + id);
+        } catch (error) {
+            req.flash('error', 'Ha ocurrido un error al momento de enviar el correo electrónico a <b>'+correoCliente+'</b>');
+            res.redirect('/quotations/info/' + id);
+        }
+    } else {
+        // notificar errores de la validacion
+        req.flash('validationErrors', resultadosValidacionArray);
         res.redirect('/quotations/info/' + id);
     }
 })
@@ -495,62 +554,75 @@ router.get('/download/:id', isLoggedIn, IsAuthorized('seeListQuotations'), async
     readStream.pipe(res).on('error', function(e){console.error(e)});
 })
 
-router.post('/generateOrder/:id', IsAuthorized('addOrders'), async (req, res)=>{
+router.post('/generateOrder/:id', IsAuthorized('addOrders'), validateExtaskCreateOrder(), async (req, res)=>{
     const {id} = req.params;
-    const body = req.body;
-    const usruarioId = req.user.usuarioId;
-    const productosFueraCatalogoId = await pool.query('SELECT FueraCatalogoCotizados.fueraCotizadoId FROM (Cotizaciones INNER JOIN FueraCatalogoCotizados ON Cotizaciones.cotId = FueraCatalogoCotizados.cot_id) WHERE Cotizaciones.cotId = ?;', [id]);
 
-    if(productosFueraCatalogoId.length > 0){
-        // separar los procesos dependiendo de los productos
-        let j = 0;
-        let procesos = {};
-        let procesosArray = [];
-        const valoresProcesos = Object.values(body);
-        for (const key in body) {
-            if (j !==0 && j%2 === 0) {
-                procesosArray.push(procesos);
-                procesos = {};
+    // validacion de los campos enviados
+    const resultadosValidacion = validationResult(req);
+    const resultadosValidacionArray = resultadosValidacion.array({onlyFirstError: true});
+
+    // En caso de no extistir errores almacenar el registro
+    if (resultadosValidacion.isEmpty()) {
+        const body = req.body;
+        const usruarioId = req.user.usuarioId;
+        const productosFueraCatalogoId = await pool.query('SELECT FueraCatalogoCotizados.fueraCotizadoId FROM (Cotizaciones INNER JOIN FueraCatalogoCotizados ON Cotizaciones.cotId = FueraCatalogoCotizados.cot_id) WHERE Cotizaciones.cotId = ?;', [id]);
+
+        if(productosFueraCatalogoId.length > 0){
+            // separar los procesos dependiendo de los productos
+            let j = 0;
+            let procesos = {};
+            let procesosArray = [];
+            const valoresProcesos = Object.values(body);
+            for (const key in body) {
+                if (j !==0 && j%2 === 0) {
+                    procesosArray.push(procesos);
+                    procesos = {};
+                }
+                procesos[key.replace(/[0-9]/g, '')] = valoresProcesos[j];
+                j++;
             }
-            procesos[key.replace(/[0-9]/g, '')] = valoresProcesos[j];
-            j++;
-        }
-        procesosArray.push(procesos);
+            procesosArray.push(procesos);
 
-        // almacenar los procesos en los productos fuera de catalogo
-        let procesoId = {};
-        for (let i = 0; i < productosFueraCatalogoId.length; i++) {
-            procesoId = await pool.query('INSERT INTO Procesos (nombre) VALUES ("Personalizado");');
-            await pool.query('UPDATE FueraCatalogoCotizados SET proceso_id = ? WHERE fueraCotizadoId = ?', [procesoId.insertId, Number(productosFueraCatalogoId[i].fueraCotizadoId)]);
-            for (let j = 0; j < procesosArray[i].orderProcess.length; j++) {
-                await pool.query('INSERT INTO ProcesosOrdenes (area_id, proceso_id, orden) VALUES (?, ?, ?);', [Number(procesosArray[i].areaProcess[j]), procesoId.insertId, Number(procesosArray[i].orderProcess[j])]);
+            // almacenar los procesos en los productos fuera de catalogo
+            let procesoId = {};
+            for (let i = 0; i < productosFueraCatalogoId.length; i++) {
+                procesoId = await pool.query('INSERT INTO Procesos (nombre) VALUES ("Personalizado");');
+                await pool.query('UPDATE FueraCatalogoCotizados SET proceso_id = ? WHERE fueraCotizadoId = ?', [procesoId.insertId, Number(productosFueraCatalogoId[i].fueraCotizadoId)]);
+                for (let j = 0; j < procesosArray[i].orderProcess.length; j++) {
+                    await pool.query('INSERT INTO ProcesosOrdenes (area_id, proceso_id, orden) VALUES (?, ?, ?);', [Number(procesosArray[i].areaProcess[j]), procesoId.insertId, Number(procesosArray[i].orderProcess[j])]);
+                }
+                procesoId = {};
             }
-            procesoId = {};
         }
+
+        // crear orden
+        const date = new Date();
+        fechaGen = date.toLocaleDateString('en-CA', {year: 'numeric', month: 'numeric', day: 'numeric', hour:'numeric', minute: 'numeric', hourCycle: 'h23'});
+
+        const deadline = new Date('2001-01-02');
+        fechaEnt = deadline.toLocaleDateString('en-CA', {year: 'numeric', month: 'numeric', day: 'numeric'});
+
+        const newOrden = {
+            fechaGen: fechaGen,
+            fechaEnt: fechaEnt,
+            cot_id: Number(id),
+            usuario_id: usruarioId,
+            terminada: 0,
+            estatus: "Generada"
+        }
+        const resultadoOrden = await pool.query('INSERT INTO Ordenes SET ?;', [newOrden]);
+
+        // asignar estatus de ordenada a la cotizacion
+        await pool.query('UPDATE Cotizaciones SET estatus = "Ordenada" WHERE cotId = ?', [id]);
+
+        req.flash('success', 'La orden <b>OT-'+resultadoOrden.insertId+'</b> ha sido creada correctamente');
+        res.redirect('/orders');
+        //res.redirect('/tareas/create/'+resultadoOrden.insertId);
+    } else {
+        // notificar errores de la validacion
+        req.flash('validationErrors', resultadosValidacionArray);
+        res.redirect('/quotations/info/'+id);
     }
-
-    // crear orden
-    const date = new Date();
-    fechaGen = date.toLocaleDateString('en-CA', {year: 'numeric', month: 'numeric', day: 'numeric', hour:'numeric', minute: 'numeric', hourCycle: 'h23'});
-    
-    const deadline = new Date('2001-01-02');
-    fechaEnt = deadline.toLocaleDateString('en-CA', {year: 'numeric', month: 'numeric', day: 'numeric'});
-
-    const newOrden = {
-        fechaGen: fechaGen,
-        fechaEnt: fechaEnt,
-        cot_id: Number(id),
-        usuario_id: usruarioId,
-        terminada: 0,
-        estatus: "Generada"
-    }
-    const resultadoOrden = await pool.query('INSERT INTO Ordenes SET ?;', [newOrden]);
-
-    // asignar estatus de ordenada a la cotizacion
-    await pool.query('UPDATE Cotizaciones SET estatus = "Ordenada" WHERE cotId = ?', [id]);
-
-    req.flash('success', 'La orden <b>OT-'+resultadoOrden.insertId+'</b> ha sido creada correctamente');
-    res.redirect('/orders');
 })
 
 module.exports = router; 
