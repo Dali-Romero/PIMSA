@@ -175,6 +175,7 @@ CREATE TABLE Ordenes(
     usuario_id INT, -- llave foranea
     area_id INT, -- llave foranea
     terminada BOOLEAN NOT NULL,
+    estatus VARCHAR(20) NOT NULL,
     PRIMARY KEY(ordenId)
 );
 
@@ -231,6 +232,7 @@ CREATE TABLE Cotizaciones(
     porcentajeDescuento DECIMAL(5,2) NOT NULL,
     solicitante VARCHAR(50) NOT NULL,
     empleado VARCHAR(50) NOT NULL,
+    usuario_id INT, -- llave foranea
     estatus VARCHAR(20) NOT NULL,
     totalBruto DECIMAL(11,2) NOT NULL,
     descuento DECIMAL(11,2) NOT NULL,
