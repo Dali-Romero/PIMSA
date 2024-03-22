@@ -416,7 +416,18 @@
                             </div>
                             <div class="col-md-3 pt-md-0 pt-4">
                                 <div class="input-group input-group-sm">
-                                    <span class="input-group-text border-dark border-2 border-end-0"><i class="bi bi-currency-dollar"></i></span>
+                                    \{{#greaterThan descuento 0}}
+                                        <span class="input-group-text border-dark border-2 border-end-0 position-relative productDiscount" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-html="true" data-bs-title="Un descuento del <b>\{{descuento}}%</b> fue aplicado">
+                                            <i class="bi bi-currency-dollar"></i>
+                                            <span class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-danger" style="font-size: 12px;">
+                                                <i class="bi bi-percent"></i>
+                                            </span>
+                                        </span>
+                                    \{{else}}
+                                        <span class="input-group-text border-dark border-2 border-end-0 productDiscount">
+                                            <i class="bi bi-currency-dollar"></i>
+                                        </span>
+                                    \{{/greaterThan}}
                                     <input type="number" name="priceproduct\{{contadorProducto}}" min="1" value="\{{precio}}" class="form-control border-dark border-2 rounded-end priceoutproduct" required>
                                     <div class="valid-feedback">
                                         ¡Perfecto!

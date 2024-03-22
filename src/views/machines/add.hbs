@@ -4,15 +4,18 @@
 <div class="row p-4">
     <p class="fs-5 p-2 m-0" id="machine-add-title">Agregar máquina</p>
 </div>
-<div class="row px-3">
+<div class="row px-4">
     <form action="/machines/add" class="needs-validation" id="form-add-machine" method="post" novalidate>
-        <div class="row mb-4 justify-content-md-between">
-            <div class="col-md-4">
-                <div class="row mb-4">
+        <div class="row mb-4 gy-4 justify-content-md-between">
+            <div class="col-md-4 p-0 h-100">
+                <div class="row mb-2 m-0 text-center bg-danger text-white">
+                    <p class="fs-6 p-1 m-0">Información general</p>
+                </div>
+                <div class="row py-2 px-0">
                     <label for="serialnumber" class="form-label">Número de serie:</label>
                     <div class="input-group has-validation">
                         <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-upc"></i></span>
-                        <input type="text" name="serialnumber" id="serialnumber" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" autofocus required>
+                        <input type="text" name="serialnumber" id="serialnumber" class="form-control border-dark border-2 rounded-end" required>
                         <div class="valid-feedback">
                             ¡Perfecto!
                         </div>
@@ -21,11 +24,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="row mb-4">
+                <div class="row py-2 px-0">
                     <label for="brand" class="form-label">Marca:</label>
                     <div class="input-group has-validation">
                         <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-gear"></i></span>
-                        <input type="text" name="brand" id="brand" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required>
+                        <input type="text" name="brand" id="brand" class="form-control border-dark border-2 rounded-end" required>
                         <div class="valid-feedback">
                             ¡Perfecto!
                         </div>
@@ -34,11 +37,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="row mb-4">
+                <div class="row py-2 px-0">
                     <label for="name" class="form-label">Nombre:</label>
                     <div class="input-group has-validation">
                         <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-card-text"></i></span>
-                        <input type="text" name="name" id="name" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required>
+                        <input type="text" name="name" id="name" class="form-control border-dark border-2 rounded-end" autocomplete="on" required>
                         <div class="valid-feedback">
                             ¡Perfecto!
                         </div>
@@ -47,44 +50,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row mb-4">
-                    <label for="headtype" class="form-label">Tipo de cabezal:</label>
-                    <div class="input-group">
-                        <select name="headtype" id="headtype" class="form-select border-dark border-2">
-                            <option value="Térmico" selected>Térmico</option>
-                            <option value="Piezoeléctrico">Piezoeléctrico</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="row mb-4">
-                    <label for="headnum" class="form-label">Número de cabezales:</label>
-                    <div class="input-group has-validation">
-                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-123"></i></span>
-                        <input type="number" min="0" max="10" name="headnum" id="headnum" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required>
-                        <div class="valid-feedback">
-                            ¡Perfecto!
-                        </div>
-                        <div class="invalid-feedback">
-                            <span id="invalid-feedback-headnum"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="row mb-4">
-                    <label for="speed" class="form-label">Velocidad (<var>Mt²/h</var>):</label>
-                    <div class="input-group has-validation">
-                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-speedometer2"></i></span>
-                        <input type="number" min="0" name="speed" id="speed" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required>
-                        <div class="valid-feedback">
-                            ¡Perfecto!
-                        </div>
-                        <div class="invalid-feedback">
-                            <span id="invalid-feedback-speed"></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="row mb-4">
+                <div class="row py-2 px-0">
                     <label for="inktype" class="form-label">Tipo de tinta:</label>
                     <div class="input-group">
                         <select name="inktype" id="inktype" class="form-select border-dark border-2">
@@ -97,21 +63,71 @@
                             <option value="Híbrida solvente-UV">Híbrida solvente-UV</option>
                             <option value="Sólida">Sólida</option>
                         </select>
+                        <div class="valid-feedback">
+                            ¡Perfecto!
+                        </div>
+                        <div class="invalid-feedback">
+                            Por favor, seleccione un tipo de tinta
+                        </div>
                     </div>
                 </div>
-                <div class="row mb-4">
+                <div class="row py-2 px-0">
+                    <label for="headtype" class="form-label">Tipo de cabezal:</label>
+                    <div class="input-group">
+                        <select name="headtype" id="headtype" class="form-select border-dark border-2">
+                            <option value="Térmico" selected>Térmico</option>
+                            <option value="Piezoeléctrico">Piezoeléctrico</option>
+                        </select>
+                        <div class="valid-feedback">
+                            ¡Perfecto!
+                        </div>
+                        <div class="invalid-feedback">
+                            Por favor, seleccione un tipo de cabezal
+                        </div>
+                    </div>
+                </div>
+                <div class="row py-2 px-0">
+                    <label for="headnum" class="form-label">Número de cabezales:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-123"></i></span>
+                        <input type="number" min="0" max="10" name="headnum" id="headnum" class="form-control border-dark border-2 rounded-end" required>
+                        <div class="valid-feedback">
+                            ¡Perfecto!
+                        </div>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-headnum"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row py-2 px-0">
+                    <label for="speed" class="form-label">Velocidad (<var>m²/h</var>):</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-speedometer2"></i></span>
+                        <input type="number" min="0" name="speed" id="speed" class="form-control border-dark border-2 rounded-end" required>
+                        <div class="valid-feedback">
+                            ¡Perfecto!
+                        </div>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-speed"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row py-2 px-0">
                     <label for="techcontact" class="form-label">Contacto del técnico:</label>
                     <div class="row m-0 p-0">
                         <div class="col-5">
-                            <input type="text" name="extension" id="extension" class="form-control border-dark border-2" aria-describedby="basic-addon1" placeholder="Extensión">
+                            <input type="text" name="extension" id="extension" class="form-control border-dark border-2" placeholder="Extensión">
                             <div class="valid-feedback">
-                                Este campo es opcional
+                                <span id="valid-feedback-extension"></span>
+                            </div>
+                            <div class="invalid-feedback">
+                                <span id="invalid-feedback-extension"></span>
                             </div>
                         </div>
                         <div class="col-7">
                             <div class="input-group has-validation">
                                 <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-telephone"></i></span>
-                                <input type="text" name="techcontact" id="techcontact" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required>
+                                <input type="text" name="techcontact" id="techcontact" class="form-control border-dark border-2 rounded-end" required>
                                 <div class="valid-feedback">
                                     ¡Perfecto!
                                 </div>
@@ -122,26 +138,40 @@
                         </div>
                     </div>
                 </div>
-                <div class="row mb-4">
-                    <label for="status" class="form-label">Estatus:</label>
-                    <div class="row row-cols-2 justify-content-md-start">
-                        <div class="col-md-4 d-grid">
+            </div>
+            <div class="col-md-6 p-0">
+                <div class="row mb-2 m-0 text-center bg-danger text-white">
+                    <p class="fs-6 p-1 m-0">Información operativa</p>
+                </div>
+                <div class="row py-2 px-0">
+                    <label for="statusop1" class="form-label">Estatus:</label>
+                    <div class="row m-0 justify-content-md-start">
+                        <div class="col-3 d-grid ps-0">
                             <input type="radio" name="status" id="statusop1" class="btn-check" value="1" autocomplete="off" checked>
                             <label for="statusop1" class="btn btn-outline-success border-success border-2">Activa</label>
                         </div>
-                        <div class="col-md-4 d-grid">
+                        <div class="col-3 d-grid pe-0">
                             <input type="radio" name="status" id="statusop2" class="btn-check" value="0" autocomplete="off">
                             <label for="statusop2" class="btn btn-outline-danger border-danger border-2">Inactiva</label>
                         </div>
                     </div>
                 </div>
-                <div class="row mb-4">
-                    <label for="allowedUsers" class="form-label mb-0">Usuarios autorizados:</label>
-                    <div class="table-responsive-xxl overflow-y-auto" id="table-users-add">
-                        <table class="table table-sm table-striped align-middle">
+                <div class="row pt-2 px-0">
+                    <div class="table-responsive-xxl overflow-y-auto" id="table-users-add" style="max-height: 33.9rem;">
+                        <table class="table table-striped table-hover caption-top align-middle border border-2" style="--bs-table-hover-bg: #2a91ff; --bs-table-hover-color: #fff; --bs-table-active-bg: #0d6efd; --bs-table-active-color: #fff;">
+                            <caption class="text-reset">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        Usuarios disponibles:
+                                    </div>
+                                    <div class="col-md-6 text-end">
+                                        <span id="invalid-feedback-allowedUser"></span>
+                                    </div>
+                                </div>
+                            </caption>
                             <thead>
                                 <tr>
-                                    <th scope="col"></th>
+                                    <th scope="col" class="d-none"></th>
                                     <th scope="col">Nombre del usuario</th>
                                     <th scope="col">Area</th>
                                     <th scope="col">Rol</th>
@@ -149,10 +179,10 @@
                             </thead>
                             <tbody class="table-group-divider">
                                 {{#each users}}
-                                    <tr>
-                                        <td>
+                                    <tr style="cursor: pointer;">
+                                        <td class="d-none">
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" name="allowedUser" value="{{usuarioId}}" id="allowedUser">
+                                                <input class="form-check-input" type="checkbox" name="allowedUser" value="{{usuarioId}}">
                                             </div>
                                         </td>
                                         <th scope="row">{{Empleado}}</th>
@@ -164,17 +194,17 @@
                                         <td class="d-none"></td>
                                         <td class="d-none"></td>
                                         <td class="d-none"></td>
-                                        <td colspan="4">No existen usuarios registrados</td>
+                                        <td colspan="4" class="text-center">No existen usuarios registrados</td>
                                     </tr>
                                 {{/each}}
                             </tbody>
                         </table>
                     </div>
                 </div>
-                <div class="row mb-4">
-                    <div class="col-mb-4">
-                        <button class="btn btn-success me-4" type="submit">Agregar máquina</button>
-                        <button class="btn btn-danger" type="reset">Limpiar campos</button>
+                <div class="row my-3 m-0 justify-content-end">
+                    <div class="col-md-auto p-0">
+                        <button class="btn btn-danger me-4" type="reset">Limpiar campos</button>
+                        <button class="btn btn-success" type="submit">Agregar máquina</button>
                     </div>
                 </div>
             </div>

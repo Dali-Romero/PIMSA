@@ -67,11 +67,191 @@
                 <a class="nav-link active text-light fs-5" aria-current="page" href="/logout"><i class="fa fa-power-off"></i> Cerrar sesión</a>
             </li>
         </ul>
+
         
-    </div>
-</div>
-
-
+            <div class="offcanvas offcanvas-start text-bg-dark" tabindex="-1" id="nabvarCanvas" data-bs-scroll="false" aria-labelledby="nabvarCanvasLabel" >
+                <div class="offcanvas-header pb-0">
+                    <img src="/img/PIMSAlogo.png" alt="logo pimsa" width="290" height="65">
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body pt-0" id="offcanvas-body">
+                    <ul class="navbar-nav justify-content-end flex-grow-1">
+                        <li class="nav-item">
+                            {{#checkPermission user.permisos "panel"}}
+                                <a class="nav-link px-2 fs-5" href="/dashboard"><i class="bi bi-file-earmark-bar-graph"></i> Panel</a>
+                            {{else}}
+                                <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Acceso denegado" data-bs-custom-class="custom-tooltip" data-bs-offset="0,20">
+                                    <a class="nav-link px-2 fs-5 disabled" role="button" tabindex="-1" aria-disabled="true"><i class="bi bi-file-earmark-bar-graph"></i> Panel</a>
+                                </span>
+                            {{/checkPermission}}
+                        </li>
+                        <li class="nav-item">
+                            {{#checkPermissionOR user.permisos "tasksEmployees" "tasksSalesExecutives"}}
+                                {{#checkPermission user.permisos "tasksEmployees"}}
+                                    <a class="nav-link px-2 fs-5" href="/tareas"><i class="bi bi-file-earmark-text"></i> Tareas</a>
+                                {{else}}
+                                    <a class="nav-link px-2 fs-5" href="/extask"><i class="bi bi-file-earmark-text"></i> Tareas</a>
+                                {{/checkPermission}}
+                            {{else}}
+                                <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Acceso denegado" data-bs-custom-class="custom-tooltip" data-bs-offset="0,20">
+                                    <a class="nav-link px-2 fs-5 disabled" role="button" tabindex="-1" aria-disabled="true"><i class="bi bi-file-earmark-text"></i> Tareas</a>
+                                </span>
+                            {{/checkPermissionOR}}
+                        </li>
+                        <li class="nav-item">
+                            {{#checkPermission user.permisos "monitor"}}
+                                <a class="nav-link px-2 fs-5" href="/monitor"><i class="bi bi-card-checklist"></i> Monitor</a>
+                            {{else}}
+                                <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Acceso denegado" data-bs-custom-class="custom-tooltip" data-bs-offset="0,20">
+                                    <a class="nav-link px-2 fs-5 disabled" role="button" tabindex="-1" aria-disabled="true"><i class="bi bi-card-checklist"></i> Monitor</a>
+                                </span>
+                            {{/checkPermission}}
+                        </li>
+                        <li class="nav-item">
+                            {{#checkPermission user.permisos "seeListQuotations"}}
+                                <a class="nav-link px-2 fs-5" href="/quotations"><i class="bi bi-journals"></i> Cotizaciones</a>
+                            {{else}}
+                                <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Acceso denegado" data-bs-custom-class="custom-tooltip" data-bs-offset="0,20">
+                                    <a class="nav-link px-2 fs-5 disabled" role="button" tabindex="-1" aria-disabled="true"><i class="bi bi-journals"></i> Cotizaciones</a>
+                                </span>
+                            {{/checkPermission}}
+                        </li>
+                        <li class="nav-item">
+                            {{#checkPermission user.permisos "seeListOrders"}}
+                                <a class="nav-link px-2 fs-5" href="/orders"><i class="bi bi-journal-bookmark-fill"></i> Órdenes</a>
+                            {{else}}
+                                <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Acceso denegado" data-bs-custom-class="custom-tooltip" data-bs-offset="0,20">
+                                    <a class="nav-link px-2 fs-5 disabled" role="button" tabindex="-1" aria-disabled="true"><i class="bi bi-journal-bookmark-fill"></i> Órdenes</a>
+                                </span>
+                            {{/checkPermission}}
+                        </li>
+                        <li class="nav-item">
+                            {{#checkPermission user.permisos "collection"}}
+                                <a class="nav-link px-2 fs-5" href="/cobranza"><i class="bi bi-cash-coin"></i> Cobranza</a>
+                            {{else}}
+                                <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Acceso denegado" data-bs-custom-class="custom-tooltip" data-bs-offset="0,20">
+                                    <a class="nav-link px-2 fs-5 disabled" role="button" tabindex="-1" aria-disabled="true"><i class="bi bi-cash-coin"></i> Cobranza</a>
+                                </span>
+                            {{/checkPermission}}
+                        </li>
+                        <li class="nav-item">
+                            {{#checkPermission user.permisos "seeListProducts"}}
+                                <a class="nav-link px-2 fs-5" href="/products"><i class="bi bi-clipboard2"></i> Productos</a>
+                            {{else}}
+                                <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Acceso denegado" data-bs-custom-class="custom-tooltip" data-bs-offset="0,20">
+                                    <a class="nav-link px-2 fs-5 disabled" role="button" tabindex="-1" aria-disabled="true"><i class="bi bi-clipboard2"></i> Productos</a>
+                                </span>
+                            {{/checkPermission}}
+                        </li>
+                        <li class="nav-item">
+                            {{#checkPermission user.permisos "seeListMachines"}}
+                                <a class="nav-link px-2 fs-5" href="/machines"><i class="bi bi-gear-wide-connected"></i> Máquinas</a>
+                            {{else}}
+                                <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Acceso denegado" data-bs-custom-class="custom-tooltip" data-bs-offset="0,20">
+                                    <a class="nav-link px-2 fs-5 disabled" role="button" tabindex="-1" aria-disabled="true"><i class="bi bi-gear-wide-connected"></i> Máquinas</a>
+                                </span>
+                            {{/checkPermission}}
+                        </li>
+                        <li class="nav-item">
+                            {{#checkPermission user.permisos "seeListProcesses"}}
+                                <a class="nav-link px-2 fs-5" href="/processes"><i class="bi bi-bezier"></i> Procesos</a>
+                            {{else}}
+                                <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Acceso denegado" data-bs-custom-class="custom-tooltip" data-bs-offset="0,20">
+                                    <a class="nav-link px-2 fs-5 disabled" role="button" tabindex="-1" aria-disabled="true"><i class="bi bi-bezier"></i> Procesos</a>
+                                </span>
+                            {{/checkPermission}}
+                        </li>
+                        <li class="nav-item dropdown">
+                            {{#checkPermissionOR user.permisos "seeListClients" "seeListClientsGroups"}}
+                                <a class="nav-link dropdown-toggle px-2 fs-5" href="#" id="offcanvasNavbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-people-fill"></i>
+                                    Clientes
+                                </a>
+                            {{else}}
+                                <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Acceso denegado" data-bs-custom-class="custom-tooltip" data-bs-offset="0,20">
+                                    <a class="nav-link dropdown-toggle px-2 fs-5 disabled" role="button" tabindex="-1" aria-disabled="true"><i class="bi bi-people-fill"></i> Clientes</a>
+                                </span>
+                            {{/checkPermissionOR}}
+                            <ul class="dropdown-menu dropdown-menu-dark"  aria-labelledby="offcanvasNavbarDropdown">
+                                <li>
+                                    {{#checkPermission user.permisos "seeListClients"}}
+                                        <a class="dropdown-item fs-6" href="/clients" style="--bs-dropdown-link-active-bg: rgba(222, 226, 230, 0.25);">Clientes</a>
+                                    {{else}}
+                                        <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Acceso denegado"  data-bs-offset="0,10">
+                                            <a class="dropdown-item fs-6 opacity-75 disabled" role="button" tabindex="-1" aria-disabled="true"> Clientes</a>
+                                        </span>
+                                    {{/checkPermission}}
+                                </li>
+                                <li>
+                                    {{#checkPermission user.permisos "seeListClientsGroups"}}
+                                        <a class="dropdown-item fs-6" href="/grupos" style="--bs-dropdown-link-active-bg: rgba(222, 226, 230, 0.25);"> Grupos</a>
+                                    {{else}}
+                                        <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Acceso denegado"  data-bs-offset="0,10">
+                                            <a class="dropdown-item fs-6 opacity-75 disabled" role="button" tabindex="-1" aria-disabled="true"> Grupos</a>
+                                        </span>
+                                    {{/checkPermission}}
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            {{#checkPermission user.permisos "seeListEmployees"}}
+                                <a class="nav-link px-2 fs-5" href="/employees"><i class="bi bi-person-badge-fill"></i> Empleados</a>
+                            {{else}}
+                                <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Acceso denegado" data-bs-custom-class="custom-tooltip" data-bs-offset="0,20">
+                                    <a class="nav-link px-2 fs-5 disabled" role="button" tabindex="-1" aria-disabled="true"><i class="bi bi-person-badge-fill"></i> Empleados</a>
+                                </span>
+                            {{/checkPermission}}
+                        </li>
+                        <li class="nav-item dropdown">
+                            {{#checkPermissionORThree user.permisos "seeListUsers" "seeListRoles" "seeListAreas"}}
+                                <a class="nav-link dropdown-toggle px-2 fs-5" href="#" id="offcanvasNavbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-person-fill"></i>
+                                    Usuarios
+                                </a>
+                            {{else}}
+                                <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Acceso denegado" data-bs-custom-class="custom-tooltip" data-bs-offset="0,20">
+                                    <a class="nav-link dropdown-toggle px-2 fs-5 disabled" role="button" tabindex="-1" aria-disabled="true"><i class="bi bi-person-fill"></i> Usuarios</a>
+                                </span>
+                            {{/checkPermissionORThree}}
+                            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="offcanvasNavbarDropdown">
+                                <li>
+                                    {{#checkPermission user.permisos "seeListUsers"}}
+                                        <a class="dropdown-item fs-6" href="/users" style="--bs-dropdown-link-active-bg: rgba(222, 226, 230, 0.25);"> Usuarios</a>
+                                    {{else}}
+                                        <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Acceso denegado"  data-bs-offset="0,10">
+                                            <a class="dropdown-item fs-6 opacity-75 disabled" role="button" tabindex="-1" aria-disabled="true"> Usuarios</a>
+                                        </span>
+                                    {{/checkPermission}}
+                                </li>
+                                <li>
+                                    {{#checkPermission user.permisos "seeListRoles"}}
+                                        <a class="dropdown-item fs-6" href="/roles" style="--bs-dropdown-link-active-bg: rgba(222, 226, 230, 0.25);"> Roles</a>
+                                    {{else}}
+                                        <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Acceso denegado"  data-bs-offset="0,10">
+                                            <a class="dropdown-item fs-6 opacity-75 disabled" role="button" tabindex="-1" aria-disabled="true"> Rol</a>
+                                        </span>
+                                    {{/checkPermission}}
+                                </li>
+                                <li>
+                                    {{#checkPermission user.permisos "seeListAreas"}}
+                                        <a class="dropdown-item fs-6" href="/areas" style="--bs-dropdown-link-active-bg: rgba(222, 226, 230, 0.25);"> Áreas</a>
+                                    {{else}}
+                                        <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Acceso denegado"  data-bs-offset="0,10">
+                                            <a class="dropdown-item fs-6 opacity-75 disabled" role="button" tabindex="-1" aria-disabled="true"> Área</a>
+                                        </span>
+                                    {{/checkPermission}}
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link px-2 fs-5" href="/logout"><i class="bi bi-power"></i> Cerrar sesión</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+{{/if}}
 
 <footer class="footer" style="background-color:ghostwhite; position: absolute; bottom: 0; width: 100%;">
     <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
@@ -93,3 +273,28 @@
         <h9 style="margin: 0;">Proyecto desarrollado por DKM</h9>
     </div>
 </footer>
+
+<script>
+    $(document).ready(function(){
+        const url = window.location.pathname.split('/');
+        const baseUrl = url[1];
+        const actualPage = $(`.navbar a[href="/${baseUrl}"]`);
+
+        // eliminar clase active a la pagina anterior
+        if ($('.navbar a[aria-current="page"]').length > 0 && $('.navbar a.active').length > 0) {
+            $('.navbar a[aria-current="page"]').removeClass('active');
+            $('.navbar a.active').removeClass('active');
+        }
+
+        // asignar clase active a la pagina actual
+        actualPage.addClass('active');
+        actualPage.attr('aria-current', 'page');
+        if (actualPage.hasClass('dropdown-item')){
+            actualPage.parents().eq(2).children().eq(0).addClass('active');
+            actualPage.parents().eq(2).children().eq(0).addClass('bg-body-secondary');
+            actualPage.parents().eq(2).children().eq(0).attr('aria-current', 'page');
+        } else {
+            actualPage.addClass('bg-body-secondary');
+        }
+    });
+</script>

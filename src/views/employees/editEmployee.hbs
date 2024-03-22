@@ -1,11 +1,16 @@
 <div class="row p-3" id="machine-title">
-    <a href="/employees" style="color: white; text-decoration: none;"><h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-person-gear"></i> empleados</h1></a>
+    {{#checkPermission user.permisos "seeListEmployees"}}
+        <a href="/employees" style="color: white; text-decoration: none;"><h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-person-gear"></i> empleados</h1></a>
+    {{else}}
+        <a style="color: white; text-decoration: none;"><h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-person-gear"></i> empleados</h1></a>
+    {{/checkPermission}}
 </div>
 <div class="row p-4">
     <p class="fs-5 p-2 m-0" id="machine-add-title">Modificar empleado.</p>
 </div>
 <div class="row px-3">
     <form action="/employees/edit/{{employee.empleadoId}}" class="needs-validation" id="form-edit-employee" method="post" novalidate>
+        <input type="hidden" name="edit" value=1>
         <div class="row mb-4 justify-content-md-between">
             <div class="col-md-4">
                 <div class="row mb-4">

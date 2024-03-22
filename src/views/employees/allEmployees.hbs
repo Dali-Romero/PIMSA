@@ -69,6 +69,16 @@
     </div>
 </div>
 
+{{!-- Button (add employee) that will be added when the table is rendered --}}
+<div class="d-none" id="employee-add-button">
+    {{#checkPermission user.permisos "addEmployees"}}
+        <a href="/employees/add" class="btn btn-outline-success border-success border-2 float-md-end mb-3 mb-md-0" role="button"><i class="bi bi-person-fill-add"></i> Registrar empleado</a>
+    {{else}}
+        <span class="d-inline-block float-md-end mb-3 mb-md-0" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Acceso denegado">
+            <a href="/employees/add" class="btn btn-outline-success border-success border-2 disabled" role="button" tabindex="-1" aria-disabled="true"><i class="bi bi-person-fill-add"></i> Registrar empleado</a>
+        </span>
+    {{/checkPermission}}
+</div>
 
 <script>
     var table = new DataTable('#tabla_empleados', {
@@ -76,12 +86,14 @@
         info: false,
         padding: false,
         order: [],
-        dom: '<"float-start pb-2"f><"button-add-machines pb-2"B>', 
+        dom: '<"row pb-2"<"col-12 col-md-6 order-last order-md-first"<"float-start"f>><"col-12 col-md-6 order-first order-md-last"<"button-add-employees"B>>><"row"<"col-sm-12"tr>>',
         columnDefs: [
             {className: "dt-center", targets: "_all"}
         ],
         fnInitComplete: function(){
-            $('div.button-add-machines').html('<a href="/employees/add" class="btn btn-outline-success border-success border-2 float-end" role="button"><i class="bi bi-person-fill-add"></i> Registrar empleado</a>');
+            // añadir boton para agregar clientes
+            const addEmployeebtn = $('#employee-add-button').clone().removeClass('d-none');
+            $('div.button-add-employees').html(addEmployeebtn);
         },
         language:{
             url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-MX.json',

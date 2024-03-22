@@ -9,7 +9,7 @@ passport.use('local.login', new localStrategy({
     passwordField: 'password',
     passReqToCallback: true
 }, async (req, correo, password, done) => {
-    const rows = await pool.query('SELECT * FROM usuarios WHERE correoElec = ? AND activo = 1', [correo]);
+    const rows = await pool.query('SELECT * FROM Usuarios WHERE correoElec = ? AND activo = 1', [correo]);
     if (rows.length > 0){
         const user = rows[0];
         const validPass = await helpers.matchPassword(password, user.contrasena);
@@ -30,5 +30,8 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser( async (usuarioId, done) => {
     const rows = await pool.query('SELECT * FROM usuarios WHERE usuarioId = ?', [usuarioId]);
-    done(null, rows[0]);
+    const user = rows[0];
+    const permissions = await pool.query('SELECT Permisos.permisoId AS permisoId, Permisos.permiso AS permiso FROM Permisos INNER JOIN PermisosRoles ON Permisos.permisoId = PermisosRoles.permiso_id WHERE PermisosRoles.rol_id = ? ORDER BY Permisos.permisoId;', [user.rol_id]);
+    user.permisos = permissions;
+    done(null, user);
 });

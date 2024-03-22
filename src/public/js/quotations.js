@@ -283,10 +283,10 @@ function validateQuotationsForm(form, url){
                 $(this).removeClass('is-valid');
                 $(this).addClass('is-invalid');
                 $(this).siblings().eq(2).text('El precio solo debe contener números');
-            }else if (!($(this).val() > 0 && $(this).val() <= 10000)){
+            }else if (!($(this).val() >= 0 && $(this).val() <= 10000)){
                 $(this).removeClass('is-valid');
                 $(this).addClass('is-invalid');
-                $(this).siblings().eq(2).text('El precio debe ser mayor a 0 y menor a 10,000');
+                $(this).siblings().eq(2).text('El precio debe ser mayor o igual a 0 y menor a 10,000');
             }else{
                 $(this).removeClass('is-invalid');
                 $(this).addClass('is-valid');
@@ -392,12 +392,14 @@ function validateQuotationsForm(form, url){
                             data: JSON.stringify({data: formData}),
                             success: function (data) {
                                 window.location.replace(data.url);
+                            },
+                            error: function(){
+                                window.location.reload();
                             }
                         })
                     })
                 }
             })
-            
         }
     });
 }
@@ -605,12 +607,11 @@ $(document).ready(function(){
         info: false,
         padding: false,
         order: [[1, 'Desc']],
-        dom: '<"float-start pb-2"f><"button-add-quotation pb-2"B>', 
-        columnDefs: [
-            {className: "dt-center", targets: "_all"},
-        ],
+        dom: '<"row pb-2"<"col-12 col-md-6 order-last order-md-first"<"float-start"f>><"col-12 col-md-6 order-first order-md-last"<"button-add-quotation"B>>><"row"<"col-sm-12"tr>>',
         fnInitComplete: function(){
-            $('div.button-add-quotation').html('<a href="/quotations/add" class="btn btn-outline-success border-success border-2 float-end" role="button"><i class="bi bi-bag-plus"></i> Cotizar</a>');
+            // añadir boton para agregar roles
+            const addQuotationbtn = $('#quotations-add-button').clone().removeClass('d-none');
+            $('div.button-add-quotation').html(addQuotationbtn);
         },
         language:{
             url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-MX.json',
@@ -695,6 +696,23 @@ $(document).ready(function(){
                             productsCounter--;
                         });
                     });
+
+                    // crear todas las tooltips de los descuentos
+                    if ($('span[data-bs-toggle="tooltip"].productDiscount').is(':not(:empty)')){
+                        new bootstrap.Tooltip('body', {selector: 'span[data-bs-toggle="tooltip"].productDiscount'});
+                    }
+
+                    $('.priceoutproduct').on('change', function(){
+                        // ocultar badge con el simbolo de porcentaje
+                        $(this).parents().eq(0).children().eq(0).children().eq(1).addClass('d-none');
+
+                        // deshabilitar tooltip de información sobre el descuento
+                        const tooltip = bootstrap.Tooltip.getInstance($(this).parents().eq(0).children().eq(0))
+                        tooltip.disable();
+                    })
+                },
+                error: function(){
+                    window.location.reload();
                 }
             })
         }
@@ -789,6 +807,9 @@ $(document).ready(function(){
                 data: JSON.stringify({clientid: clientid}),
                 success: function(data){
                     maxClientDiscount = data.descuento.descuento;
+                },
+                error: function(){
+                    window.location.reload();
                 }
             })
         }
@@ -855,6 +876,9 @@ $(document).ready(function(){
                 data: JSON.stringify({clientid: clientid}),
                 success: function(data){
                     maxClientDiscount = data.descuento.descuento;
+                },
+                error: function(){
+                    window.location.reload();
                 }
             })
         }

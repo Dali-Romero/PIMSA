@@ -1,0 +1,65 @@
+<div class="container-fluid">
+    <div class="row p-3" id="machine-title">
+        <h1 class="display-6 text-uppercase fw-semibold m-0"><i class="bi bi-file-earmark-text"></i>Cobranza</h1>
+    </div>
+    <div class="row p-4">
+        <p class="fs-5 p-2 m-0" id="group-add-title">Gestionar cobranza</p>
+    </div>
+    <div class="row px-3 mx-2">
+        <form action="/cobranza/terminar" method="post" class="needs-validation" id="form-finish-cobranza" novalidate>
+            {{#each ordenes}}<input type="hidden" name="id_cobranza" value="{{cobranzaId}}"> {{/each}}
+            <div class="row mb-4 gy-4 justify-content-md-between">
+                <h3>{{#each ordenes}}Orden OR-{{orden_id}} {{/each}} | Gestionar</h3>
+                <div class="col-md-4">
+                    <div class="row mb-4">
+                        <label for="forma" class="form-label">Forma de pago:</label>
+                        <div class="input-group has-validation">
+                            <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-people-fill"></i></span>
+                            <select name="forma" id="forma" class="form-select border-dark border-2">
+                                <option value="none" {{#equalNR ordenes.0.tipoPago ""}} selected {{/equalNR}}>--Seleccionar--</option>
+                                <option value="Credito" {{#equalNR ordenes.0.tipoPago "Credito"}} selected {{/equalNR}}>Credito</option>
+                                <option value="Contado" {{#equalNR ordenes.0.tipoPago "Contado"}} selected {{/equalNR}}>De contado</option>
+                            </select>
+                            <div class="invalid-feedback">
+                                <span id="invalid-feedback-forma-pago"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-4">
+                        <label for="pago" class="form-label">Estatus pago:</label>
+                        <div class="input-group has-validation">
+                            <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-text-left"></i></span>
+                            <select name="pago" id="pago" class="form-select border-dark border-2">
+                                <option value="Por cobrar" {{#equalNR ordenes.0.estatusPago "Por cobrar"}} selected {{/equalNR}} {{#equalNR ordenes.0.estatusPago ""}} selected {{/equalNR}}>Por cobrar</option>
+                                <option value="Pagada" {{#equalNR ordenes.0.estatusPago "Pagada"}} selected {{/equalNR}}>Pagada</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-4">
+                        <label for="fecha" class="form-label">Fecha liquidacion:</label>
+                        <div class="input-group has-validation">
+                            <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-calendar-event"></i></span>
+                            <input type="date" name="fecLiq" id="fecLiq" class="fecNac form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{#formatDateString ordenes.0.fechaPago}}{{/formatDateString}}>
+                        </div>
+                        <div class="invalid-feedback">
+                            <span id="invalid-feedback-fecha"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-4">
+                        <label for="referencia" class="form-label">Referencia:</label>
+                        <div class="input-group">
+                            <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-pencil-square"></i></span>
+                            <input type="text" name="referencia" class="form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" value={{ordenes.0.folio}}>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-2 gy-2 justify-content-md-start">
+                <div class="col-mb-4">
+                    <button class="btn btn-success me-4" type="submit">Terminar gestion</button>
+                    <a href="/cobranza/" class="btn btn-danger me-4">Cancelar</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

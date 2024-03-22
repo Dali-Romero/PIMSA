@@ -68,8 +68,10 @@ helpers.filterOthersOutCatalog = (acumulador, arreglo) => {
         if(!fuera){
             acumulador.push({categoria: 'Fuera de catálogo', compras: parseFloat(arreglo.compras), nombres: `$ (${Number(arreglo.compras).toLocaleString(undefined, {minimumFractionDigits: 2})}) ${arreglo.nombre_productos}\n`});
         }else{
-            fuera.compras += parseFloat(arreglo.compras);                        
-            fuera.nombres += `$ (${Number(arreglo.compras).toLocaleString(undefined, {minimumFractionDigits: 2})}) ${arreglo.nombre_productos}\n`;
+            fuera.compras += parseFloat(arreglo.compras);
+            if (arreglo.compras > 10000){
+                fuera.nombres += `$ (${Number(arreglo.compras).toLocaleString(undefined, {minimumFractionDigits: 2})}) ${arreglo.nombre_productos}\n`;
+            }
         }
     }else{
         if(arreglo.compras <= 1000){

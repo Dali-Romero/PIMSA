@@ -44,6 +44,9 @@ $(document).ready(function(){
                 const html= template(context);
                 $('#info-task-container').html(html);
                 $("#info-task-modal").unbind().modal('show');
+            },
+            error: function(){
+                window.location.reload();
             }
         })
     })

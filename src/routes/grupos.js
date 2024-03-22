@@ -1,6 +1,8 @@
 const express = require('express');
 const pool = require('../database.js')
-const { isLoggedIn } = require('../lib/auth.js');
+const { isLoggedIn, IsAuthorized } = require('../lib/auth.js');
+const { validationResult } = require('express-validator');
+const {validateGroups} = require('../lib/validators.js');
 
 const router = express.Router();
 
@@ -9,42 +11,66 @@ const router = express.Router();
     res.render('../views/grupos/addgroup');
 });*/
 
-router.get('/addgroup', async(req, res) =>{
+router.get('/addgroup', isLoggedIn, IsAuthorized('addClientsGroups'), async(req, res) =>{
     res.render('grupos/addgroup');
 });
 
-router.post('/addgroup', async (req, res)=>{
-    const group = req.body;
-    const newGroup = {
-        nombre: group.namegroup,
-        descripcion: group.description
-    };
-    await pool.query('INSERT INTO Grupos SET ?', [newGroup]);
-    req.flash('success', 'Grupo agregado correctamente');
-    res.redirect('/grupos');
+router.post('/addgroup', isLoggedIn, IsAuthorized('addClientsGroups'), validateGroups(), async (req, res)=>{
+    // validacion de los campos enviados
+    const resultadosValidacion = validationResult(req);
+    const resultadosValidacionArray = resultadosValidacion.array({onlyFirstError: true});
+
+    // En caso de no extistir errores almacenar el registro
+    if (resultadosValidacion.isEmpty()) {
+        const group = req.body;
+        const newGroup = {
+            nombre: group.namegroup,
+            descripcion: group.description
+        };
+        await pool.query('INSERT INTO Grupos SET ?', [newGroup]);
+        req.flash('success', 'Grupo agregado correctamente');
+        res.redirect('/grupos');
+    } else{
+        // notificar errores de la validacion
+        req.flash('validationErrors', resultadosValidacionArray);
+        res.redirect('/grupos/addgroup');
+    }
 });
 
-router.get('/', async (req, res)=>{
+router.get('/', isLoggedIn, IsAuthorized('seeListClientsGroups'), async (req, res)=>{
     const groups = await pool.query('SELECT * FROM Grupos');
     res.render('grupos/listgroup', {groups});
 });
 
-router.get('/editgroup/:id', async (req, res)=>{
+router.get('/editgroup/:id', isLoggedIn, IsAuthorized('editClientsGroups'), async (req, res)=>{
     const {id} = req.params;
     const group = await pool.query('SELECT * FROM Grupos WHERE grupoId = ?', [id]);
     res.render('grupos/editgroup', {group: group[0]});
 });
 
-router.post('/editgroup/:id', async (req, res)=>{
+router.post('/editgroup/:id', isLoggedIn, IsAuthorized('editClientsGroups'), async (req, res)=>{
     const {id} = req.params;
-    const group = req.body;
-    const newGroup = {
-        nombre: group.namegroup,
-        descripcion: group.description
-    };
-    await pool.query('UPDATE Grupos SET ? WHERE grupoId = ?', [newGroup, id]);
-    req.flash('success', 'Grupo editado correctamente');
-    res.redirect('/grupos');
+
+    // validacion de los campos enviados
+    const resultadosValidacion = validationResult(req);
+    const resultadosValidacionArray = resultadosValidacion.array({onlyFirstError: true});
+    
+    // En caso de no extistir errores editar el registro
+    if (resultadosValidacion.isEmpty()){
+        const group = req.body;
+        const newGroup = {
+            nombre: group.namegroup,
+            descripcion: group.description
+        };
+        await pool.query('UPDATE Grupos SET ? WHERE grupoId = ?', [newGroup, id]);
+        req.flash('success', 'Grupo editado correctamente');
+        res.redirect('/grupos');
+    } else{
+        // notificar errores de la validacion
+        req.flash('validationErrors', resultadosValidacionArray);
+        res.redirect('/grupos/editgroup/'+id);
+
+    }
 });
 
 

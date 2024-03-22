@@ -86,48 +86,58 @@ $(document).ready(function(){
         id: 'segmentTextCloud',
         afterDatasetsDraw(chart){
             const {ctx, data, scales: {r}} = chart;
-            const xCenter = chart.getDatasetMeta(0).data[0].x;
-            const yCenter = chart.getDatasetMeta(0).data[0].y;
-            const radius = r.drawingArea + 22;
-            let amount = 0;
+            const {datasets} = chart.data;
+            let hasData = false;
+        
+            for (let i = 0; i < datasets.length; i += 1) {
+                const dataset = datasets[i];
+                hasData |= dataset.data.length > 0;
+            }
 
-            if (radius > 120) {
-                chart.legend.legendItems.forEach((legend, index) => {
-                    if (legend.hidden === false) {
-                        const startAngle = chart.getDatasetMeta(0).data[index].startAngle;
-                        const endAngle = chart.getDatasetMeta(0).data[index].endAngle;
-                        const centerAngle = (startAngle + endAngle) / 2;
-                        const xCoordinate = xCenter + (radius * Math.cos(centerAngle));
-                        const yCoordinate = yCenter + (radius * Math.sin(centerAngle));
-    
-                        ctx.save();
-                        ctx.translate(xCoordinate, yCoordinate);
-    
-                        ctx.font = 'bold 10px sans-serif';
-                        const textWidth = ctx.measureText(data.datasets[0].data[index]).width + 32;
-    
-                        ctx.beginPath();
-                        ctx.fillStyle = data.datasets[0].backgroundColor[index].replace('0.5', '0.8')
-                        ctx.roundRect(0 - (textWidth / 2), 0 - 10, textWidth, 20, 10);
-                        ctx.fill();
-    
-                        ctx.fillStyle = 'white';
-                        ctx.textAlign = 'center';
-                        if (data.datasets[0].label == 'Piezas') {
-                            ctx.fillText(`${Number(data.datasets[0].data[index]).toLocaleString()} pza`, 0, 4);
-                        } else if (data.datasets[0].label == 'Millares'){
-                            ctx.fillText(`${Number(data.datasets[0].data[index]).toLocaleString()} mil`, 0, 4);
-                        } else if (data.datasets[0].label == '$') {
-                            amount = Number.parseFloat(data.datasets[0].data[index]).toFixed(2);
-                            amount = Number(amount).toLocaleString(undefined, {minimumFractionDigits: 2});
-                            ctx.fillText(`${data.datasets[0].label} ${amount}`, 0, 4);
-                        } else {
-                            ctx.fillText(`${Number(data.datasets[0].data[index]).toLocaleString(undefined, {minimumFractionDigits: 3})} ${data.datasets[0].label}`, 0, 4);
+            if (hasData) {
+                const xCenter = chart.getDatasetMeta(0).data[0].x;
+                const yCenter = chart.getDatasetMeta(0).data[0].y;
+                const radius = r.drawingArea + 22;
+                let amount = 0;
+
+                if (radius > 120) {
+                    chart.legend.legendItems.forEach((legend, index) => {
+                        if (legend.hidden === false) {
+                            const startAngle = chart.getDatasetMeta(0).data[index].startAngle;
+                            const endAngle = chart.getDatasetMeta(0).data[index].endAngle;
+                            const centerAngle = (startAngle + endAngle) / 2;
+                            const xCoordinate = xCenter + (radius * Math.cos(centerAngle));
+                            const yCoordinate = yCenter + (radius * Math.sin(centerAngle));
+                        
+                            ctx.save();
+                            ctx.translate(xCoordinate, yCoordinate);
+                        
+                            ctx.font = 'bold 10px sans-serif';
+                            const textWidth = ctx.measureText(data.datasets[0].data[index]).width + 32;
+                        
+                            ctx.beginPath();
+                            ctx.fillStyle = data.datasets[0].backgroundColor[index].replace('0.5', '0.8')
+                            ctx.roundRect(0 - (textWidth / 2), 0 - 10, textWidth, 20, 10);
+                            ctx.fill();
+                        
+                            ctx.fillStyle = 'white';
+                            ctx.textAlign = 'center';
+                            if (data.datasets[0].label == 'Piezas') {
+                                ctx.fillText(`${Number(data.datasets[0].data[index]).toLocaleString()} pza`, 0, 4);
+                            } else if (data.datasets[0].label == 'Millares'){
+                                ctx.fillText(`${Number(data.datasets[0].data[index]).toLocaleString()} mil`, 0, 4);
+                            } else if (data.datasets[0].label == '$') {
+                                amount = Number.parseFloat(data.datasets[0].data[index]).toFixed(2);
+                                amount = Number(amount).toLocaleString(undefined, {minimumFractionDigits: 2});
+                                ctx.fillText(`${data.datasets[0].label} ${amount}`, 0, 4);
+                            } else {
+                                ctx.fillText(`${Number(data.datasets[0].data[index]).toLocaleString(undefined, {minimumFractionDigits: 3})} ${data.datasets[0].label}`, 0, 4);
+                            }
+
+                            ctx.restore();
                         }
-
-                        ctx.restore();
-                    }
-                })
+                    })
+                }
             }
         }
     }
@@ -255,8 +265,10 @@ $(document).ready(function(){
                             data: info.infoGraphs.infoG2,
                             backgroundColor: [
                                 'rgb(13, 202, 240)',
-                                'rgb(220, 53, 69)',
                                 'rgb(25, 135, 84)',
+                                'rgb(220, 53, 69)',
+                                'rgb(255, 193, 7)',
+                                'rgb(220, 53, 69)',
                                 'rgb(255, 193, 7)'
                             ]
                         }]
@@ -349,7 +361,6 @@ $(document).ready(function(){
                                 caretSize: 0,
                                 callbacks: {
                                     label: function(context){
-                                        console.log(context)
                                         let amount = Number.parseFloat(context.raw.total).toFixed(2);
                                         amount = Number(amount).toLocaleString(undefined, {minimumFractionDigits: 2});
                                         let label = `$ ${amount}`;
@@ -600,7 +611,7 @@ $(document).ready(function(){
                                         if(nombres === context.raw.categoria){
                                             return '';
                                         }else{
-                                            return nombres;
+                                            return  'Compras relevantes:\n' + nombres;
                                         }
                                     },
                                     label: function(context){
@@ -637,6 +648,9 @@ $(document).ready(function(){
                                 chart5.data.datasets[0].label = 'm²';
                             }
                             chart5.update();
+                        },
+                        error: function(){
+                            window.location.reload();
                         }
                     })
                 })
@@ -662,6 +676,9 @@ $(document).ready(function(){
                                 chart5.data.datasets[0].label = 'm²';
                             }
                             chart5.update();
+                        },
+                        error: function(){
+                            window.location.reload();
                         }
                     })
                 });
@@ -678,6 +695,9 @@ $(document).ready(function(){
                             chart6.data.labels = info.infoFiltrada.map(function(cliente){return cliente.categoria});
                             chart6.data.datasets[0].data = info.infoFiltrada.map(function(cliente){return cliente.compras});
                             chart6.update();
+                        },
+                        error: function(){
+                            window.location.reload();
                         }
                     })
                 })
@@ -694,6 +714,9 @@ $(document).ready(function(){
                         success: function(info){
                             chart7.data.datasets[0].data = info.infoFiltrada;
                             chart7.update();
+                        },
+                        error: function(){
+                            window.location.reload();
                         }
                     })
                 })
@@ -709,6 +732,9 @@ $(document).ready(function(){
                         success: function(info){
                             chart7.data.datasets[0].data = info.infoFiltrada;
                             chart7.update();
+                        },
+                        error: function(){
+                            window.location.reload();
                         }
                     })
                 });

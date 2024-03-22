@@ -1,7 +1,5 @@
-
-
 // function to validate the assignment of areas (processes)
-function validateQuotationProcessesForm(form) {
+function validateExtasksProcessesForm(form) {
     let validated = false;
     form.on('submit', function(event){
         // get products cards
@@ -24,19 +22,20 @@ function validateQuotationProcessesForm(form) {
         let sequencial = [];
         let sequencialTemp = [];
         let length = 0;
-        let min = 0;
+        //let min = 0;
         let selectsSorted = [];
-        selectsOrderValues.forEach((selects,i) => {
+        selectsOrderValues.forEach((selects, i) => {
             selectsSorted = selects.sort();
             length = selectsSorted.length;
-            min = Math.min.apply(Math, selectsSorted);
+            //min = Math.min.apply(Math, selectsSorted);
+            min = selectsSorted[0];
             if (length > 1){
-                if(min === 1){
+                if(min == 1){
                     sequencialTemp.push(true);
                     for (let j = 0; j < length-1; j++) {
-                        if(selectsSorted[j+1] - selectsSorted[j] === 0){
+                        if(selectsSorted[j+1] - selectsSorted[j] == 0){
                             sequencialTemp.push(true);
-                        }else if(selectsSorted[j+1] - selectsSorted[j] === 1 || selectsSorted[j+1] - selectsSorted[j] === -1){
+                        }else if(selectsSorted[j+1] - selectsSorted[j] == 1 || selectsSorted[j+1] - selectsSorted[j] == -1){
                             sequencialTemp.push(true);
                         }else{
                             sequencialTemp.push(false);
@@ -48,7 +47,7 @@ function validateQuotationProcessesForm(form) {
                     sequencial.push([false]);
                 }
             }else{
-                if(min === 1){
+                if(min == 1){
                     sequencial.push([true]);
                 }else{
                     sequencial.push([false]);
@@ -70,7 +69,7 @@ function validateQuotationProcessesForm(form) {
                         $(this).children().find('div.card').eq(i).find('.orderProcess').eq(j).addClass('border-success');
                     }
                 });
-                if($(this).children().find('div.card').eq(i).find('select.border-danger').length === 0){
+                if($(this).children().find('div.card').eq(i).find('select.border-danger').length == 0){
                     invalidFeedbackOrderProcess.eq(i).removeClass('is-invalid');
                     invalidFeedbackOrderProcess.eq(i).addClass('is-valid');
                     invalidFeedbackOrderProcess.eq(i).removeClass('text-danger');
@@ -105,7 +104,7 @@ function validateQuotationProcessesForm(form) {
         let indexDuplicates = [];
         selectsAreaValues.forEach((selects,i) => {
             selects.filter((val, j)=>{
-                if(selects.indexOf(val) !== j){
+                if(selects.indexOf(val) != j){
                     duplicatesTemp.push(true);
                     indexDuplicatesTemp.push(j);
                 }else{
@@ -138,7 +137,7 @@ function validateQuotationProcessesForm(form) {
 
         // Checking the validations
         const nonValidatedFields = $('.is-invalid');
-        if (nonValidatedFields.length === 0){
+        if (nonValidatedFields.length == 0){
             validated = true;
         }else{
             validated = false;
@@ -152,28 +151,54 @@ function validateQuotationProcessesForm(form) {
     })
 }
 
-
 $(document).ready(function(){
-    // add process area
-    $('.addArea').on('click', function(){
-        const inputGroup = $(this).parents().eq(3).find('div.input-group:first'); //$(this).parents().eq(3).children().eq(1).children().eq(1).children().eq(0);
-        const cardsContainer = $(this).parents().eq(3).find('#cardsProcessContainer');
-        const inputGroupClone = inputGroup.clone();
-        inputGroupClone.find('div.d-none').removeClass('d-none');
-        inputGroupClone.find('select').removeClass('is-invalid');
-        inputGroupClone.find('select').removeClass('is-valid');
-        inputGroupClone.find('select').addClass('border-dark');
-        inputGroupClone.appendTo(cardsContainer);
+    $('.createOrderExtasks').on('click', function(){
+        const cotId = $(this).val();
+        $.ajax({
+            type: 'POST',
+            url: '/extask/listStagesProcess',
+            headers: {'Content-Type': 'application/json'},
+            data: JSON.stringify({cotId: cotId}),
+            success: function (data){
+                const source = $('#stagesProcess-extask').html();
+                const template = Handlebars.compile(source);
+                const context = {
+                    cotizacion: cotId,
+                    procesosEnCatalogo: data.procesosEnCatalogo,
+                    productosFueraCatalogo: data.productosFueraCatalogo,
+                    orden: data.orden,
+                    areas: data.areas
+                };
+                const html= template(context);
+                $('#stagesProcess-extask-container').html(html);
+                $("#modalExtasksGenerateOrder").unbind().modal('show');
 
-        $('.remove-process-select').on('click', function(e){
-            e.stopPropagation();
-            e.stopImmediatePropagation();
-            $(this).parents().eq(2).hide('slow', ()=>{
-                $(this).parents().eq(2).remove();
-            })
+                // add process area
+                $('.addAreaExtaks').on('click', function(){
+                    const inputGroup = $(this).parents().eq(3).find('div.input-group:first'); //$(this).parents().eq(3).children().eq(1).children().eq(1).children().eq(0);
+                    const cardsContainer = $(this).parents().eq(3).find('#cardsProcessContainer');
+                    const inputGroupClone = inputGroup.clone();
+                    inputGroupClone.find('div.d-none').removeClass('d-none');
+                    inputGroupClone.find('select').removeClass('is-invalid');
+                    inputGroupClone.find('select').removeClass('is-valid');
+                    inputGroupClone.find('select').addClass('border-dark');
+                    inputGroupClone.appendTo(cardsContainer);
+                
+                    $('.remove-process-select').on('click', function(e){
+                        e.stopPropagation();
+                        e.stopImmediatePropagation();
+                        $(this).parents().eq(2).hide('slow', ()=>{
+                            $(this).parents().eq(2).remove();
+                        })
+                    })
+                })
+
+                // validate validate assignment of areas (processes)
+                validateExtasksProcessesForm($('#form-add-process-extasks'));
+            },
+            error: function(){
+                window.location.reload();
+            }
         })
     })
-
-    // validate validate assignment of areas (processes)
-    validateQuotationProcessesForm($('#form-add-process'));
 });

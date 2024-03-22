@@ -163,10 +163,11 @@ $(document).ready(function(){
                 "targets": 1
             }
         ],
-        dom: "<'row pb-2'<'col-12 col-md-6 order-last order-md-first'<'float-start'f>><'col-12 col-md-6 order-first order-md-last'<'button-add-process'B>>>" +
-                "<'row'<'col-sm-12'tr>>",
+        dom: '<"row pb-2"<"col-12 col-md-6 order-last order-md-first"<"float-start"f>><"col-12 col-md-6 order-first order-md-last"<"button-add-process"B>>><"row"<"col-sm-12"tr>>',
         fnInitComplete: function(){
-            $('div.button-add-process').html('<a href="/processes/add" class="btn btn-outline-success border-success border-2 float-md-end mb-3 mb-md-0" role="button"><i class="bi bi-bezier"></i> Añadir proceso</a>');
+            // añadir boton para agregar procesos
+            const addProcessbtn = $('#processes-add-button').clone().removeClass('d-none');
+            $('div.button-add-process').html(addProcessbtn);
         },
         language:{
             url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-MX.json',
@@ -174,12 +175,12 @@ $(document).ready(function(){
     });
 
     $('.btnExpandStages').on('click', function(){
-        const proccessId = $(this).val();
+        const processId = $(this).val();
         $.ajax({
             type: 'POST',
             url: '/processes/listStages',
             headers: {'Content-Type': 'application/json'},
-            data: JSON.stringify({proccessId: proccessId}),
+            data: JSON.stringify({processId: processId}),
             success: function (data){
                 const source = $('#info-stages-added').html();
                 const template = Handlebars.compile(source);
@@ -190,6 +191,9 @@ $(document).ready(function(){
                 const html= template(context);
                 $('#info-stages-container').html(html);
                 $("#info-stages-modal").unbind().modal('show');
+            },
+            error: function(){
+                window.location.reload();
             }
         })
     })
@@ -218,6 +222,9 @@ $(document).ready(function(){
                     const htmlProducts = templateProducts(contextProducts);
                     row.child(htmlProducts, 'p-0' ).show();
                     $('div.processes-products-slider', row.child()).slideDown();
+                },
+                error: function(){
+                    window.location.reload();
                 }
             });
         }
@@ -246,7 +253,7 @@ $(document).ready(function(){
     })
 
     // validate add role form
-    validateProcessForm($('#addProcessForm'));
+    //validateProcessForm($('#addProcessForm'));
 
     // ------------------------------- Edit file -------------------------------
     $('.remove-process-select').on('click', function(e){
@@ -259,5 +266,5 @@ $(document).ready(function(){
     })
 
     // validate add role form
-    validateProcessForm($('#editProcessForm'));
+    //validateProcessForm($('#editProcessForm'));
 })

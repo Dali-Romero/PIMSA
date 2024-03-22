@@ -2,7 +2,7 @@ function validateForm(form){
     let validated = false;
     form.on('submit', function(event){
         const patternNameArea = /[^a-zA-ZÀ-ÿ0-9\sñÑ]/;
-        const nameArea = $('areaname');
+        const nameArea = $('#areaname');
         const invalidFeedbackNameArea = $('#invalid-feedback-areaname');
         nameArea.removeClass('border-dark');
         if (nameArea.val().length === 0) {
@@ -69,9 +69,11 @@ $(document).ready(function(){
                 "targets": 3
             }
         ],
-        dom: '<"float-start pb-2"f><"button-add-area pb-2"B>', 
+        dom: '<"row pb-2"<"col-12 col-md-6 order-last order-md-first"<"float-start"f>><"col-12 col-md-6 order-first order-md-last"<"button-add-area"B>>><"row"<"col-sm-12"tr>>',
         fnInitComplete: function(){
-            $('div.button-add-area').html('<a href="/areas/add" class="btn btn-outline-success border-success border-2 float-end" role="button"><i class="bi bi-patch-plus"></i> Añadir área</a>');
+            // añadir boton para agregar áreas
+            const addAreabtn = $('#areas-add-button').clone().removeClass('d-none');
+            $('div.button-add-area').html(addAreabtn);
         },
         language:{
             url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-MX.json',

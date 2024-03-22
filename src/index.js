@@ -45,6 +45,7 @@ app.use((req, res, next)=>{
     res.locals.success_msg = req.flash('success_msg');
     res.locals.error_msg = req.flash('error_msg');
     res.locals.error = req.flash('error');
+    res.locals.validationErrors = req.flash('validationErrors');
     next();
 });
 
@@ -65,8 +66,10 @@ app.use('/orders', require('./routes/orders'));
 app.use('/tareas', require('./routes/tareas'));
 app.use('/dashboard', require('./routes/dashboard'));
 app.use('/extask', require('./routes/extask'));
+app.use('/cobranza', require('./routes/cobranza'));
 app.use('/monitor', require('./routes/monitor'));
 app.use('/processes', require('./routes/processes'));
+
 
 // Public
 app.use(express.static(path.join(__dirname, 'public')));

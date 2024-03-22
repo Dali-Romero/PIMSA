@@ -27,10 +27,20 @@
                 <tbody class="table-group-divider">
                     {{#each tareas}}
                         <tr>
-                            <th><a href="/orders/info/{{orden_id}}">{{orden_id}}</a></th>
+                            <th>
+                                {{#checkPermission ../user.permisos "seeListOrders"}}
+                                    <a href="/orders/info/{{orden_id}}">{{orden_id}}</a>
+                                {{else}}
+                                    <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Acceso denegado">
+                                        <a class="link-underline link-underline-opacity-0 pe-none" style="--bs-link-opacity: .80;">
+                                            {{orden_id}}
+                                        </a>
+                                    </span>
+                                {{/checkPermission}}
+                            </th>
                             <th><a href="/tareas/info/{{tareaId}}">{{tareaId}}</a></th>
-                            <th>{{fechaGen}}</th>
-                            <th>{{fechaEnt}}</th>
+                            <th>{{#formatDateEspanol fechaGen}} {{/formatDateEspanol}}</th>
+                            <th>{{#formatDateEspanol fechaEnt}} {{/formatDateEspanol}}</th>
                             <th>{{proyecto}}</th>
                             {{#each ../users}}
                                 {{#equal usuarioId ../usuario_id}} <th>{{nombre}} {{apellido}}</th> {{/equal}}
