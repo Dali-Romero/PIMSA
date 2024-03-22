@@ -7,9 +7,9 @@ const { validationResult } = require('express-validator');
 
 router.get('/', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, res) =>{
     const rol = req.user.rol_id; 
-    var tareasNuevas = await pool.query('SELECT * FROM Tareas INNER JOIN Ordenes ON Tareas.orden_id = Ordenes.ordenId INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId INNER JOIN AreasRoles ON Tareas.area_id = AreasRoles.area_id WHERE AreasRoles.rol_id = ' + rol + ' AND Tareas.terminada = false AND Tareas.check = 0 AND Tareas.activa = 1 ORDER BY Ordenes.fechaGen');
-    var tareas = await pool.query('SELECT * FROM Tareas INNER JOIN Ordenes ON Tareas.orden_id = Ordenes.ordenId INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId INNER JOIN AreasRoles ON Tareas.area_id = AreasRoles.area_id WHERE AreasRoles.rol_id = ' + rol + ' AND Tareas.terminada = false AND Tareas.check = 1 AND Tareas.activa = 1 AND (Tareas.notes NOT LIKE "Error:%" OR Tareas.notes IS NULL) ORDER BY Ordenes.fechaGen');
-    var tareasError = await pool.query('SELECT * FROM Tareas INNER JOIN Ordenes ON Tareas.orden_id = Ordenes.ordenId INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId INNER JOIN AreasRoles ON Tareas.area_id = AreasRoles.area_id WHERE AreasRoles.rol_id = ' + rol + ' AND Tareas.terminada = false AND Tareas.check = 1 AND Tareas.activa = 1 AND Tareas.notes LIKE "Error:%" ORDER BY Ordenes.fechaGen');
+    var tareasNuevas = await pool.query('SELECT * FROM Tareas INNER JOIN Ordenes ON Tareas.orden_id = Ordenes.ordenId INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId INNER JOIN AreasRoles ON Tareas.area_id = AreasRoles.area_id WHERE AreasRoles.rol_id = ' + rol + ' AND Tareas.terminada = false AND Tareas.chec = 0 AND Tareas.activa = 1 ORDER BY Ordenes.fechaGen');
+    var tareas = await pool.query('SELECT * FROM Tareas INNER JOIN Ordenes ON Tareas.orden_id = Ordenes.ordenId INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId INNER JOIN AreasRoles ON Tareas.area_id = AreasRoles.area_id WHERE AreasRoles.rol_id = ' + rol + ' AND Tareas.terminada = false AND Tareas.chec = 1 AND Tareas.activa = 1 AND (Tareas.notes NOT LIKE "Error:%" OR Tareas.notes IS NULL) ORDER BY Ordenes.fechaGen');
+    var tareasError = await pool.query('SELECT * FROM Tareas INNER JOIN Ordenes ON Tareas.orden_id = Ordenes.ordenId INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId INNER JOIN AreasRoles ON Tareas.area_id = AreasRoles.area_id WHERE AreasRoles.rol_id = ' + rol + ' AND Tareas.terminada = false AND Tareas.chec = 1 AND Tareas.activa = 1 AND Tareas.notes LIKE "Error:%" ORDER BY Ordenes.fechaGen');
     const conteoNuevos = tareasNuevas.length;
     const conteo = tareas.length + tareasError.length;
     const users = await pool.query('SELECT * FROM Usuarios');
@@ -18,7 +18,7 @@ router.get('/', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, res) =>{
 
 router.get('/todas', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, res) =>{
     const rol = req.user.rol_id; 
-    var tareasNuevas = await pool.query('SELECT * FROM Tareas INNER JOIN Ordenes ON Tareas.orden_id = Ordenes.ordenId INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId INNER JOIN AreasRoles ON Tareas.area_id = AreasRoles.area_id WHERE AreasRoles.rol_id = ' + rol + ' AND Tareas.terminada = false AND Tareas.check = 0 AND Tareas.activa = 1 ORDER BY Ordenes.fechaGen AND Tareas.tareaId');
+    var tareasNuevas = await pool.query('SELECT * FROM Tareas INNER JOIN Ordenes ON Tareas.orden_id = Ordenes.ordenId INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId INNER JOIN AreasRoles ON Tareas.area_id = AreasRoles.area_id WHERE AreasRoles.rol_id = ' + rol + ' AND Tareas.terminada = false AND Tareas.chec = 0 AND Tareas.activa = 1 ORDER BY Ordenes.fechaGen AND Tareas.tareaId');
     var tareas = await pool.query('SELECT Tareas.*, Ordenes.fechaGen, Ordenes.fechaEnt FROM Tareas INNER JOIN Ordenes ON Tareas.orden_id = Ordenes.ordenId INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId INNER JOIN AreasRoles ON Tareas.area_id = AreasRoles.area_id WHERE AreasRoles.rol_id = ' + rol + ' AND (Tareas.notes NOT LIKE "Error:%" OR Tareas.notes IS NULL) ORDER BY Ordenes.fechaGen AND Tareas.tareaId');
     var tareasError = await pool.query('SELECT Tareas.*, Ordenes.fechaGen, Ordenes.fechaEnt FROM Tareas INNER JOIN Ordenes ON Tareas.orden_id = Ordenes.ordenId INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId INNER JOIN AreasRoles ON Tareas.area_id = AreasRoles.area_id WHERE AreasRoles.rol_id = ' + rol + ' AND Tareas.notes LIKE "Error:%" ORDER BY Ordenes.fechaGen AND Tareas.tareaId')
     const conteoNuevos = tareasNuevas.length;
@@ -56,14 +56,14 @@ router.post('/restore/:id', isLoggedIn, IsAuthorized('tasksEmployees'), validate
         tarea = tarea[0]
         var update = {
             activa: 0,
-            check: 0
+            chec: 0
         };
         const tarAnt = await pool.query('SELECT * FROM Tareas WHERE tareaorden_id = ? AND sucesion = ?', [tarea.tareaorden_id, Number(tarea.sucesion) - 1]);
         await pool.query('UPDATE Tareas SET ? WHERE tareaId = ?', [update, id]);
         tarAnt.forEach(async function(anterior) {
             update = {
                 activa: 1,
-                check: 0,
+                chec: 0,
                 terminada: 0,
                 notes: "Error: " + info.descripcion,
                 maquina_id: info.maquina,
@@ -81,7 +81,7 @@ router.post('/restore/:id', isLoggedIn, IsAuthorized('tasksEmployees'), validate
 
 router.get('/enterado/:id', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, res) =>{
     var editTarea = {
-        check: 1,
+        chec: 1,
         usuario_id: req.user.usuarioId
     };
     const {id} = req.params;
@@ -183,7 +183,7 @@ router.get('/create/:id', isLoggedIn, async(req, res) =>{
                 tareas.push([ordenProceso[i].nombre, Number(id), ordenProceso[i].area_id, 0, 0, 0, ordenProceso[i].orden, resProceso.insertId]);
             }
         }
-        var res = await pool.query('INSERT INTO Tareas (nombre, orden_id, area_id, terminada, tareas.check, activa, sucesion, tareaorden_id) VALUES ?;', [tareas]);
+        var res = await pool.query('INSERT INTO Tareas (nombre, orden_id, area_id, terminada, tareas.chec, activa, sucesion, tareaorden_id) VALUES ?;', [tareas]);
     });
 
     // Se crean las tareas para los productos fuera de catalogo
@@ -204,7 +204,7 @@ router.get('/create/:id', isLoggedIn, async(req, res) =>{
                 tareas.push([ordenProceso[i].concepto, Number(id), ordenProceso[i].area_id, 0, 0, 0, ordenProceso[i].orden, resProceso.insertId]);
             }
         }
-        var res = await pool.query('INSERT INTO Tareas (nombre, orden_id, area_id, terminada, tareas.check, activa, sucesion, tareaorden_id) VALUES ?;', [tareas]);
+        var res = await pool.query('INSERT INTO Tareas (nombre, orden_id, area_id, terminada, tareas.chec, activa, sucesion, tareaorden_id) VALUES ?;', [tareas]);
     });
 
     // Se crea la tarea de cobranza
