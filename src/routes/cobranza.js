@@ -6,9 +6,9 @@ const { validateCobranza } = require('../lib/validators');
 const { validationResult } = require('express-validator');
 
 router.get('/', isLoggedIn, async(req, res) =>{
-    const ordenesListas = await pool.query("SELECT cobranza.*, ordenes.fechaGen, cotizaciones.total, clientes.nombre, clientes.clienteId FROM cobranza INNER JOIN ordenes ON ordenes.ordenId = cobranza.orden_id INNER JOIN cotizaciones ON cotizaciones.cotId = ordenes.cot_id INNER JOIN clientes ON cotizaciones.cliente_id = clientes.clienteId WHERE cobranza.actividadesTotal = cobranza.actividadesCont AND cobranza.estatus != 'Cobranza realizada'");
-    const ordenesNoListas = await pool.query("SELECT cobranza.*, ordenes.fechaGen, cotizaciones.total, clientes.nombre, clientes.clienteId FROM cobranza INNER JOIN ordenes ON ordenes.ordenId = cobranza.orden_id INNER JOIN cotizaciones ON cotizaciones.cotId = ordenes.cot_id INNER JOIN clientes ON cotizaciones.cliente_id = clientes.clienteId WHERE cobranza.actividadesTotal != cobranza.actividadesCont");
-    const ordenesTerminadas = await pool.query("SELECT cobranza.*, ordenes.fechaGen, cotizaciones.total, clientes.nombre, clientes.clienteId FROM cobranza INNER JOIN ordenes ON ordenes.ordenId = cobranza.orden_id INNER JOIN cotizaciones ON cotizaciones.cotId = ordenes.cot_id INNER JOIN clientes ON cotizaciones.cliente_id = clientes.clienteId WHERE cobranza.estatus = 'Cobranza realizada' AND cobranza.actividadesTotal = cobranza.actividadesCont");
+    const ordenesListas = await pool.query("SELECT Cobranza.*, Ordenes.fechaGen, Cotizaciones.total, Clientes.nombre, Clientes.clienteId FROM Cobranza INNER JOIN Ordenes ON Ordenes.ordenId = Cobranza.orden_id INNER JOIN Cotizaciones ON Cotizaciones.cotId = Ordenes.cot_id INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId WHERE Cobranza.actividadesTotal = Cobranza.actividadesCont AND Cobranza.estatus != 'Cobranza realizada'");
+    const ordenesNoListas = await pool.query("SELECT Cobranza.*, Ordenes.fechaGen, Cotizaciones.total, Clientes.nombre, Clientes.clienteId FROM Cobranza INNER JOIN Ordenes ON Ordenes.ordenId = Cobranza.orden_id INNER JOIN Cotizaciones ON Cotizaciones.cotId = Ordenes.cot_id INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId WHERE Cobranza.actividadesTotal != Cobranza.actividadesCont");
+    const ordenesTerminadas = await pool.query("SELECT Cobranza.*, Ordenes.fechaGen, Cotizaciones.total, Clientes.nombre, Clientes.clienteId FROM Cobranza INNER JOIN Ordenes ON Ordenes.ordenId = Cobranza.orden_id INNER JOIN Cotizaciones ON Cotizaciones.cotId = Ordenes.cot_id INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId WHERE Cobranza.estatus = 'Cobranza realizada' AND Cobranza.actividadesTotal = Cobranza.actividadesCont");
 
     const conteoListas = ordenesListas.length;
     const conteoNoListas = ordenesNoListas.length;
@@ -28,7 +28,7 @@ router.post('/', isLoggedIn, async(req, res) =>{
         cobrar.push(buton);
     }
 
-    const ordenes = await pool.query('SELECT * FROM cobranza WHERE cobranzaId IN (?)', [cobrar]);
+    const ordenes = await pool.query('SELECT * FROM Cobranza WHERE cobranzaId IN (?)', [cobrar]);
 
     console.log(ordenes);
     
@@ -60,7 +60,7 @@ router.post('/terminar', isLoggedIn, validateCobranza(), async(req, res) =>{
             update["estatus"] = "Cobranza empezada";
         }
 
-        await pool.query('UPDATE cobranza SET ? WHERE cobranzaId IN (?)', [update, id_cobranza]);
+        await pool.query('UPDATE Cobranza SET ? WHERE cobranzaId IN (?)', [update, id_cobranza]);
 
         res.redirect('/cobranza');
     } else{

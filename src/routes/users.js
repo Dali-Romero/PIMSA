@@ -8,9 +8,9 @@ const { validationResult } = require('express-validator');
 
 
 router.get('/', isLoggedIn, IsAuthorized('seeListUsers'), async (req, res) =>{
-    const users = await pool.query('SELECT * FROM usuarios');
-    const roles = await pool.query('SELECT * FROM roles');
-    const empleados = await pool.query('SELECT * FROM empleados');
+    const users = await pool.query('SELECT * FROM Usuarios');
+    const roles = await pool.query('SELECT * FROM Roles');
+    const empleados = await pool.query('SELECT * FROM Empleados');
     let activos = 0
     let inactivos = 0
     for(let i in users){
@@ -24,8 +24,8 @@ router.get('/', isLoggedIn, IsAuthorized('seeListUsers'), async (req, res) =>{
 });
 
 router.get('/add', isLoggedIn, IsAuthorized('addUsers'), async (req, res) =>{
-    const roles = await pool.query('SELECT * FROM roles WHERE activo = 1');
-    const empleados = await pool.query('SELECT * FROM empleados');
+    const roles = await pool.query('SELECT * FROM Roles WHERE activo = 1');
+    const empleados = await pool.query('SELECT * FROM Empleados');
     res.render('../views/users/newUser', {roles, empleados});
 });
 
@@ -40,11 +40,11 @@ router.post('/add', isLoggedIn, IsAuthorized('addUsers'), validateCreateUser(), 
         console.log(user);
         const salt = await bcrypt.genSalt(10);
         const hash = await bcrypt.hash(user.pass, salt);
-        const correo = await pool.query('SELECT * FROM usuarios WHERE correoElec = ?', [user.correo]);
+        const correo = await pool.query('SELECT * FROM Usuarios WHERE correoElec = ?', [user.correo]);
         if (correo.length >= 1){
             const errorUser = user;
-            const roles = await pool.query('SELECT * FROM roles WHERE activo = 1');
-            const empleados = await pool.query('SELECT * FROM empleados');
+            const roles = await pool.query('SELECT * FROM Roles WHERE activo = 1');
+            const empleados = await pool.query('SELECT * FROM Empleados');
             req.flash('error', 'El correo ya ha sido utilizado en otro usuario.');
             res.render('../views/users/newUser', {errorUser, roles, empleados});
         } else {
@@ -57,7 +57,7 @@ router.post('/add', isLoggedIn, IsAuthorized('addUsers'), validateCreateUser(), 
                 Rol_id: user.rol,
                 Contrasena: hash
             };
-            pool.query('INSERT INTO usuarios SET ?', [newUser]);
+            pool.query('INSERT INTO Usuarios SET ?', [newUser]);
             req.flash('success', 'Usuario registrado con exito.');
             res.redirect('/users');
         }
@@ -70,9 +70,9 @@ router.post('/add', isLoggedIn, IsAuthorized('addUsers'), validateCreateUser(), 
 
 router.get('/edit/:id', isLoggedIn, IsAuthorized('editUsers'), async(req, res) =>{
     const {id} = req.params;
-    const users = await pool.query('SELECT * FROM usuarios WHERE usuarioId = ?', [id]);
-    const roles = await pool.query('SELECT * FROM roles WHERE activo = 1');
-    const empleados = await pool.query('SELECT * FROM empleados');
+    const users = await pool.query('SELECT * FROM Usuarios WHERE usuarioId = ?', [id]);
+    const roles = await pool.query('SELECT * FROM Roles WHERE activo = 1');
+    const empleados = await pool.query('SELECT * FROM Empleados');
     res.render('../views/users/editUser', {users: users[0], roles, empleados});
 });
 
@@ -108,7 +108,7 @@ router.post('/edit/:id', isLoggedIn, IsAuthorized('editUsers'), validateEditUser
                 Rol_id: user.rol
             }
         }
-        pool.query('UPDATE usuarios SET ? WHERE usuarioId = ?', [editUser, id]);
+        pool.query('UPDATE Usuarios SET ? WHERE usuarioId = ?', [editUser, id]);
         req.flash('success', 'Usuario actualizado con exito.');
         res.redirect('/users');
     } else{

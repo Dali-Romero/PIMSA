@@ -9,7 +9,7 @@ passport.use('local.login', new localStrategy({
     passwordField: 'password',
     passReqToCallback: true
 }, async (req, correo, password, done) => {
-    const rows = await pool.query('SELECT * FROM usuarios WHERE correoElec = ? AND activo = 1', [correo]);
+    const rows = await pool.query('SELECT * FROM Usuarios WHERE correoElec = ? AND activo = 1', [correo]);
     if (rows.length > 0){
         const user = rows[0];
         const validPass = await helpers.matchPassword(password, user.contrasena);

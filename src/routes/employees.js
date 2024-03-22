@@ -6,9 +6,9 @@ const { validateCreateEmployees } = require('../lib/validators');
 const { validationResult } = require('express-validator');
 
 router.get('/', isLoggedIn, IsAuthorized('seeListEmployees'), async (req, res) =>{
-    const employees = await pool.query('SELECT * FROM empleados ORDER BY numeroNomina AND activo desc');
-    const rol = await pool.query('SELECT * FROM roles');
-    const area = await pool.query('SELECT * FROM areas');
+    const employees = await pool.query('SELECT * FROM Empleados ORDER BY numeroNomina AND activo desc');
+    const rol = await pool.query('SELECT * FROM Roles');
+    const area = await pool.query('SELECT * FROM Areas');
     let activos = 0
     let inactivos = 0
     for(let i in employees){
@@ -22,8 +22,8 @@ router.get('/', isLoggedIn, IsAuthorized('seeListEmployees'), async (req, res) =
 });
 
 router.get('/add', isLoggedIn, IsAuthorized('addEmployees'), async (req, res) =>{
-    const rol = await pool.query('SELECT * FROM roles');
-    const area = await pool.query('SELECT * FROM areas');
+    const rol = await pool.query('SELECT * FROM Roles');
+    const area = await pool.query('SELECT * FROM Areas');
     res.render('../views/employees/newEmployee', {rol, area});
 });
 
@@ -36,11 +36,11 @@ router.post('/add', isLoggedIn, IsAuthorized('addEmployees'), validateCreateEmpl
     if (resultadosValidacion.isEmpty()){
         const employee = req.body;
         console.log(employee);
-        const datos = await pool.query('SELECT * FROM empleados WHERE curp = ? OR rfc = ? OR nss = ? OR numeroNomina = ?', [employee.curp, employee.rfc, employee.nss, employee.nomina]);
+        const datos = await pool.query('SELECT * FROM Empleados WHERE curp = ? OR rfc = ? OR nss = ? OR numeroNomina = ?', [employee.curp, employee.rfc, employee.nss, employee.nomina]);
         if (datos.length >= 1){
             const errorUser = employee;
-            const rol = await pool.query('SELECT * FROM roles');
-            const area = await pool.query('SELECT * FROM areas');
+            const rol = await pool.query('SELECT * FROM Roles');
+            const area = await pool.query('SELECT * FROM Areas');
             res.render('../views/employees/newEmployee', {errorUser, rol, area});
         } else{ 
             var newEmployee = {
@@ -73,8 +73,8 @@ router.post('/add', isLoggedIn, IsAuthorized('addEmployees'), validateCreateEmpl
                 finContrato: employee.fecFinContrato,
                 activo: employee.activo 
             };
-            await pool.query('INSERT INTO empleados SET ?', [newEmployee]);
-            const empleado = await pool.query('SELECT * FROM empleados WHERE numeroNomina = ?', [employee.nomina]);
+            await pool.query('INSERT INTO Empleados SET ?', [newEmployee]);
+            const empleado = await pool.query('SELECT * FROM Empleados WHERE numeroNomina = ?', [employee.nomina]);
             const today = new Date();
             console.log(today);
             newEmployee = {
@@ -112,7 +112,7 @@ router.post('/add', isLoggedIn, IsAuthorized('addEmployees'), validateCreateEmpl
                 finContrato: employee.fecFinContrato,
                 activo: employee.activo
             }
-            await pool.query('INSERT INTO historialempleados SET ?', [newEmployee]);
+            await pool.query('INSERT INTO Historialempleados SET ?', [newEmployee]);
             req.flash('success', 'El empleado ha sido registrado con exito.');
             res.redirect('/employees');
         }
@@ -124,9 +124,9 @@ router.post('/add', isLoggedIn, IsAuthorized('addEmployees'), validateCreateEmpl
 
 router.get('/edit/:id', isLoggedIn, IsAuthorized('editEmployees'), async (req, res) =>{
     const {id} = req.params;
-    const rol = await pool.query('SELECT * FROM roles');
-    const area = await pool.query('SELECT * FROM areas');
-    var employees = await pool.query('SELECT * FROM empleados WHERE empleadoId = ?', [id]);
+    const rol = await pool.query('SELECT * FROM Roles');
+    const area = await pool.query('SELECT * FROM Areas');
+    var employees = await pool.query('SELECT * FROM Empleados WHERE empleadoId = ?', [id]);
     console.log(employees)
     employees[0].nacFecha = employees[0].nacFecha.toLocaleDateString("en-CA"),
     employees[0].fechaIngreso = employees[0].fechaIngreso.toLocaleDateString("en-CA"),
@@ -175,7 +175,7 @@ router.post('/edit/:id', isLoggedIn, IsAuthorized('editEmployees'), validateCrea
             activo: employee.activo
         };
         console.log(newEmployee)
-        await pool.query('UPDATE empleados SET ? WHERE empleadoId = ?', [newEmployee, id]);
+        await pool.query('UPDATE Empleados SET ? WHERE empleadoId = ?', [newEmployee, id]);
         const today = new Date();
         editEmployee = {
             modificado_usuario_id: req.user.usuarioId,
@@ -212,7 +212,7 @@ router.post('/edit/:id', isLoggedIn, IsAuthorized('editEmployees'), validateCrea
             finContrato: employee.fecFinContrato,
             activo: employee.activo
         }
-        await pool.query('INSERT INTO historialempleados SET ?', [editEmployee]);
+        await pool.query('INSERT INTO Historialempleados SET ?', [editEmployee]);
         req.flash('success', 'El empleado ha sido editado con exito.');
         res.redirect('/employees/info/'+id);
     } else{
@@ -223,9 +223,9 @@ router.post('/edit/:id', isLoggedIn, IsAuthorized('editEmployees'), validateCrea
 
 router.get('/info/:id', isLoggedIn, IsAuthorized('seeListEmployees'), async (req, res)=>{
     const {id} = req.params;
-    const rol = await pool.query('SELECT * FROM roles');
-    const area = await pool.query('SELECT * FROM areas');
-    const employees = await pool.query('SELECT * FROM empleados WHERE empleadoId = ?', [id]);
+    const rol = await pool.query('SELECT * FROM Roles');
+    const area = await pool.query('SELECT * FROM Areas');
+    const employees = await pool.query('SELECT * FROM Empleados WHERE empleadoId = ?', [id]);
     const fechas = {
         fecNac: employees[0].nacFecha.toLocaleDateString("es-MX", {weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'}),
         fechaIngreso: employees[0].fechaIngreso.toLocaleDateString("es-MX", {weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'}),
@@ -237,11 +237,11 @@ router.get('/info/:id', isLoggedIn, IsAuthorized('seeListEmployees'), async (req
 
 router.get('/history/:id', isLoggedIn, IsAuthorized('seeListEmployees'), async (req, res)=>{
     const {id} = req.params;
-    const rol = await pool.query('SELECT * FROM roles');
-    const area = await pool.query('SELECT * FROM areas');
-    const users = await pool.query('SELECT * FROM usuarios');
-    var employees = await pool.query('SELECT * FROM historialempleados WHERE empleado_id = ? ORDER BY cambioId DESC', [id]);
-    const nombreComp = await pool.query('SELECT nombreComp FROM empleados WHERE empleadoId = ?', [id]);
+    const rol = await pool.query('SELECT * FROM Roles');
+    const area = await pool.query('SELECT * FROM Areas');
+    const users = await pool.query('SELECT * FROM Usuarios');
+    var employees = await pool.query('SELECT * FROM Historialempleados WHERE empleado_id = ? ORDER BY cambioId DESC', [id]);
+    const nombreComp = await pool.query('SELECT nombreComp FROM Empleados WHERE empleadoId = ?', [id]);
     const total = employees.length;
     for (i=0; i < employees.length; i++){
         employees[i].hora = employees[i].fechaCambio.toLocaleTimeString('en-US');
@@ -252,10 +252,10 @@ router.get('/history/:id', isLoggedIn, IsAuthorized('seeListEmployees'), async (
 
 router.get('/history/:id/view/:idHistory', isLoggedIn, IsAuthorized('seeListEmployees'), async (req, res)=>{
     const {id, idHistory} = req.params;
-    const rol = await pool.query('SELECT * FROM roles');
-    const area = await pool.query('SELECT * FROM areas');
-    const users = await pool.query('SELECT * FROM usuarios');
-    const employees = await pool.query('SELECT * FROM historialempleados WHERE empleado_id = ? AND cambioId = ?', [id, idHistory]);
+    const rol = await pool.query('SELECT * FROM Roles');
+    const area = await pool.query('SELECT * FROM Areas');
+    const users = await pool.query('SELECT * FROM Usuarios');
+    const employees = await pool.query('SELECT * FROM Historialempleados WHERE empleado_id = ? AND cambioId = ?', [id, idHistory]);
     const fechas = {
         fecNac: employees[0].nacFecha.toLocaleDateString("es-MX", {weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'}),
         fechaIngreso: employees[0].fechaIngreso.toLocaleDateString("es-MX", {weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'}),
@@ -269,8 +269,8 @@ router.get('/history/:id/view/:idHistory', isLoggedIn, IsAuthorized('seeListEmpl
 
 router.get('/history/:id/view/:idHistory/restore', isLoggedIn, IsAuthorized('editEmployees'), async (req, res)=>{
     const {id, idHistory} = req.params;
-    const employeeHistory = await pool.query('SELECT * FROM historialempleados WHERE empleado_id = ? AND cambioId = ?', [id, idHistory]);
-    const employeeAct = await pool.query('SELECT * FROM empleados WHERE empleadoId = ?', [id]);
+    const employeeHistory = await pool.query('SELECT * FROM Historialempleados WHERE empleado_id = ? AND cambioId = ?', [id, idHistory]);
+    const employeeAct = await pool.query('SELECT * FROM Empleados WHERE empleadoId = ?', [id]);
     const today = new Date();
     const employee = {
         modificado_usuario_id: req.user.usuarioId, 
@@ -307,7 +307,7 @@ router.get('/history/:id/view/:idHistory/restore', isLoggedIn, IsAuthorized('edi
         finContrato: employeeAct[0].finContrato,
         activo: employeeAct[0].activo
     };
-    await pool.query('INSERT INTO historialempleados SET ?', [employee]);
+    await pool.query('INSERT INTO Historialempleados SET ?', [employee]);
 
     const editEmployee = {
         nombreComp: employeeHistory[0].nombreComp,
@@ -339,7 +339,7 @@ router.get('/history/:id/view/:idHistory/restore', isLoggedIn, IsAuthorized('edi
         finContrato: employeeHistory[0].finContrato,
         activo: employeeHistory[0].activo
     };
-    await pool.query('UPDATE empleados SET ? WHERE empleadoId = ?', [editEmployee, id]);
+    await pool.query('UPDATE Empleados SET ? WHERE empleadoId = ?', [editEmployee, id]);
     req.flash('success', 'La version '+idHistory+ ' ha sido restaurada con exito.');
     res.redirect('/employees/info/'+id);
 }); 

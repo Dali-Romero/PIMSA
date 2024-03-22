@@ -6,13 +6,13 @@ const { validateProducts } = require('../lib/validators');
 const { validationResult } = require('express-validator');
 
 router.get('/', isLoggedIn, IsAuthorized('seeListProducts'), async (req, res) =>{
-    const products = await pool.query('SELECT * FROM productos');
-    const procesos = await pool.query('SELECT * FROM procesos');
+    const products = await pool.query('SELECT * FROM Productos');
+    const procesos = await pool.query('SELECT * FROM Procesos');
     res.render('../views/products/allProducts', {products, procesos});
 });
 
 router.get('/add', isLoggedIn, IsAuthorized('addProducts'), async (req, res) =>{
-    const procesos = await pool.query('SELECT * FROM procesos WHERE NOT nombre = "Personalizado"');
+    const procesos = await pool.query('SELECT * FROM Procesos WHERE NOT nombre = "Personalizado"');
     console.log(procesos);
     res.render('../views/products/addProduct', {procesos});
 });
@@ -37,7 +37,7 @@ router.post('/add', isLoggedIn, IsAuthorized('addProducts'), validateProducts(),
             porcentaje: product.porcentaje,
             proceso_id: product.proceso
         };
-        pool.query('INSERT into productos SET ?', [newProduct]);
+        pool.query('INSERT INTO Productos SET ?', [newProduct]);
         req.flash('success', 'Producto agregado correctamente.');
         res.redirect('/products');
 
@@ -51,9 +51,9 @@ router.post('/add', isLoggedIn, IsAuthorized('addProducts'), validateProducts(),
 
 router.get('/edit/:id', isLoggedIn, IsAuthorized('editProducts'), async (req, res) =>{
     const {id} = req.params;
-    const product = await pool.query('SELECT * FROM productos WHERE productoId = ?', [id]);
+    const product = await pool.query('SELECT * FROM Productos WHERE productoId = ?', [id]);
     const editProduct = {
-        proceso: await pool.query('SELECT * FROM procesos WHERE NOT nombre = "Personalizado"'),
+        proceso: await pool.query('SELECT * FROM Procesos WHERE NOT nombre = "Personalizado"'),
         proceso_id: product[0].proceso_id
     }
 
@@ -83,7 +83,7 @@ router.post('/edit/:id', isLoggedIn, IsAuthorized('editProducts'), validateProdu
             porcentaje: product.porcentaje,
             proceso_id: product.proceso
         };
-        pool.query('UPDATE productos SET ? WHERE productoId = ?', [editProduct, id]);
+        pool.query('UPDATE Productos SET ? WHERE productoId = ?', [editProduct, id]);
         req.flash('success', 'Producto modificado correctamente.');
         res.redirect('/products');
         

@@ -136,11 +136,6 @@ module.exports = {
             .trim().notEmpty().withMessage('El correo no debe estar vacío.')
             .isLength({min: 1, max: 20}).withMessage('El correo debe contener entre 1 y 20 caracteres.'),
 
-            // validaciones del campo "emailAlt" (Correo alterno)
-            body('emailAlt')
-            .optional
-            .isEmail(),
-
             // validaciones del campo "creditlimit" (Limite de credito)
             body('creditlimit')
             .exists().withMessage('Parece el limite de credito no fue enviado.')
@@ -174,7 +169,7 @@ module.exports = {
 
 // ------------------------------------------------ Archivo grupos.js (pendiente) ------------------------------------------------
     // middleware para validar el formulario de ¿agregar/editar? grupos
-    validateGroup(){
+    validateGroups(){
         return[
             // validaciones del campo "namegroup" (Nombre del grupo)
             body('namegroup')

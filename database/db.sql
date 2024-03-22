@@ -6,8 +6,8 @@ Nomenclatura:
 */
 
 -- creacion y uso de la base de datos
-CREATE DATABASE IF NOT EXISTS pimsa_db_prueba;
-USE pimsa_db_prueba;
+CREATE DATABASE IF NOT EXISTS pimsa;
+USE pimsa;
 
 -- creacion de tablas
 CREATE TABLE Usuarios(
@@ -95,7 +95,7 @@ CREATE TABLE HistorialEmpleados(
 
 CREATE TABLE Permisos(
     permisoId INT NOT NULL AUTO_INCREMENT,
-    descripcion VARCHAR(20) NOT NULL,
+    descripcion VARCHAR(100) NOT NULL,
     permiso VARCHAR(25),
     PRIMARY KEY(permisoId)
 );
@@ -314,10 +314,6 @@ CREATE TABLE Productos(
     PRIMARY KEY(productoId)
 );
 
--- asignacion de llaves foraneas
-ALTER TABLE Usuarios
-    ADD CONSTRAINT fk_usuarios_empleados FOREIGN KEY (empleado_id) REFERENCES Empleados(empleadoId),
-    ADD CONSTRAINT fk_usuarios_roles FOREIGN KEY (rol_id) REFERENCES Roles(rolId);
 
 ALTER TABLE Empleados
     ADD CONSTRAINT fk_empleados_roles FOREIGN KEY (rol_id) REFERENCES Roles(rolId),

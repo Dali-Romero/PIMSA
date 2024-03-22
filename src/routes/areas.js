@@ -37,7 +37,7 @@ router.post('/add', isLoggedIn, IsAuthorized('addAreas'), validateAreas(), async
 
 router.get('/', isLoggedIn, IsAuthorized('seeListAreas'), async (req, res)=>{
     const areas = await pool.query ('SELECT * FROM Areas');
-    const total_areas = await pool.query('SELECT COUNT(areaId) AS total_areas FROM areas');
+    const total_areas = await pool.query('SELECT COUNT(areaId) AS total_areas FROM Areas');
     res.render('areas/list', {areas: areas, total_areas:total_areas[0]});
 })
 
