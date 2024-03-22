@@ -178,9 +178,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td colspan="1">$$$</td>
-                        </tr>
+                        {{#if suma}}
+                            <tr>
+                                <td colspan="1">{{suma.suma}}</td>
+                            </tr>
+                        {{else}}
+                            <td colspan="2" class="text-center">sin ventas</td>
+                        {{/if}}
                     </tbody>
                     </table>
                 </div>
@@ -192,9 +196,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td colspan="1">$$$</td>
-                        </tr>
+                        {{#if deuda}}
+                            <tr>
+                                <td colspan="1">{{deuda.deuda}}</td>
+                            </tr>
+                        {{else}}
+                            <td colspan="2" class="text-center">sin deuda</td>
+                        {{/if}}
                     </tbody>
                     </table>
                 </div>
@@ -223,25 +231,24 @@
                 </tr>
             </thead>
             <tbody class="table-group-divider">
-                {{#each clients}}
+                {{#each cobranza}}
                     <tr>
-                        <th scope="row">{{rfc}}</th>
-                        <td scope="row">{{nombre}}</td>
-                        <td scope="row">{{correoElec}}</td>
-                        <td scope="row">{{telefono}}</td>
-                        {{#if activo}}
-                            <td class="text-success">Activo</td>
-                        {{else}}
-                            <td class="text-danger">Inactivo</td>
-                        {{/if}}
+                        <th scope="row">
+                            <a class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover" href="orders/info/{{ordenId}}">
+                                OT-{{ordenId}}
+                            </a>
+                        </th>
+                        <td scope="row">{{formatNumber total}}</td>
+                        <td scope="row">{{estatus}}</td>
+                        
+                        
                     </tr>
                 {{else}}
                     <tr>
                         <td class="d-none"></td>
                         <td class="d-none"></td>
                         <td class="d-none"></td>
-                        <td class="d-none"></td>
-                        <td colspan="5">No hay ordenes por cobrar</td>
+                        <td colspan="4">No hay ordenes por cobrar</td>
                     </tr>
                 {{/each}}
             </tbody>
@@ -270,16 +277,21 @@
                 </tr>
             </thead>
             <tbody class="table-group-divider">
-                {{#each clients}}
+                {{#each ordenes}}
                     <tr>
-                        <th scope="row">{{rfc}}</th>
-                        <td scope="row">{{nombre}}</td>
-                        <td scope="row">{{correoElec}}</td>
-                        <td scope="row">{{telefono}}</td>
-                        {{#if activo}}
-                            <td class="text-success">Activo</td>
+                        <th scope="row">
+                            <a class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover" href="orders/info/{{ordenId}}">
+                                OT-{{ordenId}}
+                            </a>
+                        </th>
+                        <td scope="row">{{formatDateShort fechaGen}}</td>
+                        <td scope="row">{{formatDateShort fechaEnt}}</td>
+                        <td scope="row">{{formatNumber total}}</td>
+                        <td scope="row">{{empleado}}</td>
+                        {{#if terminada}}
+                            <td class="text-success">Terminada</td>
                         {{else}}
-                            <td class="text-danger">Inactivo</td>
+                            <td class="text-danger">Trabajando</td>
                         {{/if}}
                     </tr>
                 {{else}}
@@ -319,9 +331,13 @@
             <tbody class="table-group-divider">
                 {{#each cotizacion}}
                     <tr>
-                        <th scope="row">{{cotId}}</th>
+                        <th scope="row">
+                            <a class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover" href="/quotations/info/{{cotId}}">
+                                COT-{{cotId}}
+                            </a>
+                        </th>
                         <td scope="row">{{formatDateShort fecha}}</td>
-                        <td scope="row">{{totalBruto}}</td>
+                        <td scope="row">{{formatNumber total}}</td>
                         <td scope="row">{{empleado}}</td>
                         <td scope="row">{{estatus}}</td>
                     </tr>

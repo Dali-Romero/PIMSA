@@ -103,34 +103,6 @@ router.post('/editclient/:id', isLoggedIn, async(req, res)=>{
     };
     await pool.query('UPDATE Clientes SET ? WHERE clienteId = ?', [newClient, id]);
     
-    //prueba para ver si funciona editar cliente
-    editClient = {
-        nombre: resBody.tradename,
-        usuario_id: resBody.executive,
-        grupo_id: resBody.group,
-        contacto: resBody.contact,
-        razonSocial: resBody.companyname,
-        rfc: resBody.rfc, 
-        domCalle: resBody.street,
-        domNumEx: resBody.outernumber,
-        domNumIn: resBody.innernumber,
-        domColonia: resBody.colony, 
-        domCp: resBody.cp, 
-        domEstado: resBody.state, 
-        domCiudad: resBody.city, 
-        telefono: resBody.telephone,
-        telefonoExt: resBody.extension,
-        celular: resBody.cell,
-        correoElec: resBody.email,
-        correoElecAlt: resBody.emailAlt,
-        limiteCredito: resBody.creditlimit,
-        diasCredito: resBody.creditdays,
-        descuento: resBody.descuento,
-        observaciones: resBody.observaciones,
-        activo: resBody.status
-    }
-    await pool.query('INSERT INTO Clientes SET ?', [editClient]);
-    
     req.flash('success', 'El cliente ha sido editado correctamente');
     res.redirect('/clients/infoclient/'+id);
 });
@@ -142,8 +114,13 @@ router.get('/infoclient/:id', isLoggedIn, async(req, res)=>{
     const executive = await pool.query('SELECT * FROM Usuarios');
     const group = await pool.query('SELECT * FROM Grupos');
     const clients = await pool.query('SELECT * FROM Clientes WHERE clienteId = ?', [id]);
-    const cotizacion = await pool.query('SELECT Cotizaciones.*, Clientes.clienteId, Clientes.nombre FROM (Cotizaciones INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId);', [id]);
-    res.render('../views/clients/infoclient', {client: clients[0], executive, group, cotizacion});
+    const cotizacion = await pool.query('SELECT * FROM (Cotizaciones INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId) WHERE Cotizaciones.cliente_id = ?;', [id]);
+    const ordenes = await pool.query('SELECT Ordenes.ordenId, Ordenes.fechaGen, IF(DATE(Ordenes.fechaGen) = Ordenes.fechaEnt, "-", Ordenes.fechaEnt) AS fechaEnt, Ordenes.cot_id, Ordenes.terminada, Cotizaciones.cotId, Cotizaciones.fecha, Cotizaciones.cliente_id, Cotizaciones.proyecto, Cotizaciones.observaciones, Cotizaciones.porcentajeDescuento, Cotizaciones.solicitante, Cotizaciones.empleado, Cotizaciones.estatus, Cotizaciones.totalBruto, Cotizaciones.descuento AS descuento_cotizacion, Cotizaciones.subtotal, Cotizaciones.iva, Cotizaciones.total, Clientes.*, Empleados.nombreComp FROM ((((Ordenes INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId) INNER JOIN Usuarios ON Ordenes.usuario_id = Usuarios.usuarioId) INNER JOIN Empleados ON Usuarios.empleado_id = Empleados.empleadoId) INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId AND clienteId = ?) ', [id]);
+    const cobranza = await pool.query("SELECT cobranza.*, ordenes.fechaGen, cotizaciones.total, clientes.nombre, clientes.clienteId FROM cobranza INNER JOIN ordenes ON ordenes.ordenId = cobranza.orden_id INNER JOIN cotizaciones ON cotizaciones.cotId = ordenes.cot_id INNER JOIN clientes ON cotizaciones.cliente_id = clientes.clienteId WHERE cobranza.actividadesTotal = cobranza.actividadesCont AND cobranza.estatus  AND Cotizaciones.cliente_id = ?;", [id]);
+    const deuda = await pool.query('SELECT SUM(total) as deuda FROM Cobranza INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId WHERE Cotizaciones.cliente_id = ? AND estatus <> "Cobranza realizada";',[id]);
+    const suma = await pool.query('SELECT SUM(total) as suma  FROM Cotizaciones WHERE Cotizaciones.cliente_id = ? AND estatus <> "Cancelada";', [id]);
+    console.log(suma[0]);
+    res.render('../views/clients/infoclient', {client: clients[0], executive, group, cotizacion, ordenes: ordenes, cobranza, deuda:deuda[0], suma:suma[0]});
 });
 
 module.exports = router; 
