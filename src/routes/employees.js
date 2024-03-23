@@ -80,7 +80,7 @@ router.post('/add', isLoggedIn, IsAuthorized('addEmployees'), validateCreateEmpl
 
             // Obtener la fecha y hora en la zona horaria de Ciudad de México
             let offsetMexico = -300; // Desplazamiento de Ciudad de México en minutos (UTC-5)
-            let fechaMexico = new Date(fechaActual.getTime() + (offsetCliente - offsetMexico) * 60000);
+            let fechaMexico = new Date(today.getTime() + (offsetCliente - offsetMexico) * 60000);
             console.log(fechaMexico);
             console.log(today);
             newEmployee = {
@@ -187,7 +187,7 @@ router.post('/edit/:id', isLoggedIn, IsAuthorized('editEmployees'), validateCrea
 
         // Obtener la fecha y hora en la zona horaria de Ciudad de México
         let offsetMexico = -300; // Desplazamiento de Ciudad de México en minutos (UTC-5)
-        let fechaMexico = new Date(fechaActual.getTime() + (offsetCliente - offsetMexico) * 60000);
+        let fechaMexico = new Date(today.getTime() + (offsetCliente - offsetMexico) * 60000);
 
         editEmployee = {
             modificado_usuario_id: req.user.usuarioId,
@@ -288,7 +288,7 @@ router.get('/history/:id/view/:idHistory/restore', isLoggedIn, IsAuthorized('edi
 
     // Obtener la fecha y hora en la zona horaria de Ciudad de México
     let offsetMexico = -300; // Desplazamiento de Ciudad de México en minutos (UTC-5)
-    let fechaMexico = new Date(fechaActual.getTime() + (offsetCliente - offsetMexico) * 60000);
+    let fechaMexico = new Date(today.getTime() + (offsetCliente - offsetMexico) * 60000);
 
     const employee = {
         modificado_usuario_id: req.user.usuarioId, 
