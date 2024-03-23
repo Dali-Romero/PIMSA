@@ -268,13 +268,7 @@ module.exports = {
             .isIn(['areas', 'clientes', 'cotizaciones', 'empleados', 'gruposClientes', 'maquinas', 'ordenes', 'productos', 'productosCotizados', 'productosOrdenados', 'roles', 'usuarios']).withMessage('La sección elegida no es válida.')
         ]
     },
-// ------------------------------------------------ Archivo employees.js (pendiente) ------------------------------------------------
-    // middleware para validar el formulario de agregar/editar empleado
-    validateEmployees(){
-        return [
-            
-        ]
-    },
+
 // ------------------------------------------------ Archivo extask.js ------------------------------------------------
     // middleware para validar el formulario de listar procesos
     validateExtaskListStagesProcess(){
@@ -357,7 +351,7 @@ module.exports = {
             .exists().withMessage('Parece que el contacto del técnico no fue enviado.')
             .trim().notEmpty().withMessage('Parece que el contacto del técnico está vacío.')
             .isString().withMessage('Parece que el contacto del técnico no está en un formato adecuado.')
-            .not().matches(/[0-9]{10}/).withMessage('Parece que el contacto del técnico cuenta con carateres no válidos.')
+            .matches(/[0-9]{10}/).withMessage('Parece que el contacto del técnico cuenta con carateres no válidos.')
             .isLength({min: 10, max: 10}).withMessage('Parece que el contacto del técnico no cumple con el límite de caracteres.'),
 
             // validaciones del campo "extension" (contacto del técnico extensión)

@@ -55,7 +55,7 @@ router.post('/add', isLoggedIn, IsAuthorized('addEmployees'), validateCreateEmpl
                 correoElec: employee.correo,
                 emerNombre: employee.emerNombre,
                 emerCelu: employee.emerTel,
-                domicilio: employee.calle + employee.numExt + employee.numInt + employee.colonia + employee.codPost,
+                domicilio: employee.calle + " " + employee.numExt + " " + employee.numInt + " " + employee.colonia + " " +employee.codPost,
                 estatus: employee.estatus,
                 curp: employee.curp,
                 rfc: employee.rfc,
@@ -76,12 +76,17 @@ router.post('/add', isLoggedIn, IsAuthorized('addEmployees'), validateCreateEmpl
             await pool.query('INSERT INTO Empleados SET ?', [newEmployee]);
             const empleado = await pool.query('SELECT * FROM Empleados WHERE numeroNomina = ?', [employee.nomina]);
             const today = new Date();
+            const opc = {
+                timeZone: 'America/Mexico_City'
+            }
+            const fecha = today.toLocaleDateString(opc);
+            console.log(fecha);
             console.log(today);
             newEmployee = {
                 modificado_usuario_id: req.user.usuarioId,
                 empleado_id: empleado[0].empleadoId,
                 cambioRealizado: "Se ha creado el empleado",
-                fechaCambio: today,
+                fechaCambio: fecha,
     
                 nombreComp: employee.nombre,
                 sexo: employee.sexo,
