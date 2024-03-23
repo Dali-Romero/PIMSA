@@ -65,9 +65,15 @@ function validarFormProducts(form){
 
         //Comprobacion proceso asociado
         const procesoField = $('#proceso');
-        procesoField.removeClass('border-dark');
-        procesoField.addClass('is-valid');
-
+        if (procesoField.val() == Null){
+            descripcionInput.removeClass('is-valid');
+            descripcionInput.addClass('is-invalid');
+            $('#invalid-feedback-proceso').text('Por favor, seleccione un proceso.');
+        } else{
+            procesoField.removeClass('border-dark');
+            procesoField.addClass('is-valid'); 
+        }
+        
 
         // Comprobacion de las validaciones
         const nonvalidatedFields = $('.is-invalid');

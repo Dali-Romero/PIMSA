@@ -49,6 +49,9 @@
                             <option value={{procesoId}} {{#equal ../editProduct.proceso_id procesoId}} selected {{/equal}}>{{nombre}}</option>
                         {{/each}}
                     </select>
+                    <div class="invalid-feedback">
+                        <span id="invalid-feedback-proceso"></span>
+                    </div>
                 </div>
             </div>
         </div>
