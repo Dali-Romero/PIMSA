@@ -76,11 +76,8 @@ router.post('/add', isLoggedIn, IsAuthorized('addEmployees'), validateCreateEmpl
             await pool.query('INSERT INTO Empleados SET ?', [newEmployee]);
             const empleado = await pool.query('SELECT * FROM Empleados WHERE numeroNomina = ?', [employee.nomina]);
             const today = new Date();
-            let offsetCliente = today.getTimezoneOffset();
-
-            // Obtener la fecha y hora en la zona horaria de Ciudad de México
-            let offsetMexico = -300; // Desplazamiento de Ciudad de México en minutos (UTC-5)
-            let fechaMexico = new Date(today.getTime() + (offsetCliente - offsetMexico) * 60000);
+            let zonaHorariaMexico = 'America/Mexico_City';
+            let fechaMexico = new Date(today.toLocaleString('en-US', { timeZone: zonaHorariaMexico }));
             console.log(fechaMexico);
             console.log(today);
             newEmployee = {
@@ -183,11 +180,8 @@ router.post('/edit/:id', isLoggedIn, IsAuthorized('editEmployees'), validateCrea
         console.log(newEmployee)
         await pool.query('UPDATE Empleados SET ? WHERE empleadoId = ?', [newEmployee, id]);
         const today = new Date();
-        let offsetCliente = today.getTimezoneOffset();
-
-        // Obtener la fecha y hora en la zona horaria de Ciudad de México
-        let offsetMexico = -300; // Desplazamiento de Ciudad de México en minutos (UTC-5)
-        let fechaMexico = new Date(today.getTime() + (offsetCliente - offsetMexico) * 60000);
+        let zonaHorariaMexico = 'America/Mexico_City';
+        let fechaMexico = new Date(today.toLocaleString('en-US', { timeZone: zonaHorariaMexico }));
 
         editEmployee = {
             modificado_usuario_id: req.user.usuarioId,
@@ -284,11 +278,8 @@ router.get('/history/:id/view/:idHistory/restore', isLoggedIn, IsAuthorized('edi
     const employeeHistory = await pool.query('SELECT * FROM HistorialEmpleados WHERE empleado_id = ? AND cambioId = ?', [id, idHistory]);
     const employeeAct = await pool.query('SELECT * FROM Empleados WHERE empleadoId = ?', [id]);
     const today = new Date();
-    let offsetCliente = today.getTimezoneOffset();
-
-    // Obtener la fecha y hora en la zona horaria de Ciudad de México
-    let offsetMexico = -300; // Desplazamiento de Ciudad de México en minutos (UTC-5)
-    let fechaMexico = new Date(today.getTime() + (offsetCliente - offsetMexico) * 60000);
+    let zonaHorariaMexico = 'America/Mexico_City';
+    let fechaMexico = new Date(today.toLocaleString('en-US', { timeZone: zonaHorariaMexico }));
 
     const employee = {
         modificado_usuario_id: req.user.usuarioId, 
