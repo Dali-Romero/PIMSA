@@ -76,17 +76,18 @@ router.post('/add', isLoggedIn, IsAuthorized('addEmployees'), validateCreateEmpl
             await pool.query('INSERT INTO Empleados SET ?', [newEmployee]);
             const empleado = await pool.query('SELECT * FROM Empleados WHERE numeroNomina = ?', [employee.nomina]);
             const today = new Date();
-            const opc = {
-                timeZone: 'America/Mexico_City'
-            }
-            const fecha = today.toLocaleDateString(opc);
-            console.log(fecha);
+            let offsetCliente = today.getTimezoneOffset();
+
+            // Obtener la fecha y hora en la zona horaria de Ciudad de México
+            let offsetMexico = -300; // Desplazamiento de Ciudad de México en minutos (UTC-5)
+            let fechaMexico = new Date(fechaActual.getTime() + (offsetCliente - offsetMexico) * 60000);
+            console.log(fechaMexico);
             console.log(today);
             newEmployee = {
                 modificado_usuario_id: req.user.usuarioId,
                 empleado_id: empleado[0].empleadoId,
                 cambioRealizado: "Se ha creado el empleado",
-                fechaCambio: fecha,
+                fechaCambio: fechaMexico,
     
                 nombreComp: employee.nombre,
                 sexo: employee.sexo,
@@ -182,15 +183,17 @@ router.post('/edit/:id', isLoggedIn, IsAuthorized('editEmployees'), validateCrea
         console.log(newEmployee)
         await pool.query('UPDATE Empleados SET ? WHERE empleadoId = ?', [newEmployee, id]);
         const today = new Date();
-            const opc = {
-                timeZone: 'America/Mexico_City'
-            }
-            const fecha = today.toLocaleDateString(opc);
+        let offsetCliente = today.getTimezoneOffset();
+
+        // Obtener la fecha y hora en la zona horaria de Ciudad de México
+        let offsetMexico = -300; // Desplazamiento de Ciudad de México en minutos (UTC-5)
+        let fechaMexico = new Date(fechaActual.getTime() + (offsetCliente - offsetMexico) * 60000);
+
         editEmployee = {
             modificado_usuario_id: req.user.usuarioId,
             empleado_id: id,
             cambioRealizado: employee.descripcion,
-            fechaCambio: fecha,
+            fechaCambio: fechaMexico,
 
             nombreComp: employee.nombre,
             sexo: employee.sexo,
@@ -281,11 +284,17 @@ router.get('/history/:id/view/:idHistory/restore', isLoggedIn, IsAuthorized('edi
     const employeeHistory = await pool.query('SELECT * FROM HistorialEmpleados WHERE empleado_id = ? AND cambioId = ?', [id, idHistory]);
     const employeeAct = await pool.query('SELECT * FROM Empleados WHERE empleadoId = ?', [id]);
     const today = new Date();
+    let offsetCliente = today.getTimezoneOffset();
+
+    // Obtener la fecha y hora en la zona horaria de Ciudad de México
+    let offsetMexico = -300; // Desplazamiento de Ciudad de México en minutos (UTC-5)
+    let fechaMexico = new Date(fechaActual.getTime() + (offsetCliente - offsetMexico) * 60000);
+
     const employee = {
         modificado_usuario_id: req.user.usuarioId, 
         empleado_id: id,
         cambioRealizado: "Se restauro la version con id " + idHistory,
-        fechaCambio: today,
+        fechaCambio: fechaMexico,
 
         nombreComp: employeeAct[0].nombreComp,
         sexo: employeeAct[0].sexo,
