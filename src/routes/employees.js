@@ -182,11 +182,15 @@ router.post('/edit/:id', isLoggedIn, IsAuthorized('editEmployees'), validateCrea
         console.log(newEmployee)
         await pool.query('UPDATE Empleados SET ? WHERE empleadoId = ?', [newEmployee, id]);
         const today = new Date();
+            const opc = {
+                timeZone: 'America/Mexico_City'
+            }
+            const fecha = today.toLocaleDateString(opc);
         editEmployee = {
             modificado_usuario_id: req.user.usuarioId,
             empleado_id: id,
             cambioRealizado: employee.descripcion,
-            fechaCambio: today,
+            fechaCambio: fecha,
 
             nombreComp: employee.nombre,
             sexo: employee.sexo,
