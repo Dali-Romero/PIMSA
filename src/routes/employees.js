@@ -112,7 +112,7 @@ router.post('/add', isLoggedIn, IsAuthorized('addEmployees'), validateCreateEmpl
                 finContrato: employee.fecFinContrato,
                 activo: employee.activo
             }
-            await pool.query('INSERT INTO Historialempleados SET ?', [newEmployee]);
+            await pool.query('INSERT INTO HistorialEmpleados SET ?', [newEmployee]);
             req.flash('success', 'El empleado ha sido registrado con exito.');
             res.redirect('/employees');
         }
@@ -212,7 +212,7 @@ router.post('/edit/:id', isLoggedIn, IsAuthorized('editEmployees'), validateCrea
             finContrato: employee.fecFinContrato,
             activo: employee.activo
         }
-        await pool.query('INSERT INTO Historialempleados SET ?', [editEmployee]);
+        await pool.query('INSERT INTO HistorialEmpleados SET ?', [editEmployee]);
         req.flash('success', 'El empleado ha sido editado con exito.');
         res.redirect('/employees/info/'+id);
     } else{
@@ -240,7 +240,7 @@ router.get('/history/:id', isLoggedIn, IsAuthorized('seeListEmployees'), async (
     const rol = await pool.query('SELECT * FROM Roles');
     const area = await pool.query('SELECT * FROM Areas');
     const users = await pool.query('SELECT * FROM Usuarios');
-    var employees = await pool.query('SELECT * FROM Historialempleados WHERE empleado_id = ? ORDER BY cambioId DESC', [id]);
+    var employees = await pool.query('SELECT * FROM HistorialEmpleados WHERE empleado_id = ? ORDER BY cambioId DESC', [id]);
     const nombreComp = await pool.query('SELECT nombreComp FROM Empleados WHERE empleadoId = ?', [id]);
     const total = employees.length;
     for (i=0; i < employees.length; i++){
@@ -255,7 +255,7 @@ router.get('/history/:id/view/:idHistory', isLoggedIn, IsAuthorized('seeListEmpl
     const rol = await pool.query('SELECT * FROM Roles');
     const area = await pool.query('SELECT * FROM Areas');
     const users = await pool.query('SELECT * FROM Usuarios');
-    const employees = await pool.query('SELECT * FROM Historialempleados WHERE empleado_id = ? AND cambioId = ?', [id, idHistory]);
+    const employees = await pool.query('SELECT * FROM HistorialEmpleados WHERE empleado_id = ? AND cambioId = ?', [id, idHistory]);
     const fechas = {
         fecNac: employees[0].nacFecha.toLocaleDateString("es-MX", {weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'}),
         fechaIngreso: employees[0].fechaIngreso.toLocaleDateString("es-MX", {weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'}),
@@ -269,7 +269,7 @@ router.get('/history/:id/view/:idHistory', isLoggedIn, IsAuthorized('seeListEmpl
 
 router.get('/history/:id/view/:idHistory/restore', isLoggedIn, IsAuthorized('editEmployees'), async (req, res)=>{
     const {id, idHistory} = req.params;
-    const employeeHistory = await pool.query('SELECT * FROM Historialempleados WHERE empleado_id = ? AND cambioId = ?', [id, idHistory]);
+    const employeeHistory = await pool.query('SELECT * FROM HistorialEmpleados WHERE empleado_id = ? AND cambioId = ?', [id, idHistory]);
     const employeeAct = await pool.query('SELECT * FROM Empleados WHERE empleadoId = ?', [id]);
     const today = new Date();
     const employee = {
@@ -307,7 +307,7 @@ router.get('/history/:id/view/:idHistory/restore', isLoggedIn, IsAuthorized('edi
         finContrato: employeeAct[0].finContrato,
         activo: employeeAct[0].activo
     };
-    await pool.query('INSERT INTO Historialempleados SET ?', [employee]);
+    await pool.query('INSERT INTO HistorialEmpleados SET ?', [employee]);
 
     const editEmployee = {
         nombreComp: employeeHistory[0].nombreComp,

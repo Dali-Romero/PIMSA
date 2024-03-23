@@ -1,4 +1,4 @@
-function validar(form){
+function validarClients(form){
     let validated = false;
     form.on('submit', (event)=>{
         //validacion de la fecha
@@ -261,6 +261,6 @@ function validar(form){
 
 $(document).ready(function(){
     
-    validar($('#form-add-client'));
+    validarClients($('#form-add-client'));
     //validar($('#form-edit-client'));
 });
