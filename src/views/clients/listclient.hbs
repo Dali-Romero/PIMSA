@@ -37,7 +37,7 @@
                     <tr>
                         <th scope="row">{{rfc}}</th>
                         <td>{{nombre}}</td>
-                        <td>{{telefonoExt}}-{{telefono}}</td>
+                        <td>{{#if telefonoExt}}{{telefonoExt}}-{{/if}}-{{telefono}}</td>
                         <td>{{correoElec}}</td>
                         {{#each ../group}}
                             {{#equal ../grupo_id grupoId}} <th>{{nombre}}</th>{{/equal}}

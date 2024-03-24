@@ -38,7 +38,7 @@ router.post('/addgroup', isLoggedIn, IsAuthorized('addClientsGroups'), validateG
 });
 
 router.get('/', isLoggedIn, IsAuthorized('seeListClientsGroups'), async (req, res)=>{
-    const groups = await pool.query('SELECT Grupos.*, COUNT(Clientes.grupo_id) AS contClientes FROM Grupos INNER JOIN Clientes ON Grupos.grupoId = Clientes.grupo_id GROUP BY Grupos.grupoId');
+    const groups = await pool.query('SELECT Grupos.*, COALESCE(COUNT(Clientes.grupo_id), 0) AS contClientes FROM Grupos LEFT JOIN Clientes ON Grupos.grupoId = Clientes.grupo_id GROUP BY Grupos.grupoId');
     res.render('grupos/listgroup', {groups});
 });
 
