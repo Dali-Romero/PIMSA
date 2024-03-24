@@ -263,8 +263,7 @@ CREATE TABLE ProductosCotizados(
 CREATE TABLE ProcesosOrdenes(
     area_id INT, -- llave foranea
     proceso_id INT, -- llave foranea
-    orden INT NOT NULL,
-    procesoOrdenId INT NOT NULL
+    orden INT NOT NULL
 );
 
 CREATE TABLE Procesos(

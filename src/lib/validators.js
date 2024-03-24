@@ -30,12 +30,6 @@ module.exports = {
     // middleware para validar el formulario de agregar/editar cliente
     validateClients(){
         return [
-            // validaciones del campo "executive" (Ejecuyivo)
-            body('executive')
-            .optional(),
-            // validaciones del campo "group" (Grupo)
-            body('group')
-            .optional(),
 
             // validaciones del campo "tradename" (Nombre comercial)
             body('tradename')
@@ -77,11 +71,6 @@ module.exports = {
             .trim().notEmpty().withMessage('El numero exterior no debe estar vacío.')
             .isLength({min: 1, max: 5}).withMessage('El numero exterior  debe contener entre 1 y 5 caracteres.'),
 
-            // validaciones del campo "innernumber" (Numero interior)
-            body('innernumber')
-            .optional()
-            .isNumeric(),
-
             // validaciones del campo "colony" (Colonia)
             body('colony')
             .exists().withMessage('Parece que el nombre de la colonia no fue enviado.')
@@ -109,11 +98,6 @@ module.exports = {
             .not().matches(/[^a-zA-ZÀ-ÿ0-9\sñÑ]/).withMessage('El nombre de la ciudad debe contener únicamente letras.')
             .isLength({min: 1, max: 30}).withMessage('El nombre de la ciudad debe contener entre 1 y 30 caracteres.'),
 
-            // validaciones del campo "extension" (Extension)
-            body('extension')
-            .optional()
-            .isNumeric(),
-
             // validaciones del campo "telephone" (Telefono)
             body('telephone')
             .exists().withMessage('Parece el numero de telefono no fue enviado.')
@@ -136,23 +120,13 @@ module.exports = {
             body('creditlimit')
             .exists().withMessage('Parece el limite de credito no fue enviado.')
             .trim().notEmpty().withMessage('El limite de credito no debe estar vacío.')
-            .isLength({min: 1, max: 3}).withMessage('El limite de credito debe contener entre 1 y 3 caracteres.'),
+            .isLength({min: 1, max: 10}).withMessage('El limite de credito debe contener entre 1 y 3 caracteres.'),
 
             // validaciones del campo "creditdays" (Días de credito)
             body('creditdays')
             .exists().withMessage('Parece el limite de días de credito no fue enviado.')
             .trim().notEmpty().withMessage('El limite de días de credito no debe estar vacío.')
             .isLength({min: 1, max: 3}).withMessage('El limite de  días de credito debe contener entre 1 y 3 caracteres.'),
-
-            // validaciones del campo "descuento" (Descuento)
-            body('descuento')
-            .optional()
-            .isNumeric(),
-
-            // validaciones del campo "observaciones" (Observaciones)
-            body('observaciones')
-            .optional()
-            .isString(),
 
             // validaciones del campo "status" (Estatus del cliente)
             body('status')
