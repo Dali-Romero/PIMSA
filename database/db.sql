@@ -219,7 +219,7 @@ CREATE TABLE TareasOrden(
 CREATE TABLE Grupos(
     grupoId INT NOT NULL AUTO_INCREMENT,
     nombre VARCHAR(20) NOT NULL,
-    descripcion VARCHAR(30) NOT NULL,
+    descripcion VARCHAR(50) NOT NULL,
     PRIMARY KEY(grupoId)
 );
 
@@ -416,4 +416,4 @@ INSERT INTO Permisos (descripcion, permiso)
         ("Cobranza", "collection"),
         ("Monitor", "monitor"),
         ("Panel", "panel"),
-        ("Reportes", "reporte");
+        ("Reportes", "reportes");

@@ -45,7 +45,7 @@
                         <td>{{numCabezales}}</td>
                         <td>{{velocidad}}</td>
                         <td>{{tipoTinta}}</td>
-                        <td>{{conTecnicoExt}}-{{conTecnico}}</td>
+                        <td>{{#if conTecnicoExt}}{{conTecnicoExt}}-{{/if}}{{conTecnico}}</td>
                         {{#if activo}}
                             <td class="text-success">Activa</td>
                         {{else}}

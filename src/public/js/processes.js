@@ -253,7 +253,7 @@ $(document).ready(function(){
     })
 
     // validate add role form
-    //validateProcessForm($('#addProcessForm'));
+    validateProcessForm($('#addProcessForm'));
 
     // ------------------------------- Edit file -------------------------------
     $('.remove-process-select').on('click', function(e){
@@ -266,5 +266,5 @@ $(document).ready(function(){
     })
 
     // validate add role form
-    //validateProcessForm($('#editProcessForm'));
+    validateProcessForm($('#editProcessForm'));
 })

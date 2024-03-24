@@ -30,10 +30,6 @@ module.exports = {
     // middleware para validar el formulario de agregar/editar cliente
     validateClients(){
         return [
-            // validaciones del campo "date" (Fecha)
-            body('date')
-            .optional()
-            .isDate(),
             // validaciones del campo "executive" (Ejecuyivo)
             body('executive')
             .optional(),
