@@ -108,7 +108,7 @@
                                     <a class="nav-link dropdown-toggle px-2 fs-5 disabled" role="button" tabindex="-1" aria-disabled="true"><i class="bi bi-people-fill"></i> Clientes</a>
                                 </span>
                             {{/checkPermissionOR}}
-                            <ul class="dropdown-menu dropdown-menu-dark"  aria-labelledby="offcanvasNavbarDropdown">
+                            <ul class="dropdown-menu dropdown-menu-dark mb-2"  aria-labelledby="offcanvasNavbarDropdown">
                                 <li>
                                     {{#checkPermission user.permisos "seeListClients"}}
                                         <a class="dropdown-item fs-6" href="/clients" style="--bs-dropdown-link-active-bg: rgba(222, 226, 230, 0.25);">Clientes</a>
@@ -149,7 +149,7 @@
                                     <a class="nav-link dropdown-toggle px-2 fs-5 disabled" role="button" tabindex="-1" aria-disabled="true"><i class="bi bi-person-fill"></i> Usuarios</a>
                                 </span>
                             {{/checkPermissionORThree}}
-                            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="offcanvasNavbarDropdown">
+                            <ul class="dropdown-menu dropdown-menu-dark mb-2" aria-labelledby="offcanvasNavbarDropdown">
                                 <li>
                                     {{#checkPermission user.permisos "seeListUsers"}}
                                         <a class="dropdown-item fs-6" href="/users" style="--bs-dropdown-link-active-bg: rgba(222, 226, 230, 0.25);"> Usuarios</a>
