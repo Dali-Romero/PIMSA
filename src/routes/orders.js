@@ -24,7 +24,7 @@ router.get('/info/:id', isLoggedIn, IsAuthorized('seeListOrders'), async (req, r
     const productos = productosEnCatalogo.concat(productosFueraCatalogo);
 
     // verificar se existen tareas para esta cotizacion
-    const permitidoCancelar = await pool.query('SELECT IFNULL((SELECT IF(COUNT(Tareas.tareaId) IS NOT NULL, 0, 1) FROM Tareas INNER JOIN tareasorden ON Tareas.tareaorden_id = tareasorden.tareaOrdenId INNER JOIN Ordenes ON tareasorden.orden_id = Ordenes.ordenId WHERE Ordenes.ordenId = ? GROUP BY Ordenes.ordenId), 1) AS permitidoCancelar;', [id]);
+    const permitidoCancelar = await pool.query('SELECT IFNULL((SELECT IF(COUNT(Tareas.tareaId) IS NOT NULL, 0, 1) FROM Tareas INNER JOIN TareasOrden ON Tareas.tareaorden_id = TareasOrden.tareaOrdenId INNER JOIN Ordenes ON TareasOrden.orden_id = Ordenes.ordenId WHERE Ordenes.ordenId = ? GROUP BY Ordenes.ordenId), 1) AS permitidoCancelar;', [id]);
     
     // separar las areas y su orden
     productos.forEach(producto => {
