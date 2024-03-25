@@ -92,11 +92,9 @@ router.post('/editclient/:id', isLoggedIn, IsAuthorized('editClients'), validate
     // En caso de no extistir errores almacenar el registro
     if (resultadosValidacion.isEmpty()) {
         var resBody = req.body;
-        console.log(resBody.descuento);
         if (resBody.descuento == 0 || resBody.descuento.isEmpty){
             resBody.descuento = 0;
         }  
-        console.log(resBody.descuento);
         const newClient = {
             nombre: resBody.tradename,
             usuario_id: resBody.executive,
@@ -118,7 +116,7 @@ router.post('/editclient/:id', isLoggedIn, IsAuthorized('editClients'), validate
             correoElecAlt: resBody.emailAlt,
             limiteCredito: resBody.creditlimit,
             diasCredito: resBody.creditdays,
-            descuento: null,
+            descuento: resBody.descuento,
             observaciones: resBody.observaciones,
             activo: resBody.status
         };
