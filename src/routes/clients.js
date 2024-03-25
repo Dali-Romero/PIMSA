@@ -126,7 +126,7 @@ router.post('/editclient/:id', isLoggedIn, IsAuthorized('editClients'), validate
     } else {
         // notificar errores de la validacion
         req.flash('validationErrors', resultadosValidacionArray);
-        res.redirect('/clients/editclient');
+        res.redirect('/clients/editclient/'+id);
     }
 });
 

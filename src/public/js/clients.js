@@ -262,5 +262,5 @@ function validarClients(form){
 $(document).ready(function(){
     
     validarClients($('#form-add-client'));
-    //validar($('#form-edit-client'));
+    validar($('#form-edit-client'));
 });
