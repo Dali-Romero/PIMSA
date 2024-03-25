@@ -159,7 +159,7 @@ $(document).ready(function(){
                 "targets": 4
             },
             {
-                "width": "50%",
+                "width": "30%",
                 "targets": 1
             }
         ],

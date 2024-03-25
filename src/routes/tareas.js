@@ -108,7 +108,6 @@ router.post('/terminar/:id', isLoggedIn, IsAuthorized('tasksEmployees'), validat
         var ordenId = await pool.query('SELECT tareaorden_id, orden_id FROM Tareas WHERE tareaId = ' + id);
         var orden = ordenId[0].orden_id
         ordenId = ordenId[0].tareaorden_id;
-        const restareas = await pool.query('SELECT * FROM Tareas WHERE tareaorden_id = ' + ordenId + ' AND terminada = False AND activa = 0 ORDER BY sucesion');
         const tarea = req.body;
         var editTarea = {
             maquina_id: tarea.maquina,
@@ -124,20 +123,22 @@ router.post('/terminar/:id', isLoggedIn, IsAuthorized('tasksEmployees'), validat
         editTarea = {
             activa: 1
         };
-        if (restareas.length > 1){
-            if (restareas.length > 2){
-                if (restareas[1].sucesion == restareas[2].sucesion){
+        const restareas = await pool.query('SELECT * FROM Tareas WHERE tareaorden_id = ' + ordenId + ' AND terminada = False AND activa = FALSE ORDER BY sucesion');
+        console.log(restareas);
+        if (restareas.length >= 1){
+            if (restareas.length >= 2){
+                if (restareas[0].sucesion == restareas[1].sucesion){
                     // Si dos tareas tienen la misma sucesion se activan dos tareas
-                    await pool.query('UPDATE Tareas SET ? WHERE tareaId = ?', [editTarea, restareas[2].tareaId]);
+                    await pool.query('UPDATE Tareas SET ? WHERE tareaId = ?', [editTarea, restareas[1].tareaId]);
                 }
             }
-            await pool.query('UPDATE Tareas SET ? WHERE tareaId = ?', [editTarea, restareas[1].tareaId]);
+            await pool.query('UPDATE Tareas SET ? WHERE tareaId = ?', [editTarea, restareas[0].tareaId]);
         };
         // Se actualiza cobranza
-        if (restareas.length == 1){
+        if (restareas.length == 0){
             var cobranza = await pool.query('SELECT actividadesCont, cobranzaId, actividadesTotal FROM Cobranza WHERE orden_id = ?', [orden])
 
-            if (cobranza[0].actividadesCont == (cobranza[0].actividadesTotal + 1)){
+            if ((cobranza[0].actividadesCont + 1) == cobranza[0].actividadesTotal){
                 editTarea = {
                     actividadesCont: Number(cobranza[0].actividadesCont) + 1,
                     estatus: 'Productos terminados.'
