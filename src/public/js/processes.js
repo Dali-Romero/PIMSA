@@ -160,7 +160,7 @@ $(document).ready(function(){
             },
             {
                 "width": "50%",
-                "targets": 2
+                "targets": 1
             }
         ],
         dom: '<"row pb-2"<"col-12 col-md-6 order-last order-md-first"<"float-start"f>><"col-12 col-md-6 order-first order-md-last"<"button-add-process"B>>><"row"<"col-sm-12"tr>>',
