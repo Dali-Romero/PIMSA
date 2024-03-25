@@ -19,7 +19,7 @@ router.post('/addclient', isLoggedIn, IsAuthorized('addClients'), validateClient
 
     // En caso de no extistir errores almacenar el registro
     if (resultadosValidacion.isEmpty()) {
-        const resBody = req.body;
+        var resBody = req.body;
         if (resBody.descuento == 0 || resBody.descuento.isEmpty){
             resBody.descuento = 0;
         }
@@ -91,10 +91,12 @@ router.post('/editclient/:id', isLoggedIn, IsAuthorized('editClients'), validate
 
     // En caso de no extistir errores almacenar el registro
     if (resultadosValidacion.isEmpty()) {
-        const resBody = req.body;
+        var resBody = req.body;
+        console.log(resBody.descuento);
         if (resBody.descuento == 0 || resBody.descuento.isEmpty){
             resBody.descuento = 0;
         }  
+        console.log(resBody.descuento);
         const newClient = {
             nombre: resBody.tradename,
             usuario_id: resBody.executive,
