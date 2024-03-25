@@ -1,4 +1,4 @@
-function validar(form){
+function validarGrupos(form){
     let validated = false;
     form.on('submit', (event)=>{
         //validacion del nombre del grupo
@@ -41,6 +41,6 @@ function validar(form){
 
 $(document).ready(function(){
     
-    validar($('#form-add-group'));
-    //validar($('#form-edit-group'));
+    validarGrupos($('#form-add-group'));
+    validarGrupos($('#form-edit-group'));
 });

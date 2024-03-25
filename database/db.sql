@@ -296,7 +296,7 @@ CREATE TABLE Clientes(
     limiteCredito INT NOT NULL,
     diasCredito INT NOT NULL,
     descuento INT NOT NULL,
-    observaciones VARCHAR(200) NOT NULL,
+    observaciones VARCHAR(200),
     activo BOOLEAN NOT NULL,
     PRIMARY KEY(clienteId)
 );
