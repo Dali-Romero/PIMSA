@@ -92,7 +92,7 @@ router.post('/editclient/:id', isLoggedIn, IsAuthorized('editClients'), validate
     // En caso de no extistir errores almacenar el registro
     if (resultadosValidacion.isEmpty()) {
         const resBody = req.body;
-        if (resBody.descuento == 0 ){
+        if (resBody.descuento == 0 || resBody.descuento == null){
             resBody.descuento = 0;
         }  
         const newClient = {
