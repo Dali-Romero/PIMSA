@@ -135,7 +135,8 @@ router.post('/terminar/:id', isLoggedIn, IsAuthorized('tasksEmployees'), validat
             await pool.query('UPDATE Tareas SET ? WHERE tareaId = ?', [editTarea, restareas[0].tareaId]);
         };
         // Se actualiza cobranza
-        if (restareas.length == 0){
+        const tareasRestantesCobranza = await pool.query('SELECT * FROM Tareas WHERE tareaorden_id = ? AND terminada = False');
+        if (tareasRestantesCobranza.length == 0){
             var cobranza = await pool.query('SELECT actividadesCont, cobranzaId, actividadesTotal FROM Cobranza WHERE orden_id = ?', [orden])
 
             if ((cobranza[0].actividadesCont + 1) == cobranza[0].actividadesTotal){
