@@ -211,7 +211,8 @@ router.get('/create/:id', isLoggedIn, async(req, res) =>{
     var tareaCobr = {
         orden_id: Number(id),
         estatus: "Productos inconclusos.",
-        actividadesTotal: contador
+        actividadesTotal: contador,
+        actividadesCont: 0
     };
     await pool.query('INSERT INTO Cobranza SET ?', [tareaCobr]);
 

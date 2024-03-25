@@ -163,7 +163,7 @@ CREATE TABLE FueraCatalogoCotizados(
     precioCadaUno DECIMAL(11,2) NOT NULL,
     monto DECIMAL(11,2) NOT NULL,
     fueraCotizadoId INT NOT NULL AUTO_INCREMENT,
-    proceso_id INT NOT NULL, -- llave foranea
+    proceso_id INT, -- llave foranea
     PRIMARY KEY(fueraCotizadoId)
 );
 
@@ -182,9 +182,9 @@ CREATE TABLE Ordenes(
 CREATE TABLE Cobranza(
     cobranzaId INT NOT NULL AUTO_INCREMENT,
     orden_id INT, -- llave foranea
-    tipoPago VARCHAR(10) NOT NULL,
+    tipoPago VARCHAR(10),
     estatus VARCHAR(25) NOT NULL,
-    fechaPago DATE NOT NULL,
+    fechaPago DATE,
     actividadesTotal INT NOT NULL,
     actividadesCont INT NOT NULL,
     folio VARCHAR(25),
