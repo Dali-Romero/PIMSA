@@ -108,7 +108,7 @@ router.post('/terminar/:id', isLoggedIn, IsAuthorized('tasksEmployees'), validat
         var ordenId = await pool.query('SELECT tareaorden_id, orden_id FROM Tareas WHERE tareaId = ' + id);
         var orden = ordenId[0].orden_id
         ordenId = ordenId[0].tareaorden_id;
-        const restareas = await pool.query('SELECT * FROM Tareas WHERE tareaorden_id = ' + ordenId + ' AND terminada = False ORDER BY sucesion');
+        const restareas = await pool.query('SELECT * FROM Tareas WHERE tareaorden_id = ' + ordenId + ' AND terminada = False AND activa = 0 ORDER BY sucesion');
         const tarea = req.body;
         var editTarea = {
             maquina_id: tarea.maquina,
