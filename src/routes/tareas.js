@@ -183,7 +183,7 @@ router.get('/create/:id', isLoggedIn, async(req, res) =>{
                 tareas.push([ordenProceso[i].nombre, Number(id), ordenProceso[i].area_id, 0, 0, 0, ordenProceso[i].orden, resProceso.insertId]);
             }
         }
-        var res = await pool.query('INSERT INTO Tareas (nombre, orden_id, area_id, terminada, tareas.chec, activa, sucesion, tareaorden_id) VALUES ?;', [tareas]);
+        var res = await pool.query('INSERT INTO Tareas (nombre, orden_id, area_id, terminada, chec, activa, sucesion, tareaorden_id) VALUES ?;', [tareas]);
     });
 
     // Se crean las tareas para los productos fuera de catalogo
@@ -204,7 +204,7 @@ router.get('/create/:id', isLoggedIn, async(req, res) =>{
                 tareas.push([ordenProceso[i].concepto, Number(id), ordenProceso[i].area_id, 0, 0, 0, ordenProceso[i].orden, resProceso.insertId]);
             }
         }
-        var res = await pool.query('INSERT INTO Tareas (nombre, orden_id, area_id, terminada, tareas.chec, activa, sucesion, tareaorden_id) VALUES ?;', [tareas]);
+        var res = await pool.query('INSERT INTO Tareas (nombre, orden_id, area_id, terminada, chec, activa, sucesion, tareaorden_id) VALUES ?;', [tareas]);
     });
 
     // Se crea la tarea de cobranza
