@@ -121,35 +121,6 @@ router.post('/editclient/:id', isLoggedIn, IsAuthorized('editClients'), validate
             activo: resBody.status
         };
         await pool.query('UPDATE Clientes SET ? WHERE clienteId = ?', [newClient, id]);
-
-        //prueba para ver si funciona editar cliente
-        editClient = {
-            nombre: resBody.tradename,
-            usuario_id: resBody.executive,
-            grupo_id: resBody.group,
-            contacto: resBody.contact,
-            razonSocial: resBody.companyname,
-            rfc: resBody.rfc, 
-            domCalle: resBody.street,
-            domNumEx: resBody.outernumber,
-            domNumIn: resBody.innernumber,
-            domColonia: resBody.colony, 
-            domCp: resBody.cp, 
-            domEstado: resBody.state, 
-            domCiudad: resBody.city, 
-            telefono: resBody.telephone,
-            telefonoExt: resBody.extension,
-            celular: resBody.cell,
-            correoElec: resBody.email,
-            correoElecAlt: resBody.emailAlt,
-            limiteCredito: resBody.creditlimit,
-            diasCredito: resBody.creditdays,
-            descuento: resBody.descuento,
-            observaciones: resBody.observaciones,
-            activo: resBody.status
-        }
-        await pool.query('INSERT INTO Clientes SET ?', [editClient]);
-
         req.flash('success', 'El cliente ha sido editado correctamente');
         res.redirect('/clients/infoclient/'+id);
     } else {
