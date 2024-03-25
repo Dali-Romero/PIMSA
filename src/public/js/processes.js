@@ -159,8 +159,8 @@ $(document).ready(function(){
                 "targets": 4
             },
             {
-                "width": "20%",
-                "targets": 1
+                "width": "40%",
+                "targets": 2
             }
         ],
         dom: '<"row pb-2"<"col-12 col-md-6 order-last order-md-first"<"float-start"f>><"col-12 col-md-6 order-first order-md-last"<"button-add-process"B>>><"row"<"col-sm-12"tr>>',
