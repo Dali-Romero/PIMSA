@@ -609,7 +609,7 @@ $(document).ready(function(){
         order: [[1, 'Desc']],
         columnDefs: [
             {
-                "width": "50%",
+                "width": "30%",
                 "targets": 2
             }
         ],
