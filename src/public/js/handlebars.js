@@ -30,8 +30,7 @@ Handlebars.registerHelper('formatNumber', function(v1, options){
 
 Handlebars.registerHelper('formatDate', function(v1, options){
     date = new Date(v1);
-    let zonaHorariaMexico = 'America/Mexico_City';
-    fechaCotizacion = date.toLocaleDateString('es-mx', {timeZone: zonaHorariaMexico, year: 'numeric', month: 'long', day: 'numeric', hour:'numeric', minute: 'numeric'});
+    fechaCotizacion = date.toLocaleDateString('es-mx', {year: 'numeric', month: 'long', day: 'numeric', hour:'numeric', minute: 'numeric'});
     return fechaCotizacion;
 });
 
