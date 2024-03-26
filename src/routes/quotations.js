@@ -151,7 +151,7 @@ router.post('/preview', isLoggedIn, async (req, res)=>{
     // formatos de fecha
     const date = new Date();
     let zonaHorariaMexico = 'America/Mexico_City';
-    let fecha = new Date(date.toLocaleString('en-US', { timeZone: zonaHorariaMexico, year: 'numeric', month: 'numeric', day: 'numeric', hour:'numeric', minute: 'numeric' }));
+    let fecha = new Date(date.toLocaleString('en-CA', { timeZone: zonaHorariaMexico, year: 'numeric', month: 'numeric', day: 'numeric', hour:'numeric', minute: 'numeric', hourCycle: 'h23' }));
 
     // obtener informacion de los productos 
     let i = 0;

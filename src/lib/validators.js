@@ -417,13 +417,6 @@ module.exports = {
             .trim().notEmpty().withMessage('Parece que el total está vacío.')
             .isInt().withMessage('Parece que el total no está en un formato adecuado.'),
 
-            // validaciones del campo "revalueproductId" (id del producto cotizado)
-            body('data.productos.**.revalueproductId')
-            .exists().withMessage('Parece que el id del producto no fue enviado.')
-            .trim().notEmpty().withMessage('Parece que el id del producto está vacío.')
-            .isString().withMessage('Parece que el id del producto no está en un formato adecuado.')
-            .not().matches(/^\d+$/).withMessage('Parece que el id del producto cuenta con carateres no válidos.'),
-
             // validaciones del campo "revaluepriceproduct" (precio individual del producto cotizado)
             body('data.productos.**.revaluepriceproduct')
             .exists().withMessage('Parece que el precio individual del producto no fue enviado.')
