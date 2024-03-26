@@ -6,12 +6,12 @@ const { validateTareas } = require('../lib/validators');
 const { validationResult } = require('express-validator');
 
 router.get('/', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, res) =>{
-    const rol = req.user.rol_id; 
     var area = await pool.query('SELECT Empleados.area_id FROM Empleados INNER JOIN Usuarios ON Usuarios.empleado_id = Empleados.empleadoId WHERE Usuarios.usuarioId = ?', [req.user.usuarioId]);
+    area = area[0].area_id;
     console.log(area);
-    var tareasNuevas = await pool.query('SELECT * FROM Tareas INNER JOIN Ordenes ON Tareas.orden_id = Ordenes.ordenId INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId WHERE Tareas.area_id = ? AND Tareas.terminada = false AND Tareas.chec = 0 AND Tareas.activa = 1 ORDER BY Ordenes.fechaGen', [area[0].area_id]);
-    var tareas = await pool.query('SELECT * FROM Tareas INNER JOIN Ordenes ON Tareas.orden_id = Ordenes.ordenId INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId WHERE Tareas.area_id = ? AND Tareas.terminada = false AND Tareas.chec = 1 AND Tareas.activa = 1 AND (Tareas.notes NOT LIKE "Error:%" OR Tareas.notes IS NULL) ORDER BY Ordenes.fechaGen', [area[0].area_id]);
-    var tareasError = await pool.query('SELECT * FROM Tareas INNER JOIN Ordenes ON Tareas.orden_id = Ordenes.ordenId INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId WHERE Tareas.area_id = ? AND Tareas.terminada = false AND Tareas.chec = 1 AND Tareas.activa = 1 AND Tareas.notes LIKE "Error:%" ORDER BY Ordenes.fechaGen', [area[0].area_id]);
+    var tareasNuevas = await pool.query('SELECT * FROM Tareas INNER JOIN Ordenes ON Tareas.orden_id = Ordenes.ordenId INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId WHERE Tareas.area_id = ? AND Tareas.terminada = false AND Tareas.chec = 0 AND Tareas.activa = 1 ORDER BY Ordenes.fechaGen', [area]);
+    var tareas = await pool.query('SELECT * FROM Tareas INNER JOIN Ordenes ON Tareas.orden_id = Ordenes.ordenId INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId WHERE Tareas.area_id = ? AND Tareas.terminada = false AND Tareas.chec = 1 AND Tareas.activa = 1 AND (Tareas.notes NOT LIKE "Error:%" OR Tareas.notes IS NULL) ORDER BY Ordenes.fechaGen', [area]);
+    var tareasError = await pool.query('SELECT * FROM Tareas INNER JOIN Ordenes ON Tareas.orden_id = Ordenes.ordenId INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId WHERE Tareas.area_id = ? AND Tareas.terminada = false AND Tareas.chec = 1 AND Tareas.activa = 1 AND Tareas.notes LIKE "Error:%" ORDER BY Ordenes.fechaGen', [area]);
     const conteoNuevos = tareasNuevas.length;
     const conteo = tareas.length + tareasError.length;
     const users = await pool.query('SELECT * FROM Usuarios');
@@ -19,10 +19,11 @@ router.get('/', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, res) =>{
 });
 
 router.get('/todas', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, res) =>{
-    const rol = req.user.rol_id; 
-    var tareasNuevas = await pool.query('SELECT * FROM Tareas INNER JOIN Ordenes ON Tareas.orden_id = Ordenes.ordenId INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId INNER JOIN AreasRoles ON Tareas.area_id = AreasRoles.area_id WHERE AreasRoles.rol_id = ' + rol + ' AND Tareas.terminada = false AND Tareas.chec = 0 AND Tareas.activa = 1 ORDER BY Ordenes.fechaGen AND Tareas.tareaId');
-    var tareas = await pool.query('SELECT * FROM Tareas INNER JOIN Ordenes ON Tareas.orden_id = Ordenes.ordenId INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId INNER JOIN AreasRoles ON Tareas.area_id = AreasRoles.area_id WHERE AreasRoles.rol_id = ' + rol + ' AND (Tareas.notes NOT LIKE "Error:%" OR Tareas.notes IS NULL) ORDER BY Ordenes.fechaGen AND Tareas.tareaId');
-    var tareasError = await pool.query('SELECT * FROM Tareas INNER JOIN Ordenes ON Tareas.orden_id = Ordenes.ordenId INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId INNER JOIN AreasRoles ON Tareas.area_id = AreasRoles.area_id WHERE AreasRoles.rol_id = ' + rol + ' AND Tareas.notes LIKE "Error:%" ORDER BY Ordenes.fechaGen AND Tareas.tareaId')
+    var area = await pool.query('SELECT Empleados.area_id FROM Empleados INNER JOIN Usuarios ON Usuarios.empleado_id = Empleados.empleadoId WHERE Usuarios.usuarioId = ?', [req.user.usuarioId]);
+    area = area[0].area_id;
+    var tareasNuevas = await pool.query('SELECT * FROM Tareas INNER JOIN Ordenes ON Tareas.orden_id = Ordenes.ordenId INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId WHERE Tareas.area_id = ? AND Tareas.terminada = false AND Tareas.chec = 0 AND Tareas.activa = 1 ORDER BY Ordenes.fechaGen AND Tareas.tareaId', [area]);
+    var tareas = await pool.query('SELECT * FROM Tareas INNER JOIN Ordenes ON Tareas.orden_id = Ordenes.ordenId INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId WHERE Tareas.area_id = ? AND (Tareas.notes NOT LIKE "Error:%" OR Tareas.notes IS NULL) ORDER BY Ordenes.fechaGen AND Tareas.tareaId', [area]);
+    var tareasError = await pool.query('SELECT * FROM Tareas INNER JOIN Ordenes ON Tareas.orden_id = Ordenes.ordenId INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId WHERE Tareas.area_id = ? AND Tareas.notes LIKE "Error:%" ORDER BY Ordenes.fechaGen AND Tareas.tareaId', [area])
     const conteoNuevos = tareasNuevas.length;
     const conteo = tareas.length + tareasError.length;
     const users = await pool.query('SELECT * FROM Usuarios');
@@ -30,8 +31,9 @@ router.get('/todas', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, res)
 });
 
 router.get('/historial', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, res) =>{
-    const rol = req.user.rol_id; 
-    var tareas = await pool.query('SELECT * FROM Tareas INNER JOIN Ordenes ON Tareas.orden_id = Ordenes.ordenId INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId INNER JOIN AreasRoles ON Tareas.area_id = AreasRoles.area_id WHERE AreasRoles.rol_id = ' + rol + ' AND Tareas.terminada = true ORDER BY Ordenes.fechaGen');
+    var area = await pool.query('SELECT Empleados.area_id FROM Empleados INNER JOIN Usuarios ON Usuarios.empleado_id = Empleados.empleadoId WHERE Usuarios.usuarioId = ?', [req.user.usuarioId]);
+    area = area[0].area_id;
+    var tareas = await pool.query('SELECT * FROM Tareas INNER JOIN Ordenes ON Tareas.orden_id = Ordenes.ordenId INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId WHERE Tareas.area_id = ? AND Tareas.terminada = true ORDER BY Ordenes.fechaGen', [area]);
     const conteo = tareas.length;
     const users = await pool.query('SELECT * FROM Usuarios');
     res.render('../views/tareas/historialTareas', {tareas, conteo, users});
