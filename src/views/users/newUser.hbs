@@ -97,6 +97,7 @@
                 <div class="input-group has-validation">
                     <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-file-person-fill"></i></span>
                     <select name="empleado" id="empleado" class="form-select border-dark border-2">   
+                        <option value="1000">Comodín</option>
                         {{#each empleados}}
                             <option value={{empleadoId}} {{#equalNR empleadoId ../errorUser.empleado}} selected {{/equalNR}}>{{nombreComp}}</option>
                         {{/each}}

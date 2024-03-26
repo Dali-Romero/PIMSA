@@ -25,7 +25,7 @@ router.get('/', isLoggedIn, IsAuthorized('seeListUsers'), async (req, res) =>{
 
 router.get('/add', isLoggedIn, IsAuthorized('addUsers'), async (req, res) =>{
     const roles = await pool.query('SELECT * FROM Roles WHERE activo = 1');
-    const empleados = await pool.query('SELECT * FROM Empleados');
+    const empleados = await pool.query('SELECT empleadoId, nombreComp FROM Empleados WHERE empleadoId NOT IN (SELECT empleadoId FROM Usuarios INNER JOIN Empleados ON Usuarios.empleado_id = Empleados.empleadoId WHERE Usuarios.empleado_id <> 1000);');
     res.render('../views/users/newUser', {roles, empleados});
 });
 
@@ -72,7 +72,7 @@ router.get('/edit/:id', isLoggedIn, IsAuthorized('editUsers'), async(req, res) =
     const {id} = req.params;
     const users = await pool.query('SELECT * FROM Usuarios WHERE usuarioId = ?', [id]);
     const roles = await pool.query('SELECT * FROM Roles WHERE activo = 1');
-    const empleados = await pool.query('SELECT * FROM Empleados');
+    const empleados = await pool.query('SELECT empleadoId, nombreComp FROM Empleados WHERE empleadoId NOT IN (SELECT empleadoId FROM Usuarios INNER JOIN Empleados ON Usuarios.empleado_id = Empleados.empleadoId WHERE Usuarios.empleado_id <> 1000);');
     res.render('../views/users/editUser', {users: users[0], roles, empleados});
 });
 

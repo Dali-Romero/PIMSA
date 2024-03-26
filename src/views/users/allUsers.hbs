@@ -42,9 +42,13 @@
                             {{#each ../roles}}
                                 {{#equal ../rol_id rolId}}<th>{{nombre}}</th>{{/equal}}
                             {{/each}}
-                            {{#each ../empleados}}
-                                {{#equal ../empleado_id empleadoId}}<th>{{nombreComp}}</th>{{/equal}}
-                            {{/each}}
+                            {{#equal empleado_id 1000}}
+                                <th>Esperando reasignacion...</th>
+                            {{else}}
+                                {{#each ../empleados}}
+                                    {{#equal ../empleado_id empleadoId}}<th>{{nombreComp}}</th>{{/equal}}
+                                {{/each}}
+                            {{/equal}}
                             {{#if activo}}
                                 <td class="text-success">Activo</td>
                             {{else}}

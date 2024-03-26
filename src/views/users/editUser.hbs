@@ -92,6 +92,7 @@
                 <label for="empleado" class="form-label">Usuario conectado al Empleado:</label>
                 <div class="input-group has-validation">
                     <select name="empleado" id="empleado" class="form-select border-dark border-2">   
+                        <option value="1000">Comodín</option>
                         {{#each empleados}}
                             <option value={{empleadoId}} {{#equal empleadoId ../users.empleado_id}} selected {{/equal}}>{{nombreComp}}</option>
                         {{/each}}

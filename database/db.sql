@@ -89,7 +89,7 @@ CREATE TABLE HistorialEmpleados(
     finContrato DATE NOT NULL,
     activo BOOLEAN NOT NULL,
     extension VARCHAR(5),
-    tipoContrato VARCHAR(10),
+    tipoContrato VARCHAR(20),
     PRIMARY KEY(cambioId)
 );
 
@@ -112,12 +112,6 @@ CREATE TABLE Roles(
     activo BOOLEAN NOT NULL,
     descripcion VARCHAR(40),
     PRIMARY KEY(rolId)
-);
-
--- Tabla pivote
-CREATE TABLE AreasRoles(
-    rol_id INT, -- llave foranea
-    area_id INT -- llave foranea
 );
 
 CREATE TABLE Areas(
