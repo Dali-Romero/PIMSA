@@ -24,7 +24,7 @@ router.post('/add', isLoggedIn, IsAuthorized('addQuotations'), validateQuotation
     const resultadosValidacion = validationResult(req);
     const resultadosValidacionArray = resultadosValidacion.array({onlyFirstError: true});
 
-    // En caso de no extistir errores almacenar el registro
+    // En caso de no extistir errores almacenar el registro preview
     if (resultadosValidacion.isEmpty()) {
         const cotizacion = req.body.data.cotizacion;
         const productos = req.body.data.productos;
@@ -151,7 +151,7 @@ router.post('/preview', isLoggedIn, async (req, res)=>{
     // formatos de fecha
     const date = new Date();
     let zonaHorariaMexico = 'America/Mexico_City';
-    let fecha = new Date(date.toLocaleString('en-CA', { timeZone: zonaHorariaMexico, year: 'numeric', month: 'numeric', day: 'numeric', hour:'numeric', minute: 'numeric', hourCycle: 'h23' }));
+    let fecha = new Date(date.toLocaleString('en-US', { timeZone: zonaHorariaMexico, year: 'numeric', month: 'numeric', day: 'numeric', hour:'numeric', minute: 'numeric', hourCycle: 'h23' }));
 
     // obtener informacion de los productos 
     let i = 0;
