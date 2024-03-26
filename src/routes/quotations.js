@@ -51,7 +51,7 @@ router.post('/add', isLoggedIn, IsAuthorized('addQuotations'), validateQuotation
         };
 
         const {insertId} = await pool.query('INSERT INTO Cotizaciones SET ?;', [newCot]);
-        let productosEnCatalogo = [];
+        let ProductosEnCatalogo = [];
         let ProductosFueraCatalogo = [];
         let newProducto = [];
         productos.forEach(producto => {
@@ -69,7 +69,7 @@ router.post('/add', isLoggedIn, IsAuthorized('addQuotations'), validateQuotation
                     producto.amount,
                     Number(producto.priceproduct)
                 ]
-                productosEnCatalogo.push(newProducto);
+                ProductosEnCatalogo.push(newProducto);
                 newProducto = [];
             }else{
                 newProducto = [
@@ -90,11 +90,11 @@ router.post('/add', isLoggedIn, IsAuthorized('addQuotations'), validateQuotation
                 newProducto = [];
             }
         });
-        console.log(productosEnCatalogo);
-        console.log(productosFueraCatalogo);
+        console.log(ProductosEnCatalogo);
+        console.log(ProductosFueraCatalogo);
 
-        if (productosEnCatalogo.length > 0){
-            await pool.query('INSERT INTO ProductosCotizados (cot_id, cantidad, producto_id, acabados, archivo, largo, ancho, area, precioCadaUno, monto, precio) VALUES ?;', [productosEnCatalogo]);
+        if (ProductosEnCatalogo.length > 0){
+            await pool.query('INSERT INTO ProductosCotizados (cot_id, cantidad, producto_id, acabados, archivo, largo, ancho, area, precioCadaUno, monto, precio) VALUES ?;', [ProductosEnCatalogo]);
         }
         if (ProductosFueraCatalogo.length > 0){
             await pool.query('INSERT INTO FueraCatalogoCotizados (cot_id, cantidad, concepto, acabados, archivo, precio, unidad, largo, ancho, area, precioCadaUno, monto) VALUES ?;', [ProductosFueraCatalogo]);
