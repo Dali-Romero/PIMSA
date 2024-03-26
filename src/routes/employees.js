@@ -78,8 +78,6 @@ router.post('/add', isLoggedIn, IsAuthorized('addEmployees'), validateCreateEmpl
             const today = new Date();
             let zonaHorariaMexico = 'America/Mexico_City';
             let fechaMexico = new Date(today.toLocaleString('en-US', { timeZone: zonaHorariaMexico }));
-            console.log(fechaMexico);
-            console.log(today);
             newEmployee = {
                 modificado_usuario_id: req.user.usuarioId,
                 empleado_id: empleado[0].empleadoId,

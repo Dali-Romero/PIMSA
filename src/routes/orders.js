@@ -34,7 +34,8 @@ router.get('/info/:id', isLoggedIn, IsAuthorized('seeListOrders'), async (req, r
 
     // fecha minima de entrega
     date = new Date();
-    fechaMin = date.toLocaleDateString('en-CA', {year: 'numeric', month: 'numeric', day: 'numeric'});
+    let zonaHorariaMexico = 'America/Mexico_City';
+    fechaMin = date.toLocaleDateString('en-CA', {timeZone: zonaHorariaMexico, year: 'numeric', month: 'numeric', day: 'numeric'});
     
     res.render('orders/info', {cotizacion: cotizacion[0], productos: productos, permitidoCancelar: permitidoCancelar[0], fechaMinima: fechaMin});
 });

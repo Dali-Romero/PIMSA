@@ -48,7 +48,7 @@ router.get('/editgroup/:id', isLoggedIn, IsAuthorized('editClientsGroups'), asyn
     res.render('grupos/editgroup', {group: group[0]});
 });
 
-router.post('/editgroup/:id', isLoggedIn, IsAuthorized('editClientsGroups'), async (req, res)=>{
+router.post('/editgroup/:id', isLoggedIn, IsAuthorized('editClientsGroups'), validateGroups(), async (req, res)=>{
     const {id} = req.params;
 
     // validacion de los campos enviados

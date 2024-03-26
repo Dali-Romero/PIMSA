@@ -29,9 +29,12 @@ router.post('/add', isLoggedIn, IsAuthorized('addQuotations'), validateQuotation
         const cotizacion = req.body.data.cotizacion;
         const productos = req.body.data.productos;
         const usuarioId = req.user.usuarioId;
+        const today = new Date();
+        let zonaHorariaMexico = 'America/Mexico_City';
+        let fechaMexico = new Date(today.toLocaleString('en-US', { timeZone: zonaHorariaMexico }));
 
         const newCot = {
-            fecha: cotizacion.fecha,
+            fecha: fechaMexico,
             cliente_id: cotizacion.cliente_id,
             proyecto: cotizacion.proyecto,
             observaciones: cotizacion.observaciones,
@@ -147,7 +150,8 @@ router.post('/preview', isLoggedIn, async (req, res)=>{
 
     // formatos de fecha
     const date = new Date();
-    fecha = date.toLocaleDateString('en-CA', {year: 'numeric', month: 'numeric', day: 'numeric', hour:'numeric', minute: 'numeric', hourCycle: 'h23'});
+    let zonaHorariaMexico = 'America/Mexico_City';
+    let fecha = new Date(date.toLocaleString('en-CA', { timeZone: zonaHorariaMexico, year: 'numeric', month: 'numeric', day: 'numeric', hour:'numeric', minute: 'numeric', hourCycle: 'h23' }));
 
     // obtener informacion de los productos 
     let i = 0;
@@ -310,10 +314,13 @@ router.post('/edit/:id', isLoggedIn, IsAuthorized('editQuotations'), validateQuo
     if (resultadosValidacion.isEmpty()) {
         const cotizacion = req.body.data.cotizacion;
         const productos = req.body.data.productos;
+        const today = new Date();
+        let zonaHorariaMexico = 'America/Mexico_City';
+        let fecha = new Date(today.toLocaleString('en-US', { timeZone: zonaHorariaMexico }));
 
         // ordenar cotizacion
         const newCot = {
-            fecha: cotizacion.fecha,
+            fecha: fecha,
             cliente_id: cotizacion.cliente_id,
             proyecto: cotizacion.proyecto,
             observaciones: cotizacion.observaciones,
@@ -448,8 +455,9 @@ router.post('/email/:id', isLoggedIn, IsAuthorized('seeListQuotations'), validat
         const fechaEmail = new Date().toLocaleDateString('es-mx', {year: 'numeric', month: 'numeric', day: 'numeric'});
         const sourceEmail = fs.readFileSync(path.join(process.cwd(), 'src', 'views', 'quotations', 'emailTemplate.hbs'), 'utf8');
         const templateEmail = hbs.compile(sourceEmail);
+        let zonaHorariaMexico = 'America/Mexico_City';
         const contextEmail = {
-            fecha: new Date().toLocaleDateString('es-mx', {year: 'numeric', month: 'long', day: 'numeric'}),
+            fecha: new Date().toLocaleDateString('es-mx', {timeZone: zonaHorariaMexico, year: 'numeric', month: 'long', day: 'numeric'}),
             solicitante: cotizacion[0].solicitante,
             empleado: empleado[0],
         };
@@ -597,7 +605,8 @@ router.post('/generateOrder/:id', IsAuthorized('addOrders'), validateExtaskCreat
 
         // crear orden
         const date = new Date();
-        fechaGen = date.toLocaleDateString('en-CA', {year: 'numeric', month: 'numeric', day: 'numeric', hour:'numeric', minute: 'numeric', hourCycle: 'h23'});
+        let zonaHorariaMexico = 'America/Mexico_City';
+        fechaGen = date.toLocaleDateString('en-CA', {timeZone: zonaHorariaMexico, year: 'numeric', month: 'numeric', day: 'numeric', hour:'numeric', minute: 'numeric', hourCycle: 'h23'});
 
         const deadline = new Date('2001-01-02');
         fechaEnt = deadline.toLocaleDateString('en-CA', {year: 'numeric', month: 'numeric', day: 'numeric'});

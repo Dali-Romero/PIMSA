@@ -422,14 +422,14 @@ module.exports = {
             .exists().withMessage('Parece que el id del producto no fue enviado.')
             .trim().notEmpty().withMessage('Parece que el id del producto está vacío.')
             .isString().withMessage('Parece que el id del producto no está en un formato adecuado.')
-            .not().matches(/^\d$/).withMessage('Parece que el id del producto cuenta con carateres no válidos.'),
+            .not().matches(/^\d+$/).withMessage('Parece que el id del producto cuenta con carateres no válidos.'),
 
             // validaciones del campo "revaluepriceproduct" (precio individual del producto cotizado)
             body('data.productos.**.revaluepriceproduct')
             .exists().withMessage('Parece que el precio individual del producto no fue enviado.')
             .trim().notEmpty().withMessage('Parece que el precio individual del producto está vacío.')
             .isString().withMessage('Parece que el precio individual del producto no está en un formato adecuado.')
-            .not().matches(/^\d$/).withMessage('Parece que el precio individual del producto cuenta con carateres no válidos.'),
+            .not().matches(/^\d+$/).withMessage('Parece que el precio individual del producto cuenta con carateres no válidos.'),
 
             // validaciones del campo "revaluepriceach" (precio del producto total)
             body('data.productos.**.revaluepriceach')
@@ -635,7 +635,7 @@ module.exports = {
             .if(body('data.productos.**.isoutcatalog').equals('0'))
                 .trim().notEmpty().withMessage('Parece que el id del producto en catálogo está vacío.')
                 .isString().withMessage('Parece que el id del producto no está en un formato adecuado.')
-                .matches(/^\d$/).withMessage('Parece que el id del producto cuenta con carateres no válidos.'),
+                .matches(/^\d+$/).withMessage('Parece que el id del producto cuenta con carateres no válidos.'),
 
             // validaciones del campo "nameproduct" (nombre del producto cotizado)
             body('data.productos.**.nameproduct')
