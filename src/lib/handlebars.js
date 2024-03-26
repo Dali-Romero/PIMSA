@@ -79,15 +79,13 @@ hbs.registerHelper('formatNumberAmount', function(n){
 
 hbs.registerHelper('formatDate', function(date){
     date = new Date(date);
-    let zonaHorariaMexico = 'America/Mexico_City';
-    fecha = date.toLocaleDateString('es-mx', {timeZone: zonaHorariaMexico, year: 'numeric', month: 'long', day: 'numeric', hour:'numeric', minute: 'numeric'});
+    fecha = date.toLocaleDateString('es-mx', {year: 'numeric', month: 'long', day: 'numeric', hour:'numeric', minute: 'numeric'});
     return fecha;
 });
 
 hbs.registerHelper('formatDateShort', function(date){
     date = new Date(date);
-    let zonaHorariaMexico = 'America/Mexico_City';
-    fecha = date.toLocaleDateString('es-mx', {timeZone: zonaHorariaMexico, year: 'numeric', month: '2-digit', day: '2-digit', hour:'numeric', minute: 'numeric'});
+    fecha = date.toLocaleDateString('es-mx', {year: 'numeric', month: '2-digit', day: '2-digit', hour:'numeric', minute: 'numeric'});
     return fecha;
 });
 
