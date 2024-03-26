@@ -141,12 +141,14 @@ hbs.registerHelper('checkPermissionORThree', function (v1, v2, v3, v4, options){
 
 hbs.registerHelper('formatDateEspanol', function(date){
     date = new Date(date);
-    fecha = date.toLocaleDateString('es-mx', {weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'});
+    let zonaHorariaMexico = 'America/Mexico_City';
+    fecha = date.toLocaleDateString('es-mx', {timeZone: zonaHorariaMexico, weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'});
     return fecha;
 });
 
 hbs.registerHelper('formatDateString', function(date){
     date = new Date(date);
-    fecha = date.toLocaleDateString('en-CA');
+    let zonaHorariaMexico = 'America/Mexico_City';
+    fecha = date.toLocaleDateString('en-CA', {timeZone: zonaHorariaMexico});
     return fecha;
 });
