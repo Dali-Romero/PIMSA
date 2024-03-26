@@ -90,6 +90,8 @@ router.post('/add', isLoggedIn, IsAuthorized('addQuotations'), validateQuotation
                 newProducto = [];
             }
         });
+        console.log(productosEnCatalogo);
+        console.log(productosFueraCatalogo);
 
         if (productosEnCatalogo.length > 0){
             await pool.query('INSERT INTO ProductosCotizados (cot_id, cantidad, producto_id, acabados, archivo, largo, ancho, area, precioCadaUno, monto, precio) VALUES ?;', [productosEnCatalogo]);
