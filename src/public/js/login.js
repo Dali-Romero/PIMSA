@@ -1,4 +1,4 @@
-function validarForm(form){
+function validarFormLogin(form){
     let validated = false;
     form.on('submit', (event)=>{
         //Validacion del correo
@@ -46,5 +46,5 @@ function validarForm(form){
 }
 
 $(document).ready(function(){
-    validarForm($('#form-login'));
+    validarFormLogin($('#form-login'));
 })
