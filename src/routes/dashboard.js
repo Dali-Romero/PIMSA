@@ -140,10 +140,10 @@ router.post('/clientsFilter', isLoggedIn, IsAuthorized('panel'), validateGraphsF
         const {dateFilter } = req.body;
         let infoFiltrada = {};
         if(dateFilter === 'global'){
-            infoFiltrada = await pool.query('SELECT Clientes.clienteId AS id, Clientes.nombre AS categoria, SUM(Cotizaciones.subtotal) AS compras FROM Cotizaciones INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId INNER JOIN Ordenes ON Cotizaciones.cotId = Ordenes.cot_id INNER JOIN Cobranza ON Ordenes.ordenId = Cobranza.orden_id WHERE cobranza.estatus = "Cobranza realizada" AND cobranza.actividadesTotal = cobranza.actividadesCont GROUP BY Clientes.clienteId ORDER BY Clientes.clienteId LIMIT 10;');
+            infoFiltrada = await pool.query('SELECT Clientes.clienteId AS id, Clientes.nombre AS categoria, SUM(Cotizaciones.subtotal) AS compras FROM Cotizaciones INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId INNER JOIN Ordenes ON Cotizaciones.cotId = Ordenes.cot_id INNER JOIN Cobranza ON Ordenes.ordenId = Cobranza.orden_id WHERE Cobranza.estatus = "Cobranza realizada" AND Cobranza.actividadesTotal = Cobranza.actividadesCont GROUP BY Clientes.clienteId ORDER BY Clientes.clienteId LIMIT 10;');
         }else{
             const date = dateFilter.split('-');
-            infoFiltrada = await pool.query('WITH months AS (SELECT "1" AS num_month, "Ene" AS name_month UNION ALL SELECT "2" AS num_month, "Feb" AS name_month UNION ALL SELECT "3" AS num_month, "Mar" AS name_month UNION ALL SELECT "4" AS num_month, "Abr" AS name_month UNION ALL SELECT "5" AS num_month, "May" AS name_month UNION ALL SELECT "6" AS num_month, "Jun" AS name_month UNION ALL SELECT "7" AS num_month, "Jul" AS name_month UNION ALL SELECT "8" AS num_month, "Ago" AS name_month UNION ALL SELECT "9" AS num_month, "Sep" AS name_month UNION ALL SELECT "10" AS num_month, "Oct" AS name_month UNION ALL SELECT "11" AS num_month, "Nov" AS name_month UNION ALL SELECT "12" AS num_month, "Dic" AS name_month) SELECT months.*, res.* FROM months LEFT JOIN (SELECT YEAR(Ordenes.fechaEnt) AS year, MONTH(Ordenes.fechaEnt) AS month, Clientes.clienteId AS id, Clientes.nombre AS categoria, SUM(Cotizaciones.subtotal) AS compras FROM Cotizaciones INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId INNER JOIN Ordenes ON Cotizaciones.cotId = Ordenes.cot_id INNER JOIN Cobranza ON Ordenes.ordenId = Cobranza.orden_id WHERE cobranza.estatus = "Cobranza realizada" AND cobranza.actividadesTotal = cobranza.actividadesCont AND Ordenes.fechaEnt <> "2001-01-01" GROUP BY YEAR(Ordenes.fechaEnt), MONTH(Ordenes.fechaEnt), Clientes.clienteId) AS res ON months.num_month = res.month WHERE res.year = ? AND res.month = ? ORDER BY res.id LIMIT 10;', [date[0], date[1]]);
+            infoFiltrada = await pool.query('WITH months AS (SELECT "1" AS num_month, "Ene" AS name_month UNION ALL SELECT "2" AS num_month, "Feb" AS name_month UNION ALL SELECT "3" AS num_month, "Mar" AS name_month UNION ALL SELECT "4" AS num_month, "Abr" AS name_month UNION ALL SELECT "5" AS num_month, "May" AS name_month UNION ALL SELECT "6" AS num_month, "Jun" AS name_month UNION ALL SELECT "7" AS num_month, "Jul" AS name_month UNION ALL SELECT "8" AS num_month, "Ago" AS name_month UNION ALL SELECT "9" AS num_month, "Sep" AS name_month UNION ALL SELECT "10" AS num_month, "Oct" AS name_month UNION ALL SELECT "11" AS num_month, "Nov" AS name_month UNION ALL SELECT "12" AS num_month, "Dic" AS name_month) SELECT months.*, res.* FROM months LEFT JOIN (SELECT YEAR(Ordenes.fechaEnt) AS year, MONTH(Ordenes.fechaEnt) AS month, Clientes.clienteId AS id, Clientes.nombre AS categoria, SUM(Cotizaciones.subtotal) AS compras FROM Cotizaciones INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId INNER JOIN Ordenes ON Cotizaciones.cotId = Ordenes.cot_id INNER JOIN Cobranza ON Ordenes.ordenId = Cobranza.orden_id WHERE Cobranza.estatus = "Cobranza realizada" AND Cobranza.actividadesTotal = Cobranza.actividadesCont AND Ordenes.fechaEnt <> "2001-01-01" GROUP BY YEAR(Ordenes.fechaEnt), MONTH(Ordenes.fechaEnt), Clientes.clienteId) AS res ON months.num_month = res.month WHERE res.year = ? AND res.month = ? ORDER BY res.id LIMIT 10;', [date[0], date[1]]);
         }
         infoFiltrada = infoFiltrada.reduce(filterOthers, []);
         res.send({infoFiltrada: infoFiltrada});
@@ -689,7 +689,7 @@ router.post('/report', isLoggedIn, IsAuthorized('reportes'), validateReports(), 
                     totalFilas = 0;
                     break;
                 case 'productosOrdenados':
-                    // crear hoja en el archivo de excel
+                    // crear hoja en el archivo de excel cobranza
                     workBook.addSheet('Productos ordenados');
 
                     // obtener informacion de la tabla
@@ -788,7 +788,7 @@ router.post('/report', isLoggedIn, IsAuthorized('reportes'), validateReports(), 
                         verticalAlignment: 'center'
                     });
 
-                    // limpiar variables
+                    // limpiar variables cobranza
                     resultado = [];
                     informacion = [];
                     totalFilas = 0;
