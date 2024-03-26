@@ -91,8 +91,8 @@ hbs.registerHelper('formatDateShort', function(date){
 
 hbs.registerHelper('formatDateOnlyDate', function(date){
     dateUtc = new Date(date);
-    dateGtm600 = new Date(dateUtc.getTime() - dateUtc.getTimezoneOffset() * -60000);
-    fecha = dateGtm600.toLocaleDateString('es-mx', {year: 'numeric', month: '2-digit', day: '2-digit'});
+    let zonaHorariaMexico = 'America/Mexico_City';
+    fecha = dateUtc.toLocaleDateString('es-mx', {timeZone: zonaHorariaMexico, year: 'numeric', month: '2-digit', day: '2-digit'});
     return fecha;
 });
 
