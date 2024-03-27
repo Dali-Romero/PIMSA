@@ -18,6 +18,10 @@ function validarFormTareas(form){
             notesInput.removeClass('is-valid');
             notesInput.addClass('is-invalid');
             $('#invalid-feedback-descripcion').text('Por favor, agregue una descripcion.');
+        } else if (notesInput.val().length > 40){
+            notesInput.removeClass('is-valid');
+            notesInput.addClass('is-invalid');
+            $('#invalid-feedback-descripcion').text('El limite de caracteres es 40.');
         } else{
             notesInput.removeClass('is-invalid');
             notesInput.addClass('is-valid');
