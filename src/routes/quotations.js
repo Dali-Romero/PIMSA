@@ -469,14 +469,14 @@ router.post('/email/:id', isLoggedIn, IsAuthorized('seeListQuotations'), validat
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
-                user: 'hagantyr@gmail.com',
-                pass: 'ollzhyjewlbpnaye'
+                user: '',
+                pass: ''
             }
         });
 
         // opciones del email
         const mailOptions = {
-            from: 'hagantyr@gmail.com',
+            from: '',
             to: correoCliente,
             subject: 'PIMSA Cotización',
             html: htmlEmail,
