@@ -31,7 +31,7 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser( async (usuarioId, done) => {
     const rows = await pool.query('SELECT * FROM Usuarios WHERE usuarioId = ?', [usuarioId]);
     const user = rows[0];
-    const permissions = await pool.query('SELECT Permisos.permisoId AS permisoId, Permisos.permiso AS permiso FROM Permisos INNER JOIN PermisosRoles ON Permisos.permisoId = PermisosRoles.permiso_id WHERE PermisosRoles.rol_id = ? ORDER BY Permisos.permisoId;', [user.rol_id]);
+    const permissions = await pool.query('SELECT CASE WHEN Permisos.empleado_id <> 1000 THEN Permisos.permisoId ELSE NULL END AS permisoId, CASE WHEN Permisos.empleado_id <> 1000 THEN Permisos.permiso ELSE NULL END AS permiso FROM (SELECT Usuarios.empleado_id AS empleado_id, Permisos.permisoId AS permisoId, Permisos.permiso AS permiso FROM Usuarios INNER JOIN Roles ON Usuarios.rol_id = Roles.rolId INNER JOIN PermisosRoles ON Roles.rolId = PermisosRoles.rol_id INNER JOIN Permisos ON PermisosRoles.permiso_id = Permisos.permisoId WHERE Usuarios.usuarioId = ? ORDER BY Permisos.permisoId) AS Permisos HAVING permisoId IS NOT NULL AND permiso IS NOT NULL;', [usuarioId]);
     user.permisos = permissions;
     done(null, user);
 });

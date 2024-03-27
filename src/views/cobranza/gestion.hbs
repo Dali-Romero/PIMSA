@@ -9,7 +9,7 @@
         <form action="/cobranza/terminar" method="post" class="needs-validation" id="form-finish-cobranza" novalidate>
             {{#each ordenes}}<input type="hidden" name="id_cobranza" value="{{cobranzaId}}"> {{/each}}
             <div class="row mb-4 gy-4 justify-content-md-between">
-                <h3>{{#each ordenes}}Orden OR-{{orden_id}} {{/each}} | Gestionar</h3>
+                <h3>{{#each ordenes}}Orden OT-{{orden_id}} {{/each}} | Gestionar</h3>
                 <div class="col-md-4">
                     <div class="row mb-4">
                         <label for="forma" class="form-label">Forma de pago:</label>
