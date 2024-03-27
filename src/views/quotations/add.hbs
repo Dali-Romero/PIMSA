@@ -392,7 +392,8 @@
                         \{{#with cotizacion}}
                             <tr>
                                 <th scope="row">Fecha:</th>
-                                <td>\{{formatDateString fecha}}</td>
+                                <td>\{{#formatDateString fecha}}{{/formatDateString}}
+                                </td>
                                 <th scope="row">Estatus:</th>
                                 <td>\{{estatus}}</td>
                             </tr>
