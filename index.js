@@ -5,12 +5,12 @@ const path = require('path');
 const flash = require('connect-flash');
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
-const {database} = require('./keys.js');
+const {database} = require('./src/keys.js');
 const passport = require('passport');
 
 // Initializations
 const app = express();
-require('./lib/passport.js');
+require('./src/lib/passport.js');
 
 // Settings
 app.set('port', process.env.PORT || 4000);
@@ -20,7 +20,7 @@ app.engine('.hbs', engine({
     layoutsDir: path.join(app.get('views'), 'layouts'),
     partialsDir: path.join(app.get('views'), 'partials'),
     extname: '.hbs',
-    helpers: require('./lib/handlebars.js')
+    helpers: require('./src/lib/handlebars.js')
 }));
 app.set('view engine', '.hbs');
 
@@ -51,24 +51,24 @@ app.use((req, res, next)=>{
 
 
 // Routes
-app.use(require('./routes/index'));
-app.use(require('./routes/login'));
-app.use('/grupos/', require('./routes/grupos'));
-app.use('/machines', require('./routes/machines'));
-app.use('/products', require('./routes/products'));
-app.use('/clients/', require('./routes/clients'));
-app.use('/quotations', require('./routes/quotations'));
-app.use('/users', require('./routes/users'));
-app.use('/employees', require('./routes/employees'));
-app.use('/roles', require('./routes/roles'));
-app.use('/areas', require('./routes/areas'));
-app.use('/orders', require('./routes/orders'));
-app.use('/tareas', require('./routes/tareas'));
-app.use('/dashboard', require('./routes/dashboard'));
-app.use('/extask', require('./routes/extask'));
-app.use('/cobranza', require('./routes/cobranza'));
-app.use('/monitor', require('./routes/monitor'));
-app.use('/processes', require('./routes/processes'));
+app.use(require('./src/routes/index'));
+app.use(require('./src/routes/login.js'));
+app.use('/grupos/', require('./src/routes/grupos.js'));
+app.use('/machines', require('./src/routes/machines.js'));
+app.use('/products', require('./src/routes/products.js'));
+app.use('/clients/', require('./src/routes/clients.js'));
+app.use('/quotations', require('./src/routes/quotations.js'));
+app.use('/users', require('./src/routes/users.js'));
+app.use('/employees', require('./src/routes/employees.js'));
+app.use('/roles', require('./src/routes/roles.js'));
+app.use('/areas', require('./src/routes/areas.js'));
+app.use('/orders', require('./src/routes/orders.js'));
+app.use('/tareas', require('./src/routes/tareas.js'));
+app.use('/dashboard', require('./src/routes/dashboard.js'));
+app.use('/extask', require('./src/routes/extask.js'));
+app.use('/cobranza', require('./src/routes/cobranza.js'));
+app.use('/monitor', require('./src/routes/monitor.js'));
+app.use('/processes', require('./src/routes/processes.js'));
 
 
 // Public

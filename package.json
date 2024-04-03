@@ -4,7 +4,7 @@
   "description": "Software para PIMSA Publicidad, proyecto de practicas profesionales.",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon index.js"
   },
   "keywords": [],
   "author": "",
