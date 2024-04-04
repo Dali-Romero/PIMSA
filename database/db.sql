@@ -194,7 +194,7 @@ CREATE TABLE Tareas(
     area_id INT, -- llave foranea
     maquina_id INT, -- llave foranea
     terminada BOOLEAN NOT NULL,
-    check BOOLEAN NOT NULL,
+    chec BOOLEAN NOT NULL,
     activa BOOLEAN NOT NULL,
     sucesion INT NOT NULL,
     notes VARCHAR(40),

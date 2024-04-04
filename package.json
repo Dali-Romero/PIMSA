@@ -2,9 +2,9 @@
   "name": "pimsa",
   "version": "1.0.0",
   "description": "Software para PIMSA Publicidad, proyecto de practicas profesionales.",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "dev": "nodemon index.js"
+    "dev": "nodemon app.js"
   },
   "keywords": [],
   "author": "",
