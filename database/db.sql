@@ -324,11 +324,6 @@ ALTER TABLE PermisosRoles
     ADD CONSTRAINT fk_permisosRoles_roles FOREIGN KEY (rol_id) REFERENCES Roles(rolId);
 
 -- Tabla pivote
-ALTER TABLE AreasRoles
-    ADD CONSTRAINT fk_areasRoles_roles FOREIGN KEY (rol_id) REFERENCES Roles(rolId),
-    ADD CONSTRAINT fk_areasRoles_areas FOREIGN KEY (area_id) REFERENCES Areas(areaId);
-
--- Tabla pivote
 ALTER TABLE MaquinasUsuarios
     ADD CONSTRAINT fk_maquinasUsuarios_usuarios FOREIGN KEY (usuario_id) REFERENCES Usuarios(usuarioId),
     ADD CONSTRAINT fk_maquinasUsuarios_maquinas FOREIGN KEY (maquina_id) REFERENCES Maquinas(maquinaId);
