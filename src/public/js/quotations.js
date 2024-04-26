@@ -23,7 +23,7 @@ function validateQuotationsForm(form, url){
         }
 
         // applicant name field validation
-        const patternNameApplicant = /[^a-zA-Z\sñÑ]/;
+        const patternNameApplicant = /[^a-zA-ZÀ-ÿ\sñÑ]/;
         const nameApplicant = $('#nameapplicant');
         const invalidFeedbackNameApplicant = $('#invalid-feedback-nameapplicant');
         nameApplicant.removeClass('border-dark');
@@ -45,7 +45,7 @@ function validateQuotationsForm(form, url){
         };
 
         // proyect name field validation
-        const patternNameProyect = /[^a-zA-Z0-9\sñÑ]/;
+        const patternNameProyect = /[^a-zA-ZÀ-ÿ0-9\sñÑ]/;
         const nameProyect = $('#nameproyect');
         const invalidFeedbackNameProyect = $('#invalid-feedback-nameproyect');
         nameProyect.removeClass('border-dark');
@@ -93,7 +93,7 @@ function validateQuotationsForm(form, url){
         }
 
         // observations field validation
-        const patternObservations = /^(\r|\t|\s|[^a-zA-Z0-9ñÑ])/;
+        const patternObservations = /^(\r|\t|\s|[^a-zA-ZÀ-ÿ0-9ñÑ()¿?¡!])/;
         const observations = $('#observations');
         const invalidFeedbackObservations = $('#invalid-feedback-observations');
         observations.removeClass('border-dark');
@@ -149,7 +149,7 @@ function validateQuotationsForm(form, url){
         })
 
         // coating product field validation
-        const patterncoatingProducts =  /[^a-zA-Z0-9\s_.ñÑ]/;
+        const patterncoatingProducts =  /[^a-zA-ZÀ-ÿ0-9\s._ñÑ]/;
         const coatingProducts = $('.coatingproduct');
         coatingProducts.each(function(i, obj){
             $(this).removeClass('border-dark');
@@ -172,7 +172,7 @@ function validateQuotationsForm(form, url){
         })
 
         // file product field validation
-        const patternFileProducts =  /[^a-zA-Z0-9\s_.ñÑ]/;
+        const patternFileProducts =  /[^a-zA-ZÀ-ÿ0-9\s._ñÑ]/;
         const fileProducts = $('.fileproduct');
         fileProducts.each(function(i, obj){
             $(this).removeClass('border-dark');
@@ -253,7 +253,7 @@ function validateQuotationsForm(form, url){
         })
 
         // product out catalog name field validation
-        const patternOutProduct = /[^a-zA-Z0-9\sñÑ]/;
+        const patternOutProduct = /[^a-zA-ZÀ-ÿ0-9\sñÑ]/;
         const nameOutProducts= $('.nameoutproduct');
         nameOutProducts.each(function(i, obj){
             $(this).removeClass('border-dark');
