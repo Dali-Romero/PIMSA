@@ -14,7 +14,7 @@ require('./src/lib/passport.js');
 
 // Settings
 app.set('port', process.env.PORT || 3000);
-app.set('views', path.join(__dirname, 'src/views'));
+app.set('views', path.join(__dirname, 'src', 'views'));
 app.engine('.hbs', engine({
     defaultLayout: 'main',
     layoutsDir: path.join(app.get('views'), 'layouts'),
@@ -72,7 +72,7 @@ app.use('/processes', require('./src/routes/processes.js'));
 
 
 // Public
-app.use(express.static(path.join(__dirname, 'src/public')));
+app.use(express.static(path.join(__dirname, 'src', 'public')));
 
 // Starting server
 app.listen(app.get('port'), ()=>{
