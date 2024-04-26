@@ -149,6 +149,7 @@ function validateQuotationsForm(form, url){
         })
 
         // coating product field validation
+        const patterncoatingProducts =  /[^a-zA-Z0-9\s_.ñÑ]/;
         const coatingProducts = $('.coatingproduct');
         coatingProducts.each(function(i, obj){
             $(this).removeClass('border-dark');
@@ -160,6 +161,10 @@ function validateQuotationsForm(form, url){
                 $(this).removeClass('is-valid');
                 $(this).addClass('is-invalid');
                 $(this).siblings().eq(2).text('Los acabados deben contener entre 1 y 20 caracteres');
+            }else if (patterncoatingProducts.test($(this).val())){
+                $(this).removeClass('is-valid');
+                $(this).addClass('is-invalid');
+                $(this).siblings().eq(2).text('Los acabados no deben contener caracteres especiales');
             }else{
                 $(this).removeClass('is-invalid');
                 $(this).addClass('is-valid');
@@ -167,7 +172,7 @@ function validateQuotationsForm(form, url){
         })
 
         // file product field validation
-        const patternFileProducts =  /[^a-zA-Z0-9\s_ñÑ]/;
+        const patternFileProducts =  /[^a-zA-Z0-9\s_.ñÑ]/;
         const fileProducts = $('.fileproduct');
         fileProducts.each(function(i, obj){
             $(this).removeClass('border-dark');
