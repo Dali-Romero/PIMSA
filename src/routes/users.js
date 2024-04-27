@@ -55,7 +55,8 @@ router.post('/add', isLoggedIn, IsAuthorized('addUsers'), validateCreateUser(), 
                 activo: user.status,
                 Empleado_id: user.empleado,
                 Rol_id: user.rol,
-                Contrasena: hash
+                Contrasena: hash,
+                ClaveAplicacion: user.thirdPartyKey
             };
             pool.query('INSERT INTO Usuarios SET ?', [newUser]);
             req.flash('success', 'Usuario registrado con exito.');
@@ -96,7 +97,8 @@ router.post('/edit/:id', isLoggedIn, IsAuthorized('editUsers'), validateEditUser
                 activo: user.status,
                 Empleado_id: user.empleado,
                 Rol_id: user.rol,
-                Contrasena: hash
+                Contrasena: hash,
+                ClaveAplicacion: user.thirdPartyKey
             }
         } else{
             editUser = {
@@ -105,7 +107,8 @@ router.post('/edit/:id', isLoggedIn, IsAuthorized('editUsers'), validateEditUser
                 correoElec: user.correo,
                 activo: user.status,
                 Empleado_id: user.empleado,
-                Rol_id: user.rol
+                Rol_id: user.rol,
+                ClaveAplicacion: user.thirdPartyKey
             }
         }
         pool.query('UPDATE Usuarios SET ? WHERE usuarioId = ?', [editUser, id]);

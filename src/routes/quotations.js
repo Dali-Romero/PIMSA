@@ -421,7 +421,7 @@ router.post('/email/:id', isLoggedIn, IsAuthorized('seeListQuotations'), validat
         const productos = productosEnCatalogo.concat(productosFueraCatalogo);
 
         // obtener datos de contacto del empleado
-        const empleado = await pool.query('SELECT Empleados.nombreComp, Empleados.correoElec, Empleados.numeroCelu FROM (Empleados INNER JOIN Usuarios ON Empleados.empleadoId = Usuarios.empleado_id) WHERE Usuarios.usuarioId = ?;', [usruarioId]);
+        const empleado = await pool.query('SELECT Empleados.nombreComp, Empleados.correoElec, Empleados.numeroCelu, Usuarios.correoElec AS usuarioCorreo, Usuarios.claveAplicacion FROM (Empleados INNER JOIN Usuarios ON Empleados.empleadoId = Usuarios.empleado_id) WHERE Usuarios.usuarioId = ?;', [usruarioId]);
 
         // leer imagen del logo
         const bitMap = fs.readFileSync(path.join(process.cwd(), 'src', 'public', 'img', 'PIMSAlogo.png'));
@@ -466,17 +466,19 @@ router.post('/email/:id', isLoggedIn, IsAuthorized('seeListQuotations'), validat
         const htmlEmail = templateEmail(contextEmail);
 
         // crear servicio para enviar email
+        const dominioCorreo = empleado[0].usuarioCorreo.split('@');
+        const servicioCorreo = dominioCorreo[1].split('.');
         const transporter = nodemailer.createTransport({
-            service: 'gmail',
+            service: servicioCorreo[0],
             auth: {
-                user: '',
-                pass: ''
+                user: empleado[0].usuarioCorreo,
+                pass: empleado[0].claveAplicacion
             }
         });
 
         // opciones del email
         const mailOptions = {
-            from: '',
+            from: empleado[0].usuarioCorreo,
             to: correoCliente,
             subject: 'PIMSA Cotización',
             html: htmlEmail,

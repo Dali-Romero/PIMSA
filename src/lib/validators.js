@@ -555,7 +555,7 @@ module.exports = {
             .exists().withMessage('Parece que las observaciones no fueron enviadas.')
             .trim().notEmpty().withMessage('Parece que las observaciones están vacías.')
             .isString().withMessage('Parece que las observaciones no están en un formato adecuado.')
-            .not().matches(/[^a-zA-ZÀ-ÿ0-9\sñÑ]/).withMessage('Parece que las observaciones cuenta con carateres no válidos.')
+            .not().matches(/^(\r|\t|\s|[^a-zA-ZÀ-ÿ0-9ñÑ()¿?¡!])/).withMessage('Parece que las observaciones cuenta con carateres no válidos.')
             .isLength({min: 1, max: 100}).withMessage('Parece que las observaciones no cumple con el límite de caracteres.'),
 
             // validaciones del campo "porcentajeDescuento" (porcentaje de descuento)
@@ -669,7 +669,7 @@ module.exports = {
             .exists().withMessage('Parece que los acabados del producto no fueron enviados.')
             .trim().notEmpty().withMessage('Parece que los acabados del producto están vacíos.')
             .isString().withMessage('Parece que los acabados del producto no están en un formato adecuado.')
-            .not().matches(/[^a-zA-ZÀ-ÿ0-9\sñÑ]/).withMessage('Parece que los acabados del producto cuenta con carateres no válidos.')
+            .not().matches(/[^a-zA-ZÀ-ÿ0-9\s._ñÑ]/).withMessage('Parece que los acabados del producto cuenta con carateres no válidos.')
             .isLength({min: 1, max: 20}).withMessage('Parece que los acabados del producto no cumplen con el límite de caracteres.'),
 
             // validaciones del campo "fileproduct" (archivo del producto cotizado)
@@ -677,7 +677,7 @@ module.exports = {
             .exists().withMessage('Parece que el archivo del producto no fue enviado.')
             .trim().notEmpty().withMessage('Parece que el archivo del producto está vacío.')
             .isString().withMessage('Parece que el archivo del producto no está en un formato adecuado.')
-            .not().matches(/[^a-zA-ZÀ-ÿ0-9\sñÑ]/).withMessage('Parece que el archivo del producto cuenta con carateres no válidos.')
+            .not().matches(/[^a-zA-ZÀ-ÿ0-9\s._ñÑ]/).withMessage('Parece que el archivo del producto cuenta con carateres no válidos.')
             .isLength({min: 1, max: 20}).withMessage('Parece que el archivo del producto no cumple con el límite de caracteres.'),
 
             // validaciones del campo "lengthproduct" (largo del producto)
@@ -836,6 +836,11 @@ module.exports = {
                 } 
                 return true;
             }),
+
+            body('thirdPartyKey')
+            .exists().withMessage('La clave de aplicación no esta llena.')
+            .trim().notEmpty().withMessage('La clave de aplicación esta vacía.')
+            .isLength({min: 1, max: 20}).withMessage('El nombre del usuario debe contener entre 1 y 20 caracteres.'),
         ]
     },
 
