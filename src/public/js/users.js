@@ -80,10 +80,31 @@ function validarFormUsers(form){
         empleadoInput.removeClass('border-dark');
         empleadoInput.addClass('is-valid');
 
+        // Validacion de la clave de terceros para enviar cotizaciones por correo
+        const llaveAcceso = $('#thirdPartyKey');
+        const llaveAccesoMensajeValidacion = $('#invalid-feedback-thirdPartyKey');
+        llaveAcceso.removeClass('border-dark');
+        if (llaveAcceso.val().trim().length === 0) {
+            llaveAcceso.removeClass('is-valid');
+            llaveAcceso.addClass('is-invalid');
+            llaveAccesoMensajeValidacion.text('Por favor, agregue una clave de acceso');
+        }else if (llaveAcceso.val().trim().length < 1 || llaveAcceso.val().trim().length > 20){
+            llaveAcceso.removeClass('is-valid');
+            llaveAcceso.addClass('is-invalid');
+            llaveAccesoMensajeValidacion.text('La clave de acceso debe contener entre 1 y 20 caracteres');
+        }else{
+            llaveAcceso.removeClass('is-invalid');
+            llaveAcceso.addClass('is-valid');
+        };
+
         // Comprobacion de las validaciones
         const nonvalidatedFields = $('.is-invalid');
         if (nonvalidatedFields.length === 0){
             validated = true;
+
+            if ($('#thirdPartyKey').is(':disabled')) {
+                $('#thirdPartyKey').prop('disabled', false);
+            }
         }
 
         // En caso de no estar validado no se envia
@@ -97,4 +118,17 @@ function validarFormUsers(form){
 $(document).ready(function(){
     validarFormUsers($('#form-add-user'));
     validarFormUsers($('#form-edit-user'));
+
+    // habilitar campo para la clave de terceros (enviar cotizaciones mediante el email del usuario)
+    $('#thirdPartyKeyCheckop1').on('click', ()=>{
+        $('#thirdPartyKey').prop('disabled', false);
+        $('#thirdPartyKey').val('');
+        $('#thirdPartyKey').focus();
+    });
+
+    // desabilitar campo para la clave de terceros (enviar cotizaciones mediante el email del usuario)
+    $('#thirdPartyKeyCheckop2').on('click', ()=>{
+        $('#thirdPartyKey').prop('disabled', true);
+        $('#thirdPartyKey').val('Sin clave');
+    });
 });

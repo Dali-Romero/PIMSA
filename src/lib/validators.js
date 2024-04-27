@@ -836,6 +836,11 @@ module.exports = {
                 } 
                 return true;
             }),
+
+            body('thirdPartyKey')
+            .exists().withMessage('La clave de aplicación no esta llena.')
+            .trim().notEmpty().withMessage('La clave de aplicación esta vacía.')
+            .isLength({min: 1, max: 20}).withMessage('El nombre del usuario debe contener entre 1 y 20 caracteres.'),
         ]
     },
 

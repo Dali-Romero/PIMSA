@@ -26,6 +26,18 @@ hbs.registerHelper('equal', function(v1, v2, options){
     }
 });
 
+hbs.registerHelper('equalLength', function(v1, v2, options){
+    if (v1 != null && v2 != null){
+        if (v1.length === v2){
+            return options.fn(this);
+        } else{
+            return options.inverse(this);
+        }
+    } else {
+        return options.inverse(this);
+    }
+});
+
 hbs.registerHelper('equalNR', function(v1, v2, options){
     if (v1 == v2){
         return options.fn(this);

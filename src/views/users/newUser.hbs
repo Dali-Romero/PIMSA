@@ -105,6 +105,32 @@
                 </div>
             </div>
         </div>
+        <div class="row mb-4 gy-4 justify-content-md-end">
+            <div class="col-md-4">
+                <label for="thirdPartyKeyCheckop1" class="form-label">¿Utilizar este correo electrónico para enviar cotizaciones?</label>
+                <div class="row row-cols-3 justify-content-md-start">
+                    <div class="col-3 h-100">
+                        <input type="radio" name="thirdPartyKeyCheck" id="thirdPartyKeyCheckop1" class="btn-check" autocomplete="off">
+                        <label for="thirdPartyKeyCheckop1" class="btn btn-outline-success w-100 border-success border-2">Si</label>
+                    </div>
+                    <div class="col-3 h-100">
+                        <input type="radio" name="thirdPartyKeyCheck" id="thirdPartyKeyCheckop2" class="btn-check" autocomplete="off" checked>
+                        <label for="thirdPartyKeyCheckop2" class="btn btn-outline-danger w-100 border-danger border-2">No</label>
+                    </div>
+                    <div class="col-6 h-100">
+                        <div class="input-group has-validation">
+                            <input type="text" name="thirdPartyKey" id="thirdPartyKey" value="Sin clave" class="form-control border-dark border-2 rounded-end" placeholder="Ingresar clave" disabled required>
+                            <div class="valid-feedback">
+                                ¡Perfecto!
+                            </div>
+                            <div class="invalid-feedback">
+                                <span id="invalid-feedback-thirdPartyKey"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="row mb-4 gy-4 justify-content-md-between">
             <div class="col-md-4">
                 <br>
