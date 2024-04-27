@@ -22,9 +22,9 @@ Handlebars.registerHelper('greaterThan', function(v1, v2, options){
     }
 });
 
-Handlebars.registerHelper('formatNumber', function(v1, options){
-    let num = Number.parseFloat(v1).toFixed(2);
-    num = Number(num).toLocaleString();
+Handlebars.registerHelper('formatNumber', function(n, options){
+    let num = Number.parseFloat(n).toFixed(2);
+    num = Number(num).toLocaleString(undefined, {minimumFractionDigits: 2});
     return num;
 });
 

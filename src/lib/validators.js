@@ -594,31 +594,31 @@ module.exports = {
             body('data.cotizacion.totalBruto')
             .exists().withMessage('Parece que el total bruto no fue enviado.')
             .trim().notEmpty().withMessage('Parece que el total bruto está vacío.')
-            .isDecimal({decimal_digits: "2"}).withMessage('Parece que el total bruto presenta un formato no válido'),
+            .isDecimal().withMessage('Parece que el total bruto presenta un formato no válido'),
 
             // validaciones del campo "descuento" (descuento)
             body('data.cotizacion.descuento')
             .exists().withMessage('Parece que el descuento no fue enviado.')
             .trim().notEmpty().withMessage('Parece que el descuento está vacío.')
-            .isDecimal({decimal_digits: "2"}).withMessage('Parece que el descuento presenta un formato no válido'),
+            .isDecimal().withMessage('Parece que el descuento presenta un formato no válido'),
 
             // validaciones del campo "subtotal" (subtotal)
             body('data.cotizacion.subtotal')
             .exists().withMessage('Parece que el subtotal no fue enviado.')
             .trim().notEmpty().withMessage('Parece que el subtotal está vacío.')
-            .isDecimal({decimal_digits: "2"}).withMessage('Parece que el subtotal presenta un formato no válido'),
+            .isDecimal().withMessage('Parece que el subtotal presenta un formato no válido'),
 
             // validaciones del campo "iva" (iva)
             body('data.cotizacion.iva')
             .exists().withMessage('Parece que el iva no fue enviado.')
             .trim().notEmpty().withMessage('Parece que el iva está vacío.')
-            .isDecimal({decimal_digits: "2"}).withMessage('Parece que el iva presenta un formato no válido'),
+            .isDecimal().withMessage('Parece que el iva presenta un formato no válido'),
 
             // validaciones del campo "total" (total)
             body('data.cotizacion.total')
             .exists().withMessage('Parece que el total no fue enviado.')
             .trim().notEmpty().withMessage('Parece que el total está vacío.')
-            .isDecimal({decimal_digits: "2"}).withMessage('Parece que el total presenta un formato no válido'),
+            .isDecimal().withMessage('Parece que el total presenta un formato no válido'),
 
             //-------------------------------------- Validaciones de los productos cotizados --------------------------------------
 
@@ -656,7 +656,7 @@ module.exports = {
             body('data.productos.**.priceproduct')
             .exists().withMessage('Parece que el precio del producto no fue enviado.')
             .trim().notEmpty().withMessage('Parece que el precio del producto está vacío.')
-            .isDecimal({decimal_digits: "2"}).withMessage('Parece que el total presenta un formato no válido'),
+            .isDecimal().withMessage('Parece que el total presenta un formato no válido'),
 
             // validaciones del campo "quantityproduct" (cantidad de productos)
             body('data.productos.**.quantityproduct')
@@ -684,31 +684,31 @@ module.exports = {
             body('data.productos.**.lengthproduct')
             .exists().withMessage('Parece que el largo del producto no fue enviado.')
             .trim().notEmpty().withMessage('Parece que el largo del producto está vacío.')
-            .isDecimal({decimal_digits: "3"}).withMessage('Parece que el largo del producto no está en un formato adecuado.'),
+            .isDecimal().withMessage('Parece que el largo del producto no está en un formato adecuado.'),
 
             // validaciones del campo "widthproduct" (ancho del producto)
             body('data.productos.**.widthproduct')
             .exists().withMessage('Parece que el ancho del producto no fue enviado.')
             .trim().notEmpty().withMessage('Parece que el ancho del producto está vacío.')
-            .isDecimal({decimal_digits: "3"}).withMessage('Parece que el ancho del producto no está en un formato adecuado.'),
+            .isDecimal().withMessage('Parece que el ancho del producto no está en un formato adecuado.'),
 
             // validaciones del campo "measure" (área del producto)
             body('data.productos.**.measure')
             .exists().withMessage('Parece que el área del producto no fue enviado.')
             .trim().notEmpty().withMessage('Parece que el área del producto está vacío.')
-            .isDecimal({decimal_digits: "3"}).withMessage('Parece que el área del producto no está en un formato adecuado.'),
+            .isDecimal().withMessage('Parece que el área del producto no está en un formato adecuado.'),
 
             // validaciones del campo "priceach" (precio del producto)
             body('data.productos.**.priceach')
             .exists().withMessage('Parece que el precio del producto no fue enviado.')
             .trim().notEmpty().withMessage('Parece que el precio del producto está vacío.')
-            .isDecimal({decimal_digits: "2"}).withMessage('Parece que el precio del producto no está en un formato adecuado.'),
+            .isDecimal().withMessage('Parece que el precio del producto no está en un formato adecuado.'),
 
             // validaciones del campo "amount" (total del producto)
             body('data.productos.**.amount')
             .exists().withMessage('Parece que el total del producto no fue enviado.')
             .trim().notEmpty().withMessage('Parece que el total del producto está vacío.')
-            .isDecimal({decimal_digits: "2"}).withMessage('Parece que el total del producto no está en un formato adecuado.'),
+            .isDecimal().withMessage('Parece que el total del producto no está en un formato adecuado.'),
         ]
     },
 
