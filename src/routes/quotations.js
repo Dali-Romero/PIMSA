@@ -533,6 +533,7 @@ router.get('/download/:id', isLoggedIn, IsAuthorized('seeListQuotations'), async
 
     // compilar template para el archivo pdf
     const source = fs.readFileSync(path.join(process.cwd(), 'src', 'views', 'quotations', 'pdfTemplate.hbs'), 'utf8');
+    console.log(source);
     const template = hbs.compile(source);
     const context = {
         pimsaLogo: imgSrc,
