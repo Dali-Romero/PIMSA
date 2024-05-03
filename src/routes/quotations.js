@@ -610,10 +610,10 @@ router.post('/generateOrder/:id', IsAuthorized('addOrders'), validateExtaskCreat
         // crear orden
         const date = new Date();
         let zonaHorariaMexico = 'America/Mexico_City';
-        fechaGen = date.toLocaleDateString('en-CA', {timeZone: zonaHorariaMexico, year: 'numeric', month: 'numeric', day: 'numeric', hour:'numeric', minute: 'numeric', hourCycle: 'h23'});
+        fechaGen = new Date(date.toLocaleDateString('en-CA', {timeZone: zonaHorariaMexico, year: 'numeric', month: 'numeric', day: 'numeric', hour:'numeric', minute: 'numeric', hourCycle: 'h23'}));
 
         const deadline = new Date('2001-01-02');
-        fechaEnt = deadline.toLocaleDateString('en-CA', {year: 'numeric', month: 'numeric', day: 'numeric'});
+        fechaEnt = new Date(deadline.toLocaleDateString('en-CA', {year: 'numeric', month: 'numeric', day: 'numeric'}));
 
         const newOrden = {
             fechaGen: fechaGen,
