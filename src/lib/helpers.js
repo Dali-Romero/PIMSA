@@ -33,7 +33,7 @@ helpers.createPdf = async (html, options) => {
         browserPup = await puppeteer.launch({
             args: ['--no-sandbox'],
             headless: 'new',
-            executablePath: '/usr/local/lsws/pimsavm/html/.cache/puppeteer/chrome/linux-121.0.6167.85/chrome-linux64/chrome'
+            executablePath: '/root/.cache/puppeteer/chrome/linux-121.0.6167.85/chrome-linux64/chrome'
         })
     }
 
