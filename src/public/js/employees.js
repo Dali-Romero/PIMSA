@@ -53,13 +53,13 @@ function validarFormEmployees(form){
         // Numero de celular
         const celularInput = $('#numeroTelefono');
         celularInput.removeClass('border-dark');
-        if (celularInput.val().length == 0){
-            celularInput.removeClass('is-valid');
-            celularInput.addClass('is-invalid');
-            $('#invalid-feedback-numeroTelefono').text('Por favor, agregue el numero de telefono.');
+        if (celularInput.val().length == 10){
+            celularInput.removeClass('is-invalid');
+            celularInput.addClass('is-valid');
         } else{
             celularInput.removeClass('is-invalid');
             celularInput.addClass('is-valid');
+            $('#invalid-feedback-numeroTelefono').text('El numero de telefono debe contener 10 numeros.');
         };
 
         // Correo electronico
