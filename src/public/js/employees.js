@@ -57,8 +57,8 @@ function validarFormEmployees(form){
             celularInput.removeClass('is-invalid');
             celularInput.addClass('is-valid');
         } else{
-            celularInput.removeClass('is-invalid');
-            celularInput.addClass('is-valid');
+            celularInput.removeClass('is-valid');
+            celularInput.addClass('is-invalid');
             $('#invalid-feedback-numeroTelefono').text('El numero de telefono debe contener 10 numeros.');
         };
 
