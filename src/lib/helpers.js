@@ -34,7 +34,7 @@ helpers.createPdf = async (html, options) => {
             args: ['--no-sandbox'],
             headless: 'new',
             executablePath: '/usr/bin/chromium-browser',
-            userDataDir: '/usr/local/lsws/pimsavm/html/ChromeDataUser'
+            userDataDir: '/usr/local/lsws/pimsavm/html/ChromeDataUser/'
         })
     }
 
