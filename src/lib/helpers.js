@@ -30,12 +30,17 @@ helpers.dimensiones = (n) => {
 
 helpers.createPdf = async (html, options) => {
     if (!browserPup){
-        browserPup = await puppeteer.launch({
-            args: ['--no-sandbox'],
-            headless: true,
-            executablePath: '/usr/bin/chromium-browser',
-            userDataDir: '/usr/local/lsws/pimsavm/html/ChromeDataUser/'
-        })
+        try{
+            browserPup = await puppeteer.launch({
+                args: ['--no-sandbox'],
+                headless: 'new',
+                executablePath: '/usr/bin/chromium-browser',
+                userDataDir: '/usr/local/lsws/pimsavm/html/ChromeDataUser/'
+            })
+        } catch (error){
+            console.error("No jala, error: ");
+        }
+        
     }
 
     const page = await browserPup.newPage();
