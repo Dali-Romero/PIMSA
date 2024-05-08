@@ -32,7 +32,7 @@ helpers.createPdf = async (html, options) => {
     if (!browserPup){
         browserPup = await puppeteer.launch({
             args: ['--no-sandbox'],
-            headless: 'new',
+            headless: true,
             executablePath: '/usr/bin/chromium-browser',
             userDataDir: '/usr/local/lsws/pimsavm/html/ChromeDataUser/'
         })
