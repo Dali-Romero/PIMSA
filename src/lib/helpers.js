@@ -37,7 +37,7 @@ helpers.createPdf = async (html, options) => {
                 executablePath: '/usr/bin/chromium-browser',
             })
         } catch (error){
-            console.error("No jala, error: ");
+            console.error("No jala, error: ", error);
         }
         
     }
