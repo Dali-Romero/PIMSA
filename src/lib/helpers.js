@@ -35,6 +35,7 @@ helpers.createPdf = async (html, options) => {
                 args: ['--no-sandbox'],
                 headless: 'new',
                 executablePath: '/usr/bin/google-chrome',
+                userDataDir: '/usr/local/lsws/pimsavm/html/ChromeDataUser'
             })
         } catch (error){
             console.error("No jala, error: ", error);
