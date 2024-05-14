@@ -33,8 +33,8 @@ helpers.createPdf = async (html, options) => {
         try{
             browserPup = await puppeteer.launch({
                 args: ['--no-sandbox'],
-                headless: 'new',
-                executablePath: '/usr/bin/google-chrome'
+                headless: 'new'
+                
             })
         } catch (error){
             console.error("No jala, error: ", error);
