@@ -414,50 +414,34 @@ router.post('/email/:id', isLoggedIn, IsAuthorized('seeListQuotations'), validat
         const usruarioId = req.user.usuarioId;
 
         // obtener datos para generar el pdf de la cotizacion
-        const cotizacion = await pool.query('SELECT * FROM Cotizaciones WHERE cotId = ?', [id]);
-        const cliente = await pool.query('SELECT * FROM (Cotizaciones INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId) WHERE Cotizaciones.cotId = ?;', [id]);
+        const cotizacion = await pool.query('SELECT Cotizaciones.cotId, Cotizaciones.fecha, Cotizaciones.cliente_id, Cotizaciones.proyecto, Cotizaciones.observaciones, Cotizaciones.porcentajeDescuento, Cotizaciones.solicitante, Cotizaciones.empleado, Cotizaciones.estatus, Cotizaciones.totalBruto, Cotizaciones.descuento AS descuento_cotizacion, Cotizaciones.subtotal, Cotizaciones.iva, Cotizaciones.total, Clientes.*, Empleados.nombreComp FROM Cotizaciones INNER JOIN Usuarios ON Cotizaciones.usuario_id = Usuarios.usuarioId INNER JOIN Empleados ON Usuarios.empleado_id = Empleados.empleadoId INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId WHERE Cotizaciones.cotId = ?;', [id]);
         const productosEnCatalogo = await pool.query('SELECT ProductosCotizados.*, Productos.nombre, Productos.unidad FROM ((Cotizaciones INNER JOIN ProductosCotizados ON Cotizaciones.cotId = ProductosCotizados.cot_id) INNER JOIN Productos ON ProductosCotizados.producto_id = Productos.productoId) WHERE Cotizaciones.cotId = ?;', [id]);
         const productosFueraCatalogo = await pool.query('SELECT FueraCatalogoCotizados.* FROM (Cotizaciones INNER JOIN FueraCatalogoCotizados ON Cotizaciones.cotId = FueraCatalogoCotizados.cot_id) WHERE Cotizaciones.cotId = ?;', [id]);
         const productos = productosEnCatalogo.concat(productosFueraCatalogo);
 
         // obtener datos de contacto del empleado
         const empleado = await pool.query('SELECT Empleados.nombreComp, Empleados.correoElec, Empleados.numeroCelu, Usuarios.correoElec AS usuarioCorreo, Usuarios.claveAplicacion FROM (Empleados INNER JOIN Usuarios ON Empleados.empleadoId = Usuarios.empleado_id) WHERE Usuarios.usuarioId = ?;', [usruarioId]);
-
-        // leer imagen del logo
-        const bitMap = fs.readFileSync(path.join(process.cwd(), 'src', 'public', 'img', 'PIMSAlogo.png'));
-        const buffer = Buffer.from(bitMap).toString('base64');
-        const imgSrc = `data:image/png;base64,${buffer}`;
-
+        
         // generar pdf de la cotizacion
-        const sourcePdf = fs.readFileSync(path.join(process.cwd(), 'src', 'views', 'quotations', 'pdfTemplate.hbs'), 'utf8');
-        const templatePdf = hbs.compile(sourcePdf);
-        const contextPdf = {
-            pimsaLogo: imgSrc,
+        const dataDb = {
             cotizacion: cotizacion[0],
-            cliente: cliente[0],
             productos: productos
         };
-        const htmlPdf = templatePdf(contextPdf);
-        const readStream = Stream.PassThrough();
-        const options = {
-            format: 'Letter',
-            margin: {
-                top: "30px",
-                bottom: "30px",
-                left: "20px",
-                right: "20px"
-            },
-            printBackground: true,
-            scale: 0.75,
-        };
-        const pdf = await createPdf(htmlPdf, options);
-        readStream.end(pdf);
+
+        const pdfStream = Stream.PassThrough();
+        
+        createPdf(dataDb, (data) => {
+            pdfStream.write(data)
+        }, () => {
+            pdfStream.end()
+        });
 
         // compilar template del correo
         const fechaEmail = new Date().toLocaleDateString('es-mx', {year: 'numeric', month: 'numeric', day: 'numeric'});
         const sourceEmail = fs.readFileSync(path.join(process.cwd(), 'src', 'views', 'quotations', 'emailTemplate.hbs'), 'utf8');
         const templateEmail = hbs.compile(sourceEmail);
         let zonaHorariaMexico = 'America/Mexico_City';
+
         const contextEmail = {
             fecha: new Date().toLocaleDateString('es-mx', {timeZone: zonaHorariaMexico, year: 'numeric', month: 'long', day: 'numeric'}),
             solicitante: cotizacion[0].solicitante,
@@ -468,6 +452,7 @@ router.post('/email/:id', isLoggedIn, IsAuthorized('seeListQuotations'), validat
         // crear servicio para enviar email
         const dominioCorreo = empleado[0].usuarioCorreo.split('@');
         const servicioCorreo = dominioCorreo[1].split('.');
+
         const transporter = nodemailer.createTransport({
             service: servicioCorreo[0],
             auth: {
@@ -484,7 +469,7 @@ router.post('/email/:id', isLoggedIn, IsAuthorized('seeListQuotations'), validat
             html: htmlEmail,
             attachments: [{
                 filename: `Cotizacion_${fechaEmail}.pdf`,
-                content: pdf,
+                content: pdfStream,
                 contentType: 'application/pdf'
             },{
                 filename: 'PIMSAlogo.png',
@@ -520,51 +505,30 @@ router.post('/email/:id', isLoggedIn, IsAuthorized('seeListQuotations'), validat
 
 router.get('/download/:id', isLoggedIn, IsAuthorized('seeListQuotations'), async (req, res)=>{
     const {id} = req.params;
-    const cotizacion = await pool.query('SELECT * FROM Cotizaciones WHERE cotId = ?', [id]);
-    const cliente = await pool.query('SELECT * FROM (Cotizaciones INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId) WHERE Cotizaciones.cotId = ?;', [id]);
+    const cotizacion = await pool.query('SELECT Cotizaciones.cotId, Cotizaciones.fecha, Cotizaciones.cliente_id, Cotizaciones.proyecto, Cotizaciones.observaciones, Cotizaciones.porcentajeDescuento, Cotizaciones.solicitante, Cotizaciones.empleado, Cotizaciones.estatus, Cotizaciones.totalBruto, Cotizaciones.descuento AS descuento_cotizacion, Cotizaciones.subtotal, Cotizaciones.iva, Cotizaciones.total, Clientes.*, Empleados.nombreComp FROM Cotizaciones INNER JOIN Usuarios ON Cotizaciones.usuario_id = Usuarios.usuarioId INNER JOIN Empleados ON Usuarios.empleado_id = Empleados.empleadoId INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId WHERE Cotizaciones.cotId = ?;', [id]);
     const productosEnCatalogo = await pool.query('SELECT ProductosCotizados.*, Productos.nombre, Productos.unidad FROM ((Cotizaciones INNER JOIN ProductosCotizados ON Cotizaciones.cotId = ProductosCotizados.cot_id) INNER JOIN Productos ON ProductosCotizados.producto_id = Productos.productoId) WHERE Cotizaciones.cotId = ?;', [id]);
     const productosFueraCatalogo = await pool.query('SELECT FueraCatalogoCotizados.* FROM (Cotizaciones INNER JOIN FueraCatalogoCotizados ON Cotizaciones.cotId = FueraCatalogoCotizados.cot_id) WHERE Cotizaciones.cotId = ?;', [id]);
     const productos = productosEnCatalogo.concat(productosFueraCatalogo);
 
-    // leer imagen del logo
-    const bitMap = fs.readFileSync(path.join(process.cwd(), 'src', 'public', 'img', 'PIMSAlogo.png'));
-    const buffer = Buffer.from(bitMap).toString('base64');
-    const imgSrc = `data:image/png;base64,${buffer}`;
-
-    // compilar template para el archivo pdf
-    const source = fs.readFileSync(path.join(process.cwd(), 'src', 'views', 'quotations', 'pdfTemplate.hbs'), 'utf8');
-    console.log(source);
-    const template = hbs.compile(source);
-    const context = {
-        pimsaLogo: imgSrc,
+    // crear objeto con la información necesaria para le pdf
+    const dataDb = {
         cotizacion: cotizacion[0],
-        cliente: cliente[0],
         productos: productos
-    }
-    const html = template(context);
+    };
 
-    // construir el archivo pdf
+    // crear y enviar pdf
     const timeMilis = new Date().getTime();
-    const readStream = Stream.PassThrough();
-    const options = {
-        format: 'Letter',
-		margin: {
-			top: "30px",
-			bottom: "30px",
-            left: "20px",
-            right: "20px"
-		},
-		printBackground: true,
-        scale: 0.75,
-    }
-
-    const pdf = await createPdf(html, options)
-    readStream.end(pdf);
-
-    // enviar archivo pdf
-    res.attachment(`cot${id}_${timeMilis}.pdf`);
-    res.contentType('application/pdf');
-    readStream.pipe(res).on('error', function(e){console.error(e)});
+    
+    const stream = res.writeHead(200, {
+        'Content-Type': 'application/pdf',
+        'content-Disposition': `attachment; filename=cot${id}_${timeMilis}.pdf`
+    });
+    
+    createPdf(dataDb, (data) => {
+        stream.write(data)
+    }, () => {
+        stream.end();
+    });
 })
 
 router.post('/generateOrder/:id', IsAuthorized('addOrders'), validateExtaskCreateOrder(), async (req, res)=>{
