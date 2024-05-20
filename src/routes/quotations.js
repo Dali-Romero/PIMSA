@@ -6,7 +6,7 @@ const path = require('path');
 const nodemailer = require('nodemailer');
 const pool = require('../database.js');
 const { validationResult } = require('express-validator');
-const {moneda, dimensiones, createPdf} = require('../lib/helpers.js');
+const {moneda, dimensiones, createPdfQuotations} = require('../lib/helpers.js');
 const { isLoggedIn, IsAuthorized } = require('../lib/auth.js');
 const { validateQuotations, validateQuotationsInfoProduct, validateQuotationsDiscountClient, validateQuotationsEmialClient, validateExtaskCreateOrder } = require('../lib/validators.js');
 require('../lib/handlebars.js');
@@ -430,7 +430,7 @@ router.post('/email/:id', isLoggedIn, IsAuthorized('seeListQuotations'), validat
 
         const pdfStream = Stream.PassThrough();
         
-        createPdf(dataDb, (data) => {
+        createPdfQuotations(dataDb, (data) => {
             pdfStream.write(data)
         }, () => {
             pdfStream.end()
@@ -524,7 +524,7 @@ router.get('/download/:id', isLoggedIn, IsAuthorized('seeListQuotations'), async
         'content-Disposition': `attachment; filename=cot${id}_${timeMilis}.pdf`
     });
     
-    createPdf(dataDb, (data) => {
+    createPdfQuotations(dataDb, (data) => {
         stream.write(data)
     }, () => {
         stream.end();
