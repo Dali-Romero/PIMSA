@@ -453,13 +453,32 @@ router.post('/email/:id', isLoggedIn, IsAuthorized('seeListQuotations'), validat
         const dominioCorreo = empleado[0].usuarioCorreo.split('@');
         const servicioCorreo = dominioCorreo[1].split('.');
 
-        const transporter = nodemailer.createTransport({
-            service: servicioCorreo[0],
-            auth: {
-                user: empleado[0].usuarioCorreo,
-                pass: empleado[0].claveAplicacion
-            }
-        });
+        var transporter;
+        if (servicioCorreo[0] == "gmail"){
+            transporter = nodemailer.createTransport({
+                service: "Gmail",
+                auth: {
+                    user: empleado[0].usuarioCorreo,
+                    pass: empleado[0].claveAplicacion
+                }
+            });
+        } else if (servicioCorreo[0] == "outlook" || servicioCorreo[0] == "hotmail" || servicioCorreo[0] == "live"){
+            transporter = nodemailer.createTransport({
+                service: "Outlook",
+                auth: {
+                    user: empleado[0].usuarioCorreo,
+                    pass: empleado[0].claveAplicacion
+                }
+            });
+        } else{
+            transporter = nodemailer.createTransport({
+                service: servicioCorreo[0],
+                auth: {
+                    user: empleado[0].usuarioCorreo,
+                    pass: empleado[0].claveAplicacion
+                }
+            });
+        }
 
         // opciones del email
         const mailOptions = {
