@@ -72,15 +72,10 @@ router.post('/add', isLoggedIn, IsAuthorized('addUsers'), validateCreateUser(), 
 router.get('/edit/:id', isLoggedIn, IsAuthorized('editUsers'), async(req, res) =>{
     const {id} = req.params;
     const empleado = await pool.query('SELECT empleado_id FROM Usuarios WHERE usuarioId = '+id);
-    try{
-        const users = await pool.query('SELECT * FROM Usuarios WHERE usuarioId = ?', [id]);
-        const roles = await pool.query('SELECT * FROM Roles WHERE activo = 1');
-        const empleados = await pool.query('SELECT empleadoId, nombreComp FROM Empleados WHERE empleadoId NOT IN (SELECT empleadoId FROM Usuarios INNER JOIN Empleados ON Usuarios.empleado_id = Empleados.empleadoId WHERE Usuarios.empleado_id <> 1000) OR empleadoId = ' + empleado[0].empleado_id + ';');
-        res.render('../views/users/editUser', {users: users[0], roles, empleados});
-    } catch (error){
-        req.flash('error', "User: " + empleado[0].empleado_id + "\nError: " + error);
-        res.redirect("/users");
-    }
+    const users = await pool.query('SELECT * FROM Usuarios WHERE usuarioId = ?', [id]);
+    const roles = await pool.query('SELECT * FROM Roles WHERE activo = 1');
+    const empleados = await pool.query('SELECT empleadoId, nombreComp FROM Empleados WHERE empleadoId NOT IN (SELECT empleadoId FROM Usuarios INNER JOIN Empleados ON Usuarios.empleado_id = Empleados.empleadoId WHERE Usuarios.empleado_id <> 1000) OR empleadoId = ' + empleado[0].empleado_id + ';');
+    res.render('../views/users/editUser', {users: users[0], roles, empleados});
     
 });
 
