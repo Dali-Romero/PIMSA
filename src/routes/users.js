@@ -71,7 +71,7 @@ router.post('/add', isLoggedIn, IsAuthorized('addUsers'), validateCreateUser(), 
 
 router.get('/edit/:id', isLoggedIn, IsAuthorized('editUsers'), async(req, res) =>{
     const {id} = req.params;
-    const {empleado} = req.user.Empleado_id;
+    const {empleado} = req.user.empleado_id;
     const users = await pool.query('SELECT * FROM Usuarios WHERE usuarioId = ?', [id]);
     const roles = await pool.query('SELECT * FROM Roles WHERE activo = 1');
     const empleados = await pool.query('SELECT empleadoId, nombreComp FROM Empleados WHERE empleadoId NOT IN (SELECT empleadoId FROM Usuarios INNER JOIN Empleados ON Usuarios.empleado_id = Empleados.empleadoId WHERE Usuarios.empleado_id <> 1000) OR empleadoId = '+empleado+';');
