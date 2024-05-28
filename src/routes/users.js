@@ -71,7 +71,7 @@ router.post('/add', isLoggedIn, IsAuthorized('addUsers'), validateCreateUser(), 
 
 router.get('/edit/:id', isLoggedIn, IsAuthorized('editUsers'), async(req, res) =>{
     const {id} = req.params;
-    const {empleado} = req.user;
+    const empleado = await pool.query('SELECT empleado_id FROM Usuarios WHERE usuarioId = '+id);
     try{
         const users = await pool.query('SELECT * FROM Usuarios WHERE usuarioId = ?', [id]);
         const roles = await pool.query('SELECT * FROM Roles WHERE activo = 1');
