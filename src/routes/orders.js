@@ -12,7 +12,7 @@ const { validateOrdersRevalue, validateOrdersPreview, validateOrdersDeadline } =
 const router = express.Router();
 
 router.get('/', isLoggedIn, IsAuthorized('seeListOrders'), async (req, res)=>{
-    const ordenes = await pool.query('SELECT Ordenes.ordenId, fechaGen, IF(DATE(Ordenes.fechaEnt) = DATE("2001-01-01"), "-", Ordenes.fechaEnt) AS fechaEnt, Empleados.nombreComp, Ordenes.terminada, Ordenes.estatus FROM ((Ordenes INNER JOIN Usuarios ON Ordenes.usuario_id = Usuarios.usuarioId) INNER JOIN Empleados ON Usuarios.empleado_id = Empleados.empleadoId);');
+    const ordenes = await pool.query('SELECT Ordenes.ordenId, fechaGen, IF(DATE(Ordenes.fechaEnt) = DATE("2001-01-01"), "-", Ordenes.fechaEnt) AS fechaEnt, Empleados.nombreComp, Ordenes.terminada, Ordenes.estatus, Cobranza.folio FROM ((Ordenes INNER JOIN Usuarios ON Ordenes.usuario_id = Usuarios.usuarioId) INNER JOIN Empleados ON Usuarios.empleado_id = Empleados.empleadoId INNER JOIN Cobranza ON Ordenes.ordenId = Cobranza.orden_id);');
     res.render('orders/list', {ordenes: ordenes});
 });
 
