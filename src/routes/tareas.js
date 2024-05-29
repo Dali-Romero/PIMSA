@@ -236,7 +236,7 @@ router.get('/info/:id', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, r
         var areas = await pool.query('SELECT * FROM Areas');
         res.render('../views/tareas/infoTareas', {datos: datos[0], tareas, areas});
     } else{
-        var datos = await pool.query('SELECT ProductosCotizados.*, Productos.*, Tareas.*, Ordenes.*, Cotizaciones.* FROM ProductosCotizados INNER JOIN Cotizaciones ON Cotizaciones.cotId = FueraCatalogoCotizados.cot_id INNER JOIN Ordenes ON Ordenes.cot_id = Cotizaciones.cotId INNER JOIN TareasOrden ON TareasOrden.cotizadoId = ProductosCotizados.prodCotizadoId INNER JOIN Tareas ON TareasOrden.tareaOrdenId = Tareas.tareaorden_id INNER JOIN Productos ON Productos.productoId = ProductosCotizados.producto_id WHERE Tareas.tareaId = ? AND ProductosCotizados.prodCotizadoId = ?', [id, Number(fueraCatalogo[0].cotizadoId)]);
+        var datos = await pool.query('SELECT ProductosCotizados.*, Productos.*, Tareas.*, Ordenes.*, Cotizaciones.* FROM ProductosCotizados INNER JOIN Cotizaciones ON Cotizaciones.cotId = ProductosCotizados.cot_id INNER JOIN Ordenes ON Ordenes.cot_id = Cotizaciones.cotId INNER JOIN TareasOrden ON TareasOrden.cotizadoId = ProductosCotizados.prodCotizadoId INNER JOIN Tareas ON TareasOrden.tareaOrdenId = Tareas.tareaorden_id INNER JOIN Productos ON Productos.productoId = ProductosCotizados.producto_id WHERE Tareas.tareaId = ? AND ProductosCotizados.prodCotizadoId = ?', [id, Number(fueraCatalogo[0].cotizadoId)]);
         var tareas = await pool.query('SELECT * FROM Tareas WHERE tareaorden_id = ?', [datos[0].tareaorden_id]);
         var areas = await pool.query('SELECT * FROM Areas');
         res.render('../views/tareas/infoTareas', {datos: datos[0], tareas, areas});
