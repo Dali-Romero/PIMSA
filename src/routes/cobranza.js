@@ -53,8 +53,9 @@ router.post('/terminar', isLoggedIn, validateCobranza(), async(req, res) =>{
             fechaPago: resp.fecLiq,
             folio: resp.referencia
         };
+        const idOrdenes = await pool.query('SELECT orden_id FROM Cobranza WHERE cobranzaId IN (?)', [id_cobranza]);
         try{
-            const idOrdenes = await pool.query('SELECT orden_id FROM Cobranza WHERE cobranzaId IN (?)', [id_cobranza]);
+            
             if (update.estatusPago == "Pagada"){
                 update["estatus"] = "Cobranza realizada";
                 
