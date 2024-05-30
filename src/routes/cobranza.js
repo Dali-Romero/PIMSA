@@ -53,10 +53,9 @@ router.post('/terminar', isLoggedIn, validateCobranza(), async(req, res) =>{
             fechaPago: resp.fecLiq,
             folio: resp.referencia
         };
-
-        if (update.estatusPago == "Pagada"){
-            update["estatus"] = "Cobranza realizada";
-            try{
+        try{
+            if (update.estatusPago == "Pagada"){
+                update["estatus"] = "Cobranza realizada";
                 const idOrdenes = await pool.query('SELECT orden_id FROM Cobranza WHERE cobranzaId IN (?)', [id_cobranza]);
                 var idOrders;
                 for (let i = 0; i < idOrdenes.length; i++){
@@ -67,18 +66,18 @@ router.post('/terminar', isLoggedIn, validateCobranza(), async(req, res) =>{
                     terminada: 1
                 };
                 await pool.query('UPDATE Ordenes SET ? WHERE ordenId IN (?)', [ordenesUpdate, idOrders]);
-            } catch(error){
-                req.flash('error', idOrdenes);
-                res.redirect('/cobranza');
-            }
             
-        } else{
-            update["estatus"] = "Cobranza empezada";
+            } else{
+                update["estatus"] = "Cobranza empezada";
+            }
+
+            await pool.query('UPDATE Cobranza SET ? WHERE cobranzaId IN (?)', [update, id_cobranza]);
+
+            res.redirect('/cobranza');
+        } catch(error){
+            req.flash('error', idOrdenes);
+            res.redirect('/cobranza');
         }
-
-        await pool.query('UPDATE Cobranza SET ? WHERE cobranzaId IN (?)', [update, id_cobranza]);
-
-        res.redirect('/cobranza');
     } else{
         req.flash('validationErrors', resultadosValidacionArray);
         res.redirect('/cobranza');
