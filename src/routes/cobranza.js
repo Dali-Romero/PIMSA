@@ -58,17 +58,17 @@ router.post('/terminar', isLoggedIn, validateCobranza(), async(req, res) =>{
             update["estatus"] = "Cobranza realizada";
             try{
                 const idOrdenes = await pool.query('SELECT orden_id FROM Cobranza WHERE cobranzaId IN (?)', [id_cobranza]);
-            var idOrders;
-            for (let i = 0; i < idOrdenes.length; i++){
-                idOrdenes.push(idOrdenes[i].orden_id);
-            }
-            var ordenesUpdate = {
-                estatus: "Orden terminada",
-                terminada: 1
-            };
-            await pool.query('UPDATE Ordenes SET ? WHERE ordenId IN (?)', [ordenesUpdate, idOrders]);
+                var idOrders;
+                for (let i = 0; i < idOrdenes.length; i++){
+                    idOrdenes.push(idOrdenes[i].orden_id);
+                }
+                var ordenesUpdate = {
+                    estatus: "Orden terminada",
+                    terminada: 1
+                };
+                await pool.query('UPDATE Ordenes SET ? WHERE ordenId IN (?)', [ordenesUpdate, idOrders]);
             } catch(error){
-                req.flash('error', idOrders)
+                req.flash('error', 'IdOrdenes:' + idOrdenes);
                 res.redirect('/cobranza');
             }
             
