@@ -59,7 +59,7 @@ router.post('/terminar', isLoggedIn, validateCobranza(), async(req, res) =>{
             if (update.estatusPago == "Pagada"){
                 update["estatus"] = "Cobranza realizada";
                 
-                var idOrders;
+                var idOrders = [];
                 for (let i = 0; i < idOrdenes.length; i++){
                     idOrders.push(idOrdenes[i].orden_id);
                 }
