@@ -77,7 +77,7 @@ router.post('/terminar', isLoggedIn, validateCobranza(), async(req, res) =>{
 
             res.redirect('/cobranza');
         } catch(error){
-            req.flash('error', error);
+            req.flash('error', 'Error: ' + error);
             res.redirect('/cobranza');
         }
     } else{
