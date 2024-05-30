@@ -61,7 +61,7 @@ router.post('/terminar', isLoggedIn, validateCobranza(), async(req, res) =>{
                 
                 var idOrders;
                 for (let i = 0; i < idOrdenes.length; i++){
-                    idOrdenes.push(idOrdenes[i].orden_id);
+                    idOrders.push(idOrdenes[i].orden_id);
                 }
                 var ordenesUpdate = {
                     estatus: "Orden terminada",
