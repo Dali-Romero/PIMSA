@@ -68,7 +68,7 @@ router.post('/terminar', isLoggedIn, validateCobranza(), async(req, res) =>{
                 };
                 await pool.query('UPDATE Ordenes SET ? WHERE ordenId IN (?)', [ordenesUpdate, idOrders]);
             } catch(error){
-                req.flash('error', 'Caca');
+                req.flash('error', idOrdenes);
                 res.redirect('/cobranza');
             }
             
