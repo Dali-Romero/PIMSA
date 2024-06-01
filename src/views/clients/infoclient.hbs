@@ -198,9 +198,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td colspan="1">$$$</td>
-                        </tr>
+                        {{#if suma}}
+                            <tr>
+                                <td colspan="1">{{suma.suma}}</td>
+                            </tr>
+                        {{else}}
+                            <td colspan="2" class="text-center">sin ventas</td>
+                        {{/if}}
                     </tbody>
                     </table>
                 </div>
@@ -212,9 +216,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td colspan="1">$$$</td>
-                        </tr>
+                        {{#if deuda}}
+                            <tr>
+                                <td colspan="1">{{deuda.deuda}}</td>
+                            </tr>
+                        {{else}}
+                            <td colspan="2" class="text-center">sin deuda</td>
+                        {{/if}}
                     </tbody>
                     </table>
                 </div>
