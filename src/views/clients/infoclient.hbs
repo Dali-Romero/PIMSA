@@ -184,7 +184,11 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td colspan="1">{{client.observaciones}}</td>
+                            {{#if client.observaciones}}
+                                <td colspan="1">{{client.observaciones}}</td>
+                            {{else}}
+                                <td colspan="1">Sin observaciones.</td>
+                            {{/if}}
                         </tr>
                     </tbody>
                 </table>
