@@ -249,7 +249,6 @@
                 <tr>
                     <th scope="col">No. Órden</th>
                     <th scope="col">Fecha</th>
-                    <th scope="col">Datos Órden</th>
                     <th scope="col">Monto total</th>
                     <th scope="col">Estatus</th>
                 </tr>
@@ -262,6 +261,8 @@
                                 OT-{{ordenId}}
                             </a>
                         </th>
+                        <td scope="row">{{formatDateShort fechaGen}}
+                        </td>
                         <td scope="row">{{formatNumber total}}</td>
                         <td scope="row">{{estatus}}</td>
                     </tr>
@@ -270,8 +271,7 @@
                         <td class="d-none"></td>
                         <td class="d-none"></td>
                         <td class="d-none"></td>
-                        <td class="d-none"></td>
-                        <td colspan="5">No hay ordenes por cobrar</td>
+                        <td colspan="4">No hay ordenes por cobrar</td>
                     </tr>
                 {{/each}}
             </tbody>
