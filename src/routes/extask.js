@@ -7,9 +7,9 @@ const { validateExtaskListStagesProcess, validateExtaskCreateOrder } = require('
 const router = express.Router();
 
 router.get('/', isLoggedIn, IsAuthorized('tasksSalesExecutives'), async (req, res)=>{
-    //const usuarioId = req.user.usuarioId;
-    //const cotizaciones = await pool.query('SELECT Cotizaciones.*, Clientes.clienteId, Clientes.nombre FROM Cotizaciones INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId INNER JOIN Usuarios ON Cotizaciones.usuario_id = Usuarios.usuarioId WHERE Cotizaciones.estatus <> "Ordenada" AND Usuarios.usuarioId = ?;', [usuarioId]);
-    const cotizaciones = await pool.query('SELECT Cotizaciones.*, Clientes.clienteId, Clientes.nombre FROM (Cotizaciones INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId) WHERE Cotizaciones.estatus <> "Ordenada";');
+    const usuarioId = req.user.usuarioId;
+    const cotizaciones = await pool.query('SELECT Cotizaciones.*, Clientes.clienteId, Clientes.nombre FROM Cotizaciones INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId INNER JOIN Usuarios ON Cotizaciones.usuario_id = Usuarios.usuarioId WHERE Cotizaciones.estatus <> "Ordenada" AND Usuarios.usuarioId = ?;', [usuarioId]);
+    //const cotizaciones = await pool.query('SELECT Cotizaciones.*, Clientes.clienteId, Clientes.nombre FROM (Cotizaciones INNER JOIN Clientes ON Cotizaciones.cliente_id = Clientes.clienteId) WHERE Cotizaciones.estatus <> "Ordenada";');
     res.render('extask/list', {cotizaciones: cotizaciones});
 })
 
