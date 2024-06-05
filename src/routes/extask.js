@@ -111,14 +111,14 @@ router.post('/generateOrder/:id', isLoggedIn, IsAuthorized('addOrders'), validat
 
         // crear orden
         const date = new Date();
-        fechaGen = date.toLocaleDateString('en-CA', {year: 'numeric', month: 'numeric', day: 'numeric', hour:'numeric', minute: 'numeric', hourCycle: 'h23'});
+        const fechaGen = date.toLocaleDateString('en-CA', {year: 'numeric', month: 'numeric', day: 'numeric', hour:'numeric', minute: 'numeric', hourCycle: 'h23'});
 
         const deadline = new Date('2001-01-02');
-        fechaEnt = deadline.toLocaleDateString('en-CA', {year: 'numeric', month: 'numeric', day: 'numeric'});
+        const fechaEnt = deadline.toLocaleDateString('en-CA', {year: 'numeric', month: 'numeric', day: 'numeric'});
 
         const newOrden = {
-            fechaGen: date,
-            fechaEnt: deadline,
+            fechaGen: fechaGen,
+            fechaEnt: fechaEnt,
             cot_id: Number(id),
             usuario_id: usruarioId,
             terminada: 0,
