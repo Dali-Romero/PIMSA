@@ -117,11 +117,12 @@ router.post('/generateOrder/:id', isLoggedIn, IsAuthorized('addOrders'), validat
         fechaEnt = deadline.toLocaleDateString('en-CA', {year: 'numeric', month: 'numeric', day: 'numeric'});
 
         const newOrden = {
-            fechaGen: fechaGen,
-            fechaEnt: fechaEnt,
+            fechaGen: date,
+            fechaEnt: deadline,
             cot_id: Number(id),
             usuario_id: usruarioId,
-            terminada: 0
+            terminada: 0,
+            estatus: "Generada"
         }
         
         const ordenId = await pool.query('INSERT INTO Ordenes SET ?;', [newOrden]);
