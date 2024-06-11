@@ -41,10 +41,12 @@ router.get('/historial', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, 
 
 router.get('/historial/:id', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, res) =>{
     const {id} = req.params;
+    var area = await pool.query('SELECT Empleados.area_id FROM Empleados INNER JOIN Usuarios ON Usuarios.empleado_id = Empleados.empleadoId WHERE Usuarios.usuarioId = ?', [req.user.usuarioId]);
+    area = area[0].area_id;
     const machines = await pool.query('SELECT * FROM Maquinas')
     const users = await pool.query('SELECT * FROM Usuarios');
     const tareas = await pool.query('SELECT * FROM Tareas INNER JOIN Ordenes ON Tareas.orden_id = Ordenes.ordenId INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId WHERE Tareas.tareaId = ?', [id]);
-    res.render('../views/tareas/regresarTareas', {tarea: tareas[0], users, machines});
+    res.render('../views/tareas/regresarTareas', {tarea: tareas[0], users, machines, area});
 });
 
 router.post('/restore/:id', isLoggedIn, IsAuthorized('tasksEmployees'), validateTareas(), async(req, res) =>{
@@ -52,6 +54,7 @@ router.post('/restore/:id', isLoggedIn, IsAuthorized('tasksEmployees'), validate
     const resultadosValidacion = validationResult(req);
     const resultadosValidacionArray = resultadosValidacion.array({onlyFirstError: true});
     const {id} = req.params;
+    
 
     // En caso de no existir errores almacenar el registro
     if (resultadosValidacion.isEmpty()){

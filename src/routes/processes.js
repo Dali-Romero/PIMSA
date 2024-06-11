@@ -125,7 +125,7 @@ router.post('/listProducts', isLoggedIn, IsAuthorized('seeListProcesses'), valid
 router.get('/edit/:id', isLoggedIn, IsAuthorized('editProcesses'), async (req, res) => {
     const {id} = req.params;
     const proceso =  await pool.query('SELECT Procesos.procesoId AS proceso_id, Procesos.nombre AS proceso_nombre, Procesos.descripcion AS proceso_descripcion, GROUP_CONCAT(ProcesosOrdenes.orden ORDER BY ProcesosOrdenes.orden) AS orden_areas, GROUP_CONCAT(Areas.nombre ORDER BY ProcesosOrdenes.orden ASC) AS proceso_areas FROM Procesos INNER JOIN ProcesosOrdenes ON Procesos.procesoId = ProcesosOrdenes.proceso_id INNER JOIN Areas ON ProcesosOrdenes.area_id = Areas.areaId WHERE Procesos.ProcesoId = ? GROUP BY Procesos.procesoId;', [id]);
-    const areas = await pool.query('SELECT areaId, nombre FROM Areas');
+    const areas = await pool.query('SELECT areaId, nombre FROM Areas WHERE nombre != "VENTAS" AND nombre != "COBRANZA"');
 
     // ajustar la estructura de los datos
     let etapas = [];
