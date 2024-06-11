@@ -21,7 +21,7 @@
                 <label for="maquina" class="form-label">Maquina:</label><br>
                 <div class="input-group has-validation">
                     <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-arrow-down-up"></i></span>
-                    <select name="maquina" id="maquina" class="form-select border-dark border-2">
+                    <select name="maquina" id="maquina" class="form-select border-dark border-2" {{#equal area 4}}{{else}}disabled{{/equal}}>
                         <option value=0>No aplica</option>
                         {{#each machines}}
                             <option value={{maquinaId}} {{#equal ../tarea.maquina_id maquinaId}} selected {{/equal}}>{{nombre}}</option>

@@ -96,10 +96,12 @@ router.get('/enterado/:id', isLoggedIn, IsAuthorized('tasksEmployees'), async(re
 router.get('/:id', isLoggedIn, IsAuthorized('tasksEmployees'), async(req, res) =>{
     const {id} = req.params;
     const userId = req.user.usuarioId;
+    var area = await pool.query('SELECT Empleados.area_id FROM Empleados INNER JOIN Usuarios ON Usuarios.empleado_id = Empleados.empleadoId WHERE Usuarios.usuarioId = ?', [req.user.usuarioId]);
+    area = area[0].area_id;
     const machines = await pool.query('SELECT * FROM Maquinas')
     const users = await pool.query('SELECT * FROM Usuarios WHERE usuarioId = ?', [userId]);
     const tareas = await pool.query('SELECT * FROM Tareas INNER JOIN Ordenes ON Tareas.orden_id = Ordenes.ordenId INNER JOIN Cotizaciones ON Ordenes.cot_id = Cotizaciones.cotId WHERE Tareas.tareaId = ?', [id]);
-    res.render('../views/tareas/terminarTareas', {tarea: tareas[0], users, machines});
+    res.render('../views/tareas/terminarTareas', {tarea: tareas[0], users, machines, area});
 });
 
 router.post('/terminar/:id', isLoggedIn, IsAuthorized('tasksEmployees'), validateTareas(), async(req, res) =>{

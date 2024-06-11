@@ -7,7 +7,7 @@ const { validateProcesses, validateProcessesLists } = require('../lib/validators
 const router = express.Router();
 
 router.get('/add', isLoggedIn, IsAuthorized('addProcesses'), async (req, res) => {
-    const areas = await pool.query('SELECT areaId, nombre FROM Areas');
+    const areas = await pool.query('SELECT areaId, nombre FROM Areas WHERE nombre != "VENTAS" AND nombre != "COBRANZA"');
 
     // generar un arreglo con una serie dependiendo del número de areas (orden del proceso)
     let orden_posible = [];

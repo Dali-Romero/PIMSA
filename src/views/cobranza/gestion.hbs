@@ -39,7 +39,7 @@
                         <label for="fecha" class="form-label">Fecha liquidacion:</label>
                         <div class="input-group has-validation">
                             <span class="input-group-text border-dark border-2 border-end-0" id="basic-addon1"><i class="bi bi-calendar-event"></i></span>
-                            <input type="date" name="fecLiq" id="fecLiq" class="fecNac form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required value={{#formatDateString ordenes.0.fechaPago}}{{/formatDateString}}>
+                            <input type="date" name="fecLiq" id="fecLiq" class="fecNac form-control border-dark border-2 rounded-end" aria-describedby="basic-addon1" required {{#if ordenes.0.fechaPago}} value={{#formatDateString ordenes.0.fechaPago}}{{/formatDateString}} {{/if}}>
                         </div>
                         <div class="invalid-feedback">
                             <span id="invalid-feedback-fecha"></span>
