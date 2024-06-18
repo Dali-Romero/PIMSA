@@ -49,7 +49,7 @@ module.exports = {
             body('rfc')
             .exists().withMessage('Parece el RFC no fue enviado.')
             .trim().notEmpty().withMessage('El RFC no debe estar vacío.')
-            .isLength({min: 13, max: 13}).withMessage('El RFC debe contener 13 caracteres.'),
+            .isLength({min: 12, max: 13}).withMessage('El RFC debe contener entre 12 y 13 caracteres.'),
 
             // validaciones del campo "companyname" (Razon social)
             body('companyname')
@@ -114,7 +114,7 @@ module.exports = {
             body('email')
             .exists().withMessage('Parece el correo no fue enviado.')
             .trim().notEmpty().withMessage('El correo no debe estar vacío.')
-            .isLength({min: 1, max: 20}).withMessage('El correo debe contener entre 1 y 20 caracteres.'),
+            .isLength({min: 1, max: 40}).withMessage('El correo debe contener entre 1 y 40 caracteres.'),
 
             // validaciones del campo "creditlimit" (Limite de credito)
             body('creditlimit')
