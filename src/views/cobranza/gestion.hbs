@@ -32,6 +32,7 @@
                             <select name="pago" id="pago" class="form-select border-dark border-2">
                                 <option value="Por cobrar" {{#equalNR ordenes.0.estatusPago "Por cobrar"}} selected {{/equalNR}} {{#equalNR ordenes.0.estatusPago ""}} selected {{/equalNR}}>Por cobrar</option>
                                 <option value="Pagada" {{#equalNR ordenes.0.estatusPago "Pagada"}} selected {{/equalNR}}>Pagada</option>
+                                <option value="Cancelada" {{#equalNR ordenes.0.estatusPago "Cancelada"}} selected {{/equalNR}}>Cancelada</option>
                             </select>
                         </div>
                     </div>
