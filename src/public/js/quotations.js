@@ -195,7 +195,7 @@ function validateQuotationsForm(form, url){
         })
 
         // lenght product field validation
-        const patternLenghtProducts = /^\d+(\.\d{1,3})?$/;
+        const patternLenghtProducts = /^\.?\d+(\.\d{1,3})?$/;
         const lenghtProducts = $('.lengthproduct');
         lenghtProducts.each(function(i, obj){
             $(this).removeClass('border-dark');
@@ -224,7 +224,7 @@ function validateQuotationsForm(form, url){
         })
 
         // width product field validation
-        const patternWidthProducts = /^\d+(\.\d{1,3})?$/;
+        const patternWidthProducts = /^\.?\d+(\.\d{1,3})?$/;
         const widthproductProducts = $('.widthproduct');
         widthproductProducts.each(function(i, obj){
             $(this).removeClass('border-dark');
