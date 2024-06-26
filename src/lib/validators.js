@@ -56,14 +56,14 @@ module.exports = {
             .exists().withMessage('Parece que la razón social no fue enviada.')
             .trim().notEmpty().withMessage('La razón social no debe estar vacía.')
             .not().matches(/[^a-zA-ZÀ-ÿ0-9\sñÑ]/).withMessage('La razón social debe contener únicamente letras.')
-            .isLength({min: 1, max: 30}).withMessage('La razón social debe contener entre 1 y 30 caracteres.'),
+            .isLength({min: 1, max: 80}).withMessage('La razón social debe contener entre 1 y 80 caracteres.'),
 
             // validaciones del campo "street" (calle)
             body('street')
             .exists().withMessage('Parece que el nombre de la calle no fue enviado.')
             .trim().notEmpty().withMessage('El nombre de la calle no debe estar vacío.')
             .not().matches(/[^a-zA-ZÀ-ÿ0-9\sñÑ]/).withMessage('El nombre de la calle debe contener únicamente letras.')
-            .isLength({min: 1, max: 30}).withMessage('El nombre de la calle debe contener entre 1 y 30 caracteres.'),
+            .isLength({min: 1, max: 50}).withMessage('El nombre de la calle debe contener entre 1 y 50 caracteres.'),
 
             // validaciones del campo "outernumber" (Numero exterior)
             body('outernumber')
@@ -76,7 +76,7 @@ module.exports = {
             .exists().withMessage('Parece que el nombre de la colonia no fue enviado.')
             .trim().notEmpty().withMessage('El nombre de la colonia no debe estar vacío.')
             .not().matches(/[^a-zA-ZÀ-ÿ0-9\sñÑ]/).withMessage('El nombre de la colonia debe contener únicamente letras.')
-            .isLength({min: 1, max: 30}).withMessage('El nombre de la colonia debe contener entre 1 y 30 caracteres.'),
+            .isLength({min: 1, max: 50}).withMessage('El nombre de la colonia debe contener entre 1 y 50 caracteres.'),
 
             // validaciones del campo "cp" (CP)
             body('cp')
@@ -153,7 +153,7 @@ module.exports = {
             .exists().withMessage('Parece que la descripción del grupo no fue enviada.')
             .trim().notEmpty().withMessage('La descripción del grupo no debe estar vacía.')
             .not().matches(/[^a-zA-ZÀ-ÿ0-9\sñÑ]/).withMessage('La descripción del grupo debe contener únicamente letras.')
-            .isLength({min: 1, max: 30}).withMessage('El nombre del grupo debe contener entre 1 y 30 caracteres.'),
+            .isLength({min: 1, max: 50}).withMessage('El nombre del grupo debe contener entre 1 y 50 caracteres.'),
 
         ]
     },
